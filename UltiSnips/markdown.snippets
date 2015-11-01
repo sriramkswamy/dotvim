@@ -1,0 +1,669 @@
+snippet pr "paranthesis" i
+($1)$2
+endsnippet
+
+snippet br "braces" i
+{$1}$2
+endsnippet
+
+snippet qr "square brackets" i
+[$1]$2
+endsnippet
+
+snippet h1 "heading 1" b
+# $1
+
+$0
+endsnippet
+
+snippet h2 "heading 1" b
+## $1
+
+$0
+endsnippet
+
+snippet h3 "heading 1" b
+### $1
+
+$0
+endsnippet
+
+snippet h4 "heading 1" b
+#### $1
+
+$0
+endsnippet
+
+snippet h5 "heading 1" b
+##### $1
+
+$0
+endsnippet
+
+snippet h6 "heading 1" b
+###### $1
+
+$0
+endsnippet
+
+snippet quote "block quote" b
+> $1
+endsnippet
+
+snippet ul "unordered list" b
+* $1
+endsnippet
+
+snippet ol "ordered list" b
+${1:1}. $2
+endsnippet
+
+snippet hr "horizontal rule" b
+***
+
+$1
+endsnippet
+
+snippet link "links"
+[${1:description}](${2:url})$3
+endsnippet
+
+snippet reflink "reference links"
+[${1:description}][${2:ref_id}]$3
+endsnippet
+
+snippet refid "id for the reference" b
+[id]: ${1:url}
+endsnippet
+
+snippet it "italics"
+*$1*$0
+endsnippet
+
+snippet bold "bold"
+**$1**$0
+endsnippet
+
+snippet cod "backtick code"
+\`$1\` $2
+endsnippet
+
+snippet img "image inline" b
+![${1:alt_text}](${2:url/path}) $3
+endsnippet
+
+snippet refimg "reference image"
+[${1:alt_text}][${2:ref_id}]$3
+endsnippet
+
+snippet autolink "automatic link"
+<${1:url}> $2
+endsnippet
+
+snippet tda "3 dashes" i
+---
+endsnippet
+
+# Latex commands
+
+snippet mid " doxygen inline math"
+\\f\$$1\\f\$$0
+endsnippet
+
+snippet mad "doxygen center math" b
+\\f[
+	$1
+\\f]
+$0
+endsnippet
+
+snippet mi "pandoc inline math"
+\$$1\$$0
+endsnippet
+
+snippet ma "pandoc center math" b
+\$\$
+	$1
+\$\$
+$0
+endsnippet
+
+snippet imp "implies" i
+\implies
+endsnippet
+
+snippet t4 "therefore" i
+\therefore
+endsnippet
+
+snippet eqbm "equilibrium" i
+\leftrightharpoons $0
+endsnippet
+
+snippet eqnd "doxygen style equation" b
+\\f{equation}{
+	$2
+	\label{eqn:$1}
+\\f}
+$0
+endsnippet
+
+snippet eqn "pandoc style equation" b
+\\begin{equation}
+	$2
+	\label{eqn:$1}
+\\end{equation}
+$0
+endsnippet
+
+snippet eqnarrayd "doxygen equation array" b
+\\f{eqnarray}{
+	$2
+	\label{eqnarray:$1}
+\\f}
+$0
+endsnippet
+
+snippet eqnarray "pandoc equation array" b
+\\begin{eqnarray}
+	$2
+	\label{eqnarray:$1}
+\\end{eqnarray}
+$0
+endsnippet
+snippet xii "xi" i
+\xi
+endsnippet
+
+snippet rhoo "rho" i
+\rho
+endsnippet
+
+snippet sig "sigma" i
+\sigma
+endsnippet
+
+snippet SIG "Sigma" i
+\Sigma
+endsnippet
+
+snippet alp "alpha" i
+\alpha
+endsnippet
+
+snippet bt "beta" i
+\beta
+endsnippet
+
+snippet gam "gamma" i
+\gamma
+endsnippet
+
+snippet chii "chi" i
+\chi
+endsnippet
+
+snippet nuu "nu" i
+\nu
+endsnippet
+
+snippet lap "laplacian" i
+\nabla^2
+endsnippet
+
+snippet lam "lambda" i
+\lambda
+endsnippet
+
+snippet muu "mu" i
+\mu
+endsnippet
+
+snippet io "iota" i
+\iota
+endsnippet
+
+snippet ka "kappa" i
+\kappa
+endsnippet
+
+snippet fora "for all"
+\forall
+endsnippet
+
+snippet ep "epsilon" i
+\epsilon
+endsnippet
+
+snippet tauu "tau" i
+\tau
+endsnippet
+
+snippet 0S "Theta" i
+\Theta
+endsnippet
+
+snippet 0s "theta" i
+\theta
+endsnippet
+
+snippet de "delta" i
+\delta
+endsnippet
+
+snippet DE "Delta" i
+\Delta
+endsnippet
+
+snippet EP "Epsilon" i
+\Epsilon
+endsnippet
+
+snippet psii "psi" i
+\psi
+endsnippet
+
+snippet PSI "PSI" i
+\Psi
+endsnippet
+
+snippet PHI "Phi" i
+\Phi
+endsnippet
+
+snippet phii "phi" i
+\phi
+endsnippet
+
+snippet nab "nabla" i
+\nabla
+endsnippet
+
+snippet om "omega" i
+\omega
+endsnippet
+
+snippet OM "Omega" i
+\Omega
+endsnippet
+
+snippet TAU "Tau" i
+\mathrm{T}
+endsnippet
+
+snippet GA "Gamma" i
+\Gamma
+endsnippet
+
+snippet grad "gradient" i
+\nabla {$1}$0
+endsnippet
+
+snippet div "divergence" i
+\nabla \cdot {$1}$0
+endsnippet
+
+snippet cu "curl" i
+\nabla \times {$1}$0
+endsnippet
+
+snippet xs "times" i
+\times $0
+endsnippet
+
+snippet 8s "infinity" i
+\infty
+endsnippet
+
+snippet 6s "partial" i
+\partial{$1}$0
+endsnippet
+
+snippet 66s "partial^2" i
+\partial^2{$1}$0
+endsnippet
+
+snippet dif "differential" i
+\mathrm{d}{$1}$0
+endsnippet
+
+snippet DI "Differential" i
+\mathrm{D}{$1}$0
+endsnippet
+
+snippet DD "Double Differential" i
+\mathrm{D}^2{$1}$0
+endsnippet
+
+snippet dd "double differential" i
+\mathrm{d}^2{$1}$0
+endsnippet
+
+snippet fr "fraction" i
+\frac{$1}{$2}$0
+endsnippet
+
+snippet lim "limit" i
+\lim_{{$1} \to {$2}} {$3} $0
+endsnippet
+
+snippet int "integral"
+\int_{$1}^{$2} \! {$3} \, \mathrm{d}{$4} $0
+endsnippet
+
+snippet iin "double integral"
+\iint\limits_{$1} \! {$2} \, \mathrm{d}{$3} $0
+endsnippet
+
+snippet iii "triple integral"
+\iiint\limits_{$1} \! {$2} \, \mathrm{d}{$3} $0
+endsnippet
+
+snippet oit "cyclic integral"
+\oint_{$1} \! {$2} \, \mathrm{d} {$3} $0
+endsnippet
+
+snippet sum "summation" i
+\sum\limits_{$1}^{$2} {$3} $0
+endsnippet
+
+snippet ve "vector" i
+\vec{$1}$0
+endsnippet
+
+snippet dot "dot above the expression" i
+\dot{$1}$0
+endsnippet
+
+snippet . "dot product"
+\cdot $0
+endsnippet
+
+snippet abs "abs" i
+\left| $1 \right| $0
+endsnippet
+
+snippet tens "double right harpoon for tensor" i
+\stackrel{\leftrightarrow}{$1}$0
+endsnippet
+
+snippet hat "hat" i
+\hat{$1}$0
+endsnippet
+
+snippet ne "not equal to"
+\neq $0
+endsnippet
+
+snippet pf "partial fraction" i
+\frac{\partial{$1}}{\partial{$2}}$0
+endsnippet
+
+snippet df "differential fraction" i
+\frac{\mathrm{d}{$1}}{\mathrm{d}{$2}}$0
+endsnippet
+
+snippet DF "Differential Fraction" i
+\frac{\mathrm{D}{$1}}{\mathrm{D}{$2}}$0
+endsnippet
+
+snippet pff "double partial fraction" i
+\frac{\partial^2 {$1}}{\partial {$2}^2}$0
+endsnippet
+
+snippet dff "double differential fraction" i
+\frac{\mathrm{d}^2{$1}}{\mathrm{d}{$2}^2}$0
+endsnippet
+
+snippet DFF "double differential fraction" i
+\frac{\mathrm{D}^2{$1}}{\mathrm{D}{$2}^2}$0
+endsnippet
+
+snippet kd "kroenecker delta" i
+\delta_{${1:ij}} $0
+endsnippet
+
+snippet aut "alternating unit tensor" i
+\epsilon_{${1:ijk}} $0
+endsnippet
+
+snippet etaa "eta" i
+\eta
+endsnippet
+
+snippet sameas "equivalent symbol" i
+\equiv $0
+endsnippet
+
+snippet eval "evaluated at" i
+{\biggr \rvert}_{$1}^{$2} $0
+endsnippet
+
+snippet ssq "scaled brackets" i
+\left[ $1 \right]$0
+endsnippet
+
+snippet ssp "scaled paranthesis" i
+\left( $1 \right)$0
+endsnippet
+
+snippet ssb "scaled curly brackets" i
+\left{ $1 \right}$0
+endsnippet
+
+snippet sqrt "square root" i
+\sqrt{$1}
+endsnippet
+
+snippet cos "cosine" i
+\cos{$1}
+endsnippet
+
+snippet sin "sine" i
+\sin{$1}
+endsnippet
+
+snippet tan "tangent" i
+\tan{$1}
+endsnippet
+
+snippet pii "pi" i
+\pi
+endsnippet
+
+snippet PI "PI" i
+\Pi
+endsnippet
+
+snippet pri "prime" i
+\prime
+endsnippet
+
+snippet sini "sin inverse" i
+\sin^{-1}{$1}
+endsnippet
+
+snippet cosi "cos inverse" i
+\cos^{-1}{$1}
+endsnippet
+
+snippet tani "tan inverse" i
+\tan^{-1}{$1}
+endsnippet
+
+snippet app "approximately symbol" i
+\approx $1
+endsnippet
+
+snippet prop "proportional symbol" i
+\propto
+endsnippet
+
+snippet sim "similar symbol" i
+\sim
+endsnippet
+
+snippet dev "deviatoric" i
+d_{${1:ij}}$0
+endsnippet
+
+snippet fot "fourth order tensor" i
+B_{ijkl}$0
+endsnippet
+
+snippet bar "bar/average" i
+\bar{$1}$0
+endsnippet
+
+snippet pwised "doxygen piecewise function definition" b
+\\f[
+ $1 =
+  \begin{cases}
+      \hfill $2 \hfill & \text{$3} \\\\
+      \hfill $4 \hfill & \text{$5} \\\\
+  \end{cases}
+\\f]
+$0
+endsnippet
+
+snippet pwise "pandoc piecewise function definition" b
+\$\$
+ $1 =
+  \begin{cases}
+      \hfill $2 \hfill & \text{$3} \\\\
+      \hfill $4 \hfill & \text{$5} \\\\
+  \end{cases}
+\$\$
+$0
+endsnippet
+
+snippet cos2 "cos square" i
+\cos^2{$1}
+endsnippet
+
+snippet sin2 "sin square" i
+\sin^2{$1}
+endsnippet
+
+snippet tan2 "tan square" i
+\tan^2{$1}
+endsnippet
+
+snippet iff "if and only if"
+\Leftrightarrow $0
+endsnippet
+
+snippet cccostd "doxygen Chance constrained cost function" b
+\\f{equation*}{
+\begin{aligned}
+& \underset{$1}{\text{minimize}}
+& & $2 \\\\
+& \text{subject to}
+& & $3, ${4:\\;} $5, \\\\
+&&& $6.
+\end{aligned}
+\\f}
+
+$0
+endsnippet
+
+snippet cccost "pandoc Chance constrained cost function" b
+\\begin{equation*}
+\begin{aligned}
+& \underset{$1}{\text{minimize}}
+& & $2 \\\\
+& \text{subject to}
+& & $3, ${4:\\;} $5, \\\\
+&&& $6.
+\end{aligned}
+\\end{equation}
+
+$0
+endsnippet
+
+snippet prob "probability"
+Prob{\left[ $1 \right]} ${2:\leq} $3
+endsnippet
+
+snippet leq "less than or equal to"
+\leq $0
+endsnippet
+
+snippet geq "greater than or equal to"
+\geq $0
+endsnippet
+
+snippet in "belongs to"
+\in $0
+endsnippet
+
+snippet multifd "doxygen multi part function" b
+\\f{equation*}{
+$1 =
+\left\{
+	\begin{array}{ll}
+		x  & \mbox{if } x \geq 0 \\
+		-x & \mbox{if } x < 0
+	\end{array}
+\right}
+=
+
+\\f}
+endsnippet
+
+snippet multif "pandoc multi part function" b
+\\begin{equation*}
+$1 =
+\left\{
+	\begin{array}{ll}
+		x  & \mbox{if } x \geq 0 \\
+		-x & \mbox{if } x < 0
+	\end{array}
+\right}
+=
+
+\\end{equation}
+endsnippet
+
+snippet union "union symbol"
+\cup $0
+endsnippet
+
+snippet inter "intersection symbol"
+\cap $0
+endsnippet
+
+snippet larrow "Left arrow"
+\leftarrow $0
+endsnippet
+
+snippet rarrow "Right arrow"
+\rightarrow $0
+endsnippet
+
+snippet til "tilde"
+\tilde{$1}$0
+endsnippet
+
+snippet ddot "double dot" i
+\ddot{$1}$0
+endsnippet
+
+snippet def "defined as - triangle over equals"
+\triangleq
+endsnippet
+
+snippet hsp "horizontal space"
+\hspace{0.25cm}
+endsnippet
+
+snippet vsp "vertical space"
+\vspace{0.25cm}
+endsnippet
+
+snippet mat "matrix"
+\begin{bmatrix}
+$1
+\end{bmatrix}
+$0
+endsnippet

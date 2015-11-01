@@ -1,0 +1,101 @@
+###################################################
+# JavaScript Snippets							  #
+###################################################
+
+snippet sq "single quotes" i
+'$1'$0
+endsnippet
+
+snippet dq "double quotes" i
+"$1"$0
+endsnippet
+
+snippet pr "paranthesis" i
+($1)$0
+endsnippet
+
+snippet br "curly braces" i
+{$1}$0
+endsnippet
+
+snippet qr "square brackets" i
+[$1]$0
+endsnippet
+
+snippet bl "block" b
+{
+	$1
+}$0
+endsnippet
+
+snippet var "variable declaration" b
+var ${1:name};
+endsnippet
+
+snippet vari "variable declaration and initialization" b
+var ${1:name} = ${2:value};
+endsnippet
+
+snippet eli "else if" b
+else if (${1:/*condition*/})
+{
+	$0
+}
+endsnippet
+
+snippet eob "empty object" b
+var ${1:myObject} = {};
+endsnippet
+
+snippet key "add a key" b
+${1:myObject}.${2:key} = ${3:value};
+endsnippet
+
+snippet nob "create an object" b
+var ${1:myObject} = 
+{
+	${2:key}: ${3:value}
+};
+endsnippet
+
+snippet kv "create a key-value pair" b
+${1:key}: ${2:value}
+endsnippet
+
+snippet nv "create a new object" b
+var ${1:myObject} = new ${2:Object}($3);
+endsnippet
+
+snippet na "create a new object for an array" b
+${1:myObject} = new ${2:Object}($3);
+endsnippet
+
+snippet m "method" b
+${1:myObject}.${2:method} = function($3)
+{
+	$0
+};
+endsnippet
+
+snippet cn "constructor" b
+function ${1:myConstructor}(${2:/*arguments*/})
+{
+	${0:/* define the constructor*/}
+}
+endsnippet
+
+snippet in "inheritance in prototype" b
+${1:Class_name}.prototype = new ${2:Base_class}();
+endsnippet
+
+##################################################
+# jQuery snippets								 #
+##################################################
+
+snippet docready "document ready" b
+$(document).ready($0);
+endsnippet
+
+snippet docselcss "select CSS class" b
+$('${1:CSS class}')$0
+endsnippet

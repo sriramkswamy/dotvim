@@ -1,0 +1,153 @@
+snippet pr "paranthesis" i
+($1)$2
+endsnippet
+
+snippet br "braces" i
+{$1}$2
+endsnippet
+
+snippet qr "square brackets" i
+[$1]$2
+endsnippet
+
+snippet xh1 "heading 1" b
+${1:Top of Page Header}
+************************
+$0
+endsnippet
+
+snippet xh2 "heading 1" b
+${1:Page Sections}
+===================
+$0
+endsnippet
+
+snippet xh3 "heading 1" b
+${1:Subsection}
+----------------
+$0
+endsnippet
+
+snippet xh4 "heading 1" b
+${1:Subsubsection}
++++++++++++++++++++
+$0
+endsnippet
+
+snippet xul "unordered list" b
+* $1
+$0
+endsnippet
+
+snippet xol "ordered list" b
+${1:1}. $2
+endsnippet
+
+snippet xlink "links"
+\`${1:description} <${2:url}/>\`_
+endsnippet
+
+snippet xanc "anchor tags"
+\`${1:anchor}`\`_
+endsnippet
+
+snippet xem "emphasis" i
+*$1* $2
+endsnippet
+
+snippet xstrong "strong" i
+**$1** $2
+endsnippet
+
+snippet xcodefull "backtick code"
+::
+	$0
+endsnippet
+
+snippet xcode "inline code" 
+\`\`$1\`\`$0
+endsnippet
+
+snippet xautomod "auto module" b
+.. automodule:: $1
+endsnippet
+
+snippet xcodeout "code output" b
+>>> $0
+endsnippet
+
+snippet ximg "image inline" b
+.. image:: $1
+endsnippet
+
+snippet xatt "attribute"
+:$1: $0
+endsnippet
+
+snippet xinc "include" b
+.. include $1
+endsnippet
+
+snippet xnote "note" b
+.. note::
+	$1
+endsnippet
+
+snippet xwarn "warning" b
+.. warning::
+	$1
+endsnippet
+
+snippet xva "version added" b
+.. versionadded:: ${1:0.0.1}
+	$2
+endsnippet
+
+snippet xvc "version changed" b
+.. versionchanged:: ${1:0.0.1}
+	$2
+endsnippet
+
+snippet xmodule "module sphinx" i
+:mod:$0
+endsnippet
+
+snippet xclass "class sphinx" i
+:class:$0
+endsnippet
+
+snippet xfunction "function sphinx" i
+:func:$0
+endsnippet
+
+snippet xfun "function description" b
+.. function::
+	$1
+endsnippet
+
+snippet xmod "module docstring comment" b
+.. module:: $1
+	$0
+endsnippet
+
+snippet xparam "parameter" b
+:param ${1:parameter name}: ${2:description}
+:type ${1:parameter name}: ${2:datatype}
+$0
+endsnippet
+
+snippet xraise "sphinx raises" b
+:raises: $1
+endsnippet
+
+snippet xret "sphinx returns" b
+:returns: $1
+endsnippet
+
+snippet xauth "module author" b
+.. moduleauthor:: ${1:Sriram Krishnaswamy} <${2:sriram.krish.92@gmail.com}>
+endsnippet
+
+snippet xpf "platform sphinx" b
+:platform:$0
+endsnippet

@@ -1,0 +1,58 @@
+snippet makefile "code to generate a complete makefile" b
+# This is the makefile to generate the executable from all our source files.
+# This is made as generic as possible and hence adding/deleting or modifying
+# the appropriate source files should accomplish this task easily
+
+CXX=${1:g++}
+
+# I have added a recursive flag in case debug folders need to removed in the later stages
+RM=rm -rf
+
+# Print all warnings and call OpenMP
+CPPFLAGS=${2:-fopenmp} -Wall -ggdb
+
+# We might use one or all of these libraries. Can be edited as per needs
+LDFLAGS=-${3:fopenmp -lgsl -llapack -lblas} -ggdb
+
+# Get all the source files from the current directory
+SRCS=$(wildcard ${4:*}.${5:cpp})
+
+# Create object files for each of the source files present
+OBJS=$(patsubst %.$5,obj/%.o,$(SRCS))
+
+# First rule should be for all which points to creation of the executable
+all: ${6:FPEexe}
+
+# Order only pre-requisite
+$(OBJS): | obj
+
+# Make the directory if it's not present
+obj:
+	@mkdir -p $@
+
+# Rule for objects
+obj/%.o : %.cpp
+	@echo $<
+	@$(CXX) $(CPPFLAGS) -c $< $(LDFLAGS) -o $@
+
+# Link all the object files to generate the executable
+$6: $(OBJS)
+	$(CXX) $(OBJS) $(LDFLAGS) -o ../$6.exe
+
+# Rule for generating documentation
+docs:
+	@mkdir -p $@
+	@echo "Generating documentation..."
+	doxygen Doxyfile
+	@echo "Compiling the resulting latex file"
+	cd ../docs/latex && $(MAKE)
+
+# Rule for cleaning the object file
+clean:
+	$(RM) $(OBJS)
+
+# Clean all the object files and remove the executable
+dist-clean: clean
+	$(RM) ../$6.exe
+
+endsnippet

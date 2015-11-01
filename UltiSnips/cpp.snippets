@@ -1,0 +1,91 @@
+snippet ar "angular brackets" i
+<$1>$0
+endsnippet
+
+snippet poi "pointer arrow" i
+->
+endsnippet
+
+snippet str "string variable"
+std::string
+endsnippet
+
+snippet ns= "namespace equals" b
+namespace $1 = $0;
+endsnippet
+
+snippet try "try-catch block" b
+try {
+	$1
+}
+catch($2) {
+	$3
+}
+$0
+endsnippet
+
+snippet swi "switch-case" b
+switch($1) {
+case $2:{
+			$3
+			break;
+	}
+$4
+default:{
+			$0
+			break;
+	}
+}
+endsnippet
+
+snippet cas "case for switch-case" b
+case $1:{
+			$2
+			break;
+		}
+$0
+endsnippet
+
+snippet dbri "doxygen brief special command"
+\brief
+endsnippet
+
+snippet dcl "doxygen class special command"
+\class
+endsnippet
+
+snippet dstr "doxygen struct special command"
+\struct
+endsnippet
+
+snippet dfun "doxygen function special command"
+\fn
+endsnippet
+
+snippet dfile "doxygen file special command"
+\file
+endsnippet
+
+snippet dtype "doxygen typedef special command"
+\typedef
+endsnippet
+
+snippet dvar "doxygen variable special command"
+\var
+endsnippet
+
+snippet ddef "doxygen #define special command"
+\def
+endsnippet
+
+snippet dname "doxygen namespace special command"
+\namespace
+endsnippet
+
+snippet denum "doxygen enum special command"
+\enum
+endsnippet
+
+snippet duni "doxygen union special command"
+\union
+endsnippet

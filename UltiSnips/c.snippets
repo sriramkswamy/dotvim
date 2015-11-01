@@ -1,0 +1,47 @@
+snippet br "braces" i
+{$1}$2
+endsnippet
+
+snippet pr "paranthesis" i
+($1)$2
+endsnippet
+
+snippet qr "square brackets" i
+[$1]$2
+endsnippet
+
+snippet pragma "opemmp pragmas" b
+#pragma omp ${1:parallel}
+$0
+endsnippet
+
+snippet bl "block of code" b
+{
+	$0
+}
+endsnippet
+
+snippet reduction "reduction"
+reduction(${1:op}:${2:list})$0
+endsnippet
+
+snippet schedule "omp schedule"
+schedule(${1:auto})$0
+endsnippet
+
+snippet getnumthreads "get the number of threads" 
+omp_get_num_threads()$0
+endsnippet
+
+snippet getthreadnum "get the thread number/id" 
+omp_get_thread_num()$0
+endsnippet
+
+snippet getwtime "get the wtime" 
+omp_get_wtime()$0
+endsnippet
+
+snippet setnumthreads "set the number of threads" 
+omp_set_num_threads($1)$0
+endsnippet
+

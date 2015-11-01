@@ -1,0 +1,89 @@
+snippet pr "paranthesis" i
+($1)$2
+endsnippet
+
+snippet br "braces" i
+{$1}$2
+endsnippet
+
+snippet qr "square brackets" i
+[$1]$2
+endsnippet
+
+snippet h1 "heading 1" b
+# $1
+endsnippet
+
+snippet h2 "heading 1" b
+## $1
+endsnippet
+
+snippet h3 "heading 1" b
+### $1
+endsnippet
+
+snippet h4 "heading 1" b
+#### $1
+endsnippet
+
+snippet h5 "heading 1" b
+##### $1
+endsnippet
+
+snippet h6 "heading 1" b
+###### $1
+endsnippet
+
+snippet block "block quote" b
+> $1
+endsnippet
+
+snippet ul "unordered list" b
+* $1
+endsnippet
+
+snippet ol "ordered list" b
+${1:1}. $2
+endsnippet
+
+snippet hr "horizontal rule" b
+***
+
+$1
+endsnippet
+
+snippet link "links"
+[${1:description}](${2:url})$3
+endsnippet
+
+snippet reflink "reference links"
+[${1:description}][${2:ref_id}]$3
+endsnippet
+
+snippet idref "id for the reference" b
+[id]: ${1:url}
+endsnippet
+
+snippet em "emphasis" i
+*$1* $2
+endsnippet
+
+snippet strong "strong" i
+**$1** $2
+endsnippet
+
+snippet code "backtick code"
+``$1`` $2
+endsnippet
+
+snippet img "image inline" b
+![${1:alt_text}](${2:url/path}) $3
+endsnippet
+
+snippet refimg "reference image"
+[${1:alt_text}][${2:ref_id}]$3
+endsnippet
+
+snippet autolink "automatic link"
+<${1:url}> $2
+endsnippet
