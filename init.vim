@@ -105,28 +105,28 @@ endif
 	vnoremap <Leader>d :
 
 	" Yank history
-	nnoremap <Leader>y :Unite -direction=botright -buffer-name=yankhistory -start-insert history/yank<CR>
+	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory -start-insert history/yank<CR>
 
 	" Kill, save or quit
-	nnoremap <Leader>k :bd!<CR>
-	nnoremap <Leader>w :w<CR>
-	nnoremap <Leader>q :q<CR>
+	nnoremap <silent> <Leader>k :bd!<CR>
+	nnoremap <silent> <Leader>w :w<CR>
+	nnoremap <silent> <Leader>q :q<CR>
 
 	" 'Zoom' into the current buffer
-	nnoremap Z :only<CR>
+	nnoremap <silent> Z :only<CR>
 	" Put me in 'q:' instead of ex mode
-	nnoremap Q q:
+	nnoremap <silent> Q q:
 
 	" Navigate in insert mode
-	inoremap <C-f> <right>
-	inoremap <C-b> <left>
+	inoremap <silent> <C-f> <right>
+	inoremap <silent> <C-b> <left>
 
 	" Map some more stuff similar to unimpaired
-	nnoremap coj :setlocal colorcolumn=<CR>
-	nnoremap cof :setlocal colorcolumn=80,100<CR>
+	nnoremap <silent> coj :setlocal colorcolumn=<CR>
+	nnoremap <silent> cof :setlocal colorcolumn=80,100<CR>
 
 	" Escape out of insert mode, because iTerm2 delays it assuming <Esc> to be an escape sequence
-	inoremap <C-g> <Esc>
+	inoremap <silent> <C-g> <Esc>
 
 	" Colorschemes collection
 	Plug 'flazz/vim-colorschemes'
@@ -139,13 +139,13 @@ endif
 	" Add quickfix and location list to unite
 	" Much better narrowing
 	Plug 'osyo-manga/unite-quickfix'
-	nnoremap <Leader>l :Unite -direction=botright -buffer-name=uloc location_list<CR>
-	nnoremap <Leader>u :Unite -direction=botright -buffer-name=uqf quickfix<CR>
+	nnoremap <silent> <Leader>l :Unite -direction=botright -buffer-name=uloc location_list<CR>
+	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=uqf quickfix<CR>
 
 	" Undotree
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 	let g:undotree_WindowLayout = 2
-	nnoremap U :UndotreeToggle<CR>
+	nnoremap <silent> U :UndotreeToggle<CR>
 
 	" Statusline
 	Plug 'bling/vim-airline' " Mode line
@@ -238,12 +238,12 @@ endif
 	autocmd CompleteDone * pclose
 
 	" Make 'Y' work like 'C' and 'D'
-	nnoremap Y y$
+	nnoremap <silent> Y y$
 	" Elementary splitting
-	nnoremap gs Do<Esc>p^d0==k$
+	nnoremap <silent> gs Do<Esc>p^d0==k$
 
 	" Dictionary toggle
-	inoremap <C-d> <C-x><C-k>
+	inoremap <silent> <C-d> <C-x><C-k>
 
 	" Brackets and tag matching
 	Plug 'jiangmiao/auto-pairs'
@@ -296,8 +296,8 @@ endif
 	" Move stuff sideways - in function calls or lists
 	" Also adds text objects for arguments - (operator)i,/a, - in my case
 	Plug 'AndrewRadev/sideways.vim'
-	nnoremap [, :SidewaysLeft<CR>
-	nnoremap ], :SidewaysRight<CR>
+	nnoremap <silent> [, :SidewaysLeft<CR>
+	nnoremap <silent> ], :SidewaysRight<CR>
 	omap a, <Plug>SidewaysArgumentTextobjA
 	xmap a, <Plug>SidewaysArgumentTextobjA
 	omap i, <Plug>SidewaysArgumentTextobjI
@@ -360,10 +360,10 @@ endif
 	" Exchange stuff - cx(motion/textobject) - note that this is not a normal operator
 	Plug 'tommcdo/vim-exchange'
 	" 'ee' instead of 'w' because of my mapping of 'w' to ':vs'
-	nmap [w cxiwgecxiw
-	nmap ]w cxiweecxiw
-	nmap [W cxiWgEcxiW
-	nmap ]W cxiWEEcxiW
+	nmap [w cxiwge.
+	nmap ]w cxiwee.
+	nmap [W cxiWgE.
+	nmap ]W cxiWEE.
 
 	" Custom operators
 	Plug 'kana/vim-operator-user'
@@ -484,7 +484,7 @@ endif
 		\[' Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
 		\[' Eclim Ruby Context Search', 'RubySearchContext'],
 		\]
-	nnoremap <Leader>j :Unite -direction=botright -silent -buffer-name=ycmcompleter menu:ycmcompleter<CR>
+	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=ycmcompleter menu:ycmcompleter<CR>
 "}}}
 
 " File/Buffer navigation {{{
@@ -493,24 +493,24 @@ endif
 
 	" I use 'e','E','b' and 'B' for normal movements - tried changing but muscle memorized
 	" I use 'cc' and 'cl' instead of 's' and 'S' - that seems more natural to me
-	nnoremap w :vsplit<CR>
-	nnoremap W :split<CR>
+	nnoremap <silent> w :vsplit<CR>
+	nnoremap <silent> W :split<CR>
 
 	" Marks - Unite backend
 	Plug 'kshenoy/vim-signature'
-	nnoremap m? :SignatureToggle<CR>
+	nnoremap <silent> m? :SignatureToggle<CR>
 "}}}
 
 " FZF - Blazingly fast fuzzy finder - for use in projects {{{
 	Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': 'yes \| ./install'}
-	nnoremap <Leader>p :FZF<CR>
+	nnoremap <silent> <Leader>p :FZF<CR>
 "}}}
 
 " Unite {{{
 	Plug 'Shougo/neomru.vim' " MRU
-	nnoremap <Leader>r :Unite -direction=botright -buffer-name=mrubuf -start-insert buffer file_mru<CR>
-	nnoremap <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
-	nnoremap <Leader>h :Unite -direction=botright -buffer-name=buflinegrep -start-insert line:all<CR>
+	nnoremap <silent> <Leader>r :Unite -direction=botright -buffer-name=mrubuf -start-insert buffer file_mru<CR>
+	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
+	nnoremap <silent> <Leader>h :Unite -direction=botright -buffer-name=buflinegrep -start-insert line:all<CR>
 "}}}
 
 " Project management {{{
@@ -523,12 +523,12 @@ endif
 	let g:rooter_silent_chdir = 1
 
 	" Unite
-	nnoremap <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file_rec<CR>
+	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file_rec<CR>
 
 	" Vimfiler - fancier than netrw and integrates with Unite
 	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
 	let g:vimfiler_as_default_explorer = 1
-	nnoremap <Leader>n :VimFilerExplorer -project<CR>
+	nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
 
 	" Traverse files within a project - create a .projections.json first
 	Plug 'tpope/vim-projectionist'
@@ -559,11 +559,11 @@ endif
 	" I use 'f' and 'F' for normal movements. 't' and 'T' are still available for use by operators
 	" Tags within buffer
 	Plug 'Shougo/unite-outline'
-	nnoremap t :Unite -buffer-name=buftags -vertical -winwidth=35 outline<CR>
+	nnoremap <silent> t :Unite -buffer-name=buftags -vertical -winwidth=35 outline<CR>
 
 	" Overall tags
 	Plug 'tsukkee/unite-tag'
-	nnoremap T :Unite -buffer-name=alltags -vertical -winwidth=35 -start-insert tag<CR>
+	nnoremap <silent> T :Unite -buffer-name=alltags -vertical -winwidth=35 -start-insert tag<CR>
 "}}}
 
 " VCS changes {{{
@@ -575,7 +575,7 @@ endif
 	xmap ih <Plug>(signify-motion-inner-visual)
 	omap ah <Plug>(signify-motion-outer-pending)
 	xmap ah <Plug>(signify-motion-outer-visual)
-	nnoremap gy :SignifyToggleHighlight<CR>
+	nnoremap <silent> gy :SignifyToggleHighlight<CR>
 "}}}
 
 " Git wrapper {{{
@@ -584,12 +584,12 @@ endif
 	" Wrapper
 	Plug 'tpope/vim-fugitive'
 	autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-	nnoremap gb :Gblame<CR>
+	nnoremap <silent> gb :Gblame<CR>
 	" Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
-	nnoremap gl :Glog<CR>
+	nnoremap <silent> gl :Glog<CR>
 	" Gitk
 	Plug 'gregsexton/gitv', {'on': 'Gitv'}
-	nnoremap gv :Gitv<CR>
+	nnoremap <silent> gv :Gitv<CR>
 
 	" Support BitBucket in fugitive's Gbrowse
 	Plug 'tommcdo/vim-fubitive', {'on': 'Gbrowse'}
@@ -597,7 +597,7 @@ endif
 	Plug 'tommcdo/vim-fugitive-blame-ext', {'on': 'Gblame'}
 	" Extend the merge and branch commands
 	Plug 'idanarye/vim-merginal'
-	nnoremap gm :MerginalToggle<CR>
+	nnoremap <silent> gm :MerginalToggle<CR>
 
 	" Interface for Git
 	let g:unite_source_menu_menus.git = {
@@ -630,7 +630,7 @@ endif
 		\[' git grep',  'exe "Ggrep " input("string: ")'],
 		\[' git prompt', 'exe "Git! " input("command: ")'],
 		\] " Append ' --' after log to get commit info commit buffers
-	nnoremap <Leader>g :Unite -direction=botright -silent -buffer-name=git menu:git<CR>
+	nnoremap <silent> <Leader>g :Unite -direction=botright -silent -buffer-name=git menu:git<CR>
 "}}}
 
 " Searching {{{
@@ -643,7 +643,7 @@ endif
 
 	" Search the help menu
 	Plug 'tsukkee/unite-help'
-	nnoremap <Leader>x :Unite -direction=botright -buffer-name=uhelp -start-insert help<CR>
+	nnoremap <silent> <Leader>x :Unite -direction=botright -buffer-name=uhelp -start-insert help<CR>
 
 	" Ignore case sensitivity
 	set ignorecase " Can be toggled with unimpaired's 'coi'
@@ -656,7 +656,7 @@ endif
 
 	" Colorschemes
 	Plug 'ujihisa/unite-colorscheme'
-	nnoremap <Leader>v :Unite -direction=botright -buffer-name=ucolor -start-insert colorscheme<CR>
+	nnoremap <silent> <Leader>v :Unite -direction=botright -buffer-name=ucolor -start-insert colorscheme<CR>
 
 	" '*' in visual mode
 	Plug 'thinca/vim-visualstar'
@@ -671,7 +671,7 @@ endif
 	nmap * <Plug>(anzu-star-with-echo)
 	nmap # <Plug>(anzu-sharp-with-echo)
 	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
-	nnoremap <Leader>i :Unite -direction=botright -silent -buffer-name=uniteanzu anzu<CR>
+	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=uniteanzu anzu<CR>
 
 	" Improves on normal incsearch by including regex and automatically turns
 	" off hlsearch
@@ -714,7 +714,7 @@ endif
 		\ '-i --no-heading --no-color -k -H'
 		let g:unite_source_grep_recursive_opt = ''
 	endif
-	nnoremap <Leader>e :UniteWithCursorWord -direction=botright -buffer-name=extract grep:-iR<CR>
+	nnoremap <silent> <Leader>e :UniteWithCursorWord -direction=botright -buffer-name=extract grep:-iR<CR>
 	vnoremap <Leader>e :UniteWithCursorWord -direction=botright -buffer-name=extract grep:-iR<CR>
 
 	" Use this for refactoring with 'cdo'
@@ -793,7 +793,7 @@ endif
 		\[' Table add formula', 'TableAddFormula'],
 		\[' Table evaluate formula', 'TableEvalFormulaLine'],
 		\]
-	nnoremap <Leader>o :Unite -silent -buffer-name=mdpandoc -vertical -start-insert menu:mdpandoc<CR>
+	nnoremap <silent> <Leader>o :Unite -silent -buffer-name=mdpandoc -vertical -start-insert menu:mdpandoc<CR>
 "}}}
 
 " REPL {{{
@@ -807,7 +807,7 @@ endif
 
 	" Awesome 'async' substitute - useful when in Tmux
 	Plug 'tpope/vim-dispatch'
-	nnoremap <Leader>c :Copen<CR>
+	nnoremap <silent> <Leader>c :Copen<CR>
 
 	" Compilation menu
 	let g:unite_source_menu_menus.umake = {
@@ -836,45 +836,45 @@ endif
 	\[' NeomakeSh gcc hybrid', 'NeomakeSh /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Eclim Java', 'Java'],
 	\]
-	nnoremap <Leader>m :Unite -direction=botright -buffer-name=umake -start-insert menu:umake<CR>
+	nnoremap <silent> <Leader>m :Unite -direction=botright -buffer-name=umake -start-insert menu:umake<CR>
 
 	" Launch appropriate REPL
 	Plug 'benmills/vimux'
 	if exists('$TMUX')
-		autocmd FileType R nnoremap <Leader>t :call VimuxRunCommandInDir("R",0)<CR>
-		autocmd FileType julia nnoremap <Leader>t :call VimuxRunCommandInDir("julia",0)<CR>
-		autocmd FileType matlab nnoremap <Leader>t :call VimuxRunCommandInDir("matlab",0)<CR>
-		autocmd FileType scheme nnoremap <Leader>t :call VimuxRunCommandInDir("racket",0)<CR>
-		autocmd FileType python nnoremap <Leader>t :call VimuxRunCommandInDir("ipython",0)<CR>
-		nnoremap <Leader>t :call VimuxRunCommandInDir("pwd", 0)<CR>
+		autocmd FileType R nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("R",0)<CR>
+		autocmd FileType julia nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("julia",0)<CR>
+		autocmd FileType matlab nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("matlab",0)<CR>
+		autocmd FileType scheme nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("racket",0)<CR>
+		autocmd FileType python nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("ipython",0)<CR>
+		nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("pwd", 0)<CR>
 	endif
 
 	" Send to Tmux - super useful
 	Plug 'jpalardy/vim-slime'
 	let g:slime_target = "tmux"
 	let g:slime_python_ipython = 1
-	nnoremap <Leader>s :SlimeSend<CR>
-	vnoremap <Leader>s :SlimeSend<CR>
+	nnoremap <silent> <Leader>s :SlimeSend<CR>
+	vnoremap <silent> <Leader>s :SlimeSend<CR>
 
 	" Tmux and Vim navigation
 	" Arrows = Vim splits outside Tmux and Tmux splits inside Tmux
 	" C-<key> for Vim splits when in Tmux
 	Plug 'christoomey/vim-tmux-navigator'
 	let g:tmux_navigator_no_mappings = 1
-	nnoremap <C-h> :TmuxNavigateLeft<CR>
-	nnoremap <C-j> :TmuxNavigateDown<CR>
-	nnoremap <C-k> :TmuxNavigateUp<CR>
-	nnoremap <C-l> :TmuxNavigateRight<CR>
+	nnoremap <silent> <C-h> :TmuxNavigateLeft<CR>
+	nnoremap <silent> <C-j> :TmuxNavigateDown<CR>
+	nnoremap <silent> <C-k> :TmuxNavigateUp<CR>
+	nnoremap <silent> <C-l> :TmuxNavigateRight<CR>
 	" Ugly hack to make sure C-h gets parsed correctly
 	if has('nvim')
-		nmap <BS> :<C-u>TmuxNavigateLeft<CR>
+		nmap <silent> <BS> :<C-u>TmuxNavigateLeft<CR>
 	endif
 
 	" Zoom and split when in Tmux(>v1.8)
 	if exists('$TMUX')
 		nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
-		nnoremap + :call system("tmux split-window -h")<CR>
-		nnoremap - :call system("tmux split-window -v")<CR>
+		nnoremap <silent> + :call system("tmux split-window -h")<CR>
+		nnoremap <silent> - :call system("tmux split-window -v")<CR>
 	endif
 "}}}
 
@@ -913,7 +913,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' Unite sources', 'Unite -silent -buffer-name=unitesources source'],
 		\[' Unite directory', 'Unite -silent -buffer-name=unitedir -vertical directory'],
 		\]
-	nnoremap <Leader>b :Unite -direction=botright -silent -buffer-name=uniteception -start-insert menu:uniteception<CR>
+	nnoremap <silent> <Leader>b :Unite -direction=botright -silent -buffer-name=uniteception -start-insert menu:uniteception<CR>
 
 	" Interface for OS interaction
 	let g:unite_source_menu_menus.osinteract = {
@@ -930,7 +930,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' Source vimrc', 'so $MYVIMRC'],
 		\[' Edit vimrc', 'e $MYVIMRC'],
 		\]
-	nnoremap <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
+	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 "}}}
 
 " Setup plugins, indents and syntax
