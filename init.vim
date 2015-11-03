@@ -30,7 +30,6 @@ endif
 		imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
 	endfunction
 	Plug 'Shougo/vimproc.vim', {'do': 'make'} " For 'async' and grep
-	let g:unite_source_history_yank_enable = 1
 	let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 "}}}
 
@@ -104,9 +103,6 @@ endif
 	nnoremap <Leader>d :
 	vnoremap <Leader>d :
 
-	" Yank history
-	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory -start-insert history/yank<CR>
-
 	" Kill, save or quit
 	nnoremap <silent> <Leader>k :bd!<CR>
 	nnoremap <silent> <Leader>w :w<CR>
@@ -141,6 +137,10 @@ endif
 	Plug 'osyo-manga/unite-quickfix'
 	nnoremap <silent> <Leader>l :Unite -direction=botright -buffer-name=uloc location_list<CR>
 	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=uqf quickfix<CR>
+
+	" Unite yank history
+	Plug 'Shougo/neoyank.vim'
+	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
 
 	" Undotree
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
@@ -415,76 +415,76 @@ endif
 		\ 'description' : 'YcmCompleter/Eclim Interface',
 		\}
 	let g:unite_source_menu_menus.ycmcompleter.command_candidates = [
-		\[' YcmCompleter GoTo Anything', 'YcmCompleter GoTo'],
-		\[' YcmCompleter GoTo Declaration', 'YcmCompleter GoToDeclaration'],
-		\[' YcmCompleter GoTo Definition', 'YcmCompleter GoToDefinition'],
-		\[' YcmCompleter GoTo Imprecise', 'YcmCompleter GoToImprecise'],
-		\[' YcmCompleter GoTo Implementation', 'YcmCompleter GoToImplementation'],
-		\[' YcmCompleter GoTo Implementation or Declaration', 'YcmCompleter GoToImplementationElseDeclaration'],
-		\[' YcmCompleter GetType', 'YcmCompleter GetType'],
-		\[' YcmCompleter GetDoc', 'YcmCompleter GetDoc'],
-		\[' YcmCompleter GetParent', 'YcmCompleter GetParent'],
-		\[' Eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-		\[' Eclim Project List', 'ProjectList'],
-		\[' Eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-		\[' Eclim Project Validate', 'Validate'],
-		\[' Eclim Java New Project', 'exe "NewProjectEntry " input("project: ")'],
-		\[' Eclim Java New Jar', 'exe "NewJarEntry " input("jar: ")'],
-		\[' Eclim Java New Var', 'exe "NewVarEntry " input("var: ")'],
-		\[' Eclim Java Create Variables', 'exe "VariableCreate " input("var: ")'],
-		\[' Eclim Java Delete Variables', 'exe "VariableDelete " input("var: ")'],
-		\[' Eclim Java List Variables', 'VariableList'],
-		\[' Eclim Java Maven Initialize', 'MvnRepo'],
-		\[' Eclim Java Maven Classpath',  'exe "Mvn " input("path: ")'],
-		\[' Eclim Java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-		\[' Eclim Java Search', 'exe "JavaSearch " input("string: ")'],
-		\[' Eclim Java Context Search', 'JavaSearchContext'],
-		\[' Eclim Java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-		\[' Eclim Java Project Status', 'Jps'],
-		\[' Eclim Java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-		\[' Eclim Java Toggle Breakpoint', 'JavaBreakpointToggle'],
-		\[' Eclim Java List Breakpoint', 'JavaBreakpointList'],
-		\[' Eclim Java Remove Breakpoint', 'JavaBreakpointRemove'],
-		\[' Eclim Java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-		\[' Eclim Java Debug Status', 'JavaDebugStatus'],
-		\[' Eclim Java Debug Suspend', 'JavaDebugThreadSuspendAll'],
-		\[' Eclim Java Debug Resume', 'JavaDebugThreadResumeAll'],
-		\[' Eclim Java Debug Stop', 'JavaDebugStop'],
-		\[' Eclim Java Doc Comment', 'JavaDocComment'],
-		\[' Eclim Java Doc Preview', 'JavaDocPreview'],
-		\[' Eclim Java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-		\[' Eclim Java Doc Execute', 'JavaDoc'],
-		\[' Eclim Java Code Format', 'JavaFormat'],
-		\[' Eclim Java Refactor Rename',  'exe "JavaRename " input("name: ")'],
-		\[' Eclim Java Refactor Move',  'exe "JavaMove " input("destination: ")'],
-		\[' Eclim Java Refactor Undo', 'RefactorUndo'],
-		\[' Eclim Java Refactor Undo Peek', 'RefactorUndoPeek'],
-		\[' Eclim Java Refactor Redo', 'RefactorRedo'],
-		\[' Eclim Java Refactor Redo Peek', 'RefactorRedoPeek'],
-		\[' Eclim Java Class Heirarchy', 'JavaHeirarchy'],
-		\[' Eclim Java Call Heirarchy', 'JavaCallHeirarchy'],
-		\[' Eclim Java Import', 'JavaImport'],
-		\[' Eclim Java Import Organized', 'JavaImportOrganized'],
-		\[' Eclim Java Getter', 'JavaGet'],
-		\[' Eclim Java Setter', 'JavaSet'],
-		\[' Eclim Java Getter and Setter', 'JavaGetSet'],
-		\[' Eclim Java Override/Implement', 'JavaImpl'],
-		\[' Eclim Java Delegate', 'JavaDelegate'],
-		\[' Eclim Java Unit Test', 'exe "JUnit " input("testname: ")'],
-		\[' Eclim Java Unit Find Test', 'JUnitFindTest'],
-		\[' Eclim Java Unit Test Results', 'JUnitResult'],
-		\[' Eclim Java Unit Test Stubs', 'JUnitImpl'],
-		\[' Eclim Java Ant Run', 'exe "Ant " input("target: ")'],
-		\[' Eclim Java Ant Doc', 'AntDoc'],
-		\[' Eclim Ruby New Library', 'exe "NewLibEntry " input("library: ")'],
-		\[' Eclim Ruby New Project', 'exe "NewProjectEntry " input("project: ")'],
-		\[' Eclim Ruby Add Interpreter', 'exe "RubyInterpreterAdd " input("interpreter: ")'],
-		\[' Eclim Ruby Remove Interpreter', 'exe "RubyInterpreterRemove " input("interpreter: ")'],
-		\[' Eclim Ruby Interpreter List', 'RubyInterpreterList'],
-		\[' Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
-		\[' Eclim Ruby Context Search', 'RubySearchContext'],
+		\['YcmCompleter GoTo Anything', 'YcmCompleter GoTo'],
+		\['YcmCompleter GoTo Declaration', 'YcmCompleter GoToDeclaration'],
+		\['YcmCompleter GoTo Definition', 'YcmCompleter GoToDefinition'],
+		\['YcmCompleter GoTo Imprecise', 'YcmCompleter GoToImprecise'],
+		\['YcmCompleter GoTo Implementation', 'YcmCompleter GoToImplementation'],
+		\['YcmCompleter GoTo Implementation or Declaration', 'YcmCompleter GoToImplementationElseDeclaration'],
+		\['YcmCompleter GetType', 'YcmCompleter GetType'],
+		\['YcmCompleter GetDoc', 'YcmCompleter GetDoc'],
+		\['YcmCompleter GetParent', 'YcmCompleter GetParent'],
+		\['Eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+		\['Eclim Project List', 'ProjectList'],
+		\['Eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+		\['Eclim Project Validate', 'Validate'],
+		\['Eclim Java New Project', 'exe "NewProjectEntry " input("project: ")'],
+		\['Eclim Java New Jar', 'exe "NewJarEntry " input("jar: ")'],
+		\['Eclim Java New Var', 'exe "NewVarEntry " input("var: ")'],
+		\['Eclim Java Create Variables', 'exe "VariableCreate " input("var: ")'],
+		\['Eclim Java Delete Variables', 'exe "VariableDelete " input("var: ")'],
+		\['Eclim Java List Variables', 'VariableList'],
+		\['Eclim Java Maven Initialize', 'MvnRepo'],
+		\['Eclim Java Maven Classpath',  'exe "Mvn " input("path: ")'],
+		\['Eclim Java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+		\['Eclim Java Search', 'exe "JavaSearch " input("string: ")'],
+		\['Eclim Java Context Search', 'JavaSearchContext'],
+		\['Eclim Java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+		\['Eclim Java Project Status', 'Jps'],
+		\['Eclim Java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+		\['Eclim Java Toggle Breakpoint', 'JavaBreakpointToggle'],
+		\['Eclim Java List Breakpoint', 'JavaBreakpointList'],
+		\['Eclim Java Remove Breakpoint', 'JavaBreakpointRemove'],
+		\['Eclim Java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+		\['Eclim Java Debug Status', 'JavaDebugStatus'],
+		\['Eclim Java Debug Suspend', 'JavaDebugThreadSuspendAll'],
+		\['Eclim Java Debug Resume', 'JavaDebugThreadResumeAll'],
+		\['Eclim Java Debug Stop', 'JavaDebugStop'],
+		\['Eclim Java Doc Comment', 'JavaDocComment'],
+		\['Eclim Java Doc Preview', 'JavaDocPreview'],
+		\['Eclim Java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+		\['Eclim Java Doc Execute', 'JavaDoc'],
+		\['Eclim Java Code Format', 'JavaFormat'],
+		\['Eclim Java Refactor Rename',  'exe "JavaRename " input("name: ")'],
+		\['Eclim Java Refactor Move',  'exe "JavaMove " input("destination: ")'],
+		\['Eclim Java Refactor Undo', 'RefactorUndo'],
+		\['Eclim Java Refactor Undo Peek', 'RefactorUndoPeek'],
+		\['Eclim Java Refactor Redo', 'RefactorRedo'],
+		\['Eclim Java Refactor Redo Peek', 'RefactorRedoPeek'],
+		\['Eclim Java Class Heirarchy', 'JavaHeirarchy'],
+		\['Eclim Java Call Heirarchy', 'JavaCallHeirarchy'],
+		\['Eclim Java Import', 'JavaImport'],
+		\['Eclim Java Import Organized', 'JavaImportOrganized'],
+		\['Eclim Java Getter', 'JavaGet'],
+		\['Eclim Java Setter', 'JavaSet'],
+		\['Eclim Java Getter and Setter', 'JavaGetSet'],
+		\['Eclim Java Override/Implement', 'JavaImpl'],
+		\['Eclim Java Delegate', 'JavaDelegate'],
+		\['Eclim Java Unit Test', 'exe "JUnit " input("testname: ")'],
+		\['Eclim Java Unit Find Test', 'JUnitFindTest'],
+		\['Eclim Java Unit Test Results', 'JUnitResult'],
+		\['Eclim Java Unit Test Stubs', 'JUnitImpl'],
+		\['Eclim Java Ant Run', 'exe "Ant " input("target: ")'],
+		\['Eclim Java Ant Doc', 'AntDoc'],
+		\['Eclim Ruby New Library', 'exe "NewLibEntry " input("library: ")'],
+		\['Eclim Ruby New Project', 'exe "NewProjectEntry " input("project: ")'],
+		\['Eclim Ruby Add Interpreter', 'exe "RubyInterpreterAdd " input("interpreter: ")'],
+		\['Eclim Ruby Remove Interpreter', 'exe "RubyInterpreterRemove " input("interpreter: ")'],
+		\['Eclim Ruby Interpreter List', 'RubyInterpreterList'],
+		\['Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
+		\['Eclim Ruby Context Search', 'RubySearchContext'],
 		\]
-	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=ycmcompleter menu:ycmcompleter<CR>
+	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=ycmcompleter -start-insert menu:ycmcompleter jump change<CR>
 "}}}
 
 " File/Buffer navigation {{{
@@ -642,7 +642,7 @@ endif
 	nnoremap <silent> g# g#zz
 
 	" Search the help menu
-	Plug 'tsukkee/unite-help'
+	Plug 'Shougo/unite-help'
 	nnoremap <silent> <Leader>x :Unite -direction=botright -buffer-name=uhelp -start-insert help<CR>
 
 	" Ignore case sensitivity
@@ -762,8 +762,6 @@ endif
 	" Tables like org mode - also adds i|/a| as text objects
 	Plug 'dhruvasagar/vim-table-mode', {'on': 'TableModeEnable'}
 	autocmd FileType markdown TableModeEnable
-	" TODO and agenda stuff
-	Plug 'dhruvasagar/vim-dotoo'
 
 	" Easy alignment - gz operator
 	" I use it interactively
@@ -793,7 +791,7 @@ endif
 		\[' Table add formula', 'TableAddFormula'],
 		\[' Table evaluate formula', 'TableEvalFormulaLine'],
 		\]
-	nnoremap <silent> <Leader>o :Unite -silent -buffer-name=mdpandoc -vertical -start-insert menu:mdpandoc<CR>
+	nnoremap <silent> <Leader>o :Unite -silent -buffer-name=mdpandoc -direction=botright -start-insert menu:mdpandoc<CR>
 "}}}
 
 " REPL {{{
@@ -879,6 +877,15 @@ endif
 "}}}
 
 " Fancy stuff - completely useless but what the heck {{{
+	" Notes - not completely useless
+	Plug 'Shougo/junkfile.vim'
+	let g:junkfile#directory = "~/Dropbox/notes"
+
+	" Gists
+	Plug 'mattn/webapi-vim' | Plug 'mattn/gist-vim'
+	let g:gist_open_browser_after_post = 1
+	let g:gist_clip_command = 'pbcopy'
+
 	" Spotify
 	Plug 'takac/vim-spotifysearch'
 
@@ -899,21 +906,9 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 
 " More Unite menus {{{
-	" Unite interface for Unite and some handy things
-	let g:unite_source_menu_menus.uniteception = {
-		\ 'description' : 'Unite interface for Unite sources',
-		\}
-	let g:unite_source_menu_menus.uniteception.command_candidates = [
-		\[' Unite change', 'Unite -silent -buffer-name=unitechange change'],
-		\[' Unite jump', 'Unite -buffer-name=ujump -start-insert jump'],
-		\[' Unite mappings', 'Unite -silent -buffer-name=unitemaps mapping'],
-		\[' Unite launcher', 'Unite -silent -buffer-name=unitelaunch -start-insert launcher'],
-		\[' Unite process', 'Unite -silent -buffer-name=uniteproc process'],
-		\[' Unite menus', 'Unite -silent -buffer-name=unitemenus menu'],
-		\[' Unite sources', 'Unite -silent -buffer-name=unitesources source'],
-		\[' Unite directory', 'Unite -silent -buffer-name=unitedir -vertical directory'],
-		\]
-	nnoremap <silent> <Leader>b :Unite -direction=botright -silent -buffer-name=uniteception -start-insert menu:uniteception<CR>
+	" Unite marks
+	Plug 'tacroe/unite-mark'
+	nnoremap <silent> <Leader>b :Unite -direction=botright -silent -buffer-name=uniteception bookmark mark<CR>
 
 	" Interface for OS interaction
 	let g:unite_source_menu_menus.osinteract = {
@@ -926,7 +921,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' cd to project directory', 'Rooter'],
 		\[' create .projections.json', 'cd %:p:h | e .projections.json'],
 		\[' Battery status', 'Unite -buffer-name=ubattery output:echo:system("~/battery")'],
-		\[' Scratch notes', 'e ~/Dropbox/notes/notes.md'],
+		\[' Scratch notes', 'Unite -buffer-name=unotes -start-insert junkfile'],
 		\[' Source vimrc', 'so $MYVIMRC'],
 		\[' Edit vimrc', 'e $MYVIMRC'],
 		\]
