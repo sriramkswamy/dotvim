@@ -4,7 +4,7 @@ filetype off " required
 " Autoinstall vim-plug {{{
 	if has('nvim')
 		if empty(glob('~/.config/nvim/autoload/plug.vim'))
-		silent !curl -fLo ~/.nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 		autocmd VimEnter * PlugInstall
 		endif
 	else
@@ -308,8 +308,13 @@ endif
 
 	" Custom text objects
 	Plug 'kana/vim-textobj-user'
-	" Operate between characters - (operator)if{char}/af{char}
+	" Operate between characters - (operator)ie{char}/ae{char}
 	Plug 'thinca/vim-textobj-between'
+	let g:textobj_between_no_default_key_mappings = 1
+	xmap ae <Plug>(textobj-between-a)
+	omap ae <Plug>(textobj-between-a)
+	xmap ie <Plug>(textobj-between-i)
+	omap ie <Plug>(textobj-between-i)
 	" Operate on comments - (operator)im/am/aM - doesn't work on python docstrings
 	Plug 'glts/vim-textobj-comment'
 	let g:textobj_comment_no_default_key_mappings = 1
@@ -336,6 +341,7 @@ endif
 	" Operate on functions in python - (operator)if/af and (operator)id/ad for class
 	" Movement commands of ]([)pf and ]([)pc are added
 	Plug 'bps/vim-textobj-python'
+	let g:textobj_python_no_default_key_mappings = 1
 	xmap af <Plug>(textobj-python-funtion-a)
 	omap af <Plug>(textobj-python-funtion-a)
 	xmap if <Plug>(textobj-python-funtion-i)
@@ -348,10 +354,17 @@ endif
 	Plug 'rbonvall/vim-textobj-latex'
 	" Operate on the entire file - (operator)ia/aa
 	Plug 'kana/vim-textobj-entire'
+	let g:textobj_entire_no_default_key_mappings = 1
 	omap ia <plug>(textobj-entire-i)
 	omap aa <plug>(textobj-entire-a)
 	xmap ia <plug>(textobj-entire-i)
 	xmap aa <plug>(textobj-entire-a)
+	" Operate on URLs - (operator)iu/au
+	Plug 'mattn/vim-textobj-url'
+	" Operate on folds - (operator)iz/az
+	Plug 'kana/vim-textobj-fold'
+	" Operate on HTML/XML attributes - (operator)ix/ax
+	Plug 'whatyouhide/vim-textobj-xmlattr'
 
 	" Easy commenting - gc(motion/textobject)
 	Plug 'tpope/vim-commentary'
@@ -390,7 +403,8 @@ endif
 	let g:EclimShowCurrentErrorBalloon = 0
 "}}}
 
-" YouCompleteMe - Autocompletion {{{
+" Autocompletion {{{
+	" YouCompleteMe - Semantic auto complete for a lot of languages
 	Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang --omnisharp-completer --gocode-completer'}
 	let g:ycm_min_num_of_chars_for_completion = 1
 	let g:ycm_complete_in_comments_and_strings = 1
@@ -399,6 +413,9 @@ endif
 	let g:ycm_enable_diagnostic_signs = 1
 	let g:ycm_enable_diagnostic_highlighting = 0
 	let g:ycm_always_populate_location_list = 1
+
+	" VimCompletesMe - Minimalistic tab completion
+	Plug 'ajh17/VimCompletesMe'
 "}}}
 
 " Snippets {{{
@@ -411,10 +428,10 @@ endif
 "}}}
 
 " Interface for Semantic Navigation {{{
-	let g:unite_source_menu_menus.ycmcompleter= {
-		\ 'description' : 'YcmCompleter/Eclim Interface',
+	let g:unite_source_menu_menus.jumptoany= {
+		\ 'description' : 'Jump to anything',
 		\}
-	let g:unite_source_menu_menus.ycmcompleter.command_candidates = [
+	let g:unite_source_menu_menus.jumptoany.command_candidates = [
 		\['YcmCompleter GoTo Anything', 'YcmCompleter GoTo'],
 		\['YcmCompleter GoTo Declaration', 'YcmCompleter GoToDeclaration'],
 		\['YcmCompleter GoTo Definition', 'YcmCompleter GoToDefinition'],
@@ -484,7 +501,7 @@ endif
 		\['Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
 		\['Eclim Ruby Context Search', 'RubySearchContext'],
 		\]
-	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=ycmcompleter -start-insert menu:ycmcompleter jump change<CR>
+	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany menu:jumptoany jump change<CR>
 "}}}
 
 " File/Buffer navigation {{{
@@ -881,6 +898,9 @@ endif
 	Plug 'Shougo/junkfile.vim'
 	let g:junkfile#directory = "~/Dropbox/notes"
 
+	" Approximate Colorschemes
+	Plug 'godlygeek/csapprox'
+
 	" Gists
 	Plug 'mattn/webapi-vim' | Plug 'mattn/gist-vim'
 	let g:gist_open_browser_after_post = 1
@@ -888,15 +908,19 @@ endif
 
 	" Spotify
 	Plug 'takac/vim-spotifysearch'
+	nnoremap <Leader>0 :Spotify<Space>
 
 	" Google
 	Plug 'szw/vim-g'
+	nnoremap <Leader>9 :Google<Space>
+	xnoremap <Leader>9 :Google<CR>
 
 	" Troll stopper
 	Plug 'vim-utils/vim-troll-stopper'
 
 	" Browse dash docsets
 	Plug 'rizzatti/dash.vim'
+	nnoremap <Leader>1 :Dash<Space>
 "}}}
 
 call plug#end()
