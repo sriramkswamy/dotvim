@@ -138,10 +138,6 @@ endif
 	nnoremap <silent> <Leader>l :Unite -direction=botright -buffer-name=uloc location_list<CR>
 	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=uqf quickfix<CR>
 
-	" Unite yank history
-	Plug 'Shougo/neoyank.vim'
-	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
-
 	" Undotree
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 	let g:undotree_WindowLayout = 2
@@ -260,7 +256,6 @@ endif
 	let g:switch_custom_definitions =
 		\ [
 		\   ['TODO', 'DONE', 'NEXT', 'WAITING', 'HOLD', 'CANCELLED'],
-		\   ['PHONE', 'MEETING']
 		\ ]
 
 	" Better '.' command
@@ -276,7 +271,7 @@ endif
 
 	" Narrow region like in Emacs
 	Plug 'chrisbra/NrrwRgn'
-	vnoremap <Leader>c :NR<CR>
+	xnoremap <Leader>c :NR<CR>
 
 	" Toggle registers - fancy
 	Plug 'junegunn/vim-peekaboo'
@@ -513,9 +508,9 @@ endif
 	nnoremap <silent> w :vsplit<CR>
 	nnoremap <silent> W :split<CR>
 
-	" Marks - Unite backend
+	" Marks
 	Plug 'kshenoy/vim-signature'
-	nnoremap <silent> m? :SignatureToggle<CR>
+	nnoremap <silent> M :SignatureToggle<CR>
 "}}}
 
 " FZF - Blazingly fast fuzzy finder - for use in projects {{{
@@ -528,6 +523,10 @@ endif
 	nnoremap <silent> <Leader>r :Unite -direction=botright -buffer-name=mrubuf -start-insert buffer file_mru<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
 	nnoremap <silent> <Leader>h :Unite -direction=botright -buffer-name=buflinegrep -start-insert line:all<CR>
+
+	" Unite yank history
+	Plug 'Shougo/neoyank.vim'
+	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
 "}}}
 
 " Project management {{{
@@ -541,6 +540,7 @@ endif
 
 	" Unite
 	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file_rec<CR>
+	nnoremap <silent> <Leader>b :Unite -direction=botright -silent -buffer-name=uniteception bookmark<CR>
 
 	" Vimfiler - fancier than netrw and integrates with Unite
 	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
@@ -668,6 +668,8 @@ endif
 	" Highlight search incrementally
 	set hlsearch " Can be toggled with unimpaired's 'coh'
 	set incsearch
+	nnoremap <Leader><Leader> /
+	nnoremap gh :nohl<CR>
 	" Grep
 	set grepprg=grep\ -nH\ $*
 
@@ -680,6 +682,7 @@ endif
 
 	" See what you are changing with OverCommandLine
 	Plug 'osyo-manga/vim-over'
+	nnoremap <Leader>2 :OverCommandLine<CR>
 
 	" Anzu - search counter and a useful Unite backend
 	Plug 'osyo-manga/vim-anzu'
@@ -690,29 +693,12 @@ endif
 	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
 	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=uniteanzu anzu<CR>
 
-	" Improves on normal incsearch by including regex and automatically turns
-	" off hlsearch
-	Plug 'haya14busa/incsearch.vim'
-	map <Leader><Leader>  <Plug>(incsearch-forward)
-	map ?  <Plug>(incsearch-backward)
-	map g/ <Plug>(incsearch-stay)
-	let g:incsearch#auto_nohlsearch = 1
-	map n  <Plug>(incsearch-nohl-n)
-	map N  <Plug>(incsearch-nohl-N)
-	map *  <Plug>(incsearch-nohl-*)
-	map #  <Plug>(incsearch-nohl-#)
-	map g* <Plug>(incsearch-nohl-g*)
-	map g# <Plug>(incsearch-nohl-g#)
-	map <Tab> <Over>(incsearch-next)
-	map <S-Tab> <Over>(incsearch-next)
-	map <C-j> <Over>(incsearch-scroll-f)
-	map <C-k> <Over>(incsearch-scroll-b)
-
 	" Vim swoop - like helm swoop
 	Plug 'pelodelfuego/vim-swoop'
 	let g:swoopUseDefaultKeyMap = 0
 	let g:swoopIgnoreCase = 1
 	let g:swoopAutoInserMode = 0
+	nnoremap <Leader>/ :Swoop<CR>
 "}}}
 
 " Grep {{{
@@ -744,12 +730,6 @@ endif
 	Plug 'sheerun/vim-polyglot'
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
-	" R
-	if has('nvim')
-		Plug 'jalvesaq/Nvim-R', {'for': 'R'}
-	else
-		Plug 'jcfaria/Vim-R-plugin', {'for': 'R'}
-	end
 	" VimL
 	Plug 'tpope/vim-scriptease', {'for': 'vim'}
 	" Lisp
@@ -930,10 +910,6 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 
 " More Unite menus {{{
-	" Unite marks
-	Plug 'tacroe/unite-mark'
-	nnoremap <silent> <Leader>b :Unite -direction=botright -silent -buffer-name=uniteception bookmark mark<CR>
-
 	" Interface for OS interaction
 	let g:unite_source_menu_menus.osinteract = {
 		\ 'description' : 'OS interaction and configs',
