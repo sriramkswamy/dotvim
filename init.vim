@@ -110,8 +110,9 @@ endif
 
 	" 'Zoom' into the current buffer
 	nnoremap <silent> Z :only<CR>
-	" Put me in 'q:' instead of ex mode
+	" Put me in 'q:' instead of ex mode and 'q/' instead of replace mode
 	nnoremap <silent> Q q:
+	nnoremap <silent> R q/
 
 	" Navigate in insert mode
 	inoremap <silent> <C-f> <right>
@@ -719,10 +720,6 @@ endif
 	endif
 	nnoremap <silent> <Leader>e :UniteWithCursorWord -direction=botright -buffer-name=extract grep:-iR<CR>
 	vnoremap <Leader>e :UniteWithCursorWord -direction=botright -buffer-name=extract grep:-iR<CR>
-
-	" Use this for refactoring with 'cdo'
-	Plug 'rking/ag.vim'
-	let g:ag_working_path_mode="r"
 "}}}
 
 " Languages/Syntax {{{
@@ -730,6 +727,8 @@ endif
 	Plug 'sheerun/vim-polyglot'
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
+	" HTML
+	Plug 'rstacruz/sparkup'
 	" VimL
 	Plug 'tpope/vim-scriptease', {'for': 'vim'}
 	" Lisp
