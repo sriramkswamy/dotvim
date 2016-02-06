@@ -110,9 +110,6 @@ endif
 
 	" 'Zoom' into the current buffer
 	nnoremap <silent> Z :only<CR>
-	" Put me in 'q:' instead of ex mode and 'q/' instead of replace mode
-	nnoremap <silent> Q q:
-	nnoremap <silent> R q/
 
 	" Navigate in insert mode
 	inoremap <silent> <C-f> <right>
@@ -136,8 +133,18 @@ endif
 	" Add quickfix and location list to unite
 	" Much better narrowing
 	Plug 'osyo-manga/unite-quickfix'
-	nnoremap <silent> <Leader>l :Unite -direction=botright -buffer-name=uloc location_list<CR>
-	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=uqf quickfix<CR>
+
+	" Interface for location/quickfix lists
+	let g:unite_source_menu_menus.lists = {
+		\ 'description' : 'List interface',
+		\}
+	let g:unite_source_menu_menus.lists.command_candidates = [
+		\[' Location List', 'Unite -silent -direction=botright -buffer-name=loclist location_list'],
+		\[' Quickfix List', 'Unite -silent -direction=botright -buffer-name=loclist quickfix'],
+		\[' Dispatch List', 'Copen'],
+		\[' Marks', 'Marks'],
+		\]
+	nnoremap <silent> <Leader>l :Unite -silent -quick-match -buffer-name=lists menu:lists<CR>
 
 	" Undotree
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
@@ -257,6 +264,8 @@ endif
 	let g:switch_custom_definitions =
 		\ [
 		\   ['TODO', 'DONE', 'NEXT', 'WAITING', 'HOLD', 'CANCELLED'],
+		\   ['+', '-'],
+		\   ['/', '*'],
 		\ ]
 
 	" Better '.' command
@@ -272,7 +281,9 @@ endif
 
 	" Narrow region like in Emacs
 	Plug 'chrisbra/NrrwRgn'
-	xnoremap <Leader>c :NR<CR>
+	vnoremap <Leader>] :NR<CR>
+	nnoremap <Leader>] :NR<CR>
+	nnoremap <Leader>[ :WidenRegion<CR>
 
 	" Toggle registers - fancy
 	Plug 'junegunn/vim-peekaboo'
@@ -311,17 +322,8 @@ endif
 	omap ae <Plug>(textobj-between-a)
 	xmap ie <Plug>(textobj-between-i)
 	omap ie <Plug>(textobj-between-i)
-	" Operate on comments - (operator)im/am/aM - doesn't work on python docstrings
+	" Operate on comments - (operator)ic/ac/aC - doesn't work on python docstrings
 	Plug 'glts/vim-textobj-comment'
-	let g:textobj_comment_no_default_key_mappings = 1
-	xmap am <Plug>(textobj-comment-a)
-	omap am <Plug>(textobj-comment-a)
-	xmap im <Plug>(textobj-comment-i)
-	omap im <Plug>(textobj-comment-i)
-	xmap aM <Plug>(textobj-comment-big-a)
-	omap aM <Plug>(textobj-comment-big-a)
-	" Operate on column blocks (like <C-v>) - (operator)ic/ac/iC/aC
-	Plug 'coderifous/textobj-word-column.vim'
 	" Improves builtin sentence textobject for prose - (operator)is/as
 	Plug 'reedes/vim-textobj-sentence'
 	" Operate on the entire line - (operator)il/al - mostly used with custom operators
@@ -334,14 +336,14 @@ endif
 	Plug 'Julian/vim-textobj-variable-segment'
 	" Operate on functions in C, Java and Vim - (operator)if/af
 	Plug 'kana/vim-textobj-function'
-	" Operate on functions in python - (operator)if/af and (operator)id/ad for class
+	" Operate on functions in python - (operator)iy/ay and (operator)id/ad for class
 	" Movement commands of ]([)pf and ]([)pc are added
 	Plug 'bps/vim-textobj-python'
 	let g:textobj_python_no_default_key_mappings = 1
-	xmap af <Plug>(textobj-python-funtion-a)
-	omap af <Plug>(textobj-python-funtion-a)
-	xmap if <Plug>(textobj-python-funtion-i)
-	omap if <Plug>(textobj-python-funtion-i)
+	xmap ay <Plug>(textobj-python-funtion-a)
+	omap ay <Plug>(textobj-python-funtion-a)
+	xmap iy <Plug>(textobj-python-funtion-i)
+	omap iy <Plug>(textobj-python-funtion-i)
 	xmap ad <Plug>(textobj-python-class-a)
 	omap ad <Plug>(textobj-python-class-a)
 	xmap id <Plug>(textobj-python-class-i)
@@ -410,8 +412,16 @@ endif
 	let g:ycm_enable_diagnostic_highlighting = 0
 	let g:ycm_always_populate_location_list = 1
 
+	" YcmGenerator
+	Plug 'rdnetto/YCM-generator', {'branch': 'stable'}
+
+	" " Deoplete
+	" Plug 'Shougo/deoplete.nvim'
+	" let g:deoplete#enable_at_startup = 1
+
 	" VimCompletesMe - Minimalistic tab completion
 	Plug 'ajh17/VimCompletesMe'
+	autocmd FileType text,markdown let b:vcm_tab_complete = 'dict'
 "}}}
 
 " Snippets {{{
@@ -420,7 +430,7 @@ endif
 	let g:UltiSnipsExpandTrigger = "<C-j>"
 	let g:UltiSnipsJumpForwardTrigger = "<C-j>"
 	let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
-	let g:UltiSnipsListSnippets = "<C-l>"
+	let g:UltiSnipsListSnippets = "<C-h>"
 "}}}
 
 " Interface for Semantic Navigation {{{
@@ -508,22 +518,27 @@ endif
 	" I use 'cc' and 'cl' instead of 's' and 'S' - that seems more natural to me
 	nnoremap <silent> w :vsplit<CR>
 	nnoremap <silent> W :split<CR>
-
-	" Marks
-	Plug 'kshenoy/vim-signature'
-	nnoremap <silent> M :SignatureToggle<CR>
 "}}}
 
 " FZF - Blazingly fast fuzzy finder - for use in projects {{{
 	Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': 'yes \| ./install'}
-	nnoremap <silent> <Leader>p :FZF<CR>
+
+	Plug 'junegunn/fzf.vim'
+	nnoremap <silent> Q :History:
+	nnoremap <silent> t :BTags<CR>
+	nnoremap <silent> T :Tags<CR>
+	nnoremap <silent> <Leader><Leader> :BLines<CR>
+	nnoremap <silent> <Leader>b :Lines<CR>
+	nnoremap <silent> <Leader>p :Files<CR>
+	nnoremap <silent> <Leader>r :History<CR>
+	nnoremap <silent> <Leader>u :Buffers<CR>
+	nnoremap <silent> <Leader>x :Helptags<CR>
+	nnoremap <silent> <Leader>/ :Locate<Space>
+	inoremap <C-l> <C-o>:Snippets<CR>
 "}}}
 
 " Unite {{{
-	Plug 'Shougo/neomru.vim' " MRU
-	nnoremap <silent> <Leader>r :Unite -direction=botright -buffer-name=mrubuf -start-insert buffer file_mru<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
-	nnoremap <silent> <Leader>h :Unite -direction=botright -buffer-name=buflinegrep -start-insert line:all<CR>
 
 	" Unite yank history
 	Plug 'Shougo/neoyank.vim'
@@ -540,8 +555,7 @@ endif
 	let g:rooter_silent_chdir = 1
 
 	" Unite
-	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file_rec<CR>
-	nnoremap <silent> <Leader>b :Unite -direction=botright -silent -buffer-name=uniteception bookmark<CR>
+	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
 
 	" Vimfiler - fancier than netrw and integrates with Unite
 	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
@@ -550,6 +564,7 @@ endif
 
 	" Traverse files within a project - create a .projections.json first
 	Plug 'tpope/vim-projectionist'
+	nnoremap <Leader><Tab> :A<CR>
 "}}}
 
 " Motion {{{
@@ -573,15 +588,6 @@ endif
 " Tags {{{
 	" Auto generate tags and take care of it
 	Plug 'ludovicchabant/vim-gutentags'
-
-	" I use 'f' and 'F' for normal movements. 't' and 'T' are still available for use by operators
-	" Tags within buffer
-	Plug 'Shougo/unite-outline'
-	nnoremap <silent> t :Unite -buffer-name=buftags -vertical -winwidth=35 outline<CR>
-
-	" Overall tags
-	Plug 'tsukkee/unite-tag'
-	nnoremap <silent> T :Unite -buffer-name=alltags -vertical -winwidth=35 -start-insert tag<CR>
 "}}}
 
 " VCS changes {{{
@@ -659,31 +665,22 @@ endif
 	nnoremap <silent> g* g*zz
 	nnoremap <silent> g# g#zz
 
-	" Search the help menu
-	Plug 'Shougo/unite-help'
-	nnoremap <silent> <Leader>x :Unite -direction=botright -buffer-name=uhelp -start-insert help<CR>
-
 	" Ignore case sensitivity
 	set ignorecase " Can be toggled with unimpaired's 'coi'
 	set smartcase
 	" Highlight search incrementally
 	set hlsearch " Can be toggled with unimpaired's 'coh'
 	set incsearch
-	nnoremap <Leader><Leader> /
-	nnoremap gh :nohl<CR>
+	nnoremap <Leader>h :nohl<CR>
 	" Grep
 	set grepprg=grep\ -nH\ $*
-
-	" Colorschemes
-	Plug 'ujihisa/unite-colorscheme'
-	nnoremap <silent> <Leader>v :Unite -direction=botright -buffer-name=ucolor -start-insert colorscheme<CR>
 
 	" '*' in visual mode
 	Plug 'thinca/vim-visualstar'
 
 	" See what you are changing with OverCommandLine
 	Plug 'osyo-manga/vim-over'
-	nnoremap <Leader>2 :OverCommandLine<CR>
+	nnoremap <Leader>v :OverCommandLine<CR>
 
 	" Anzu - search counter and a useful Unite backend
 	Plug 'osyo-manga/vim-anzu'
@@ -693,13 +690,6 @@ endif
 	nmap # <Plug>(anzu-sharp-with-echo)
 	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
 	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=uniteanzu anzu<CR>
-
-	" Vim swoop - like helm swoop
-	Plug 'pelodelfuego/vim-swoop'
-	let g:swoopUseDefaultKeyMap = 0
-	let g:swoopIgnoreCase = 1
-	let g:swoopAutoInserMode = 0
-	nnoremap <Leader>/ :Swoop<CR>
 "}}}
 
 " Grep {{{
@@ -733,7 +723,6 @@ endif
 	Plug 'tpope/vim-scriptease', {'for': 'vim'}
 	" Lisp
 	Plug 'wlangstroth/vim-racket', {'for': ['lisp', 'scheme', 'racket']}
-	Plug 'kovisoft/paredit', {'for': ['clojure', 'lisp', 'scheme', 'racket']}
 	" CSS
 	Plug 'ap/vim-css-color', {'for': ['css','sass','scss','less']}
 	" SQL
@@ -801,7 +790,6 @@ endif
 
 	" Awesome 'async' substitute - useful when in Tmux
 	Plug 'tpope/vim-dispatch'
-	nnoremap <silent> <Leader>c :Copen<CR>
 
 	" Compilation menu
 	let g:unite_source_menu_menus.umake = {
@@ -885,21 +873,18 @@ endif
 	let g:gist_open_browser_after_post = 1
 	let g:gist_clip_command = 'pbcopy'
 
-	" Spotify
-	Plug 'takac/vim-spotifysearch'
-	nnoremap <Leader>0 :Spotify<Space>
-
 	" Google
 	Plug 'szw/vim-g'
-	nnoremap <Leader>9 :Google<Space>
-	xnoremap <Leader>9 :Google<CR>
+	nnoremap <Leader>\ :Google<Space>
+	xnoremap <Leader>\ :Google<CR>
 
 	" Troll stopper
 	Plug 'vim-utils/vim-troll-stopper'
 
 	" Browse dash docsets
 	Plug 'rizzatti/dash.vim'
-	nnoremap <Leader>1 :Dash<Space>
+	nnoremap <Leader>c :Dash<Space>
+	vnoremap <Leader>c :Dash
 "}}}
 
 call plug#end()
@@ -914,15 +899,13 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\ 'description' : 'OS interaction and configs',
 		\}
 	let g:unite_source_menu_menus.osinteract.command_candidates = [
-		\[' alternate file', 'A'],
 		\[' generate tags in buffer dir', 'cd %:p:h | Dispatch! ctags .'],
 		\[' cd to buffer directory', 'cd %:p:h'],
 		\[' cd to project directory', 'Rooter'],
 		\[' create .projections.json', 'cd %:p:h | e .projections.json'],
-		\[' Battery status', 'Unite -buffer-name=ubattery output:echo:system("~/battery")'],
-		\[' Scratch notes', 'Unite -buffer-name=unotes -start-insert junkfile'],
 		\[' Source vimrc', 'so $MYVIMRC'],
 		\[' Edit vimrc', 'e $MYVIMRC'],
+		\[' Scratch notes', 'Unite -buffer-name=unotes -start-insert junkfile'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 "}}}
