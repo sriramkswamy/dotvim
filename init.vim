@@ -140,8 +140,9 @@ endif
 		\}
 	let g:unite_source_menu_menus.lists.command_candidates = [
 		\[' Location List', 'Unite -silent -direction=botright -buffer-name=loclist location_list'],
-		\[' Quickfix List', 'Unite -silent -direction=botright -buffer-name=loclist quickfix'],
+		\[' Quickfix List', 'Unite -silent -direction=botright -buffer-name=qflist quickfix'],
 		\[' Dispatch List', 'Copen'],
+		\[' Error list', 'Neomake'],
 		\[' Marks', 'Marks'],
 		\]
 	nnoremap <silent> <Leader>l :Unite -silent -quick-match -buffer-name=lists menu:lists<CR>
@@ -151,25 +152,8 @@ endif
 	let g:undotree_WindowLayout = 2
 	nnoremap <silent> U :UndotreeToggle<CR>
 
-	" Statusline
-	Plug 'bling/vim-airline' " Mode line
-	let g:airline#extensions#tabline#fnamemod = ':t'
-	let g:airline#extensions#tabline#left_sep = '' " Keep it simple
-	let g:airline_right_sep = ''
-	let g:airline_left_sep = ''
-	let g:airline_mode_map = {
-				\ '__' : '-',
-				\ 'n'  : 'N',
-				\ 'i'  : 'I',
-				\ 'R'  : 'R',
-				\ 'c'  : 'C',
-				\ 'v'  : 'V',
-				\ 'V'  : 'V',
-				\ '' : 'V',
-				\ 's'  : 'S',
-				\ 'S'  : 'S',
-				\ '' : 'S',
-				\ }
+	" Statusline - Light line
+	Plug 'itchyny/lightline.vim'
 "}}}
 
 " FileTypes {{{
@@ -402,26 +386,9 @@ endif
 "}}}
 
 " Autocompletion {{{
-	" YouCompleteMe - Semantic auto complete for a lot of languages
-	Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang --omnisharp-completer --gocode-completer'}
-	let g:ycm_min_num_of_chars_for_completion = 1
-	let g:ycm_complete_in_comments_and_strings = 1
-	let g:ycm_global_ycm_extra_conf="~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
-	let g:ycm_filetype_blacklist = {'unite':1}
-	let g:ycm_enable_diagnostic_signs = 1
-	let g:ycm_enable_diagnostic_highlighting = 0
-	let g:ycm_always_populate_location_list = 1
-
-	" YcmGenerator
-	Plug 'rdnetto/YCM-generator', {'branch': 'stable'}
-
-	" " Deoplete
-	" Plug 'Shougo/deoplete.nvim'
-	" let g:deoplete#enable_at_startup = 1
-
 	" VimCompletesMe - Minimalistic tab completion
 	Plug 'ajh17/VimCompletesMe'
-	autocmd FileType text,markdown let b:vcm_tab_complete = 'dict'
+	autocmd FileType text,markdown,latex,tex let b:vcm_tab_complete = 'dict'
 "}}}
 
 " Snippets {{{
@@ -438,15 +405,11 @@ endif
 		\ 'description' : 'Jump to anything',
 		\}
 	let g:unite_source_menu_menus.jumptoany.command_candidates = [
-		\['YcmCompleter GoTo Anything', 'YcmCompleter GoTo'],
-		\['YcmCompleter GoTo Declaration', 'YcmCompleter GoToDeclaration'],
-		\['YcmCompleter GoTo Definition', 'YcmCompleter GoToDefinition'],
-		\['YcmCompleter GoTo Imprecise', 'YcmCompleter GoToImprecise'],
-		\['YcmCompleter GoTo Implementation', 'YcmCompleter GoToImplementation'],
-		\['YcmCompleter GoTo Implementation or Declaration', 'YcmCompleter GoToImplementationElseDeclaration'],
-		\['YcmCompleter GetType', 'YcmCompleter GetType'],
-		\['YcmCompleter GetDoc', 'YcmCompleter GetDoc'],
-		\['YcmCompleter GetParent', 'YcmCompleter GetParent'],
+		\['Jedi GoTo Command', 'call jedi#goto()'],
+		\['Jedi GoTo Assignment', 'call jedi#goto_assignments()'],
+		\['Jedi GoTo Definition', 'call jedi#goto_definitions()'],
+		\['Jedi Rename', 'call jedi#rename()'],
+		\['Jedi Rename Visual', 'call jedi#rename_visual()'],
 		\['Eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
 		\['Eclim Project List', 'ProjectList'],
 		\['Eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
@@ -507,7 +470,7 @@ endif
 		\['Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
 		\['Eclim Ruby Context Search', 'RubySearchContext'],
 		\]
-	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany menu:jumptoany jump change<CR>
+	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany menu:jumptoany<CR>
 "}}}
 
 " File/Buffer navigation {{{
@@ -715,6 +678,20 @@ endif
 " Languages/Syntax {{{
 	" Covers most cases with auto-loading
 	Plug 'sheerun/vim-polyglot'
+	" C/C++ autocompletion
+	Plug 'justmao945/vim-clang'
+	let g:clang_c_options = '-std=gnu11'
+	let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
+	let g:clang_diagsopt = ''   " disable diagnostics
+	" Python autocompletion
+	Plug 'davidhalter/jedi-vim'
+	let g:jedi#goto_command = ""
+	let g:jedi#goto_assignments_command = ""
+	let g:jedi#goto_definitions_command = ""
+	let g:jedi#documentation_command = "K"
+	let g:jedi#usages_command = ""
+	let g:jedi#completions_command = "<C-Space>"
+	let g:jedi#rename_command = ""
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
 	" HTML
@@ -730,16 +707,9 @@ endif
 "}}}
 
 " Syntax checking {{{
+Plug 'benekastah/neomake' " Async operations for Neovim
 if has('nvim')
-	Plug 'benekastah/neomake' " Async operations for Neovim
 	autocmd! BufWritePost * Neomake
-else
-	Plug 'scrooloose/syntastic'
-	let g:syntastic_html_tidy_exec = 'tidy5'
-	let g:syntastic_always_populate_loc_list = 1
-	let g:syntastic_check_on_open = 1
-	let g:syntastic_check_on_wq = 0
-	let g:syntastic_aggregate_errors = 1
 endif
 "}}}
 
@@ -822,14 +792,33 @@ endif
 
 	" Launch appropriate REPL
 	Plug 'benmills/vimux'
-	if exists('$TMUX')
-		autocmd FileType R nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("R",0)<CR>
-		autocmd FileType julia nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("julia",0)<CR>
-		autocmd FileType matlab nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("matlab",0)<CR>
-		autocmd FileType scheme nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("racket",0)<CR>
-		autocmd FileType python nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("ipython",0)<CR>
-		nnoremap <silent> <Leader>t :call VimuxRunCommandInDir("pwd", 0)<CR>
-	endif
+	
+	" Interface for Tmux
+	let g:unite_source_menu_menus.tmux = {
+		\ 'description' : 'Tmux interaction',
+		\}
+	let g:unite_source_menu_menus.tmux.command_candidates = [
+		\[' tmux list sessions', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-sessions'],
+		\[' tmux list windows', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-windows'],
+		\[' tmux list panes', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-panes'],
+		\[' tmux list clients', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-clients'],
+		\[' tmux list keys', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-keys'],
+		\[' tmux list commands', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-commands'],
+		\[' tmux list buffers', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-buffers'],
+		\[' tmux show buffer', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-buffer'],
+		\[' tmux show options', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-options'],
+		\[' tmux show window options', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-window-options'],
+		\[' tmux show environment', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-environment'],
+		\[' tmux show messages', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-messages'],
+		\[' tmux run R', 'call VimuxRunCommandInDir("R",0)'],
+		\[' tmux run julia', 'call VimuxRunCommandInDir("julia",0)'],
+		\[' tmux run matlab', 'call VimuxRunCommandInDir("matlab",0)'],
+		\[' tmux run scheme', 'call VimuxRunCommandInDir("racket",0)'],
+		\[' tmux run python', 'call VimuxRunCommandInDir("ipython",0)'],
+		\[' tmux run shell', 'call VimuxRunCommandInDir("pwd",0)'],
+		\]
+	nnoremap <silent> <Leader>t :Unite -direction=botright -silent -buffer-name=tmux -start-insert menu:tmux<CR>
+"}}}
 
 	" Send to Tmux - super useful
 	Plug 'jpalardy/vim-slime'
@@ -876,7 +865,7 @@ endif
 	" Google
 	Plug 'szw/vim-g'
 	nnoremap <Leader>\ :Google<Space>
-	xnoremap <Leader>\ :Google<CR>
+	vnoremap <Leader>\ :Google<CR>
 
 	" Troll stopper
 	Plug 'vim-utils/vim-troll-stopper'
@@ -906,6 +895,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' Source vimrc', 'so $MYVIMRC'],
 		\[' Edit vimrc', 'e $MYVIMRC'],
 		\[' Scratch notes', 'Unite -buffer-name=unotes -start-insert junkfile'],
+		\[' Colorschemes', 'Colors'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 "}}}
