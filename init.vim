@@ -96,8 +96,9 @@ endif
 	set laststatus=2
 	" Set splits to the right
 	set splitright
+	set splitbelow
 	" Gui fonts
-	set guifont=Courier\ New:h14
+	set guifont=Courier\ New:h12
 
 	" This is basically because of the memory I developed from my Emacs experiments
 	nnoremap <Leader>d :
@@ -107,6 +108,16 @@ endif
 	nnoremap <silent> <Leader>k :bd!<CR>
 	nnoremap <silent> <Leader>w :w<CR>
 	nnoremap <silent> <Leader>q :q<CR>
+
+	" Put me in command history instead
+	nnoremap <silent> Q q:
+
+	" Keep me in visual mode
+	vnoremap <silent> > >gv
+	vnoremap <silent> < <gv
+
+	" Put me in search history instead
+	nnoremap <silent> M q/
 
 	" 'Zoom' into the current buffer
 	nnoremap <silent> Z :only<CR>
@@ -122,6 +133,9 @@ endif
 	" Escape out of insert mode, because iTerm2 delays it assuming <Esc> to be an escape sequence
 	inoremap <silent> <C-g> <Esc>
 
+	" Also because of Emacs experiments
+	nnoremap <silent> <C-g> :nohl<CR>
+
 	" Colorschemes collection
 	Plug 'flazz/vim-colorschemes'
 
@@ -130,22 +144,10 @@ endif
 	" BASH bindings in Ex mode
 	Plug 'tpope/vim-rsi'
 
-	" Add quickfix and location list to unite
-	" Much better narrowing
+	" Quickfix lists using unite
 	Plug 'osyo-manga/unite-quickfix'
-
-	" Interface for location/quickfix lists
-	let g:unite_source_menu_menus.lists = {
-		\ 'description' : 'List interface',
-		\}
-	let g:unite_source_menu_menus.lists.command_candidates = [
-		\[' Location List', 'Unite -silent -direction=botright -buffer-name=loclist location_list'],
-		\[' Quickfix List', 'Unite -silent -direction=botright -buffer-name=qflist quickfix'],
-		\[' Dispatch List', 'Copen'],
-		\[' Error list', 'Neomake'],
-		\[' Marks', 'Marks'],
-		\]
-	nnoremap <silent> <Leader>l :Unite -silent -quick-match -buffer-name=lists menu:lists<CR>
+	nnoremap <Leader>l :Unite -silent -buffer-name=uniteloc -direction=botright location_list<CR>
+	nnoremap <Leader>c :Unite -silent -buffer-name=uniteqf -direction=botright quickfix<CR>
 
 	" Undotree
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
@@ -194,6 +196,8 @@ endif
 	let g:tex_flavor='latex'
 	let g:vim_markdown_disabled = 1
 	let g:vim_markdown_math = 1
+	" Dictionary
+	set dictionary+=/usr/share/dict/words
 "}}}
 
 " Text editing {{{
@@ -207,7 +211,7 @@ endif
 	set smartindent
 	set smarttab
 	set tabstop=4
-	set shiftwidth=4
+	set shiftwidth=2
 	set shiftround
 	" Max text width
 	set textwidth=80
@@ -228,7 +232,7 @@ endif
 	" Make 'Y' work like 'C' and 'D'
 	nnoremap <silent> Y y$
 	" Elementary splitting
-	nnoremap <silent> gs Do<Esc>p^d0==k$
+	nnoremap <silent> gx Do<Esc>p^d0==k$
 
 	" Dictionary toggle
 	inoremap <silent> <C-d> <C-x><C-k>
@@ -262,12 +266,6 @@ endif
 	Plug 'tpope/vim-speeddating'
 	" Better A and I in visual block
 	Plug 'kana/vim-niceblock'
-
-	" Narrow region like in Emacs
-	Plug 'chrisbra/NrrwRgn'
-	vnoremap <Leader>] :NR<CR>
-	nnoremap <Leader>] :NR<CR>
-	nnoremap <Leader>[ :WidenRegion<CR>
 
 	" Toggle registers - fancy
 	Plug 'junegunn/vim-peekaboo'
@@ -368,15 +366,6 @@ endif
 	map _  <Plug>(operator-replace)
 "}}}
 
-" Multiple cursors - fancy {{{
-	Plug 'terryma/vim-multiple-cursors'
-	let g:multi_cursor_use_default_mapping=0
-	let g:multi_cursor_next_key='<C-n>'
-	let g:multi_cursor_prev_key='<C-p>'
-	let g:multi_cursor_skip_key='<C-x>'
-	let g:multi_cursor_quit_key='<C-g>'
-"}}}
-
 " Eclim - Eclipse plus Vim {{{
 	let g:EclimCompletionMethod = 'omnifunc'
 	let g:EclimShowQuickfixSigns = 0
@@ -470,7 +459,7 @@ endif
 		\['Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
 		\['Eclim Ruby Context Search', 'RubySearchContext'],
 		\]
-	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany menu:jumptoany<CR>
+	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 "}}}
 
 " File/Buffer navigation {{{
@@ -486,22 +475,31 @@ endif
 " FZF - Blazingly fast fuzzy finder - for use in projects {{{
 	Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': 'yes \| ./install'}
 
-	Plug 'junegunn/fzf.vim'
-	nnoremap <silent> Q :History:
+	Plug 'sriramkswamy/fzf.vim'
 	nnoremap <silent> t :BTags<CR>
 	nnoremap <silent> T :Tags<CR>
-	nnoremap <silent> <Leader><Leader> :BLines<CR>
+	nnoremap <silent> <Leader>` :Marks<CR>
 	nnoremap <silent> <Leader>b :Lines<CR>
+	nnoremap <Leader>h :Ag<Space>
 	nnoremap <silent> <Leader>p :Files<CR>
 	nnoremap <silent> <Leader>r :History<CR>
-	nnoremap <silent> <Leader>u :Buffers<CR>
 	nnoremap <silent> <Leader>x :Helptags<CR>
 	nnoremap <silent> <Leader>/ :Locate<Space>
+	nnoremap <silent> <Leader>, :Maps<CR>
 	inoremap <C-l> <C-o>:Snippets<CR>
 "}}}
 
 " Unite {{{
+	" Unite
+	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
+	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
+	nnoremap <silent> <Leader><Leader> :Unite -direction=botright -buffer-name=lines -start-insert line<CR>
+
+	" Vimfiler - fancier than netrw and integrates with Unite
+	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
+	let g:vimfiler_as_default_explorer = 1
+	nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
 
 	" Unite yank history
 	Plug 'Shougo/neoyank.vim'
@@ -516,14 +514,6 @@ endif
 	let g:rooter_use_lcd = 1
 	let g:rooter_change_directory_for_non_project_files = 1
 	let g:rooter_silent_chdir = 1
-
-	" Unite
-	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
-
-	" Vimfiler - fancier than netrw and integrates with Unite
-	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
-	let g:vimfiler_as_default_explorer = 1
-	nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
 
 	" Traverse files within a project - create a .projections.json first
 	Plug 'tpope/vim-projectionist'
@@ -543,14 +533,12 @@ endif
 	" Tags for movement
 	set tags=./tags;,tags
 
+	" Move based on indentation [-/[+/[=/[%
+	Plug 'jeetsukumaran/vim-indentwise'
+
 	" Occasionally I want to jump to that very precise point
 	" Remaps 's' and 'S' and I'm cool with that
 	Plug 'justinmk/vim-sneak'
-"}}}
-
-" Tags {{{
-	" Auto generate tags and take care of it
-	Plug 'ludovicchabant/vim-gutentags'
 "}}}
 
 " VCS changes {{{
@@ -617,7 +605,7 @@ endif
 		\[' git grep',  'exe "Ggrep " input("string: ")'],
 		\[' git prompt', 'exe "Git! " input("command: ")'],
 		\] " Append ' --' after log to get commit info commit buffers
-	nnoremap <silent> <Leader>g :Unite -direction=botright -silent -buffer-name=git menu:git<CR>
+	nnoremap <silent> <Leader>g :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
 "}}}
 
 " Searching {{{
@@ -634,7 +622,6 @@ endif
 	" Highlight search incrementally
 	set hlsearch " Can be toggled with unimpaired's 'coh'
 	set incsearch
-	nnoremap <Leader>h :nohl<CR>
 	" Grep
 	set grepprg=grep\ -nH\ $*
 
@@ -644,6 +631,7 @@ endif
 	" See what you are changing with OverCommandLine
 	Plug 'osyo-manga/vim-over'
 	nnoremap <Leader>v :OverCommandLine<CR>
+	vnoremap <Leader>v :OverCommandLine<CR>
 
 	" Anzu - search counter and a useful Unite backend
 	Plug 'osyo-manga/vim-anzu'
@@ -656,23 +644,19 @@ endif
 "}}}
 
 " Grep {{{
-	" Search across multiple files in the code base
-	if executable('ag')
-		" Use ag in unite grep source.
-		let g:unite_source_grep_command = 'ag'
-		let g:unite_source_grep_default_opts =
-		\ '-i --vimgrep --hidden --ignore ' .
-		\ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
-		let g:unite_source_grep_recursive_opt = ''
-	elseif executable('ack-grep')
-		" Use ack in unite grep source.
-		let g:unite_source_grep_command = 'ack-grep'
-		let g:unite_source_grep_default_opts =
-		\ '-i --no-heading --no-color -k -H'
-		let g:unite_source_grep_recursive_opt = ''
-	endif
-	nnoremap <silent> <Leader>e :UniteWithCursorWord -direction=botright -buffer-name=extract grep:-iR<CR>
-	vnoremap <Leader>e :UniteWithCursorWord -direction=botright -buffer-name=extract grep:-iR<CR>
+    " Vim grepper
+	Plug 'mhinz/vim-grepper'
+    " Mimic :grep and make ag the default tool.
+	let g:grepper = {
+	  \ 'tools': ['ag', 'git', 'grep'],
+	  \ 'open':  0,
+	  \ 'jump':  1,
+	  \ }
+
+	" Maps
+	nnoremap <Leader>e :Grepper -tool ag -cword -noprompt<CR>
+	nmap gs <plug>(GrepperOperator)
+	xmap gs <plug>(GrepperOperator)
 "}}}
 
 " Languages/Syntax {{{
@@ -700,17 +684,23 @@ endif
 	Plug 'tpope/vim-scriptease', {'for': 'vim'}
 	" Lisp
 	Plug 'wlangstroth/vim-racket', {'for': ['lisp', 'scheme', 'racket']}
+	Plug 'kovisoft/paredit', {'for': ['lisp', 'clojure', 'scheme', 'racket']}
 	" CSS
 	Plug 'ap/vim-css-color', {'for': ['css','sass','scss','less']}
 	" SQL
 	Plug 'vim-scripts/dbext.vim', {'for': 'sql'}
+	" Prose
+	Plug 'reedes/vim-wordy'
+	nnoremap [k :PrevWordy<CR>
+	nnoremap ]k :NextWordy<CR>
 "}}}
 
 " Syntax checking {{{
-Plug 'benekastah/neomake' " Async operations for Neovim
-if has('nvim')
-	autocmd! BufWritePost * Neomake
-endif
+	Plug 'benekastah/neomake' " Async operations for Neovim
+	nnoremap <Leader>= :Neomake!<CR>
+	if has('nvim')
+	  autocmd! BufWritePost * Neomake
+	endif
 "}}}
 
 " Interface for markdown/pandoc {{{
@@ -729,6 +719,7 @@ endif
 		\ 'description' : 'Pandoc and Markdown interface',
 		\}
 	let g:unite_source_menu_menus.mdpandoc.command_candidates = [
+		\[' tex word count', '!texcount %'],
 		\[' mdpandoc neomake pdf', 'NeomakeSh pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
 		\[' mdpandoc neomake org', 'NeomakeSh pandoc % -o (%:r).org'],
 		\[' mdpandoc neomake rst', 'NeomakeSh pandoc % -o (%:r).rst'],
@@ -741,6 +732,22 @@ endif
 		\[' mdpandoc dispatch latex', 'Dispatch! pandoc % -o (%:r).tex'],
 		\[' mdpandoc dispatch epub3', 'Dispatch! pandoc % -o (%:r).epub'],
 		\[' mdpandoc dispatch html5', 'Dispatch! pandoc % -o (%:r).html'],
+		\[' Wordy weak', 'Wordy weak'],
+		\[' Wordy redundant', 'Wordy redundant'],
+		\[' Wordy problematic', 'Wordy problematic'],
+		\[' Wordy weasel', 'Wordy weasel'],
+		\[' Wordy puffery', 'Wordy puffery'],
+		\[' Wordy business', 'Wordy business-jargon'],
+		\[' Wordy art', 'Wordy art-jargon'],
+		\[' Wordy passive', 'Wordy passive-voice'],
+		\[' Wordy being', 'Wordy being'],
+		\[' Wordy colloquial', 'Wordy colloquial'],
+		\[' Wordy idiomatic', 'Wordy idiomatic'],
+		\[' Wordy similies', 'Wordy similies'],
+		\[' Wordy opinions', 'Wordy opinions'],
+		\[' Wordy contractions', 'Wordy contractions'],
+		\[' Wordy synonyms', 'Wordy said-synonyms'],
+		\[' Wordy vague', 'Wordy vague-time'],
 		\[' Table csv to table', 'Tableize'],
 		\[' Table delimiter to table', 'exe "Tableize/" input("delimiter: ") '],
 		\[' Table add formula', 'TableAddFormula'],
@@ -760,6 +767,7 @@ endif
 
 	" Awesome 'async' substitute - useful when in Tmux
 	Plug 'tpope/vim-dispatch'
+	nnoremap <Leader>C :Copen<CR>
 
 	" Compilation menu
 	let g:unite_source_menu_menus.umake = {
@@ -792,12 +800,21 @@ endif
 
 	" Launch appropriate REPL
 	Plug 'benmills/vimux'
-	
+
 	" Interface for Tmux
 	let g:unite_source_menu_menus.tmux = {
 		\ 'description' : 'Tmux interaction',
 		\}
 	let g:unite_source_menu_menus.tmux.command_candidates = [
+		\[' vimux run last command', 'VimuxRunLastCommand'],
+		\[' vimux run command', 'exe "VimuxRunCommand(\"" input("command: ") "\")"'],
+		\[' vimux run R', 'call VimuxRunCommandInDir("R",0)'],
+		\[' vimux run julia', 'call VimuxRunCommandInDir("julia",0)'],
+		\[' vimux run matlab', 'call VimuxRunCommandInDir("matlab",0)'],
+		\[' vimux run scheme', 'call VimuxRunCommandInDir("racket",0)'],
+		\[' vimux run python', 'call VimuxRunCommandInDir("ipython",0)'],
+		\[' vimux run shell', 'call VimuxRunCommandInDir("pwd",0)'],
+		\[' vimux runner zoom', 'VimuxZoomRunner'],
 		\[' tmux list sessions', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-sessions'],
 		\[' tmux list windows', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-windows'],
 		\[' tmux list panes', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-panes'],
@@ -810,12 +827,6 @@ endif
 		\[' tmux show window options', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-window-options'],
 		\[' tmux show environment', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-environment'],
 		\[' tmux show messages', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-messages'],
-		\[' tmux run R', 'call VimuxRunCommandInDir("R",0)'],
-		\[' tmux run julia', 'call VimuxRunCommandInDir("julia",0)'],
-		\[' tmux run matlab', 'call VimuxRunCommandInDir("matlab",0)'],
-		\[' tmux run scheme', 'call VimuxRunCommandInDir("racket",0)'],
-		\[' tmux run python', 'call VimuxRunCommandInDir("ipython",0)'],
-		\[' tmux run shell', 'call VimuxRunCommandInDir("pwd",0)'],
 		\]
 	nnoremap <silent> <Leader>t :Unite -direction=botright -silent -buffer-name=tmux -start-insert menu:tmux<CR>
 "}}}
@@ -854,9 +865,6 @@ endif
 	Plug 'Shougo/junkfile.vim'
 	let g:junkfile#directory = "~/Dropbox/notes"
 
-	" Approximate Colorschemes
-	Plug 'godlygeek/csapprox'
-
 	" Gists
 	Plug 'mattn/webapi-vim' | Plug 'mattn/gist-vim'
 	let g:gist_open_browser_after_post = 1
@@ -870,10 +878,9 @@ endif
 	" Troll stopper
 	Plug 'vim-utils/vim-troll-stopper'
 
-	" Browse dash docsets
-	Plug 'rizzatti/dash.vim'
-	nnoremap <Leader>c :Dash<Space>
-	vnoremap <Leader>c :Dash
+	" Distraction free and highlight
+	Plug 'junegunn/goyo.vim'
+	nnoremap <Leader>- :Goyo<CR>
 "}}}
 
 call plug#end()
@@ -888,7 +895,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\ 'description' : 'OS interaction and configs',
 		\}
 	let g:unite_source_menu_menus.osinteract.command_candidates = [
-		\[' generate tags in buffer dir', 'cd %:p:h | Dispatch! ctags .'],
+		\[' generate tags in buffer dir', 'cd %:p:h | Dispatch! ctags -R .'],
 		\[' cd to buffer directory', 'cd %:p:h'],
 		\[' cd to project directory', 'Rooter'],
 		\[' create .projections.json', 'cd %:p:h | e .projections.json'],
@@ -896,6 +903,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' Edit vimrc', 'e $MYVIMRC'],
 		\[' Scratch notes', 'Unite -buffer-name=unotes -start-insert junkfile'],
 		\[' Colorschemes', 'Colors'],
+		\[' Current iTunes Song', 'Unite -silent -buffer-name=itunes output/shellcmd:osascript:~/applescripts/itunes.scpt'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 "}}}
