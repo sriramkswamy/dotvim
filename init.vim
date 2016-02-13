@@ -21,18 +21,6 @@ else
 	call plug#begin('~/.vim/plugged')
 endif
 
-" Interfaces {{{
-	Plug 'Shougo/unite.vim'
-	autocmd FileType unite call s:unite_my_settings()
-	function! s:unite_my_settings()
-		imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
-		imap <silent><buffer><expr> <C-s>     unite#do_action('split')
-		imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
-	endfunction
-	Plug 'Shougo/vimproc.vim', {'do': 'make'} " For 'async' and grep
-	let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
-"}}}
-
 " Buffer behaviour {{{
 	set title
 	" Leader and Local leader
@@ -56,7 +44,7 @@ endif
 	set wildmenu
 	set wildmode=list:longest,full
 	set completeopt=menuone,longest,preview
-	set history=1000
+	set history=50
 	" Undo history
 	set undolevels=1000
 	set undodir=~/.vim/undodir
@@ -71,7 +59,7 @@ endif
 	set nowb
 	let g:session_autosave = 'no'
 	" Fold options
-	set foldmethod=indent
+	set foldmethod=manual
 	set foldnestmax=10
 	set nofoldenable
 	set foldlevel=2
@@ -104,6 +92,9 @@ endif
 	nnoremap <Leader>d :
 	vnoremap <Leader>d :
 
+	" Help
+	nnoremap <Leader>x :help<Space>
+
 	" Kill, save or quit
 	nnoremap <silent> <Leader>k :bd!<CR>
 	nnoremap <silent> <Leader>w :w<CR>
@@ -134,7 +125,7 @@ endif
 	inoremap <silent> <C-g> <Esc>
 
 	" Also because of Emacs experiments
-	nnoremap <silent> <C-g> :nohl<CR>
+	nnoremap <silent> <Leader>h :nohl<CR>
 
 	" Colorschemes collection
 	Plug 'flazz/vim-colorschemes'
@@ -144,11 +135,6 @@ endif
 	" BASH bindings in Ex mode
 	Plug 'tpope/vim-rsi'
 
-	" Quickfix lists using unite
-	Plug 'osyo-manga/unite-quickfix'
-	nnoremap <Leader>l :Unite -silent -buffer-name=uniteloc -direction=botright location_list<CR>
-	nnoremap <Leader>c :Unite -silent -buffer-name=uniteqf -direction=botright quickfix<CR>
-
 	" Undotree
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 	let g:undotree_WindowLayout = 2
@@ -156,6 +142,64 @@ endif
 
 	" Statusline - Light line
 	Plug 'itchyny/lightline.vim'
+"}}}
+
+" Unite {{{
+	Plug 'Shougo/unite.vim'
+	autocmd FileType unite call s:unite_my_settings()
+	function! s:unite_my_settings()
+		imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
+		imap <silent><buffer><expr> <C-s>     unite#do_action('split')
+		imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
+	endfunction
+
+	Plug 'Shougo/vimproc.vim', {'do': 'make'} " For 'async' and grep
+	let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
+
+	" Unite default functionality maps
+	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
+	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
+	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
+	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
+	nnoremap <silent> <Leader><Leader> :Unite -direction=botright -buffer-name=lines -start-insert line<CR>
+	nnoremap <silent> <Leader>b :Unite -start-insert -buffer-name=lines -direction=botright line:all<CR>
+	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file file/new<CR>
+	inoremap <C-l> <C-o>:Unite -buffer-name=snippets ultisnips<CR>
+
+	" Quickfix lists using unite
+	Plug 'osyo-manga/unite-quickfix'
+	nnoremap <Leader>l :Unite -silent -buffer-name=uniteloc -direction=botright location_list<CR>
+	nnoremap <Leader>c :Unite -silent -buffer-name=uniteqf -direction=botright quickfix<CR>
+
+	" Vimfiler - fancier than netrw and integrates with Unite
+	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
+	let g:vimfiler_as_default_explorer = 1
+	nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
+
+	" Outline
+	Plug 'Shougo/unite-outline'
+	nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
+
+	" Unite oldfiles
+	Plug 'Shougo/neomru.vim'
+	nnoremap <silent> <Leader>r :Unite -start-insert -buffer-name=oldfiles -direction=botright file_mru<CR>
+
+	" Unite yank history
+	Plug 'Shougo/neoyank.vim'
+	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
+
+	" Anzu - search counter and a useful Unite backend
+	Plug 'osyo-manga/vim-anzu'
+	nmap n <Plug>(anzu-n-with-echo)
+	nmap N <Plug>(anzu-N-with-echo)
+	nmap * <Plug>(anzu-star-with-echo)
+	nmap # <Plug>(anzu-sharp-with-echo)
+	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
+	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=uniteanzu anzu<CR>
+
+	" Notes - not completely useless
+	Plug 'Shougo/junkfile.vim'
+	let g:junkfile#directory = "~/Dropbox/notes"
 "}}}
 
 " FileTypes {{{
@@ -240,22 +284,6 @@ endif
 	" Brackets and tag matching
 	Plug 'jiangmiao/auto-pairs'
 
-	" Trailing whitespace
-	Plug 'ntpeters/vim-better-whitespace'
-	let g:better_whitespace_filetypes_blacklist=['diff', 'qf', 'gitcommit', 'unite', 'vimfiler', 'help']
-	autocmd FileType unite DisableWhitespace
-	autocmd FileType vimfiler DisableWhitespace
-
-	" Switch between some stuff - should define more as I go on
-	Plug 'AndrewRadev/switch.vim', {'on': 'Switch'}
-	let g:switch_mapping = "\\"
-	let g:switch_custom_definitions =
-		\ [
-		\   ['TODO', 'DONE', 'NEXT', 'WAITING', 'HOLD', 'CANCELLED'],
-		\   ['+', '-'],
-		\   ['/', '*'],
-		\ ]
-
 	" Better '.' command
 	Plug 'tpope/vim-repeat'
 	" Mainly for the 'Subvert' command and coercions 'crs' for snake_case, 'crc' for camelCase, etc.
@@ -269,67 +297,29 @@ endif
 
 	" Toggle registers - fancy
 	Plug 'junegunn/vim-peekaboo'
-
-	" Unicode stuff
-	Plug 'sanford1/unite-unicode'
-	inoremap <C-k> <C-o>:Unite -direction=botright -buffer-name=uuni -start-insert unicode<CR>
 "}}}
 
 " Text objects and operators {{{
 	" Operate on 'pairs' - ]([)<Space>, ]([)e, ]([)l, ]([)q, ]([)b, ]([)f, ]([)a, ]([)t - uppercase for first/last
 	Plug 'tpope/vim-unimpaired' " Also useful while toggling a few options
 
-	" Semantic split/Join - gS and gJ
-	Plug 'AndrewRadev/splitjoin.vim'
-
-	" Move stuff sideways - in function calls or lists
-	" Also adds text objects for arguments - (operator)i,/a, - in my case
-	Plug 'AndrewRadev/sideways.vim'
-	nnoremap <silent> [, :SidewaysLeft<CR>
-	nnoremap <silent> ], :SidewaysRight<CR>
-	omap a, <Plug>SidewaysArgumentTextobjA
-	xmap a, <Plug>SidewaysArgumentTextobjA
-	omap i, <Plug>SidewaysArgumentTextobjI
-	xmap i, <Plug>SidewaysArgumentTextobjI
-
 	" Better surround - cs/ds/ys(to add surrounding)
 	Plug 'tpope/vim-surround'
 
 	" Custom text objects
 	Plug 'kana/vim-textobj-user'
-	" Operate between characters - (operator)ie{char}/ae{char}
-	Plug 'thinca/vim-textobj-between'
-	let g:textobj_between_no_default_key_mappings = 1
-	xmap ae <Plug>(textobj-between-a)
-	omap ae <Plug>(textobj-between-a)
-	xmap ie <Plug>(textobj-between-i)
-	omap ie <Plug>(textobj-between-i)
 	" Operate on comments - (operator)ic/ac/aC - doesn't work on python docstrings
 	Plug 'glts/vim-textobj-comment'
 	" Improves builtin sentence textobject for prose - (operator)is/as
 	Plug 'reedes/vim-textobj-sentence'
 	" Operate on the entire line - (operator)il/al - mostly used with custom operators
 	Plug 'kana/vim-textobj-line'
-	" Operate on the last searched pattern - (operator)i/ or a/
-	Plug 'kana/vim-textobj-lastpat'
 	" Operate on the indented blocks - (operator)ii/ai
 	Plug 'kana/vim-textobj-indent'
 	" Operate on functions in variable segments (between - or _ or camelCase) - (operator)iv/av
 	Plug 'Julian/vim-textobj-variable-segment'
 	" Operate on functions in C, Java and Vim - (operator)if/af
 	Plug 'kana/vim-textobj-function'
-	" Operate on functions in python - (operator)iy/ay and (operator)id/ad for class
-	" Movement commands of ]([)pf and ]([)pc are added
-	Plug 'bps/vim-textobj-python'
-	let g:textobj_python_no_default_key_mappings = 1
-	xmap ay <Plug>(textobj-python-funtion-a)
-	omap ay <Plug>(textobj-python-funtion-a)
-	xmap iy <Plug>(textobj-python-funtion-i)
-	omap iy <Plug>(textobj-python-funtion-i)
-	xmap ad <Plug>(textobj-python-class-a)
-	omap ad <Plug>(textobj-python-class-a)
-	xmap id <Plug>(textobj-python-class-i)
-	omap id <Plug>(textobj-python-class-i)
 	" Operate on the latex objects - (operator)i$/a$, i\/a\, iq/aq, iQ/aQ, ie/ae
 	Plug 'rbonvall/vim-textobj-latex'
 	" Operate on the entire file - (operator)ia/aa
@@ -343,8 +333,14 @@ endif
 	Plug 'mattn/vim-textobj-url'
 	" Operate on folds - (operator)iz/az
 	Plug 'kana/vim-textobj-fold'
-	" Operate on HTML/XML attributes - (operator)ix/ax
-	Plug 'whatyouhide/vim-textobj-xmlattr'
+
+	" From romainl
+	for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
+	    execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
+	    execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
+	    execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
+	    execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
+	endfor
 
 	" Easy commenting - gc(motion/textobject)
 	Plug 'tpope/vim-commentary'
@@ -467,43 +463,15 @@ endif
 	set path=.,**
 
 	" I use 'e','E','b' and 'B' for normal movements - tried changing but muscle memorized
-	" I use 'cc' and 'cl' instead of 's' and 'S' - that seems more natural to me
 	nnoremap <silent> w :vsplit<CR>
 	nnoremap <silent> W :split<CR>
+
+	" I use 'f' and 'F' for normal movements - tried changing but muscle memorized
+	nnoremap T :tag *
 "}}}
 
-" FZF - Blazingly fast fuzzy finder - for use in projects {{{
+" FZF - only for large projects {{{
 	Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': 'yes \| ./install'}
-
-	Plug 'sriramkswamy/fzf.vim'
-	nnoremap <silent> t :BTags<CR>
-	nnoremap <silent> T :Tags<CR>
-	nnoremap <silent> <Leader>` :Marks<CR>
-	nnoremap <silent> <Leader>b :Lines<CR>
-	nnoremap <Leader>h :Ag<Space>
-	nnoremap <silent> <Leader>p :Files<CR>
-	nnoremap <silent> <Leader>r :History<CR>
-	nnoremap <silent> <Leader>x :Helptags<CR>
-	nnoremap <silent> <Leader>/ :Locate<Space>
-	nnoremap <silent> <Leader>, :Maps<CR>
-	inoremap <C-l> <C-o>:Snippets<CR>
-"}}}
-
-" Unite {{{
-	" Unite
-	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
-	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
-	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
-	nnoremap <silent> <Leader><Leader> :Unite -direction=botright -buffer-name=lines -start-insert line<CR>
-
-	" Vimfiler - fancier than netrw and integrates with Unite
-	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
-	let g:vimfiler_as_default_explorer = 1
-	nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
-
-	" Unite yank history
-	Plug 'Shougo/neoyank.vim'
-	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
 "}}}
 
 " Project management {{{
@@ -531,13 +499,13 @@ endif
 	" '%' matching
 	set showmatch
 	" Tags for movement
-	set tags=./tags;,tags
+	set tags=./tags;,tags;
 
 	" Move based on indentation [-/[+/[=/[%
 	Plug 'jeetsukumaran/vim-indentwise'
 
 	" Occasionally I want to jump to that very precise point
-	" Remaps 's' and 'S' and I'm cool with that
+	" I use 'cc' and 'cl' instead of 's' and 'S' - that seems more natural to me
 	Plug 'justinmk/vim-sneak'
 "}}}
 
@@ -564,12 +532,8 @@ endif
 	nnoremap <silent> gl :Glog<CR>
 	" Gitk
 	Plug 'gregsexton/gitv', {'on': 'Gitv'}
-	nnoremap <silent> gv :Gitv<CR>
+	nnoremap <silent> gV :Gitv<CR>
 
-	" Support BitBucket in fugitive's Gbrowse
-	Plug 'tommcdo/vim-fubitive', {'on': 'Gbrowse'}
-	" Extend the blame command
-	Plug 'tommcdo/vim-fugitive-blame-ext', {'on': 'Gblame'}
 	" Extend the merge and branch commands
 	Plug 'idanarye/vim-merginal'
 	nnoremap <silent> gm :MerginalToggle<CR>
@@ -627,20 +591,6 @@ endif
 
 	" '*' in visual mode
 	Plug 'thinca/vim-visualstar'
-
-	" See what you are changing with OverCommandLine
-	Plug 'osyo-manga/vim-over'
-	nnoremap <Leader>v :OverCommandLine<CR>
-	vnoremap <Leader>v :OverCommandLine<CR>
-
-	" Anzu - search counter and a useful Unite backend
-	Plug 'osyo-manga/vim-anzu'
-	nmap n <Plug>(anzu-n-with-echo)
-	nmap N <Plug>(anzu-N-with-echo)
-	nmap * <Plug>(anzu-star-with-echo)
-	nmap # <Plug>(anzu-sharp-with-echo)
-	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
-	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=uniteanzu anzu<CR>
 "}}}
 
 " Grep {{{
@@ -652,9 +602,8 @@ endif
 	  \ 'open':  0,
 	  \ 'jump':  1,
 	  \ }
-
 	" Maps
-	nnoremap <Leader>e :Grepper -tool ag -cword -noprompt<CR>
+	nnoremap <Leader>e :Grepper -tool ag -noswitch<CR>
 	nmap gs <plug>(GrepperOperator)
 	xmap gs <plug>(GrepperOperator)
 "}}}
@@ -678,17 +627,9 @@ endif
 	let g:jedi#rename_command = ""
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
-	" HTML
-	Plug 'rstacruz/sparkup'
-	" VimL
-	Plug 'tpope/vim-scriptease', {'for': 'vim'}
 	" Lisp
 	Plug 'wlangstroth/vim-racket', {'for': ['lisp', 'scheme', 'racket']}
 	Plug 'kovisoft/paredit', {'for': ['lisp', 'clojure', 'scheme', 'racket']}
-	" CSS
-	Plug 'ap/vim-css-color', {'for': ['css','sass','scss','less']}
-	" SQL
-	Plug 'vim-scripts/dbext.vim', {'for': 'sql'}
 	" Prose
 	Plug 'reedes/vim-wordy'
 	nnoremap [k :PrevWordy<CR>
@@ -779,25 +720,17 @@ endif
 	\[' Dispatch! g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Dispatch! g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -g %'],
 	\[' Dispatch! g++ hybrid', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' NeomakeSh g++ make', 'NeomakeSh make'],
-	\[' NeomakeSh g++ single', 'NeomakeSh g++ -Wall -lgsl -lcblas -llapack -g %'],
-	\[' NeomakeSh g++ openmp', 'NeomakeSh g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' NeomakeSh g++ mpi', 'NeomakeSh /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -g %'],
-	\[' NeomakeSh g++ hybrid', 'NeomakeSh /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Dispatch! gcc make', 'Dispatch'],
 	\[' Dispatch! gcc single', 'Dispatch gcc! -Wall -lgsl -lcblas -llapack -g %'],
 	\[' Dispatch! gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Dispatch! gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
 	\[' Dispatch! gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' NeomakeSh gcc make', 'NeomakeSh make'],
-	\[' NeomakeSh gcc single', 'NeomakeSh gcc -Wall -lgsl -lcblas -llapack -g %'],
-	\[' NeomakeSh gcc openmp', 'NeomakeSh gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' NeomakeSh gcc mpi', 'NeomakeSh /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
-	\[' NeomakeSh gcc hybrid', 'NeomakeSh /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Eclim Java', 'Java'],
 	\]
 	nnoremap <silent> <Leader>m :Unite -direction=botright -buffer-name=umake -start-insert menu:umake<CR>
+"}}}
 
+" Tmux stuff {{{
 	" Launch appropriate REPL
 	Plug 'benmills/vimux'
 
@@ -829,7 +762,6 @@ endif
 		\[' tmux show messages', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-messages'],
 		\]
 	nnoremap <silent> <Leader>t :Unite -direction=botright -silent -buffer-name=tmux -start-insert menu:tmux<CR>
-"}}}
 
 	" Send to Tmux - super useful
 	Plug 'jpalardy/vim-slime'
@@ -860,11 +792,7 @@ endif
 	endif
 "}}}
 
-" Fancy stuff - completely useless but what the heck {{{
-	" Notes - not completely useless
-	Plug 'Shougo/junkfile.vim'
-	let g:junkfile#directory = "~/Dropbox/notes"
-
+" Fancy stuff {{{
 	" Gists
 	Plug 'mattn/webapi-vim' | Plug 'mattn/gist-vim'
 	let g:gist_open_browser_after_post = 1
@@ -874,9 +802,6 @@ endif
 	Plug 'szw/vim-g'
 	nnoremap <Leader>\ :Google<Space>
 	vnoremap <Leader>\ :Google<CR>
-
-	" Troll stopper
-	Plug 'vim-utils/vim-troll-stopper'
 
 	" Distraction free and highlight
 	Plug 'junegunn/goyo.vim'
