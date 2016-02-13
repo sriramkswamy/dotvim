@@ -163,7 +163,7 @@ endif
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
 	nnoremap <silent> <Leader><Leader> :Unite -direction=botright -buffer-name=lines -start-insert line<CR>
 	nnoremap <silent> <Leader>b :Unite -start-insert -buffer-name=lines -direction=botright line:all<CR>
-	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file file/new<CR>
+	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file file_rec file/new<CR>
 	inoremap <C-l> <C-o>:Unite -buffer-name=snippets ultisnips<CR>
 
 	" Quickfix lists using unite
