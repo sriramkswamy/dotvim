@@ -3,15 +3,15 @@ filetype off " required
 
 " Autoinstall vim-plug {{{
 	if has('nvim')
-		if empty(glob('~/.config/nvim/autoload/plug.vim'))
+	  if empty(glob('~/.config/nvim/autoload/plug.vim'))
 		silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 		autocmd VimEnter * PlugInstall
-		endif
+	  endif
 	else
-		if empty(glob('~/.vim/autoload/plug.vim'))
+	  if empty(glob('~/.vim/autoload/plug.vim'))
 		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 		autocmd VimEnter * PlugInstall
-		endif
+	  endif
 	endif
 " }}}
 
@@ -23,8 +23,6 @@ endif
 
 " Buffer behaviour {{{
 	set title
-	" Leader and Local leader
-	let mapleader="\<Space>"
 	" Turn on numbering and relativenumber
 	set number " Can be toggled with unimpaired's 'con'
 	set relativenumber " Can be toggled with unimpaired's 'cor'
@@ -67,6 +65,7 @@ endif
 	set mouse=a
 	" Set list characters - Can be toggled with unimpaired's 'col'
 	set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
+	set listchars+=trail:-
 	set showbreak=↪
 	" Easier Regex
 	set magic
@@ -79,9 +78,6 @@ endif
 	" Show command and mode at the bottom
 	set showcmd
 	set showmode
-	" Show statusline always
-	set statusline=%t
-	set laststatus=2
 	" Set splits to the right
 	set splitright
 	set splitbelow
@@ -89,16 +85,21 @@ endif
 	set guifont=Courier\ New:h12
 
 	" This is basically because of the memory I developed from my Emacs experiments
-	nnoremap <Leader>d :
-	vnoremap <Leader>d :
+	nnoremap <Space>d :
+	vnoremap <Space>d :
+
+	" <C-v> puts it in operator pending mode, I think and the best part is 'I'
+	" and 'A' work and is very useful
+	nnoremap    v    <C-V>
+	nnoremap  <C-V>    v
 
 	" Help
-	nnoremap <Leader>x :help<Space>
+	nnoremap <Space>x :help<Space>
 
 	" Kill, save or quit
-	nnoremap <silent> <Leader>k :bd!<CR>
-	nnoremap <silent> <Leader>w :w<CR>
-	nnoremap <silent> <Leader>q :q<CR>
+	nnoremap <silent> <Space>k :bd!<CR>
+	nnoremap <silent> <Space>w :w<CR>
+	nnoremap <silent> <Space>q :q<CR>
 
 	" Put me in command history instead
 	nnoremap <silent> Q q:
@@ -113,6 +114,34 @@ endif
 	" 'Zoom' into the current buffer
 	nnoremap <silent> Z :only<CR>
 
+	" Filter from quickfix list
+	function! GrepQuickFix(pat)
+	  let all = getqflist()
+	  for d in all
+		if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
+		  call remove(all, index(all,d))
+		endif
+	  endfor
+	  call setqflist(all)
+	endfunction
+	command! -nargs=* QFilter call GrepQuickFix(<q-args>)
+
+	" Filter from location list - doesn't work, read help
+	function! GrepLocList(pat)
+	  let all = getloclist(^)
+	  for d in all
+		if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
+		  call remove(all, index(all,d))
+		endif
+	  endfor
+	  call setloclist(^)
+	endfunction
+	command! -nargs=* LFilter call GrepLocList(<q-args>)
+
+	" Quickfix and Location list maps
+	nnoremap <Space>l :lopen<CR>
+	nnoremap <Space>c :copen<CR>
+
 	" Navigate in insert mode
 	inoremap <silent> <C-f> <right>
 	inoremap <silent> <C-b> <left>
@@ -125,23 +154,98 @@ endif
 	inoremap <silent> <C-g> <Esc>
 
 	" Also because of Emacs experiments
-	nnoremap <silent> <Leader>h :nohl<CR>
+	nnoremap <silent> <Space>h :nohl<CR>
 
-	" Colorschemes collection
-	Plug 'flazz/vim-colorschemes'
+	" Readline-ish bindings in Command-line mode
+	cnoremap <C-a> <Home>
+	cnoremap <C-e> <End>
 
-	" UNIX commands
-	Plug 'tpope/vim-eunuch'
-	" BASH bindings in Ex mode
-	Plug 'tpope/vim-rsi'
+	" Colorscheme
+	Plug 'NLKNguyen/papercolor-theme'
 
 	" Undotree
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 	let g:undotree_WindowLayout = 2
 	nnoremap <silent> U :UndotreeToggle<CR>
+"}}}
 
-	" Statusline - Light line
-	Plug 'itchyny/lightline.vim'
+" Statusline - from scrooloose {{{
+	" Basic setup
+	set statusline =%#identifier#
+	set statusline+=[%f]    "tail of the filename
+	set statusline+=%*
+
+	"display a warning if fileformat isnt unix
+	set statusline+=%#warningmsg#
+	set statusline+=%{&ff!='unix'?'['.&ff.']':''}
+	set statusline+=%*
+
+	"display a warning if file encoding isnt utf-8
+	set statusline+=%#warningmsg#
+	set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
+	set statusline+=%*
+
+	set statusline+=%y      "filetype
+
+	"read only flag
+	set statusline+=%#identifier#
+	set statusline+=%r
+	set statusline+=%*
+
+	"modified flag
+	set statusline+=%#warningmsg#
+	set statusline+=%m
+	set statusline+=%*
+
+	"display a warning if &paste is set
+	set statusline+=%#error#
+	set statusline+=%{&paste?'[paste]':''}
+	set statusline+=%*
+
+	"display a warning if &paste is set
+	set statusline+=%#error#
+	set statusline+=%{&paste?'[paste]':''}
+	set statusline+=%*
+
+	set statusline+=%=      "left/right separator
+	set statusline+=%{StatuslineCurrentHighlight()}\ \ "current highlight
+	set statusline+=%c,     "cursor column
+	set statusline+=%l      "cursor line/total lines
+	set statusline+=\ %P    "percent through file
+	set laststatus=2
+
+	"return the syntax highlight group under the cursor ''
+	function! StatuslineCurrentHighlight()
+	  let name = synIDattr(synID(line('.'),col('.'),1),'name')
+	  if name == ''
+		return ''
+	  else
+		return '[' . name . ']'
+	  endif
+	endfunction
+
+	"return '[\s]' if trailing white space is detected
+	"return '' otherwise
+	function! StatuslineTrailingSpaceWarning()
+	  if !exists("b:statusline_trailing_space_warning")
+		if !&modifiable
+		  let b:statusline_trailing_space_warning = ''
+		  return b:statusline_trailing_space_warning
+		endif
+		if search('\s\+$', 'nw') != 0
+		  let b:statusline_trailing_space_warning = '[\s]'
+		else
+		  let b:statusline_trailing_space_warning = ''
+		endif
+	  endif
+	  return b:statusline_trailing_space_warning
+	endfunction
+	set statusline+=%{StatuslineTrailingSpaceWarning()}
+	"recalculate the trailing whitespace warning when idle, and after saving
+	autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
+
+	" Neomake
+	set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus(':\ ')}
 "}}}
 
 " Unite {{{
@@ -152,29 +256,21 @@ endif
 		imap <silent><buffer><expr> <C-s>     unite#do_action('split')
 		imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
 	endfunction
-
-	Plug 'Shougo/vimproc.vim', {'do': 'make'} " For 'async' and grep
 	let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 
 	" Unite default functionality maps
-	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
-	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
-	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
-	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
-	nnoremap <silent> <Leader><Leader> :Unite -direction=botright -buffer-name=lines -start-insert line<CR>
-	nnoremap <silent> <Leader>b :Unite -start-insert -buffer-name=lines -direction=botright line:all<CR>
-	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file file_rec file/new<CR>
+	nnoremap <silent> <Space>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
+	nnoremap <silent> <Space>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
+	nnoremap <silent> <Space>, :Unite -buffer-name=mapping mapping<CR>
+	nnoremap <silent> <Space>. :Unite -direction=botright -buffer-name=resume resume<CR>
+	nnoremap <silent> <Space><Space> :Unite -direction=botright -buffer-name=lines -start-insert line<CR>
+	nnoremap <silent> <Space>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file_rec file/new<CR>
 	inoremap <C-l> <C-o>:Unite -buffer-name=snippets ultisnips<CR>
-
-	" Quickfix lists using unite
-	Plug 'osyo-manga/unite-quickfix'
-	nnoremap <Leader>l :Unite -silent -buffer-name=uniteloc -direction=botright location_list<CR>
-	nnoremap <Leader>c :Unite -silent -buffer-name=uniteqf -direction=botright quickfix<CR>
 
 	" Vimfiler - fancier than netrw and integrates with Unite
 	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
 	let g:vimfiler_as_default_explorer = 1
-	nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
+	nnoremap <silent> <Space>n :VimFilerExplorer -project<CR>
 
 	" Outline
 	Plug 'Shougo/unite-outline'
@@ -182,24 +278,11 @@ endif
 
 	" Unite oldfiles
 	Plug 'Shougo/neomru.vim'
-	nnoremap <silent> <Leader>r :Unite -start-insert -buffer-name=oldfiles -direction=botright file_mru<CR>
+	nnoremap <silent> <Space>r :Unite -start-insert -buffer-name=oldfiles -direction=botright file_mru<CR>
 
 	" Unite yank history
 	Plug 'Shougo/neoyank.vim'
-	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
-
-	" Anzu - search counter and a useful Unite backend
-	Plug 'osyo-manga/vim-anzu'
-	nmap n <Plug>(anzu-n-with-echo)
-	nmap N <Plug>(anzu-N-with-echo)
-	nmap * <Plug>(anzu-star-with-echo)
-	nmap # <Plug>(anzu-sharp-with-echo)
-	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
-	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=uniteanzu anzu<CR>
-
-	" Notes - not completely useless
-	Plug 'Shougo/junkfile.vim'
-	let g:junkfile#directory = "~/Dropbox/notes"
+	nnoremap <silent> <Space>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
 "}}}
 
 " FileTypes {{{
@@ -276,27 +359,17 @@ endif
 	" Make 'Y' work like 'C' and 'D'
 	nnoremap <silent> Y y$
 	" Elementary splitting
-	nnoremap <silent> gx Do<Esc>p^d0==k$
+	nnoremap <silent> gS Do<Esc>p^d0==k$
 
 	" Dictionary toggle
 	inoremap <silent> <C-d> <C-x><C-k>
 
-	" Brackets and tag matching
-	Plug 'jiangmiao/auto-pairs'
-
 	" Better '.' command
 	Plug 'tpope/vim-repeat'
-	" Mainly for the 'Subvert' command and coercions 'crs' for snake_case, 'crc' for camelCase, etc.
+	" Mainly for 'Subvert' command coercions 'crs' for snake_case, 'crc' for camelCase, etc.
 	Plug 'tpope/vim-abolish'
 	" Better 'ga' command
 	Plug 'tpope/vim-characterize'
-	" Better number manipulation in dates
-	Plug 'tpope/vim-speeddating'
-	" Better A and I in visual block
-	Plug 'kana/vim-niceblock'
-
-	" Toggle registers - fancy
-	Plug 'junegunn/vim-peekaboo'
 "}}}
 
 " Text objects and operators {{{
@@ -345,21 +418,6 @@ endif
 	" Easy commenting - gc(motion/textobject)
 	Plug 'tpope/vim-commentary'
 	autocmd FileType matlab setlocal commentstring=%\ %s
-
-	" Exchange stuff - cx(motion/textobject) - note that this is not a normal operator
-	Plug 'tommcdo/vim-exchange'
-	" 'ee' instead of 'w' because of my mapping of 'w' to ':vs'
-	nmap [w cxiwge.
-	nmap ]w cxiwee.
-	nmap [W cxiWgE.
-	nmap ]W cxiWEE.
-
-	" Custom operators
-	Plug 'kana/vim-operator-user'
-	" Replace with contents of a register - {choose register}_(motion/textobject)
-	" Works beautifully with 'peekaboo'
-	Plug 'kana/vim-operator-replace'
-	map _  <Plug>(operator-replace)
 "}}}
 
 " Eclim - Eclipse plus Vim {{{
@@ -455,7 +513,7 @@ endif
 		\['Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
 		\['Eclim Ruby Context Search', 'RubySearchContext'],
 		\]
-	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
+	nnoremap <silent> <Space>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 "}}}
 
 " File/Buffer navigation {{{
@@ -477,6 +535,7 @@ endif
 " Project management {{{
 	" Root to the project directory
 	Plug 'airblade/vim-rooter'
+	let g:rooter_manual_only = 1
 	let g:rooter_disable_map = 1
 	let g:rooter_patterns = ['.git/', '.svn/', '.hg/']
 	let g:rooter_use_lcd = 1
@@ -485,7 +544,7 @@ endif
 
 	" Traverse files within a project - create a .projections.json first
 	Plug 'tpope/vim-projectionist'
-	nnoremap <Leader><Tab> :A<CR>
+	nnoremap <Space><Tab> :A<CR>
 "}}}
 
 " Motion {{{
@@ -497,14 +556,11 @@ endif
 	nnoremap <silent> j gj
 
 	" '%' matching
+	runtime macros/matchit.vim
 	set showmatch
 	" Tags for movement
 	set tags=./tags;,tags;
 
-	" Move based on indentation [-/[+/[=/[%
-	Plug 'jeetsukumaran/vim-indentwise'
-
-	" Occasionally I want to jump to that very precise point
 	" I use 'cc' and 'cl' instead of 's' and 'S' - that seems more natural to me
 	Plug 'justinmk/vim-sneak'
 "}}}
@@ -521,15 +577,14 @@ endif
 	nnoremap <silent> gy :SignifyToggleHighlight<CR>
 "}}}
 
-" Git wrapper {{{
-	" Git runtime files
-	Plug 'tpope/vim-git'
+" Git {{{
 	" Wrapper
 	Plug 'tpope/vim-fugitive'
 	autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 	nnoremap <silent> gb :Gblame<CR>
 	" Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
 	nnoremap <silent> gl :Glog<CR>
+
 	" Gitk
 	Plug 'gregsexton/gitv', {'on': 'Gitv'}
 	nnoremap <silent> gV :Gitv<CR>
@@ -569,7 +624,7 @@ endif
 		\[' git grep',  'exe "Ggrep " input("string: ")'],
 		\[' git prompt', 'exe "Git! " input("command: ")'],
 		\] " Append ' --' after log to get commit info commit buffers
-	nnoremap <silent> <Leader>g :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
+	nnoremap <silent> <Space>g :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
 "}}}
 
 " Searching {{{
@@ -603,7 +658,7 @@ endif
 	  \ 'jump':  1,
 	  \ }
 	" Maps
-	nnoremap <Leader>e :Grepper -tool ag -noswitch<CR>
+	nnoremap <Space>e :Grepper -tool ag -noswitch<CR>
 	nmap gs <plug>(GrepperOperator)
 	xmap gs <plug>(GrepperOperator)
 "}}}
@@ -627,9 +682,6 @@ endif
 	let g:jedi#rename_command = ""
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
-	" Lisp
-	Plug 'wlangstroth/vim-racket', {'for': ['lisp', 'scheme', 'racket']}
-	Plug 'kovisoft/paredit', {'for': ['lisp', 'clojure', 'scheme', 'racket']}
 	" Prose
 	Plug 'reedes/vim-wordy'
 	nnoremap [k :PrevWordy<CR>
@@ -638,7 +690,7 @@ endif
 
 " Syntax checking {{{
 	Plug 'benekastah/neomake' " Async operations for Neovim
-	nnoremap <Leader>= :Neomake!<CR>
+	nnoremap <Space>= :Neomake!<CR>
 	if has('nvim')
 	  autocmd! BufWritePost * Neomake
 	endif
@@ -661,12 +713,7 @@ endif
 		\}
 	let g:unite_source_menu_menus.mdpandoc.command_candidates = [
 		\[' tex word count', '!texcount %'],
-		\[' mdpandoc neomake pdf', 'NeomakeSh pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
-		\[' mdpandoc neomake org', 'NeomakeSh pandoc % -o (%:r).org'],
-		\[' mdpandoc neomake rst', 'NeomakeSh pandoc % -o (%:r).rst'],
-		\[' mdpandoc neomake latex', 'NeomakeSh pandoc % -o (%:r).tex'],
-		\[' mdpandoc neomake epub3', 'NeomakeSh pandoc % -o (%:r).epub'],
-		\[' mdpandoc neomake html5', 'NeomakeSh pandoc % -o (%:r).html'],
+		\[' notes', 'VimFiler ~/Dropbox/notes'],
 		\[' mdpandoc dispatch pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
 		\[' mdpandoc dispatch org', 'Dispatch! pandoc % -o (%:r).org'],
 		\[' mdpandoc dispatch rst', 'Dispatch! pandoc % -o (%:r).rst'],
@@ -694,7 +741,7 @@ endif
 		\[' Table add formula', 'TableAddFormula'],
 		\[' Table evaluate formula', 'TableEvalFormulaLine'],
 		\]
-	nnoremap <silent> <Leader>o :Unite -silent -buffer-name=mdpandoc -direction=botright -start-insert menu:mdpandoc<CR>
+	nnoremap <silent> <Space>o :Unite -silent -buffer-name=mdpandoc -direction=botright -start-insert menu:mdpandoc<CR>
 "}}}
 
 " REPL {{{
@@ -708,39 +755,60 @@ endif
 
 	" Awesome 'async' substitute - useful when in Tmux
 	Plug 'tpope/vim-dispatch'
-	nnoremap <Leader>C :Copen<CR>
+	nnoremap <Space>v :Copen<CR>
+	nnoremap <Space>b :Dispatch!<Space>
 
 	" Compilation menu
 	let g:unite_source_menu_menus.umake = {
 		\ 'description' : 'Compilation menu',
 		\} " Note that Neomake is already plugged in near syntastic
 	let g:unite_source_menu_menus.umake.command_candidates = [
-	\[' Dispatch! g++ make', 'Dispatch!'],
+	\[' Dispatch! g++ make', 'Dispatch! make'],
 	\[' Dispatch! g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -g %'],
 	\[' Dispatch! g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Dispatch! g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -g %'],
 	\[' Dispatch! g++ hybrid', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' Dispatch! gcc make', 'Dispatch'],
-	\[' Dispatch! gcc single', 'Dispatch gcc! -Wall -lgsl -lcblas -llapack -g %'],
+	\[' Dispatch! gcc make', 'Dispatch! make'],
+	\[' Dispatch! gcc single', 'Dispatch! gcc! -Wall -lgsl -lcblas -llapack -g %'],
 	\[' Dispatch! gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Dispatch! gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
 	\[' Dispatch! gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 	\[' Eclim Java', 'Java'],
 	\]
-	nnoremap <silent> <Leader>m :Unite -direction=botright -buffer-name=umake -start-insert menu:umake<CR>
+	nnoremap <silent> <Space>m :Unite -direction=botright -buffer-name=umake -start-insert menu:umake<CR>
 "}}}
 
 " Tmux stuff {{{
 	" Launch appropriate REPL
 	Plug 'benmills/vimux'
 
-	" Interface for Tmux
+	" Interface for common Vimux/Tmux commands - I send a lot of repetitive ones
+	let g:unite_source_menu_menus.vimux = {
+		\ 'description' : 'Tmux interaction',
+		\}
+	let g:unite_source_menu_menus.vimux.command_candidates = [
+		\[' matlab dbcont', 'call VimuxRunCommandInDir("dbcont",0)'],
+		\[' matlab dbstep', 'call VimuxRunCommandInDir("dbstep",0)'],
+		\[' matlab dbstop', 'exe "VimuxRunCommand(\"dbstop at" input("line: ") "in" input("file: ")"\")"'],
+		\[' matlab dbstatus', 'call VimuxRunCommandInDir("dbstatus",0)'],
+		\[' matlab dbclear all', 'call VimuxRunCommandInDir("dbclear all",0)'],
+		\[' matlab dbquit', 'call VimuxRunCommandInDir("dbquit",0)'],
+		\[' matlab workspace', 'call VimuxRunCommandInDir("workspace",0)'],
+		\[' matlab clc', 'call VimuxRunCommandInDir("clc",0)'],
+		\[' cpp default', 'call VimuxRunCommandInDir("./a.out",0)'],
+		\[' cpp exe', 'exe"VimuxRunCommand(\"./"input("file: ")"\")"'],
+		\[' cpp fpe', 'call VimuxRunCommandInDir("./FPE.exe",0)'],
+		\[' shell clear', 'call VimuxRunCommandInDir("clear",0)'],
+		\]
+	nnoremap <silent> <Space>i :Unite -direction=botright -silent -buffer-name=vimux -start-insert menu:vimux<CR>
+
+	" Interface for Tmux and Vimux
 	let g:unite_source_menu_menus.tmux = {
 		\ 'description' : 'Tmux interaction',
 		\}
 	let g:unite_source_menu_menus.tmux.command_candidates = [
-		\[' vimux run last command', 'VimuxRunLastCommand'],
 		\[' vimux run command', 'exe "VimuxRunCommand(\"" input("command: ") "\")"'],
+		\[' vimux last command', 'VimuxRunLastCommand'],
 		\[' vimux run R', 'call VimuxRunCommandInDir("R",0)'],
 		\[' vimux run julia', 'call VimuxRunCommandInDir("julia",0)'],
 		\[' vimux run matlab', 'call VimuxRunCommandInDir("matlab",0)'],
@@ -761,14 +829,14 @@ endif
 		\[' tmux show environment', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-environment'],
 		\[' tmux show messages', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-messages'],
 		\]
-	nnoremap <silent> <Leader>t :Unite -direction=botright -silent -buffer-name=tmux -start-insert menu:tmux<CR>
+	nnoremap <silent> <Space>t :Unite -direction=botright -silent -buffer-name=tmux -start-insert menu:tmux<CR>
 
 	" Send to Tmux - super useful
 	Plug 'jpalardy/vim-slime'
 	let g:slime_target = "tmux"
 	let g:slime_python_ipython = 1
-	nnoremap <silent> <Leader>s :SlimeSend<CR>
-	vnoremap <silent> <Leader>s :SlimeSend<CR>
+	nnoremap <silent> <Space>s :SlimeSend<CR>
+	vnoremap <silent> <Space>s :SlimeSend<CR>
 
 	" Tmux and Vim navigation
 	" Arrows = Vim splits outside Tmux and Tmux splits inside Tmux
@@ -786,26 +854,10 @@ endif
 
 	" Zoom and split when in Tmux(>v1.8)
 	if exists('$TMUX')
-		nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
+		nnoremap <silent> <Space>z :call system("tmux resize-pane -Z")<CR>
 		nnoremap <silent> + :call system("tmux split-window -h")<CR>
 		nnoremap <silent> - :call system("tmux split-window -v")<CR>
 	endif
-"}}}
-
-" Fancy stuff {{{
-	" Gists
-	Plug 'mattn/webapi-vim' | Plug 'mattn/gist-vim'
-	let g:gist_open_browser_after_post = 1
-	let g:gist_clip_command = 'pbcopy'
-
-	" Google
-	Plug 'szw/vim-g'
-	nnoremap <Leader>\ :Google<Space>
-	vnoremap <Leader>\ :Google<CR>
-
-	" Distraction free and highlight
-	Plug 'junegunn/goyo.vim'
-	nnoremap <Leader>- :Goyo<CR>
 "}}}
 
 call plug#end()
@@ -826,11 +878,10 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' create .projections.json', 'cd %:p:h | e .projections.json'],
 		\[' Source vimrc', 'so $MYVIMRC'],
 		\[' Edit vimrc', 'e $MYVIMRC'],
-		\[' Scratch notes', 'Unite -buffer-name=unotes -start-insert junkfile'],
-		\[' Colorschemes', 'Colors'],
 		\[' Current iTunes Song', 'Unite -silent -buffer-name=itunes output/shellcmd:osascript:~/applescripts/itunes.scpt'],
+		\[' Colors', 'exe "colorscheme "'],
 		\]
-	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
+	nnoremap <silent> <Space>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 "}}}
 
 " Setup plugins, indents and syntax
@@ -838,5 +889,5 @@ filetype plugin indent on
 syntax on
 
 " Set colorscheme
-set background=light " Can be toggled with unimpaired's 'cob'
-colorscheme lucius
+set background=light
+colorscheme PaperColor
