@@ -1,20 +1,22 @@
 set nocompatible " be iMproved
 filetype off " required
 
-" Autoinstall vim-plug {{{
-	if has('nvim')
-		if empty(glob('~/.config/nvim/autoload/plug.vim'))
-			silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-			autocmd VimEnter * PlugInstall
-		endif
-	else
-		if empty(glob('~/.vim/autoload/plug.vim'))
-			silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-			autocmd VimEnter * PlugInstall
-		endif
+" Auto install vim-plug
+if has('nvim')
+	if empty(glob('~/.config/nvim/autoload/plug.vim'))
+		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+					\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		autocmd VimEnter * PlugInstall | source $MYVIMRC
 	endif
-" }}}
+else
+	if empty(glob('~/.vim/autoload/plug.vim'))
+		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+					\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		autocmd VimEnter * PlugInstall | source $MYVIMRC
+	endif
+endif
 
+" Start plugin installation
 if has('nvim')
 	call plug#begin('~/.config/nvim/plugged')
 else
@@ -37,7 +39,7 @@ endif
 	" Sync with OS clipboard
 	set clipboard=unnamed
 	" Color the current line
-	set cursorline " Can be toggled with 'coc'
+	set nocursorline " Can be toggled with 'coc'
 	" Ex commands
 	set wildmenu
 	set wildmode=list:longest,full
@@ -90,11 +92,7 @@ endif
 	" This is basically because of the memory I developed from my Emacs experiments
 	nnoremap <Leader>d :
 	vnoremap <Leader>d :
-
-	" <C-v> puts it in operator pending mode, I think and the best part is 'I'
-	" and 'A' work and is very useful
-	nnoremap    v    <C-V>
-	nnoremap  <C-V>    v
+	nnoremap <silent> <Leader><Leader> q/
 
 	" Help
 	nnoremap <Leader>x :help<Space>
@@ -110,9 +108,6 @@ endif
 	" Keep me in visual mode
 	vnoremap <silent> > >gv
 	vnoremap <silent> < <gv
-
-	" Put me in search history instead
-	nnoremap <silent> M q/
 
 	" 'Zoom' into the current buffer
 	nnoremap <silent> Z :only<CR>
@@ -133,8 +128,8 @@ endif
 	nnoremap coh :setlocal hlsearch!<CR>
 
 	" Map some more stuff similar to unimpaired
-	nnoremap <silent> coj :setlocal colorcolumn=<CR>
-	nnoremap <silent> cof :setlocal colorcolumn=80,100<CR>
+	nnoremap coj :setlocal colorcolumn=<CR>
+	nnoremap cof :setlocal colorcolumn=80,100<CR>
 
 	" Escape out of insert mode, because iTerm2 delays it assuming <Esc> to be an escape sequence
 	inoremap <silent> <C-g> <Esc>
@@ -150,6 +145,10 @@ endif
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 	let g:undotree_WindowLayout = 2
 	nnoremap <silent> U :UndotreeToggle<CR>
+
+	" Local indent highlight - super useful
+	Plug 'tweekmonster/local-indent.vim'
+	highlight LocalIndentGuide ctermfg=3 ctermbg=1 cterm=inverse
 "}}}
 
 " Statusline - from scrooloose {{{
@@ -226,9 +225,6 @@ endif
 	set statusline+=%{StatuslineTrailingSpaceWarning()}
 	"recalculate the trailing whitespace warning when idle, and after saving
 	autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
-
-	" Neomake
-	set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus(':\ ')}
 "}}}
 
 " Unite {{{
@@ -246,36 +242,27 @@ endif
 	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
-	nnoremap <silent> <Leader><Leader> :Unite -direction=botright -buffer-name=lines -start-insert line<CR>
-	nnoremap <silent> <Leader>b :Unite -direction=botright -buffer-name=lines -start-insert line:args<CR>
 	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file_rec file/new<CR>
+	nnoremap <silent> <Leader>n :cd ~/Dropbox/notes <bar> Unite -buffer-name=notes directory file<CR>
 	inoremap <C-l> <C-o>:Unite -buffer-name=snippets -start-insert ultisnips<CR>
 
-	" Vimfiler - fancier than netrw and integrates with Unite
-	Plug 'Shougo/vimfiler.vim', {'on': 'VimFilerExplorer'}
-	let g:vimfiler_as_default_explorer = 1
-	nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
+	" Outline
+	Plug 'Shougo/neoyank.vim'
+	nnoremap <silent> <Leader>y :Unite -buffer-name=yank -direction=botright history/yank<CR>
 
 	" Outline
 	Plug 'Shougo/unite-outline'
 	nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
-
-	" Unite oldfiles
-	Plug 'Shougo/neomru.vim'
-	nnoremap <silent> <Leader>r :Unite -start-insert -buffer-name=oldfiles -direction=botright file_mru<CR>
-
-	" Unite yank history
-	Plug 'Shougo/neoyank.vim'
-	nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yankhistory history/yank<CR>
 "}}}
 
 " FileTypes {{{
 	" File is large from 5mb - Vim wiki
 	let g:LargeFile = 1024 * 1024 * 5
 	augroup LargeFile
+	autocmd!
 	autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
 	augroup END
-	function LargeFile()
+	function! LargeFile()
 		" no syntax highlighting etc
 		set eventignore+=FileType
 		" save memory when other file is viewed
@@ -285,7 +272,7 @@ endif
 		" no undo possible
 		setlocal undolevels=-1
 		" display message
-		autocmd VimEnter *  echo "The file is larger than " . (g:LargeFile / 1024 / 1024) . " MB, so some options are changed."
+		autocmd! VimEnter *  echo "The file is larger than " . (g:LargeFile / 1024 / 1024) . " MB, so some options are changed."
 	endfunction
 
 	" Ignore list
@@ -345,45 +332,47 @@ endif
 	" Elementary splitting
 	nnoremap <silent> gS Do<Esc>p^d0==k$
 
-	" Switch between stuff
-	Plug 'AndrewRadev/switch.vim'
-	let g:switch_mapping = "\\"
-	let g:switch_custom_definitions =
-				\ [
-				\   ['TODO', 'DONE', 'HOLD', 'CANCELLED'],
-				\   ['*', '/', '+', '-', '%', '^']
-				\ ]
-	autocmd FileType gitrebase let b:switch_custom_definitions =
-				\ [
-				\   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
-				\ ]
-	autocmd FileType tex,plaintex let b:switch_custom_definitions =
-				\ [
-				\    [ '\\tiny', '\\scriptsize', '\\footnotesize', '\\small', '\\normalsize', '\\large', '\\Large', '\\LARGE', '\\huge', '\\Huge' ],
-				\    [ '\\displaystyle', '\\scriptstyle', '\\scriptscriptstyle', '\\textstyle' ],
-				\    [ '\\part', '\\chapter', '\\section', '\\subsection', '\\subsubsection', '\\paragraph', '\\subparagraph' ],
-				\    [ 'part:', 'chap:', 'sec:', 'subsec:', 'subsubsec:' ],
-				\    [ 'article', 'report', 'book', 'letter', 'slides' ],
-				\    [ 'a4paper', 'a5paper', 'b5paper', 'executivepaper', 'legalpaper', 'letterpaper', 'beamer', 'subfiles', 'standalone' ],
-				\    [ 'onecolumn', 'twocolumn' ],
-				\    [ 'oneside', 'twoside' ],
-				\    [ 'draft', 'final' ],
-				\    [ 'AnnArbor', 'Antibes', 'Bergen', 'Berkeley',
-				\      'Berlin', 'Boadilla', 'CambridgeUS', 'Copenhagen', 'Darmstadt',
-				\      'Dresden', 'Frankfurt', 'Goettingen', 'Hannover', 'Ilmenau',
-				\      'JuanLesPins', 'Luebeck', 'Madrid', 'Malmoe', 'Marburg',
-				\      'Montpellier', 'PaloAlto', 'Pittsburgh', 'Rochester', 'Singapore',
-				\      'Szeged', 'Warsaw' ]
-				\ ]
+	" Strip trailing whitespace
+	function! StripWhitespace()
+		let save_cursor = getpos(".")
+		let old_query = getreg('/')
+		:%s/\s\+$//e
+		call setpos('.', save_cursor)
+		call setreg('/', old_query)
+	endfunction
+	command! StripWhiteSpace :call StripWhitespace()
+
+	" Convert tabs to whitespace
+	function! TabsToWhitespace()
+		let save_cursor = getpos(".")
+		let old_query = getreg('/')
+		:%s/\t/  /e
+		call setpos('.', save_cursor)
+		call setreg('/', old_query)
+	endfunction
+	command! TabsToWhiteSpace :call TabsToWhitespace()
+
+	" strip ^M character at end of lines
+	function! StripM()
+		let save_cursor = getpos(".")
+		let old_query = getreg('/')
+		:%s/\r//g
+		call setpos('.', save_cursor)
+		call setreg('/', old_query)
+	endfunction
+	command! StripM :call StripM()
 
 	" Better '.' command
 	Plug 'tpope/vim-repeat'
-	" Mainly for 'Subvert' command coercions 'crs' for snake_case, 'crc' for camelCase, etc.
+	" Substitute, Abolish and coerce
 	Plug 'tpope/vim-abolish'
-	" Better 'ga' command
-	Plug 'tpope/vim-characterize'
-	" Common *nix commands within Vim. 'Sudo' is pretty useful
-	Plug 'tpope/vim-eunuch'
+	" strip ^M character at end of lines
+	function! CreateAbolishList()
+		:Abolish teh the
+		:Abolish hte the
+	endfunction
+	command! CreateAbolishList :call CreateAbolishList()
+	nnoremap coa :CreateAbolishList<CR>
 "}}}
 
 " Text objects, operators and motions {{{
@@ -397,45 +386,37 @@ endif
 
 	" Better surround - cs/ds/ys(to add surrounding)
 	Plug 'tpope/vim-surround'
+	let g:surround_no_mappings = 1
+	nmap ds  <Plug>Dsurround
+	nmap cs  <Plug>Csurround
+	nmap s  <Plug>Ysurround
+	nmap S  <Plug>YSurround
+	nmap ss <Plug>Yssurround
+	nmap Ss <Plug>YSsurround
+	nmap SS <Plug>YSsurround
+	xmap s   <Plug>VSurround
+	xmap S  <Plug>VgSurround
 
-	" Custom text objects
-	Plug 'kana/vim-textobj-user'
-	" Operate on comments - (operator)ic/ac/aC - doesn't work on python docstrings
-	Plug 'glts/vim-textobj-comment'
-	" Improves builtin sentence textobject for prose - (operator)is/as
-	Plug 'reedes/vim-textobj-sentence'
-	" Operate on the entire line - (operator)il/al - mostly used with custom operators
-	Plug 'kana/vim-textobj-line'
-	" Operate on the indented blocks - (operator)ii/ai
-	Plug 'kana/vim-textobj-indent'
-	" Operate on functions in variable segments (between - or _ or camelCase) - (operator)iv/av
-	Plug 'Julian/vim-textobj-variable-segment'
-	" Operate on functions in C, Java and Vim - (operator)if/af
-	Plug 'kana/vim-textobj-function'
-	" Operate on the latex objects - (operator)i$/a$, i\/a\, iq/aq, iQ/aQ, ie/ae
-	Plug 'rbonvall/vim-textobj-latex'
-	" Operate on the entire file - (operator)ia/aa
-	Plug 'kana/vim-textobj-entire'
-	let g:textobj_entire_no_default_key_mappings = 1
-	omap ia <plug>(textobj-entire-i)
-	omap aa <plug>(textobj-entire-a)
-	xmap ia <plug>(textobj-entire-i)
-	xmap aa <plug>(textobj-entire-a)
-	" Operate on URLs - (operator)iu/au
-	Plug 'mattn/vim-textobj-url'
-	" Operate on folds - (operator)iz/az
-	Plug 'kana/vim-textobj-fold'
-	" Operate on arguments - (operator)i,/a,
-	Plug 'AndrewRadev/sideways.vim'
-	nnoremap [, :SidewaysLeft<cr>
-	nnoremap ], :SidewaysRight<cr>
-	omap a, <Plug>SidewaysArgumentTextobjA
-	xmap a, <Plug>SidewaysArgumentTextobjA
-	omap i, <Plug>SidewaysArgumentTextobjI
-	xmap i, <Plug>SidewaysArgumentTextobjI
+	" Custom text objects - Operate on functions in variable segments (between - or _ or camelCase) - (operator)iv/av
+	Plug 'kana/vim-textobj-user' |  Plug 'Julian/vim-textobj-variable-segment'
+
+	" Operate on indented blocks
+	Plug 'michaeljsmith/vim-indent-object'
+
+	" Operate on entire file
+	onoremap ia :<C-u>normal! ggvG$<CR>
+	xnoremap ia :<C-u>normal! ggvG$<CR>
+	onoremap aa :<C-u>normal! ggvG$<CR>
+	xnoremap aa :<C-u>normal! ggvG$<CR>
+
+	" Operate on entire line
+	onoremap il :<C-u>normal! _vg_<CR>
+	xnoremap il :<C-u>normal! _vg_<CR>
+	onoremap al :<C-u>normal! 0v$<CR>
+	xnoremap al :<C-u>normal! 0v$<CR>
 
 	" From romainl
-	for char in [ '.', ':', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
+	for char in [ '$', ',', '_', '.', ':', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
 	    execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
 	    execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
 	    execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
@@ -445,6 +426,50 @@ endif
 	" Easy commenting - gc(motion/textobject)
 	Plug 'tpope/vim-commentary'
 	autocmd FileType matlab setlocal commentstring=%\ %s
+
+	" Easy alignment - gz operator
+	" I use it interactively
+	Plug 'junegunn/vim-easy-align'
+	xmap gz <Plug>(EasyAlign)
+	nmap gz <Plug>(EasyAlign)
+"}}}
+
+" Snippets {{{
+	Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
+	" better key bindings for UltiSnipsExpandTrigger
+	let g:UltiSnipsExpandTrigger = "<C-j>"
+	let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+	let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
+	let g:UltiSnipsListSnippets = "<C-h>"
+"}}}
+
+" Version control {{{
+	" Also adds text objects ah/ih for changeset but normal vim-diff changeset motions hold - ]([)c
+	Plug 'mhinz/vim-signify'
+	let g:signify_sign_change = '~'
+	let g:signify_vcs_list = ['git', 'svn', 'hg', 'bzr', 'perforce']
+	omap ih <Plug>(signify-motion-inner-pending)
+	xmap ih <Plug>(signify-motion-inner-visual)
+	omap ah <Plug>(signify-motion-outer-pending)
+	xmap ah <Plug>(signify-motion-outer-visual)
+	nnoremap <silent> gy :SignifyToggleHighlight<CR>
+
+	" Git Wrapper
+	Plug 'tpope/vim-fugitive'
+	autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
+	nnoremap <silent> gb :Gblame<CR>
+	" Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
+	nnoremap <silent> gl :Glog<CR>
+
+	" Gitk - I use 'gq' for formatting
+	Plug 'junegunn/gv.vim'
+	nnoremap <silent> gw :GV<CR>
+	nnoremap <silent> gww :GV!<CR>
+	vnoremap <silent> gw :GV<CR>
+
+	" Better branching and merge
+	Plug 'idanarye/vim-merginal'
+	nnoremap <silent> gm :Merginal<CR>
 "}}}
 
 " Eclim - Eclipse plus Vim {{{
@@ -459,88 +484,32 @@ endif
 	" VimCompletesMe - Minimalistic tab completion
 	Plug 'ajh17/VimCompletesMe'
 	autocmd FileType text,markdown,latex,tex let b:vcm_tab_complete = 'dict'
+	" C/C++ autocompletion
+	Plug 'justmao945/vim-clang'
+	let g:clang_c_options = '-std=gnu11'
+	let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
+	let g:clang_diagsopt = ''   " disable diagnostics
+	" Python autocompletion
+	Plug 'davidhalter/jedi-vim'
+	let g:jedi#goto_command = ""
+	let g:jedi#goto_assignments_command = ""
+	let g:jedi#goto_definitions_command = ""
+	let g:jedi#documentation_command = "K"
+	let g:jedi#usages_command = ""
+	let g:jedi#completions_command = "<C-Space>"
+	let g:jedi#rename_command = ""
 "}}}
 
-" Snippets {{{
-	Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
-	" better key bindings for UltiSnipsExpandTrigger
-	let g:UltiSnipsExpandTrigger = "<C-j>"
-	let g:UltiSnipsJumpForwardTrigger = "<C-j>"
-	let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
-	let g:UltiSnipsListSnippets = "<C-h>"
-"}}}
+" Syntax and checking {{{
+	Plug 'sheerun/vim-polyglot'
+	" LaTeX already included in polyglot
+	let g:LatexBox_Folding = 1
 
-" Interface for Semantic Navigation {{{
-	let g:unite_source_menu_menus.jumptoany= {
-		\ 'description' : 'Jump to anything',
-		\}
-	let g:unite_source_menu_menus.jumptoany.command_candidates = [
-		\['Jedi GoTo Command', 'call jedi#goto()'],
-		\['Jedi GoTo Assignment', 'call jedi#goto_assignments()'],
-		\['Jedi GoTo Definition', 'call jedi#goto_definitions()'],
-		\['Jedi Rename', 'call jedi#rename()'],
-		\['Jedi Rename Visual', 'call jedi#rename_visual()'],
-		\['Eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-		\['Eclim Project List', 'ProjectList'],
-		\['Eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-		\['Eclim Project Validate', 'Validate'],
-		\['Eclim Java New Project', 'exe "NewProjectEntry " input("project: ")'],
-		\['Eclim Java New Jar', 'exe "NewJarEntry " input("jar: ")'],
-		\['Eclim Java New Var', 'exe "NewVarEntry " input("var: ")'],
-		\['Eclim Java Create Variables', 'exe "VariableCreate " input("var: ")'],
-		\['Eclim Java Delete Variables', 'exe "VariableDelete " input("var: ")'],
-		\['Eclim Java List Variables', 'VariableList'],
-		\['Eclim Java Maven Initialize', 'MvnRepo'],
-		\['Eclim Java Maven Classpath',  'exe "Mvn " input("path: ")'],
-		\['Eclim Java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-		\['Eclim Java Search', 'exe "JavaSearch " input("string: ")'],
-		\['Eclim Java Context Search', 'JavaSearchContext'],
-		\['Eclim Java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-		\['Eclim Java Project Status', 'Jps'],
-		\['Eclim Java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-		\['Eclim Java Toggle Breakpoint', 'JavaBreakpointToggle'],
-		\['Eclim Java List Breakpoint', 'JavaBreakpointList'],
-		\['Eclim Java Remove Breakpoint', 'JavaBreakpointRemove'],
-		\['Eclim Java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-		\['Eclim Java Debug Status', 'JavaDebugStatus'],
-		\['Eclim Java Debug Suspend', 'JavaDebugThreadSuspendAll'],
-		\['Eclim Java Debug Resume', 'JavaDebugThreadResumeAll'],
-		\['Eclim Java Debug Stop', 'JavaDebugStop'],
-		\['Eclim Java Doc Comment', 'JavaDocComment'],
-		\['Eclim Java Doc Preview', 'JavaDocPreview'],
-		\['Eclim Java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-		\['Eclim Java Doc Execute', 'JavaDoc'],
-		\['Eclim Java Code Format', 'JavaFormat'],
-		\['Eclim Java Refactor Rename',  'exe "JavaRename " input("name: ")'],
-		\['Eclim Java Refactor Move',  'exe "JavaMove " input("destination: ")'],
-		\['Eclim Java Refactor Undo', 'RefactorUndo'],
-		\['Eclim Java Refactor Undo Peek', 'RefactorUndoPeek'],
-		\['Eclim Java Refactor Redo', 'RefactorRedo'],
-		\['Eclim Java Refactor Redo Peek', 'RefactorRedoPeek'],
-		\['Eclim Java Class Heirarchy', 'JavaHeirarchy'],
-		\['Eclim Java Call Heirarchy', 'JavaCallHeirarchy'],
-		\['Eclim Java Import', 'JavaImport'],
-		\['Eclim Java Import Organized', 'JavaImportOrganized'],
-		\['Eclim Java Getter', 'JavaGet'],
-		\['Eclim Java Setter', 'JavaSet'],
-		\['Eclim Java Getter and Setter', 'JavaGetSet'],
-		\['Eclim Java Override/Implement', 'JavaImpl'],
-		\['Eclim Java Delegate', 'JavaDelegate'],
-		\['Eclim Java Unit Test', 'exe "JUnit " input("testname: ")'],
-		\['Eclim Java Unit Find Test', 'JUnitFindTest'],
-		\['Eclim Java Unit Test Results', 'JUnitResult'],
-		\['Eclim Java Unit Test Stubs', 'JUnitImpl'],
-		\['Eclim Java Ant Run', 'exe "Ant " input("target: ")'],
-		\['Eclim Java Ant Doc', 'AntDoc'],
-		\['Eclim Ruby New Library', 'exe "NewLibEntry " input("library: ")'],
-		\['Eclim Ruby New Project', 'exe "NewProjectEntry " input("project: ")'],
-		\['Eclim Ruby Add Interpreter', 'exe "RubyInterpreterAdd " input("interpreter: ")'],
-		\['Eclim Ruby Remove Interpreter', 'exe "RubyInterpreterRemove " input("interpreter: ")'],
-		\['Eclim Ruby Interpreter List', 'RubyInterpreterList'],
-		\['Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
-		\['Eclim Ruby Context Search', 'RubySearchContext'],
-		\]
-	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
+	Plug 'benekastah/neomake' " Async operations for Neovim
+	nnoremap <Leader>m :Neomake<CR>
+	if has('nvim')
+	  autocmd! BufWritePost * Neomake
+	endif
 "}}}
 
 " File/Buffer navigation {{{
@@ -554,6 +523,20 @@ endif
 	" Quickfix and Location list maps
 	nnoremap <Leader>l :lopen<CR>
 	nnoremap <Leader>c :copen<CR>
+
+	" this is our 'main' function: it couldn't be simpler
+	function! MRU(arg)
+		execute 'edit ' . a:arg
+	endfunction
+	" the completion function, again it's very simple
+	function! MRUComplete(ArgLead, CmdLine, CursorPos)
+		return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
+	endfunction
+	" the actual command
+	" it accepts only one argument
+	" it's set to use the function above for completion
+	command! -nargs=1 -complete=customlist,MRUComplete MRU call MRU(<f-args>)
+	nnoremap <Leader>r :MRU<Space>
 
 	" Filter from quickfix list
 	function! GrepQuickFix(pat)
@@ -634,8 +617,9 @@ endif
 	nnoremap <silent> ]z :call NextClosedFold('j')<CR>
 	nnoremap <silent> [z :call NextClosedFold('k')<CR>
 
-	" I use 'cc' and 'cl' instead of 's' and 'S' - that seems more natural to me
-	Plug 'justinmk/vim-sneak'
+	" Common directory changes
+	command! CD cd %:p:h
+	command! LCD lcd %:p:h
 "}}}
 
 " Project management {{{
@@ -651,38 +635,174 @@ endif
 	" Traverse files within a project - create a .projections.json first
 	Plug 'tpope/vim-projectionist'
 	nnoremap <Leader><Tab> :A<CR>
-
-	" For large projects
-	Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': 'yes \| ./install'}
 "}}}
 
-" VCS changes {{{
-	" Also adds text objects ah/ih for changeset but normal vim-diff changeset motions hold - ]([)c
-	Plug 'mhinz/vim-signify'
-	let g:signify_sign_change = '~'
-	let g:signify_vcs_list = ['git', 'svn', 'hg', 'bzr', 'perforce']
-	omap ih <Plug>(signify-motion-inner-pending)
-	xmap ih <Plug>(signify-motion-inner-visual)
-	omap ah <Plug>(signify-motion-outer-pending)
-	xmap ah <Plug>(signify-motion-outer-visual)
-	nnoremap <silent> gy :SignifyToggleHighlight<CR>
+" Searching {{{
+	" Auto-center
+	nnoremap <silent> n nzz
+	nnoremap <silent> * *zz
+	nnoremap <silent> # #zz
+	nnoremap <silent> g* g*zz
+	nnoremap <silent> g# g#zz
+
+	" Ignore case sensitivity
+	set ignorecase " Can be toggled with unimpaired's 'coi'
+	set smartcase
+	" Highlight search incrementally
+	set hlsearch " Can be toggled with unimpaired's 'coh'
+	set incsearch
+	" Grep
+	set grepprg=grep\ -nH\ $*
+
+	" Search for word under visual selection
+	vnoremap * y/<C-R>"<CR>
+	vnoremap # y?<C-R>"<CR>
+
+    " Vim grepper
+	Plug 'mhinz/vim-grepper'
+    " Mimic :grep and make ag the default tool.
+	let g:grepper = {
+	  \ 'tools': ['ag', 'git', 'grep'],
+	  \ 'open':  0,
+	  \ 'jump':  1,
+	  \ }
+	" Maps
+	nnoremap <Leader>e :Grepper -tool ag -noswitch<CR>
+	nmap gs <plug>(GrepperOperator)
+	xmap gs <plug>(GrepperOperator)
 "}}}
 
-" Git {{{
-	" Wrapper
-	Plug 'tpope/vim-fugitive'
-	autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-	nnoremap <silent> gb :Gblame<CR>
-	" Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
-	nnoremap <silent> gl :Glog<CR>
+" REPL and Tmux {{{
+	let g:C_UseTool_cmake = 'yes'
+	let g:C_UseTool_doxygen = 'yes'
 
-	" Gitk
-	Plug 'gregsexton/gitv', {'on': 'Gitv'}
-	nnoremap <silent> gV :Gitv<CR>
+	" Go to normal mode
+	if has('nvim')
+		tnoremap <C-g> <C-\><C-n>
+	endif
 
-	" Extend the merge and branch commands
-	Plug 'idanarye/vim-merginal'
-	nnoremap <silent> gm :MerginalToggle<CR>
+	" Dispatch stuff
+	Plug 'tpope/vim-dispatch'
+	nnoremap <silent> <Leader>v :Copen<CR>
+	nnoremap <Leader>h :Dispatch!<Space>
+
+	" Launch appropriate REPL
+	Plug 'jebaum/vim-tmuxify'
+	let g:tmuxify_map_prefix = '<Leader>s'
+	let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
+	let g:tmuxify_run = {
+				\ 'sh': 'bash %',
+				\ 'go': 'go build %',
+				\ 'R': 'R',
+				\ 'matlab': 'matlab',
+				\ 'scheme': 'racket',
+				\ 'python': 'ipython',
+				\ 'julia': 'julia',
+				\}
+
+	" Zoom and split when in Tmux(>v1.8)
+	if exists('$TMUX')
+		nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
+		nnoremap <silent> + :call system("tmux split-window -h")<CR>
+		nnoremap <silent> - :call system("tmux split-window -v")<CR>
+	endif
+"}}}
+
+" Stop plugin installation
+call plug#end()
+
+" Enable fuzzy matching and sorting in all Unite functions
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+
+" Interfaces/Menus - The best part of Unite {{{
+	" Interface for OS interaction
+	let g:unite_source_menu_menus.osinteract = {
+		\ 'description' : 'OS interaction and configs',
+		\}
+	let g:unite_source_menu_menus.osinteract.command_candidates = [
+		\[' generate tags in buffer dir', 'cd %:p:h | Dispatch! ctags -R .'],
+		\[' cd to buffer directory', 'CD'],
+		\[' cd to project directory', 'Rooter'],
+		\[' create .projections.json', 'e .projections.json'],
+		\[' Source vimrc', 'so $MYVIMRC'],
+		\[' Edit vimrc', 'e $MYVIMRC'],
+		\[' Highlight local indent', 'LocalIndentGuide +hl'],
+		\[' Unhighlight local indent', 'LocalIndentGuide -hl'],
+		\]
+	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
+
+	" Interface for Eclim and Jedi
+	let g:unite_source_menu_menus.jumptoany= {
+		\ 'description' : 'Jump to anything',
+		\}
+	let g:unite_source_menu_menus.jumptoany.command_candidates = [
+		\['Jedi GoTo Command', 'call jedi#goto()'],
+		\['Jedi GoTo Assignment', 'call jedi#goto_assignments()'],
+		\['Jedi GoTo Definition', 'call jedi#goto_definitions()'],
+		\['Jedi Rename', 'call jedi#rename()'],
+		\['Jedi Rename Visual', 'call jedi#rename_visual()'],
+		\['Eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+		\['Eclim Project List', 'ProjectList'],
+		\['Eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+		\['Eclim Project Validate', 'Validate'],
+		\['Eclim Java New Project', 'exe "NewProjectEntry " input("project: ")'],
+		\['Eclim Java New Jar', 'exe "NewJarEntry " input("jar: ")'],
+		\['Eclim Java New Var', 'exe "NewVarEntry " input("var: ")'],
+		\['Eclim Java Create Variables', 'exe "VariableCreate " input("var: ")'],
+		\['Eclim Java Delete Variables', 'exe "VariableDelete " input("var: ")'],
+		\['Eclim Java List Variables', 'VariableList'],
+		\['Eclim Java Maven Initialize', 'MvnRepo'],
+		\['Eclim Java Maven Classpath',  'exe "Mvn " input("path: ")'],
+		\['Eclim Java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+		\['Eclim Java Search', 'exe "JavaSearch " input("string: ")'],
+		\['Eclim Java Context Search', 'JavaSearchContext'],
+		\['Eclim Java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+		\['Eclim Java Project Status', 'Jps'],
+		\['Eclim Java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+		\['Eclim Java Toggle Breakpoint', 'JavaBreakpointToggle'],
+		\['Eclim Java List Breakpoint', 'JavaBreakpointList'],
+		\['Eclim Java Remove Breakpoint', 'JavaBreakpointRemove'],
+		\['Eclim Java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+		\['Eclim Java Debug Status', 'JavaDebugStatus'],
+		\['Eclim Java Debug Suspend', 'JavaDebugThreadSuspendAll'],
+		\['Eclim Java Debug Resume', 'JavaDebugThreadResumeAll'],
+		\['Eclim Java Debug Stop', 'JavaDebugStop'],
+		\['Eclim Java Doc Comment', 'JavaDocComment'],
+		\['Eclim Java Doc Preview', 'JavaDocPreview'],
+		\['Eclim Java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+		\['Eclim Java Doc Execute', 'JavaDoc'],
+		\['Eclim Java Code Format', 'JavaFormat'],
+		\['Eclim Java Refactor Rename',  'exe "JavaRename " input("name: ")'],
+		\['Eclim Java Refactor Move',  'exe "JavaMove " input("destination: ")'],
+		\['Eclim Java Refactor Undo', 'RefactorUndo'],
+		\['Eclim Java Refactor Undo Peek', 'RefactorUndoPeek'],
+		\['Eclim Java Refactor Redo', 'RefactorRedo'],
+		\['Eclim Java Refactor Redo Peek', 'RefactorRedoPeek'],
+		\['Eclim Java Class Heirarchy', 'JavaHeirarchy'],
+		\['Eclim Java Call Heirarchy', 'JavaCallHeirarchy'],
+		\['Eclim Java Import', 'JavaImport'],
+		\['Eclim Java Import Organized', 'JavaImportOrganized'],
+		\['Eclim Java Getter', 'JavaGet'],
+		\['Eclim Java Setter', 'JavaSet'],
+		\['Eclim Java Getter and Setter', 'JavaGetSet'],
+		\['Eclim Java Override/Implement', 'JavaImpl'],
+		\['Eclim Java Delegate', 'JavaDelegate'],
+		\['Eclim Java Unit Test', 'exe "JUnit " input("testname: ")'],
+		\['Eclim Java Unit Find Test', 'JUnitFindTest'],
+		\['Eclim Java Unit Test Results', 'JUnitResult'],
+		\['Eclim Java Unit Test Stubs', 'JUnitImpl'],
+		\['Eclim Java Ant Run', 'exe "Ant " input("target: ")'],
+		\['Eclim Java Ant Doc', 'AntDoc'],
+		\['Eclim Ruby New Library', 'exe "NewLibEntry " input("library: ")'],
+		\['Eclim Ruby New Project', 'exe "NewProjectEntry " input("project: ")'],
+		\['Eclim Ruby Add Interpreter', 'exe "RubyInterpreterAdd " input("interpreter: ")'],
+		\['Eclim Ruby Remove Interpreter', 'exe "RubyInterpreterRemove " input("interpreter: ")'],
+		\['Eclim Ruby Interpreter List', 'RubyInterpreterList'],
+		\['Eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
+		\['Eclim Ruby Context Search', 'RubySearchContext'],
+		\]
+	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 
 	" Interface for Git
 	let g:unite_source_menu_menus.git = {
@@ -715,246 +835,46 @@ endif
 		\[' git grep',  'exe "Ggrep " input("string: ")'],
 		\[' git prompt', 'exe "Git! " input("command: ")'],
 		\] " Append ' --' after log to get commit info commit buffers
-	nnoremap <silent> <Leader>g :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
-"}}}
+	nnoremap <silent> <Leader>o :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
 
-" Searching {{{
-	" Auto-center
-	nnoremap <silent> n nzz
-	nnoremap <silent> * *zz
-	nnoremap <silent> # #zz
-	nnoremap <silent> g* g*zz
-	nnoremap <silent> g# g#zz
-
-	" Ignore case sensitivity
-	set ignorecase " Can be toggled with unimpaired's 'coi'
-	set smartcase
-	" Highlight search incrementally
-	set hlsearch " Can be toggled with unimpaired's 'coh'
-	set incsearch
-	" Grep
-	set grepprg=grep\ -nH\ $*
-
-	" '*' in visual mode
-	Plug 'thinca/vim-visualstar'
-"}}}
-
-" Grep {{{
-    " Vim grepper
-	Plug 'mhinz/vim-grepper'
-    " Mimic :grep and make ag the default tool.
-	let g:grepper = {
-	  \ 'tools': ['ag', 'git', 'grep'],
-	  \ 'open':  0,
-	  \ 'jump':  1,
-	  \ }
-	" Maps
-	nnoremap <Leader>e :Grepper -tool ag -noswitch<CR>
-	nmap gs <plug>(GrepperOperator)
-	xmap gs <plug>(GrepperOperator)
-"}}}
-
-" Languages/Syntax {{{
-	" Covers most cases with auto-loading
-	Plug 'sheerun/vim-polyglot'
-	" C/C++ autocompletion
-	Plug 'justmao945/vim-clang'
-	let g:clang_c_options = '-std=gnu11'
-	let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
-	let g:clang_diagsopt = ''   " disable diagnostics
-	" Python autocompletion
-	Plug 'davidhalter/jedi-vim'
-	let g:jedi#goto_command = ""
-	let g:jedi#goto_assignments_command = ""
-	let g:jedi#goto_definitions_command = ""
-	let g:jedi#documentation_command = "K"
-	let g:jedi#usages_command = ""
-	let g:jedi#completions_command = "<C-Leader>"
-	let g:jedi#rename_command = ""
-	" LaTeX already included in polyglot
-	let g:LatexBox_Folding = 1
-	" Prose
-	Plug 'reedes/vim-wordy'
-	nnoremap [k :PrevWordy<CR>
-	nnoremap ]k :NextWordy<CR>
-"}}}
-
-" Syntax checking {{{
-	Plug 'benekastah/neomake' " Async operations for Neovim
-	nnoremap <Leader>= :Neomake!<CR>
-	if has('nvim')
-	  autocmd! BufWritePost * Neomake
-	endif
-"}}}
-
-" Interface for markdown/pandoc {{{
-	" Easy alignment - gz operator
-	" I use it interactively
-	Plug 'junegunn/vim-easy-align'
-	xmap gz <Plug>(EasyAlign)
-	nmap gz <Plug>(EasyAlign)
-
-	" Interface for pandoc commands
-	let g:unite_source_menu_menus.mdpandoc = {
-		\ 'description' : 'Pandoc and Markdown interface',
-		\}
-	let g:unite_source_menu_menus.mdpandoc.command_candidates = [
-		\[' tex word count', 'Dispatch! texcount %'],
-		\[' notes', 'VimFiler ~/Dropbox/notes'],
-		\[' mdpandoc dispatch pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
-		\[' mdpandoc dispatch org', 'Dispatch! pandoc % -o (%:r).org'],
-		\[' mdpandoc dispatch rst', 'Dispatch! pandoc % -o (%:r).rst'],
-		\[' mdpandoc dispatch latex', 'Dispatch! pandoc % -o (%:r).tex'],
-		\[' mdpandoc dispatch epub3', 'Dispatch! pandoc % -o (%:r).epub'],
-		\[' mdpandoc dispatch html5', 'Dispatch! pandoc % -o (%:r).html'],
-		\[' Wordy weak', 'Wordy weak'],
-		\[' Wordy redundant', 'Wordy redundant'],
-		\[' Wordy problematic', 'Wordy problematic'],
-		\[' Wordy weasel', 'Wordy weasel'],
-		\[' Wordy puffery', 'Wordy puffery'],
-		\[' Wordy business', 'Wordy business-jargon'],
-		\[' Wordy art', 'Wordy art-jargon'],
-		\[' Wordy passive', 'Wordy passive-voice'],
-		\[' Wordy being', 'Wordy being'],
-		\[' Wordy colloquial', 'Wordy colloquial'],
-		\[' Wordy idiomatic', 'Wordy idiomatic'],
-		\[' Wordy similies', 'Wordy similies'],
-		\[' Wordy opinions', 'Wordy opinions'],
-		\[' Wordy contractions', 'Wordy contractions'],
-		\[' Wordy synonyms', 'Wordy said-synonyms'],
-		\[' Wordy vague', 'Wordy vague-time'],
-		\[' Table csv to table', 'Tableize'],
-		\[' Table delimiter to table', 'exe "Tableize/" input("delimiter: ") '],
-		\[' Table add formula', 'TableAddFormula'],
-		\[' Table evaluate formula', 'TableEvalFormulaLine'],
-		\]
-	nnoremap <silent> <Leader>o :Unite -silent -buffer-name=mdpandoc -direction=botright -start-insert menu:mdpandoc<CR>
-"}}}
-
-" REPL {{{
-	let g:C_UseTool_cmake = 'yes'
-	let g:C_UseTool_doxygen = 'yes'
-
-	" Go to normal mode
-	if has('nvim')
-		tnoremap <C-g> <C-\><C-n>
-	endif
-
-	" Awesome 'async' substitute - useful when in Tmux
-	Plug 'tpope/vim-dispatch'
-	nnoremap <Leader>v :Copen<CR>
-	nnoremap <Leader>i :Dispatch!<Space>
-
-	" Compilation menu
-	let g:unite_source_menu_menus.umake = {
-		\ 'description' : 'Compilation menu',
-		\} " Note that Neomake is already plugged in near syntastic
-	let g:unite_source_menu_menus.umake.command_candidates = [
-	\[' Dispatch! g++ make', 'Dispatch! make'],
-	\[' Dispatch! g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -g %'],
-	\[' Dispatch! g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' Dispatch! g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -g %'],
-	\[' Dispatch! g++ hybrid', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' Dispatch! gcc make', 'Dispatch! make'],
-	\[' Dispatch! gcc single', 'Dispatch! gcc! -Wall -lgsl -lcblas -llapack -g %'],
-	\[' Dispatch! gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' Dispatch! gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
-	\[' Dispatch! gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-	\[' Eclim Java', 'Java'],
-	\]
-	nnoremap <silent> <Leader>m :Unite -direction=botright -buffer-name=umake -start-insert menu:umake<CR>
-"}}}
-
-" Tmux stuff {{{
-	" Launch appropriate REPL
-	Plug 'benmills/vimux'
-
-	" Interface for common shell commands
-	let g:unite_source_menu_menus.common = {
-		\ 'description' : 'Common shell commands',
-		\}
-	let g:unite_source_menu_menus.common.command_candidates = [
-		\[' matlab dbcont', 'call VimuxRunCommand("dbcont",1)'],
-		\[' matlab dbstep', 'call VimuxRunCommand("dbstep",1)'],
-		\[' matlab dbstop', 'exe "VimuxRunCommand(\"dbstop at" input("line: ") "in" input("file: ")"\",1)"'],
-		\[' matlab dbstatus', 'call VimuxRunCommand("dbstatus",1)'],
-		\[' matlab dbclear all', 'call VimuxRunCommand("dbclear all",1)'],
-		\[' matlab dbquit', 'call VimuxRunCommand("dbquit",1)'],
-		\[' matlab workspace', 'call VimuxRunCommand("workspace",1)'],
-		\[' matlab clc', 'call VimuxRunCommand("clc",1)'],
-		\[' cpp default', 'call VimuxRunCommand("./a.out",1)'],
-		\[' cpp exe', 'exe"VimuxRunCommand(\"./"input("file: ")"\",1)"'],
-		\[' cpp fpe', 'call VimuxRunCommand("./FPE.exe",1)'],
-		\[' shell clear', 'call VimuxRunCommand("clear",1)'],
-		\]
-	nnoremap <silent> <Leader>h :Unite -direction=botright -silent -buffer-name=common -start-insert menu:common<CR>
-
-	" Interface for Tmux and Vimux
-	let g:unite_source_menu_menus.tmux = {
-		\ 'description' : 'Tmux interaction',
-		\}
-	let g:unite_source_menu_menus.tmux.command_candidates = [
-		\[' vimux run command', 'exe "VimuxRunCommand(\"" input("command: ") "\")"'],
-		\[' vimux last command', 'VimuxRunLastCommand'],
-		\[' vimux run R', 'call VimuxRunCommandInDir("R",0)'],
-		\[' vimux run julia', 'call VimuxRunCommandInDir("julia",0)'],
-		\[' vimux run matlab', 'call VimuxRunCommandInDir("matlab",0)'],
-		\[' vimux run scheme', 'call VimuxRunCommandInDir("racket",0)'],
-		\[' vimux run python', 'call VimuxRunCommandInDir("ipython",0)'],
-		\[' vimux run shell', 'call VimuxRunCommandInDir("pwd",0)'],
-		\[' vimux runner zoom', 'VimuxZoomRunner'],
-		\[' tmux list sessions', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-sessions'],
-		\[' tmux list windows', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-windows'],
-		\[' tmux list panes', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-panes'],
-		\[' tmux list clients', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-clients'],
-		\[' tmux list keys', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-keys'],
-		\[' tmux list commands', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-commands'],
-		\[' tmux list buffers', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:list-buffers'],
-		\[' tmux show buffer', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-buffer'],
-		\[' tmux show options', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-options'],
-		\[' tmux show window options', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-window-options'],
-		\[' tmux show environment', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-environment'],
-		\[' tmux show messages', 'Unite -silent -buffer-name=tmux output/shellcmd:tmux:show-messages'],
-		\]
-	nnoremap <silent> <Leader>t :Unite -direction=botright -silent -buffer-name=tmux -start-insert menu:tmux<CR>
-
-	" Send to Tmux - super useful
-	Plug 'jpalardy/vim-slime'
-	let g:slime_target = "tmux"
-	let g:slime_python_ipython = 1
-	nnoremap <silent> <Leader>s :SlimeSend<CR>
-	vnoremap <silent> <Leader>s :SlimeSend<CR>
-
-	" Zoom and split when in Tmux(>v1.8)
-	if exists('$TMUX')
-		nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
-		nnoremap <silent> + :call system("tmux split-window -h")<CR>
-		nnoremap <silent> - :call system("tmux split-window -v")<CR>
-	endif
-"}}}
-
-call plug#end()
-
-" Enable fuzzy matching and sorting in all Unite functions
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-
-" More Unite menus {{{
-	" Interface for OS interaction
-	let g:unite_source_menu_menus.osinteract = {
-		\ 'description' : 'OS interaction and configs',
-		\}
-	let g:unite_source_menu_menus.osinteract.command_candidates = [
-		\[' generate tags in buffer dir', 'cd %:p:h | Dispatch! ctags -R .'],
-		\[' cd to buffer directory', 'cd %:p:h'],
-		\[' cd to project directory', 'Rooter'],
-		\[' create .projections.json', 'cd %:p:h | e .projections.json'],
-		\[' Source vimrc', 'so $MYVIMRC'],
-		\[' Edit vimrc', 'e $MYVIMRC'],
-		\[' Current iTunes Song', 'Unite -silent -buffer-name=itunes output/shellcmd:osascript:~/applescripts/itunes.scpt'],
-		\[' Colors', 'exe "colorscheme "'],
-		\]
-	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
+	" Interface for common Dispatch commands
+	let g:unite_source_menu_menus.dispatch = {
+				\ 'description' : 'dispatch interaction',
+				\}
+	let g:unite_source_menu_menus.dispatch.command_candidates = [
+				\[' tex word count', 'Dispatch! texcount %'],
+				\[' ctags in current dir', 'Dispatch! ctags -R .'],
+				\[' mdpandoc dispatch pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
+				\[' mdpandoc dispatch org', 'Dispatch! pandoc % -o (%:r).org'],
+				\[' mdpandoc dispatch rst', 'Dispatch! pandoc % -o (%:r).rst'],
+				\[' mdpandoc dispatch latex', 'Dispatch! pandoc % -o (%:r).tex'],
+				\[' mdpandoc dispatch epub3', 'Dispatch! pandoc % -o (%:r).epub'],
+				\[' mdpandoc dispatch html5', 'Dispatch! pandoc % -o (%:r).html'],
+				\[' g++ make', 'Dispatch! make'],
+				\[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -g %'],
+				\[' g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
+				\[' g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -g %'],
+				\[' g++ hybrid', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
+				\[' gcc make', 'Dispatch! make'],
+				\[' gcc single', 'Dispatch! gcc! -Wall -lgsl -lcblas -llapack -g %'],
+				\[' gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
+				\[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
+				\[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
+				\[' tmux list sessions', 'Dispatch! tmux list-sessions'],
+				\[' tmux list windows', 'Dispatch! tmux list-windows'],
+				\[' tmux list panes', 'Dispatch! tmux list-panes'],
+				\[' tmux list clients', 'Dispatch! tmux list-clients'],
+				\[' tmux list keys', 'Dispatch! tmux list-keys'],
+				\[' tmux list commands', 'Dispatch! tmux list-commands'],
+				\[' tmux list buffers', 'Dispatch! tmux list-buffers'],
+				\[' tmux show buffer', 'Dispatch! tmux show-buffer'],
+				\[' tmux show options', 'Dispatch! tmux show-options'],
+				\[' tmux show window options', 'Dispatch! tmux show-window-options'],
+				\[' tmux show environment', 'Dispatch! tmux show-environment'],
+				\[' tmux show messages', 'Dispatch! tmux show-messages'],
+				\[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
+				\]
+	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
 "}}}
 
 " Setup plugins, indents and syntax
