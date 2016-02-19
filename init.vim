@@ -116,6 +116,17 @@ endif
 	inoremap <silent> <C-f> <right>
 	inoremap <silent> <C-b> <left>
 
+	" Complete tags - don't use if you need (but why?) C-]
+	inoremap <silent> <C-]> <C-x><C-]>
+	" Omnicomplete - don't use this if you need C-o
+	inoremap <silent> <C-o> <C-x><C-o>
+	" Dictionary - don't use this if you need C-l
+	inoremap <silent> <C-l> <C-x><C-k>
+	" Usercomplete - don't use this if you need C-u
+	inoremap <silent> <C-u> <C-x><C-u>
+	" Tab scrolling
+	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
 	" Toggle few options - inspired by unimpaired
 	nnoremap con :<C-u>setlocal number!<CR>
 	nnoremap cor :<C-u>setlocal relativenumber!<CR>
@@ -232,8 +243,7 @@ endif
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
 	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file_rec file/new<CR>
-	nnoremap <silent> <Leader>n :cd ~/Dropbox/notes <bar> Unite -buffer-name=notes directory file<CR>
-	inoremap <C-l> <C-o>:Unite -buffer-name=snippets -start-insert ultisnips<CR>
+	nnoremap <silent> <Leader>n :Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 	" Outline
 	Plug 'Shougo/neoyank.vim'
@@ -435,7 +445,8 @@ endif
 	let g:UltiSnipsExpandTrigger = "<C-j>"
 	let g:UltiSnipsJumpForwardTrigger = "<C-j>"
 	let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
-	let g:UltiSnipsListSnippets = "<C-h>"
+	" C-Q gets the same behavior as C-v based on terminals
+	let g:UltiSnipsListSnippets = "<C-v>"
 "}}}
 
 " Version control {{{
@@ -476,9 +487,6 @@ endif
 "}}}
 
 " Autocompletion {{{
-	" VimCompletesMe - Minimalistic tab completion
-	Plug 'ajh17/VimCompletesMe'
-	autocmd FileType text,markdown,latex,tex let b:vcm_tab_complete = 'dict'
 	" C/C++ autocompletion
 	Plug 'justmao945/vim-clang'
 	let g:clang_c_options = '-std=gnu11'
@@ -493,22 +501,24 @@ endif
 	let g:jedi#usages_command = ""
 	let g:jedi#completions_command = "<C-Space>"
 	let g:jedi#rename_command = ""
-	" C/C++/Obj C completion and awesome navigation
-	Plug 'lyuts/vim-rtags'
-	let g:rtagsUseDefaultMappings = 0
-	let g:rtagsUseLocationList = 0
-	let g:rtagsMinCharsForCommandCompletion = 2
 "}}}
 
-" Syntax and checking {{{
-	" Syntax for LOTS of languages with auto-loading
+" Language helpers {{{
+	" Auto-complete and nicities for many languages
 	Plug 'sheerun/vim-polyglot'
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
 
+	" C/C++/ObjC indexer (for cmake projects)
+	Plug 'lyuts/vim-rtags'
+	let g:rtagsUseDefaultMappings = 0
+	let g:rtagsUseLocationList = 0
+	let g:rtagsMinCharsForCommandCompletion = 2
+
 	" Vimscript
 	Plug 'tpope/vim-scriptease'
-
+"}}}
+" Syntax checking {{{
 	Plug 'benekastah/neomake' " Async operations for Neovim
 	nnoremap <Leader>m :Neomake<CR>
 	if has('nvim')
@@ -744,6 +754,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' Edit vimrc', 'e $MYVIMRC'],
 		\[' Highlight local indent', 'LocalIndentGuide +hl'],
 		\[' Unhighlight local indent', 'LocalIndentGuide -hl'],
+		\[' Notes', 'cd ~/Dropbox/notes | Unite -buffer-name=notes directory file'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
