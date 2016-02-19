@@ -364,6 +364,8 @@ endif
 
 	" Better '.' command
 	Plug 'tpope/vim-repeat'
+	" Common *nix commands
+	Plug 'tpope/vim-eunuch'
 	" Substitute, Abolish and coerce
 	Plug 'tpope/vim-abolish'
 	" strip ^M character at end of lines
@@ -397,10 +399,14 @@ endif
 	xmap s   <Plug>VSurround
 	xmap S  <Plug>VgSurround
 
-	" Custom text objects - Operate on functions in variable segments (between - or _ or camelCase) - (operator)iv/av
-	Plug 'kana/vim-textobj-user' |  Plug 'Julian/vim-textobj-variable-segment'
+	" Custom text objects
+	Plug 'kana/vim-textobj-user'
+	" Operate on functions in variable segments (between - or _ or camelCase) - (operator)iv/av
+	Plug 'Julian/vim-textobj-variable-segment'
+	" Operate on functions in function blocks - (operator)if/af/iF/aF
+	Plug 'sriramkswamy/vim-textobj-function'
 
-	" Operate on indented blocks
+	" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
 	Plug 'michaeljsmith/vim-indent-object'
 
 	" Operate on entire file
@@ -461,6 +467,10 @@ endif
 	" Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
 	nnoremap <silent> gl :Glog<CR>
 
+	" Magit like status
+	Plug 'jreybert/vimagit'
+	let g:magit_show_magit_mapping='<Leader>g'
+
 	" Gitk - I use 'gq' for formatting
 	Plug 'junegunn/gv.vim'
 	nnoremap <silent> gw :GV<CR>
@@ -501,9 +511,13 @@ endif
 "}}}
 
 " Syntax and checking {{{
+	" Syntax for LOTS of languages with auto-loading
 	Plug 'sheerun/vim-polyglot'
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
+
+	" Vimscript
+	Plug 'tpope/vim-scriptease'
 
 	Plug 'benekastah/neomake' " Async operations for Neovim
 	nnoremap <Leader>m :Neomake<CR>
@@ -658,6 +672,17 @@ endif
 	vnoremap * y/<C-R>"<CR>
 	vnoremap # y?<C-R>"<CR>
 
+	" Vim anzu - integrates with Unite too
+	Plug 'osyo-manga/vim-anzu'
+	" mapping
+	nmap n <Plug>(anzu-n-with-echo)
+	nmap N <Plug>(anzu-N-with-echo)
+	nmap * <Plug>(anzu-star-with-echo)
+	nmap # <Plug>(anzu-sharp-with-echo)
+	" clear status
+	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
+	nnoremap <Leader>h :Unite -buffer-name=anzu -direction=botright -horizontal -winheight=10 anzu<CR>
+
     " Vim grepper
 	Plug 'mhinz/vim-grepper'
     " Mimic :grep and make ag the default tool.
@@ -684,7 +709,7 @@ endif
 	" Dispatch stuff
 	Plug 'tpope/vim-dispatch'
 	nnoremap <silent> <Leader>v :Copen<CR>
-	nnoremap <Leader>h :Dispatch!<Space>
+	nnoremap <Leader>sd :Dispatch!<Space>
 
 	" Launch appropriate REPL
 	Plug 'jebaum/vim-tmuxify'
@@ -806,18 +831,17 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 
 	" Interface for Git
 	let g:unite_source_menu_menus.git = {
-		\ 'description' : 'Fugitive interface',
+		\ 'description' : 'Git interface',
 		\}
 	let g:unite_source_menu_menus.git.command_candidates = [
-		\[' git status', 'Gstatus'],
 		\[' git diff', 'Gvdiff'],
-		\[' git commit', 'Gcommit'],
 		\[' git stage/add', 'Gwrite'],
+		\[' git commit', 'Gcommit'],
 		\[' git checkout', 'Gread'],
 		\[' git rm', 'Gremove'],
 		\[' git cd', 'Gcd'],
-		\[' git push', 'Dispatch! git push -u origin'],
-		\[' git pull', 'Dispatch! git pull -u origin'],
+		\[' git push', 'Gpush'],
+		\[' git pull', 'Gpull'],
 		\[' git fetch', 'Gfetch'],
 		\[' git merge', 'Gmerge'],
 		\[' git browse', 'Gbrowse'],
@@ -837,6 +861,38 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\] " Append ' --' after log to get commit info commit buffers
 	nnoremap <silent> <Leader>o :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
 
+	" Interface for Tmux pane jumping
+	let g:unite_source_menu_menus.tmuxify = {
+		\ 'description' : 'Tmux jump to panes',
+		\}
+	let g:unite_source_menu_menus.tmuxify.command_candidates = [
+		\[' 0:1.1', 'TxSetPane 0:1.1'],
+		\[' 0:1.2', 'TxSetPane 0:1.2'],
+		\[' 0:1.3', 'TxSetPane 0:1.3'],
+		\[' 0:1.4', 'TxSetPane 0:1.4'],
+		\[' 0:2.1', 'TxSetPane 0:2.1'],
+		\[' 0:2.2', 'TxSetPane 0:2.2'],
+		\[' 0:2.3', 'TxSetPane 0:2.3'],
+		\[' 0:2.4', 'TxSetPane 0:2.4'],
+		\[' 0:3.1', 'TxSetPane 0:3.1'],
+		\[' 0:3.2', 'TxSetPane 0:3.2'],
+		\[' 0:3.3', 'TxSetPane 0:3.3'],
+		\[' 0:3.4', 'TxSetPane 0:3.4'],
+		\[' 1:1.1', 'TxSetPane 1:1.1'],
+		\[' 1:1.2', 'TxSetPane 1:1.2'],
+		\[' 1:1.3', 'TxSetPane 1:1.3'],
+		\[' 1:1.4', 'TxSetPane 1:1.4'],
+		\[' 1:2.1', 'TxSetPane 1:2.1'],
+		\[' 1:2.2', 'TxSetPane 1:2.2'],
+		\[' 1:2.3', 'TxSetPane 1:2.3'],
+		\[' 1:2.4', 'TxSetPane 1:2.4'],
+		\[' 1:3.1', 'TxSetPane 1:3.1'],
+		\[' 1:3.2', 'TxSetPane 1:3.2'],
+		\[' 1:3.3', 'TxSetPane 1:3.3'],
+		\[' 1:3.4', 'TxSetPane 1:3.4'],
+		\]
+	nnoremap <silent> <Leader>sj :Unite -direction=botright -silent -buffer-name=tmuxify -start-insert menu:tmuxify<CR>
+
 	" Interface for common Dispatch commands
 	let g:unite_source_menu_menus.dispatch = {
 				\ 'description' : 'dispatch interaction',
@@ -844,12 +900,12 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 	let g:unite_source_menu_menus.dispatch.command_candidates = [
 				\[' tex word count', 'Dispatch! texcount %'],
 				\[' ctags in current dir', 'Dispatch! ctags -R .'],
-				\[' mdpandoc dispatch pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
-				\[' mdpandoc dispatch org', 'Dispatch! pandoc % -o (%:r).org'],
-				\[' mdpandoc dispatch rst', 'Dispatch! pandoc % -o (%:r).rst'],
-				\[' mdpandoc dispatch latex', 'Dispatch! pandoc % -o (%:r).tex'],
-				\[' mdpandoc dispatch epub3', 'Dispatch! pandoc % -o (%:r).epub'],
-				\[' mdpandoc dispatch html5', 'Dispatch! pandoc % -o (%:r).html'],
+				\[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
+				\[' pandoc org', 'Dispatch! pandoc % -o (%:r).org'],
+				\[' pandoc rst', 'Dispatch! pandoc % -o (%:r).rst'],
+				\[' pandoc latex', 'Dispatch! pandoc % -o (%:r).tex'],
+				\[' pandoc epub3', 'Dispatch! pandoc % -o (%:r).epub'],
+				\[' pandoc html5', 'Dispatch! pandoc % -o (%:r).html'],
 				\[' g++ make', 'Dispatch! make'],
 				\[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -g %'],
 				\[' g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
@@ -860,6 +916,10 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 				\[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
 				\[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
+				\[' git push master', 'Dispatch! git push -u origin master'],
+				\[' git pull master', 'Dispatch! git pull -u origin master'],
+				\[' git push branch', 'exe "Dispatch! git push -u origin" input("branch: ")'],
+				\[' git pull branch', 'exe "Dispatch! git pull -u origin" input("branch: ")'],
 				\[' tmux list sessions', 'Dispatch! tmux list-sessions'],
 				\[' tmux list windows', 'Dispatch! tmux list-windows'],
 				\[' tmux list panes', 'Dispatch! tmux list-panes'],
