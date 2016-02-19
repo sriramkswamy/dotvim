@@ -190,21 +190,10 @@ endif
 	set statusline+=%*
 
 	set statusline+=%=      "left/right separator
-	set statusline+=%{StatuslineCurrentHighlight()}\ \ "current highlight
 	set statusline+=%c,     "cursor column
 	set statusline+=%l      "cursor line/total lines
 	set statusline+=\ %P    "percent through file
 	set laststatus=2
-
-	"return the syntax highlight group under the cursor ''
-	function! StatuslineCurrentHighlight()
-	  let name = synIDattr(synID(line('.'),col('.'),1),'name')
-	  if name == ''
-		return ''
-	  else
-		return '[' . name . ']'
-	  endif
-	endfunction
 
 	"return '[\s]' if trailing white space is detected
 	"return '' otherwise
@@ -746,7 +735,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\ 'description' : 'OS interaction and configs',
 		\}
 	let g:unite_source_menu_menus.osinteract.command_candidates = [
-		\[' generate tags in buffer dir', 'cd %:p:h | Dispatch! ctags -R .'],
+		\[' lcd to buffer directory', 'LCD'],
 		\[' cd to buffer directory', 'CD'],
 		\[' cd to project directory', 'Rooter'],
 		\[' create .projections.json', 'e .projections.json'],
@@ -900,6 +889,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 	let g:unite_source_menu_menus.dispatch.command_candidates = [
 				\[' tex word count', 'Dispatch! texcount %'],
 				\[' ctags in current dir', 'Dispatch! ctags -R .'],
+				\[' ctags in buffer dir', 'CD | Dispatch! ctags -R .'],
 				\[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
 				\[' pandoc org', 'Dispatch! pandoc % -o (%:r).org'],
 				\[' pandoc rst', 'Dispatch! pandoc % -o (%:r).rst'],
