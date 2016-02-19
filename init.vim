@@ -474,7 +474,7 @@ endif
 	" Gitk - I use 'gq' for formatting
 	Plug 'junegunn/gv.vim'
 	nnoremap <silent> gw :GV<CR>
-	nnoremap <silent> gww :GV!<CR>
+	nnoremap <silent> gW :GV!<CR>
 	vnoremap <silent> gw :GV<CR>
 
 	" Better branching and merge
