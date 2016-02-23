@@ -439,7 +439,7 @@ snippet cu "curl" i
 \nabla \times {$1}$0
 endsnippet
 
-snippet timess "times" i
+snippet xs "times" i
 \times $0
 endsnippet
 
@@ -479,11 +479,15 @@ snippet emp "emphasize" i
 \emph{$1}$0
 endsnippet
 
-snippet texbf "boldface" i
+snippet bf "boldface" i
 \textbf{$1}$0
 endsnippet
 
-snippet textt "typewriter" i
+snippet it "italic" i
+\textit{$1}$0
+endsnippet
+
+snippet tt "typewriter" i
 \texttt{$1}$0
 endsnippet
 
@@ -532,6 +536,10 @@ endsnippet
 
 snippet sum "summation" i
 \sum\limits_{$1}^{$2} {$3} $0
+endsnippet
+
+snippet prod "product" i
+\prod\limits_{$1}^{$2} {$3} $0
 endsnippet
 
 snippet ve "vector" i
@@ -624,6 +632,14 @@ endsnippet
 
 snippet ssb "scaled curly brackets" i
 \left{ $1 \right}$0
+endsnippet
+
+snippet ssa "scaled angles" i
+\langle $1 \rangle$0
+endsnippet
+
+snippet ssd "scaled double bar" i
+\left| $1 \right|$0
 endsnippet
 
 snippet rt "square root" i
@@ -877,4 +893,36 @@ snippet mat "matrix"
 $1
 \end{bmatrix}
 $0
+endsnippet
+
+snippet cal "mathcal" i
+\mathcal{$1}$0
+endsnippet
+
+snippet bb "mathbb" i
+\mathbb{$1}$0
+endsnippet
+
+snippet bs "boldsymbol" i
+\boldsymbol{$1}$0
+endsnippet
+
+snippet bigo "bigotimes" i
+\bigotimes\limits_{$1}^{$2} {$3} $0
+endsnippet
+
+snippet oti "otimes" i
+\otimes $0
+endsnippet
+
+snippet uu "superscript" i
+^{$1}$0
+endsnippet
+
+snippet dd "subscript" i
+_{$1}$0
+endsnippet
+
+snippet du "both super and sub scripts" i
+_{$1}^{$2}$0
 endsnippet

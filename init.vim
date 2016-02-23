@@ -116,16 +116,23 @@ endif
 	inoremap <silent> <C-f> <right>
 	inoremap <silent> <C-b> <left>
 
-	" Complete tags - don't use if you need (but why?) C-]
+	" Complete tags - don't use if you need <C-]> (...but why?)
 	inoremap <silent> <C-]> <C-x><C-]>
-	" Omnicomplete - don't use this if you need C-o
+	" Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 	inoremap <silent> <C-o> <C-x><C-o>
-	" Dictionary - don't use this if you need C-l
+	" Dictionary - don't use this if you need <C-l> (I don't quite get <C-l>)
 	inoremap <silent> <C-l> <C-x><C-k>
-	" Usercomplete - don't use this if you need C-u
+	" Definitions or Macros - <BS> or <C-w> delete the shiftwidth too
+	inoremap <silent> <C-d> <C-x><C-d>
+	" Usercomplete - don't use this if you need <C-u> (also useful...but <Esc>cc)
 	inoremap <silent> <C-u> <C-x><C-u>
-	" Tab scrolling
+	" File complete - keyword completion done by <C-p> (it's more intuitive)
+	inoremap <silent> <C-n> <C-x><C-f>
+	" Tab scrolling - scroll forward with <Tab> and backward with <C-p>
 	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+	" <C-x><C-l> for line completion - rarely used
+	" <C-x><C-v> for command-line completion - never used...interesting though
+	" <C-x><C-t> for thesaurus completion - never used
 
 	" Toggle few options - inspired by unimpaired
 	nnoremap con :<C-u>setlocal number!<CR>
@@ -442,11 +449,11 @@ endif
 " Snippets {{{
 	Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
 	" better key bindings for UltiSnipsExpandTrigger
-	let g:UltiSnipsExpandTrigger = "<C-j>"
-	let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+	let g:UltiSnipsExpandTrigger = "jj"
+	let g:UltiSnipsJumpForwardTrigger = "jj"
 	let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 	" C-Q gets the same behavior as C-v based on terminals
-	let g:UltiSnipsListSnippets = "<C-v>"
+	let g:UltiSnipsListSnippets = "<C-j>"
 "}}}
 
 " Version control {{{
@@ -492,6 +499,7 @@ endif
 	let g:clang_c_options = '-std=gnu11'
 	let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 	let g:clang_diagsopt = ''   " disable diagnostics
+
 	" Python autocompletion
 	Plug 'davidhalter/jedi-vim'
 	let g:jedi#goto_command = ""
@@ -501,6 +509,9 @@ endif
 	let g:jedi#usages_command = ""
 	let g:jedi#completions_command = "<C-Space>"
 	let g:jedi#rename_command = ""
+
+        " Get completion candidates from visible Tmux lines
+        Plug 'wellle/tmux-complete.vim'
 "}}}
 
 " Language helpers {{{
@@ -758,83 +769,77 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
-	" Interface for Eclim and Jedi
+	" Interface for semantic jumping
 	let g:unite_source_menu_menus.jumptoany= {
 		\ 'description' : 'Jump to anything',
 		\}
 	let g:unite_source_menu_menus.jumptoany.command_candidates = [
-		\['rtags jump to', 'call rtags#JumpTo()'],
-		\['rtags jump to parent', 'call rtags#JumpToParent()'],
-		\['rtags reference', 'call rtags#FindRefsOfWordUnderCursor()'],
-		\['rtags symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
-		\['rtags virtuals', 'call rtags#FindVirtuals()'],
-		\['rtags reindex', 'call rtags#ReindexFile()'],
-		\['rtags rename', 'call rtags#RenameSymbolUnderCursor()'],
-		\['rtags projects', 'call rtags#ProjectList()'],
-		\['jedi GoTo Command', 'call jedi#goto()'],
-		\['jedi GoTo Assignment', 'call jedi#goto_assignments()'],
-		\['jedi GoTo Definition', 'call jedi#goto_definitions()'],
-		\['jedi Rename', 'call jedi#rename()'],
-		\['jedi Rename Visual', 'call jedi#rename_visual()'],
-		\['eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-		\['eclim Project List', 'ProjectList'],
-		\['eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-		\['eclim Project Validate', 'Validate'],
-		\['eclim Java New Project', 'exe "NewProjectEntry " input("project: ")'],
-		\['eclim Java New Jar', 'exe "NewJarEntry " input("jar: ")'],
-		\['eclim Java New Var', 'exe "NewVarEntry " input("var: ")'],
-		\['eclim Java Create Variables', 'exe "VariableCreate " input("var: ")'],
-		\['eclim Java Delete Variables', 'exe "VariableDelete " input("var: ")'],
-		\['eclim Java List Variables', 'VariableList'],
-		\['eclim Java Maven Initialize', 'MvnRepo'],
-		\['eclim Java Maven Classpath',  'exe "Mvn " input("path: ")'],
-		\['eclim Java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-		\['eclim Java Search', 'exe "JavaSearch " input("string: ")'],
-		\['eclim Java Context Search', 'JavaSearchContext'],
-		\['eclim Java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-		\['eclim Java Project Status', 'Jps'],
-		\['eclim Java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-		\['eclim Java Toggle Breakpoint', 'JavaBreakpointToggle'],
-		\['eclim Java List Breakpoint', 'JavaBreakpointList'],
-		\['eclim Java Remove Breakpoint', 'JavaBreakpointRemove'],
-		\['eclim Java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-		\['eclim Java Debug Status', 'JavaDebugStatus'],
-		\['eclim Java Debug Suspend', 'JavaDebugThreadSuspendAll'],
-		\['eclim Java Debug Resume', 'JavaDebugThreadResumeAll'],
-		\['eclim Java Debug Stop', 'JavaDebugStop'],
-		\['eclim Java Doc Comment', 'JavaDocComment'],
-		\['eclim Java Doc Preview', 'JavaDocPreview'],
-		\['eclim Java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-		\['eclim Java Doc Execute', 'JavaDoc'],
-		\['eclim Java Code Format', 'JavaFormat'],
-		\['eclim Java Refactor Rename',  'exe "JavaRename " input("name: ")'],
-		\['eclim Java Refactor Move',  'exe "JavaMove " input("destination: ")'],
-		\['eclim Java Refactor Undo', 'RefactorUndo'],
-		\['eclim Java Refactor Undo Peek', 'RefactorUndoPeek'],
-		\['eclim Java Refactor Redo', 'RefactorRedo'],
-		\['eclim Java Refactor Redo Peek', 'RefactorRedoPeek'],
-		\['eclim Java Class Heirarchy', 'JavaHeirarchy'],
-		\['eclim Java Call Heirarchy', 'JavaCallHeirarchy'],
-		\['eclim Java Import', 'JavaImport'],
-		\['eclim Java Import Organized', 'JavaImportOrganized'],
-		\['eclim Java Getter', 'JavaGet'],
-		\['eclim Java Setter', 'JavaSet'],
-		\['eclim Java Getter and Setter', 'JavaGetSet'],
-		\['eclim Java Override/Implement', 'JavaImpl'],
-		\['eclim Java Delegate', 'JavaDelegate'],
-		\['eclim Java Unit Test', 'exe "JUnit " input("testname: ")'],
-		\['eclim Java Unit Find Test', 'JUnitFindTest'],
-		\['eclim Java Unit Test Results', 'JUnitResult'],
-		\['eclim Java Unit Test Stubs', 'JUnitImpl'],
-		\['eclim Java Ant Run', 'exe "Ant " input("target: ")'],
-		\['eclim Java Ant Doc', 'AntDoc'],
-		\['eclim Ruby New Library', 'exe "NewLibEntry " input("library: ")'],
-		\['eclim Ruby New Project', 'exe "NewProjectEntry " input("project: ")'],
-		\['eclim Ruby Add Interpreter', 'exe "RubyInterpreterAdd " input("interpreter: ")'],
-		\['eclim Ruby Remove Interpreter', 'exe "RubyInterpreterRemove " input("interpreter: ")'],
-		\['eclim Ruby Interpreter List', 'RubyInterpreterList'],
-		\['eclim Ruby Search', 'exe "RubySearch " input("string: ")'],
-		\['eclim Ruby Context Search', 'RubySearchContext'],
+		\['cpp jump to', 'call rtags#JumpTo()'],
+		\['cpp jump to parent', 'call rtags#JumpToParent()'],
+		\['cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
+		\['cpp symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
+		\['cpp virtuals', 'call rtags#FindVirtuals()'],
+		\['cpp reindex', 'call rtags#ReindexFile()'],
+		\['cpp rename', 'call rtags#RenameSymbolUnderCursor()'],
+		\['cpp projects', 'call rtags#ProjectList()'],
+		\['py GoTo Command', 'call jedi#goto()'],
+		\['py GoTo Assignment', 'call jedi#goto_assignments()'],
+		\['py GoTo Definition', 'call jedi#goto_definitions()'],
+		\['py Rename', 'call jedi#rename()'],
+		\['py Rename Visual', 'call jedi#rename_visual()'],
+		\['r Rename Visual', 'call jedi#rename_visual()'],
+		\['java Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+		\['java Project List', 'ProjectList'],
+		\['java Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+		\['java Project Validate', 'Validate'],
+		\['java New Project', 'exe "NewProjectEntry " input("project: ")'],
+		\['java New Jar', 'exe "NewJarEntry " input("jar: ")'],
+		\['java New Var', 'exe "NewVarEntry " input("var: ")'],
+		\['java Create Variables', 'exe "VariableCreate " input("var: ")'],
+		\['java Delete Variables', 'exe "VariableDelete " input("var: ")'],
+		\['java List Variables', 'VariableList'],
+		\['java Maven Initialize', 'MvnRepo'],
+		\['java Maven Classpath',  'exe "Mvn " input("path: ")'],
+		\['java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+		\['java Search', 'exe "JavaSearch " input("string: ")'],
+		\['java Context Search', 'JavaSearchContext'],
+		\['java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+		\['java Project Status', 'Jps'],
+		\['java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+		\['java Toggle Breakpoint', 'JavaBreakpointToggle'],
+		\['java List Breakpoint', 'JavaBreakpointList'],
+		\['java Remove Breakpoint', 'JavaBreakpointRemove'],
+		\['java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+		\['java Debug Status', 'JavaDebugStatus'],
+		\['java Debug Suspend', 'JavaDebugThreadSuspendAll'],
+		\['java Debug Resume', 'JavaDebugThreadResumeAll'],
+		\['java Debug Stop', 'JavaDebugStop'],
+		\['java Doc Comment', 'JavaDocComment'],
+		\['java Doc Preview', 'JavaDocPreview'],
+		\['java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+		\['java Doc Execute', 'JavaDoc'],
+		\['java Code Format', 'JavaFormat'],
+		\['java Refactor Rename',  'exe "JavaRename " input("name: ")'],
+		\['java Refactor Move',  'exe "JavaMove " input("destination: ")'],
+		\['java Refactor Undo', 'RefactorUndo'],
+		\['java Refactor Undo Peek', 'RefactorUndoPeek'],
+		\['java Refactor Redo', 'RefactorRedo'],
+		\['java Refactor Redo Peek', 'RefactorRedoPeek'],
+		\['java Class Heirarchy', 'JavaHeirarchy'],
+		\['java Call Heirarchy', 'JavaCallHeirarchy'],
+		\['java Import', 'JavaImport'],
+		\['java Import Organized', 'JavaImportOrganized'],
+		\['java Getter', 'JavaGet'],
+		\['java Setter', 'JavaSet'],
+		\['java Getter and Setter', 'JavaGetSet'],
+		\['java Override/Implement', 'JavaImpl'],
+		\['java Delegate', 'JavaDelegate'],
+		\['java Unit Test', 'exe "JUnit " input("testname: ")'],
+		\['java Unit Find Test', 'JUnitFindTest'],
+		\['java Unit Test Results', 'JUnitResult'],
+		\['java Unit Test Stubs', 'JUnitImpl'],
+		\['java Ant Run', 'exe "Ant " input("target: ")'],
+		\['java Ant Doc', 'AntDoc'],
 		\]
 	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 
@@ -895,7 +900,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' 1:3.3', 'TxSetPane 1:3.3 | TxSend'],
 		\[' 1:3.4', 'TxSetPane 1:3.4 | TxSend'],
 		\]
-	nnoremap <silent> <Leader>sj :Unite -direction=botright -silent -buffer-name=tmuxify -start-insert menu:tmuxify<CR>
+	nnoremap <silent> <Leader>sj :Unite -direction=botright -silent -buffer-name=tmuxify menu:tmuxify<CR>
 
 	" Interface for common Dispatch commands
 	let g:unite_source_menu_menus.dispatch = {
