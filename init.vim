@@ -85,6 +85,7 @@ endif
 	set splitbelow
 	" Gui fonts
 	set guifont=Fira\ Mono:h12
+	set guicursor+=a:blinkon0
 
 	" Set leader
 	let mapleader="\<Space>"
@@ -245,7 +246,7 @@ endif
 	let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 
 	" Unite default functionality maps
-	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert directory directory/new<CR>
+	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file directory directory/new<CR>
 	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
@@ -449,8 +450,8 @@ endif
 " Snippets {{{
 	Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
 	" better key bindings for UltiSnipsExpandTrigger
-	let g:UltiSnipsExpandTrigger = "jj"
-	let g:UltiSnipsJumpForwardTrigger = "jj"
+	let g:UltiSnipsExpandTrigger = "hh"
+	let g:UltiSnipsJumpForwardTrigger = "hh"
 	let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 	" C-Q gets the same behavior as C-v based on terminals
 	let g:UltiSnipsListSnippets = "<C-j>"
@@ -509,9 +510,6 @@ endif
 	let g:jedi#usages_command = ""
 	let g:jedi#completions_command = "<C-Space>"
 	let g:jedi#rename_command = ""
-
-        " Get completion candidates from visible Tmux lines
-        Plug 'wellle/tmux-complete.vim'
 "}}}
 
 " Language helpers {{{
@@ -529,6 +527,7 @@ endif
 	" Vimscript
 	Plug 'tpope/vim-scriptease'
 "}}}
+
 " Syntax checking {{{
 	Plug 'benekastah/neomake' " Async operations for Neovim
 	nnoremap <Leader>m :Neomake<CR>
@@ -703,7 +702,7 @@ endif
 	  \ 'jump':  1,
 	  \ }
 	" Maps
-	nnoremap <Leader>e :Grepper -tool ag -noswitch<CR>
+	nnoremap gss :Grepper -tool ag -noswitch<CR>
 	nmap gs <plug>(GrepperOperator)
 	xmap gs <plug>(GrepperOperator)
 "}}}
@@ -735,6 +734,7 @@ endif
 				\ 'python': 'ipython',
 				\ 'julia': 'julia',
 				\}
+	nnoremap <silent> <Leader>sj :TxSetPane<CR>
 
 	" Zoom and split when in Tmux(>v1.8)
 	if exists('$TMUX')
@@ -742,6 +742,12 @@ endif
 		nnoremap <silent> + :call system("tmux split-window -h")<CR>
 		nnoremap <silent> - :call system("tmux split-window -v")<CR>
 	endif
+"}}}
+
+" Distraction free writing {{{
+	" Useful when writing Markdown/LaTeX
+	Plug 'junegunn/goyo.vim'
+	nnoremap <silent> <Leader>- :Goyo<CR>
 "}}}
 
 " Stop plugin installation
@@ -788,58 +794,6 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\['py Rename', 'call jedi#rename()'],
 		\['py Rename Visual', 'call jedi#rename_visual()'],
 		\['r Rename Visual', 'call jedi#rename_visual()'],
-		\['java Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-		\['java Project List', 'ProjectList'],
-		\['java Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-		\['java Project Validate', 'Validate'],
-		\['java New Project', 'exe "NewProjectEntry " input("project: ")'],
-		\['java New Jar', 'exe "NewJarEntry " input("jar: ")'],
-		\['java New Var', 'exe "NewVarEntry " input("var: ")'],
-		\['java Create Variables', 'exe "VariableCreate " input("var: ")'],
-		\['java Delete Variables', 'exe "VariableDelete " input("var: ")'],
-		\['java List Variables', 'VariableList'],
-		\['java Maven Initialize', 'MvnRepo'],
-		\['java Maven Classpath',  'exe "Mvn " input("path: ")'],
-		\['java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-		\['java Search', 'exe "JavaSearch " input("string: ")'],
-		\['java Context Search', 'JavaSearchContext'],
-		\['java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-		\['java Project Status', 'Jps'],
-		\['java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-		\['java Toggle Breakpoint', 'JavaBreakpointToggle'],
-		\['java List Breakpoint', 'JavaBreakpointList'],
-		\['java Remove Breakpoint', 'JavaBreakpointRemove'],
-		\['java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-		\['java Debug Status', 'JavaDebugStatus'],
-		\['java Debug Suspend', 'JavaDebugThreadSuspendAll'],
-		\['java Debug Resume', 'JavaDebugThreadResumeAll'],
-		\['java Debug Stop', 'JavaDebugStop'],
-		\['java Doc Comment', 'JavaDocComment'],
-		\['java Doc Preview', 'JavaDocPreview'],
-		\['java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-		\['java Doc Execute', 'JavaDoc'],
-		\['java Code Format', 'JavaFormat'],
-		\['java Refactor Rename',  'exe "JavaRename " input("name: ")'],
-		\['java Refactor Move',  'exe "JavaMove " input("destination: ")'],
-		\['java Refactor Undo', 'RefactorUndo'],
-		\['java Refactor Undo Peek', 'RefactorUndoPeek'],
-		\['java Refactor Redo', 'RefactorRedo'],
-		\['java Refactor Redo Peek', 'RefactorRedoPeek'],
-		\['java Class Heirarchy', 'JavaHeirarchy'],
-		\['java Call Heirarchy', 'JavaCallHeirarchy'],
-		\['java Import', 'JavaImport'],
-		\['java Import Organized', 'JavaImportOrganized'],
-		\['java Getter', 'JavaGet'],
-		\['java Setter', 'JavaSet'],
-		\['java Getter and Setter', 'JavaGetSet'],
-		\['java Override/Implement', 'JavaImpl'],
-		\['java Delegate', 'JavaDelegate'],
-		\['java Unit Test', 'exe "JUnit " input("testname: ")'],
-		\['java Unit Find Test', 'JUnitFindTest'],
-		\['java Unit Test Results', 'JUnitResult'],
-		\['java Unit Test Stubs', 'JUnitImpl'],
-		\['java Ant Run', 'exe "Ant " input("target: ")'],
-		\['java Ant Doc', 'AntDoc'],
 		\]
 	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 
@@ -876,31 +830,65 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\] " Append ' --' after log to get commit info commit buffers
 	nnoremap <silent> <Leader>o :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
 
-	" Interface for Tmux pane jumping
-	let g:unite_source_menu_menus.tmuxify = {
-		\ 'description' : 'Tmux jump to panes',
-		\}
-	let g:unite_source_menu_menus.tmuxify.command_candidates = [
-		\[' 0:1.2', 'TxSetPane 0:1.2 | TxSend'],
-		\[' 0:1.3', 'TxSetPane 0:1.3 | TxSend'],
-		\[' 0:1.4', 'TxSetPane 0:1.4 | TxSend'],
-		\[' 0:2.2', 'TxSetPane 0:2.2 | TxSend'],
-		\[' 0:2.3', 'TxSetPane 0:2.3 | TxSend'],
-		\[' 0:2.4', 'TxSetPane 0:2.4 | TxSend'],
-		\[' 0:3.2', 'TxSetPane 0:3.2 | TxSend'],
-		\[' 0:3.3', 'TxSetPane 0:3.3 | TxSend'],
-		\[' 0:3.4', 'TxSetPane 0:3.4 | TxSend'],
-		\[' 1:1.2', 'TxSetPane 1:1.2 | TxSend'],
-		\[' 1:1.3', 'TxSetPane 1:1.3 | TxSend'],
-		\[' 1:1.4', 'TxSetPane 1:1.4 | TxSend'],
-		\[' 1:2.2', 'TxSetPane 1:2.2 | TxSend'],
-		\[' 1:2.3', 'TxSetPane 1:2.3 | TxSend'],
-		\[' 1:2.4', 'TxSetPane 1:2.4 | TxSend'],
-		\[' 1:3.2', 'TxSetPane 1:3.2 | TxSend'],
-		\[' 1:3.3', 'TxSetPane 1:3.3 | TxSend'],
-		\[' 1:3.4', 'TxSetPane 1:3.4 | TxSend'],
-		\]
-	nnoremap <silent> <Leader>sj :Unite -direction=botright -silent -buffer-name=tmuxify menu:tmuxify<CR>
+	" Interface for Eclim
+	let g:unite_source_menu_menus.eclim = {
+				\ 'description' : 'eclim interaction',
+				\}
+	let g:unite_source_menu_menus.eclim.command_candidates = [
+				\[' Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+				\[' Project List', 'ProjectList'],
+				\[' Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+				\[' Project Validate', 'Validate'],
+				\[' New Project', 'exe "NewProjectEntry " input("project: ")'],
+				\[' New Jar', 'exe "NewJarEntry " input("jar: ")'],
+				\[' New Var', 'exe "NewVarEntry " input("var: ")'],
+				\[' Create Variables', 'exe "VariableCreate " input("var: ")'],
+				\[' Delete Variables', 'exe "VariableDelete " input("var: ")'],
+				\[' List Variables', 'VariableList'],
+				\[' Maven Initialize', 'MvnRepo'],
+				\[' Maven Classpath',  'exe "Mvn " input("path: ")'],
+				\[' Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+				\[' Search', 'exe "JavaSearch " input("string: ")'],
+				\[' Context Search', 'JavaSearchContext'],
+				\[' Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+				\[' Project Status', 'Jps'],
+				\[' Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+				\[' Toggle Breakpoint', 'JavaBreakpointToggle'],
+				\[' List Breakpoint', 'JavaBreakpointList'],
+				\[' Remove Breakpoint', 'JavaBreakpointRemove'],
+				\[' Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+				\[' Debug Status', 'JavaDebugStatus'],
+				\[' Debug Suspend', 'JavaDebugThreadSuspendAll'],
+				\[' Debug Resume', 'JavaDebugThreadResumeAll'],
+				\[' Debug Stop', 'JavaDebugStop'],
+				\[' Doc Comment', 'JavaDocComment'],
+				\[' Doc Preview', 'JavaDocPreview'],
+				\[' Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+				\[' Doc Execute', 'JavaDoc'],
+				\[' Code Format', 'JavaFormat'],
+				\[' Refactor Rename',  'exe "JavaRename " input("name: ")'],
+				\[' Refactor Move',  'exe "JavaMove " input("destination: ")'],
+				\[' Refactor Undo', 'RefactorUndo'],
+				\[' Refactor Undo Peek', 'RefactorUndoPeek'],
+				\[' Refactor Redo', 'RefactorRedo'],
+				\[' Refactor Redo Peek', 'RefactorRedoPeek'],
+				\[' Class Heirarchy', 'JavaHeirarchy'],
+				\[' Call Heirarchy', 'JavaCallHeirarchy'],
+				\[' Import', 'JavaImport'],
+				\[' Import Organized', 'JavaImportOrganized'],
+				\[' Getter', 'JavaGet'],
+				\[' Setter', 'JavaSet'],
+				\[' Getter and Setter', 'JavaGetSet'],
+				\[' Override/Implement', 'JavaImpl'],
+				\[' Delegate', 'JavaDelegate'],
+				\[' Unit Test', 'exe "JUnit " input("testname: ")'],
+				\[' Unit Find Test', 'JUnitFindTest'],
+				\[' Unit Test Results', 'JUnitResult'],
+				\[' Unit Test Stubs', 'JUnitImpl'],
+				\[' Ant Run', 'exe "Ant " input("target: ")'],
+				\[' Ant Doc', 'AntDoc'],
+				\]
+	nnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=eclim -start-insert menu:eclim<CR>
 
 	" Interface for common Dispatch commands
 	let g:unite_source_menu_menus.dispatch = {
