@@ -125,8 +125,6 @@ endif
 	inoremap <silent> <C-l> <C-x><C-k>
 	" Definitions or Macros - <BS> or <C-w> delete the shiftwidth too
 	inoremap <silent> <C-d> <C-x><C-d>
-	" Usercomplete - don't use this if you need <C-u> (also useful...but <Esc>cc)
-	inoremap <silent> <C-u> <C-x><C-u>
 	" File complete - keyword completion done by <C-p> (it's more intuitive)
 	inoremap <silent> <C-n> <C-x><C-f>
 	" Tab scrolling - scroll forward with <Tab> and backward with <C-p>
@@ -134,6 +132,7 @@ endif
 	" <C-x><C-l> for line completion - rarely used
 	" <C-x><C-v> for command-line completion - never used...interesting though
 	" <C-x><C-t> for thesaurus completion - never used
+	" <C-x><C-u> for user completion - never used
 
 	" Toggle few options - inspired by unimpaired
 	nnoremap con :<C-u>setlocal number!<CR>
@@ -771,7 +770,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\[' Edit vimrc', 'e $MYVIMRC'],
 		\[' Highlight local indent', 'LocalIndentGuide +hl'],
 		\[' Unhighlight local indent', 'LocalIndentGuide -hl'],
-		\[' Notes', 'cd ~/Dropbox/notes | Unite -buffer-name=notes directory file'],
+		\[' Notes', 'cd ~/Dropbox/notes | Unite -buffer-name=notes directory file directory/new file/new'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
