@@ -121,18 +121,16 @@ endif
 	inoremap <silent> <C-]> <C-x><C-]>
 	" Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 	inoremap <silent> <C-o> <C-x><C-o>
+	" Usercomplete - <C-d> seems similar to <C-w>
+	inoremap <silent> <C-d> <C-x><C-u>
 	" Dictionary - don't use this if you need <C-l> (I don't quite get <C-l>)
 	inoremap <silent> <C-l> <C-x><C-k>
-	" Definitions or Macros - <BS> or <C-w> delete the shiftwidth too
-	inoremap <silent> <C-d> <C-x><C-d>
 	" File complete - keyword completion done by <C-p> (it's more intuitive)
-	inoremap <silent> <C-n> <C-x><C-f>
-	" Tab scrolling - scroll forward with <Tab> and backward with <C-p>
-	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+	inoremap <silent> <C-_> <C-x><C-f>
 	" <C-x><C-l> for line completion - rarely used
 	" <C-x><C-v> for command-line completion - never used...interesting though
 	" <C-x><C-t> for thesaurus completion - never used
-	" <C-x><C-u> for user completion - never used
+	" <C-x><C-d> for macro completion - never used
 
 	" Toggle few options - inspired by unimpaired
 	nnoremap con :<C-u>setlocal number!<CR>
@@ -252,7 +250,7 @@ endif
 	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file_rec file/new<CR>
 	nnoremap <silent> <Leader>n :Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
-	" Outline
+	" Yank history
 	Plug 'Shougo/neoyank.vim'
 	nnoremap <silent> <Leader>y :Unite -buffer-name=yank -direction=botright history/yank<CR>
 
@@ -326,7 +324,6 @@ endif
 	autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 	autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
 	autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-	autocmd filetype python set omnifunc=pythoncomplete#Complete
 	autocmd filetype vim set omnifunc=syntaxcomplete#Complete
 	autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
 	autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
@@ -335,8 +332,12 @@ endif
 
 	" Make 'Y' work like 'C' and 'D'
 	nnoremap <silent> Y y$
+
+	" '&' remembers the flags of the last substitute
+	nnoremap & g&
+
 	" Elementary splitting
-	nnoremap <silent> gS Do<Esc>p^d0==k$
+	let @s = 'Do<Esc>p^d0==k$'
 
 	" Strip trailing whitespace
 	function! StripWhitespace()
@@ -368,19 +369,54 @@ endif
 	endfunction
 	command! StripM :call StripM()
 
+	" Easier pairs when required
+	inoremap {<Tab> {}<Esc>i
+	inoremap {<CR> {<CR>}<Esc>O
+	inoremap [<Tab> []<Esc>i
+	inoremap [<CR> [<CR>]<Esc>O
+	inoremap (<Tab> ()<Esc>i
+	inoremap (<CR> (<CR>)<Esc>O
+	inoremap <<Tab> <><Esc>i
+	inoremap <<CR> <<CR>><Esc>O
+	inoremap '<Tab> ''<Esc>i
+	inoremap '<CR> '<CR>'<Esc>O
+	inoremap "<Tab> ""<Esc>i
+	inoremap "<CR> "<CR>"<Esc>O
+	inoremap `<Tab> ``<Esc>i
+	inoremap `<CR> `<CR>`<Esc>O
+	inoremap ```<Tab> ``````<Esc>hhi
+	inoremap ```<CR> ```<CR>```<Esc>O
+
+	" Semantic split and join
+	Plug 'AndrewRadev/splitjoin.vim'
+
+	" Switch between common things
+	Plug 'AndrewRadev/switch.vim'
+	let g:switch_mapping = "-"
+	let g:switch_custom_definitions =
+				\ [
+				\   ['TODO', 'DONE', 'WAITING', 'CANCELLED'],
+				\   ['*', '/', '+', '-'],
+				\   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ],
+				\    [ '\\tiny', '\\scriptsize', '\\footnotesize', '\\small', '\\normalsize', '\\large', '\\Large', '\\LARGE', '\\huge', '\\Huge' ],
+				\    [ '\\displaystyle', '\\scriptstyle', '\\scriptscriptstyle', '\\textstyle' ],
+				\    [ '\\part', '\\chapter', '\\section', '\\subsection', '\\subsubsection', '\\paragraph', '\\subparagraph' ],
+				\    [ 'part:', 'chap:', 'sec:', 'subsec:', 'subsubsec:' ],
+				\    [ 'article', 'report', 'book', 'letter', 'slides' ],
+				\    [ 'a4paper', 'a5paper', 'b5paper', 'executivepaper', 'legalpaper', 'letterpaper', 'beamer', 'subfiles', 'standalone' ],
+				\    [ 'onecolumn', 'twocolumn' ],
+				\    [ 'oneside', 'twoside' ],
+				\    [ 'draft', 'final' ],
+				\    [ 'AnnArbor', 'Antibes', 'Bergen', 'Berkeley',
+				\      'Berlin', 'Boadilla', 'CambridgeUS', 'Copenhagen', 'Darmstadt',
+				\      'Dresden', 'Frankfurt', 'Goettingen', 'Hannover', 'Ilmenau',
+				\      'JuanLesPins', 'Luebeck', 'Madrid', 'Malmoe', 'Marburg',
+				\      'Montpellier', 'PaloAlto', 'Pittsburgh', 'Rochester', 'Singapore',
+				\      'Szeged', 'Warsaw' ]
+				\ ]
+
 	" Better '.' command
 	Plug 'tpope/vim-repeat'
-	" Common *nix commands
-	Plug 'tpope/vim-eunuch'
-	" Substitute, Abolish and coerce
-	Plug 'tpope/vim-abolish'
-	" strip ^M character at end of lines
-	function! CreateAbolishList()
-		:Abolish teh the
-		:Abolish hte the
-	endfunction
-	command! CreateAbolishList :call CreateAbolishList()
-	nnoremap coa :CreateAbolishList<CR>
 "}}}
 
 " Text objects, operators and motions {{{
@@ -444,16 +480,22 @@ endif
 	Plug 'junegunn/vim-easy-align'
 	xmap gz <Plug>(EasyAlign)
 	nmap gz <Plug>(EasyAlign)
+	vnoremap gi :EasyAlign /\s\+/<CR>
+	vnoremap go :EasyAlign *\|<CR>
+	vnoremap g= :EasyAlign *=<CR>
+	vnoremap g& :EasyAlign *&<CR>
 "}}}
 
 " Snippets {{{
 	Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
-	" better key bindings for UltiSnipsExpandTrigger
-	let g:UltiSnipsExpandTrigger = "hh"
-	let g:UltiSnipsJumpForwardTrigger = "hh"
-	let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
-	" C-Q gets the same behavior as C-v based on terminals
+	" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+	let g:UltiSnipsExpandTrigger="<tab>"
+	let g:UltiSnipsJumpForwardTrigger="<tab>"
+	let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 	let g:UltiSnipsListSnippets = "<C-j>"
+
+	" :UltiSnipsEdit to split your window.
+	let g:UltiSnipsEditSplit="vertical"
 "}}}
 
 " Version control {{{
@@ -482,11 +524,10 @@ endif
 
 	" Better branching and merge
 	Plug 'idanarye/vim-merginal'
-	nnoremap <silent> gm :Merginal<CR>
+	nnoremap <silent> gm :MerginalToggle<CR>
 "}}}
 
 " Eclim - Eclipse plus Vim {{{
-	let g:EclimCompletionMethod = 'omnifunc'
 	let g:EclimShowQuickfixSigns = 0
 	let g:EclimShowLoclistSigns = 0
 	let g:EclimShowCurrentError = 0
@@ -502,6 +543,7 @@ endif
 
 	" Python autocompletion
 	Plug 'davidhalter/jedi-vim'
+	autocmd filetype python set omnifunc=jedi#completions
 	let g:jedi#goto_command = ""
 	let g:jedi#goto_assignments_command = ""
 	let g:jedi#goto_definitions_command = ""
@@ -544,8 +586,10 @@ endif
 	nnoremap <silent> W :split<CR>
 
 	" Quickfix and Location list maps
-	nnoremap <Leader>l :lopen<CR>
-	nnoremap <Leader>c :copen<CR>
+	nnoremap <silent> <Leader>l :lopen<CR>
+	nnoremap <silent> <Leader>c :copen<CR>
+	nnoremap <silent> <Leader>L :lclose<CR>
+	nnoremap <silent> <Leader>C :cclose<CR>
 
 	" this is our 'main' function: it couldn't be simpler
 	function! MRU(arg)
@@ -607,9 +651,6 @@ endif
 	nnoremap [T :tfirst<CR>
 	nnoremap ]T :tlast<CR>
 
-	" I use 'f' and 'F' for normal movements - tried changing but muscle memorized
-	nnoremap T :tag *
-
 	" Auto-center
 	nnoremap <silent> <C-o> <C-o>zz
 	nnoremap <silent> <C-i> <C-i>zz
@@ -622,6 +663,9 @@ endif
 	set showmatch
 	" Tags for movement
 	set tags=./tags;,tags;
+
+	" Tags
+	nnoremap T :tag *
 
 	" Move across closed folds using ]z and [z
 	function! NextClosedFold(dir)
@@ -715,9 +759,13 @@ endif
 		tnoremap <C-g> <C-\><C-n>
 	endif
 
+	" Common *nix commands
+	Plug 'tpope/vim-eunuch'
+
 	" Dispatch stuff
 	Plug 'tpope/vim-dispatch'
 	nnoremap <silent> <Leader>v :Copen<CR>
+	nnoremap <silent> <Leader>V :cclose<CR>
 	nnoremap <Leader>sd :Dispatch!<Space>
 
 	" Launch appropriate REPL
@@ -741,12 +789,6 @@ endif
 		nnoremap <silent> + :call system("tmux split-window -h")<CR>
 		nnoremap <silent> - :call system("tmux split-window -v")<CR>
 	endif
-"}}}
-
-" Distraction free writing {{{
-	" Useful when writing Markdown/LaTeX
-	Plug 'junegunn/goyo.vim'
-	nnoremap <silent> <Leader>- :Goyo<CR>
 "}}}
 
 " Stop plugin installation
@@ -776,118 +818,127 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 
 	" Interface for semantic jumping
 	let g:unite_source_menu_menus.jumptoany= {
-		\ 'description' : 'Jump to anything',
-		\}
+				\ 'description' : 'Jump to anything',
+				\}
 	let g:unite_source_menu_menus.jumptoany.command_candidates = [
-		\['cpp jump to', 'call rtags#JumpTo()'],
-		\['cpp jump to parent', 'call rtags#JumpToParent()'],
-		\['cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
-		\['cpp symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
-		\['cpp virtuals', 'call rtags#FindVirtuals()'],
-		\['cpp reindex', 'call rtags#ReindexFile()'],
-		\['cpp rename', 'call rtags#RenameSymbolUnderCursor()'],
-		\['cpp projects', 'call rtags#ProjectList()'],
-		\['py GoTo Command', 'call jedi#goto()'],
-		\['py GoTo Assignment', 'call jedi#goto_assignments()'],
-		\['py GoTo Definition', 'call jedi#goto_definitions()'],
-		\['py Rename', 'call jedi#rename()'],
-		\['py Rename Visual', 'call jedi#rename_visual()'],
-		\['r Rename Visual', 'call jedi#rename_visual()'],
-		\]
+				\['cpp jump to', 'call rtags#JumpTo()'],
+				\['cpp jump to parent', 'call rtags#JumpToParent()'],
+				\['cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
+				\['cpp symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
+				\['cpp virtuals', 'call rtags#FindVirtuals()'],
+				\['cpp reindex', 'call rtags#ReindexFile()'],
+				\['cpp rename', 'call rtags#RenameSymbolUnderCursor()'],
+				\['cpp projects', 'call rtags#ProjectList()'],
+				\['py GoTo Command', 'call jedi#goto()'],
+				\['py GoTo Assignment', 'call jedi#goto_assignments()'],
+				\['py GoTo Definition', 'call jedi#goto_definitions()'],
+				\['py Rename', 'call jedi#rename()'],
+				\['py Rename Visual', 'call jedi#rename_visual()'],
+				\['r Rename Visual', 'call jedi#rename_visual()'],
+				\[' eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+				\[' eclim Project List', 'ProjectList'],
+				\[' eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+				\[' eclim Project Validate', 'Validate'],
+				\[' eclim New Project', 'exe "NewProjectEntry " input("project: ")'],
+				\[' eclim New Jar', 'exe "NewJarEntry " input("jar: ")'],
+				\[' eclim New Var', 'exe "NewVarEntry " input("var: ")'],
+				\[' eclim Create Variables', 'exe "VariableCreate " input("var: ")'],
+				\[' eclim Delete Variables', 'exe "VariableDelete " input("var: ")'],
+				\[' eclim List Variables', 'VariableList'],
+				\[' eclim Maven Initialize', 'MvnRepo'],
+				\[' eclim Maven Classpath',  'exe "Mvn " input("path: ")'],
+				\[' eclim Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+				\[' eclim Search', 'exe "JavaSearch " input("string: ")'],
+				\[' eclim Context Search', 'JavaSearchContext'],
+				\[' eclim Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+				\[' eclim Project Status', 'Jps'],
+				\[' eclim Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+				\[' eclim Toggle Breakpoint', 'JavaBreakpointToggle'],
+				\[' eclim List Breakpoint', 'JavaBreakpointList'],
+				\[' eclim Remove Breakpoint', 'JavaBreakpointRemove'],
+				\[' eclim Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+				\[' eclim Debug Status', 'JavaDebugStatus'],
+				\[' eclim Debug Suspend', 'JavaDebugThreadSuspendAll'],
+				\[' eclim Debug Resume', 'JavaDebugThreadResumeAll'],
+				\[' eclim Debug Stop', 'JavaDebugStop'],
+				\[' eclim Doc Comment', 'JavaDocComment'],
+				\[' eclim Doc Preview', 'JavaDocPreview'],
+				\[' eclim Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+				\[' eclim Doc Execute', 'JavaDoc'],
+				\[' eclim Code Format', 'JavaFormat'],
+				\[' eclim Refactor Rename',  'exe "JavaRename " input("name: ")'],
+				\[' eclim Refactor Move',  'exe "JavaMove " input("destination: ")'],
+				\[' eclim Refactor Undo', 'RefactorUndo'],
+				\[' eclim Refactor Undo Peek', 'RefactorUndoPeek'],
+				\[' eclim Refactor Redo', 'RefactorRedo'],
+				\[' eclim Refactor Redo Peek', 'RefactorRedoPeek'],
+				\[' eclim Class Heirarchy', 'JavaHeirarchy'],
+				\[' eclim Call Heirarchy', 'JavaCallHeirarchy'],
+				\[' eclim Import', 'JavaImport'],
+				\[' eclim Import Organized', 'JavaImportOrganized'],
+				\[' eclim Getter', 'JavaGet'],
+				\[' eclim Setter', 'JavaSet'],
+				\[' eclim Getter and Setter', 'JavaGetSet'],
+				\[' eclim Override/Implement', 'JavaImpl'],
+				\[' eclim Delegate', 'JavaDelegate'],
+				\[' eclim Unit Test', 'exe "JUnit " input("testname: ")'],
+				\[' eclim Unit Find Test', 'JUnitFindTest'],
+				\[' eclim Unit Test Results', 'JUnitResult'],
+				\[' eclim Unit Test Stubs', 'JUnitImpl'],
+				\[' eclim Ant Run', 'exe "Ant " input("target: ")'],
+				\[' eclim Ant Doc', 'AntDoc'],
+				\]
 	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 
 	" Interface for Git
 	let g:unite_source_menu_menus.git = {
-		\ 'description' : 'Git interface',
-		\}
+				\ 'description' : 'Git interface',
+				\}
 	let g:unite_source_menu_menus.git.command_candidates = [
-		\[' git status', 'Gstatus'],
-		\[' git diff', 'Gvdiff'],
-		\[' git stage/add', 'Gwrite'],
-		\[' git commit', 'Gcommit'],
-		\[' git checkout', 'Gread'],
-		\[' git rm', 'Gremove'],
-		\[' git cd', 'Gcd'],
-		\[' git push', 'Gpush'],
-		\[' git pull', 'Gpull'],
-		\[' git fetch', 'Gfetch'],
-		\[' git merge', 'Gmerge'],
-		\[' git browse', 'Gbrowse'],
-		\[' git head', 'Gedit HEAD^'],
-		\[' git parent', 'edit %:h'],
-		\[' git log commit buffers', 'Glog --'],
-		\[' git log current file', 'Glog -- %'],
-		\[' git log last n commits', 'exe "Glog -" input("num: ")'],
-		\[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
-		\[' git log until date', 'exe "Glog --until=" input("day: ")'],
-		\[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
-		\[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
-		\[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
-		\[' git mv', 'exe "Gmove " input("destination: ")'],
-		\[' git grep',  'exe "Ggrep " input("string: ")'],
-		\[' git prompt', 'exe "Git! " input("command: ")'],
-		\] " Append ' --' after log to get commit info commit buffers
+				\[' git status', 'Gstatus'],
+				\[' git diff', 'Gvdiff'],
+				\[' git stage/add', 'Gwrite'],
+				\[' git commit', 'Gcommit'],
+				\[' git checkout', 'Gread'],
+				\[' git rm', 'Gremove'],
+				\[' git cd', 'Gcd'],
+				\[' git push', 'Gpush'],
+				\[' git pull', 'Gpull'],
+				\[' git fetch', 'Gfetch'],
+				\[' git merge', 'Gmerge'],
+				\[' git browse', 'Gbrowse'],
+				\[' git head', 'Gedit HEAD^'],
+				\[' git parent', 'edit %:h'],
+				\[' git log commit buffers', 'Glog --'],
+				\[' git log current file', 'Glog -- %'],
+				\[' git log last n commits', 'exe "Glog -" input("num: ")'],
+				\[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
+				\[' git log until date', 'exe "Glog --until=" input("day: ")'],
+				\[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
+				\[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
+				\[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
+				\[' git mv', 'exe "Gmove " input("destination: ")'],
+				\[' git grep',  'exe "Ggrep " input("string: ")'],
+				\[' git prompt', 'exe "Git! " input("command: ")'],
+				\] " Append ' --' after log to get commit info commit buffers
 	nnoremap <silent> <Leader>o :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
 
-	" Interface for Eclim
-	let g:unite_source_menu_menus.eclim = {
-				\ 'description' : 'eclim interaction',
+	" Interface for Notes
+	let g:unite_source_menu_menus.notes = {
+				\ 'description' : 'notes interaction',
 				\}
-	let g:unite_source_menu_menus.eclim.command_candidates = [
-				\[' Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-				\[' Project List', 'ProjectList'],
-				\[' Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-				\[' Project Validate', 'Validate'],
-				\[' New Project', 'exe "NewProjectEntry " input("project: ")'],
-				\[' New Jar', 'exe "NewJarEntry " input("jar: ")'],
-				\[' New Var', 'exe "NewVarEntry " input("var: ")'],
-				\[' Create Variables', 'exe "VariableCreate " input("var: ")'],
-				\[' Delete Variables', 'exe "VariableDelete " input("var: ")'],
-				\[' List Variables', 'VariableList'],
-				\[' Maven Initialize', 'MvnRepo'],
-				\[' Maven Classpath',  'exe "Mvn " input("path: ")'],
-				\[' Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-				\[' Search', 'exe "JavaSearch " input("string: ")'],
-				\[' Context Search', 'JavaSearchContext'],
-				\[' Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-				\[' Project Status', 'Jps'],
-				\[' Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-				\[' Toggle Breakpoint', 'JavaBreakpointToggle'],
-				\[' List Breakpoint', 'JavaBreakpointList'],
-				\[' Remove Breakpoint', 'JavaBreakpointRemove'],
-				\[' Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-				\[' Debug Status', 'JavaDebugStatus'],
-				\[' Debug Suspend', 'JavaDebugThreadSuspendAll'],
-				\[' Debug Resume', 'JavaDebugThreadResumeAll'],
-				\[' Debug Stop', 'JavaDebugStop'],
-				\[' Doc Comment', 'JavaDocComment'],
-				\[' Doc Preview', 'JavaDocPreview'],
-				\[' Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-				\[' Doc Execute', 'JavaDoc'],
-				\[' Code Format', 'JavaFormat'],
-				\[' Refactor Rename',  'exe "JavaRename " input("name: ")'],
-				\[' Refactor Move',  'exe "JavaMove " input("destination: ")'],
-				\[' Refactor Undo', 'RefactorUndo'],
-				\[' Refactor Undo Peek', 'RefactorUndoPeek'],
-				\[' Refactor Redo', 'RefactorRedo'],
-				\[' Refactor Redo Peek', 'RefactorRedoPeek'],
-				\[' Class Heirarchy', 'JavaHeirarchy'],
-				\[' Call Heirarchy', 'JavaCallHeirarchy'],
-				\[' Import', 'JavaImport'],
-				\[' Import Organized', 'JavaImportOrganized'],
-				\[' Getter', 'JavaGet'],
-				\[' Setter', 'JavaSet'],
-				\[' Getter and Setter', 'JavaGetSet'],
-				\[' Override/Implement', 'JavaImpl'],
-				\[' Delegate', 'JavaDelegate'],
-				\[' Unit Test', 'exe "JUnit " input("testname: ")'],
-				\[' Unit Find Test', 'JUnitFindTest'],
-				\[' Unit Test Results', 'JUnitResult'],
-				\[' Unit Test Stubs', 'JUnitImpl'],
-				\[' Ant Run', 'exe "Ant " input("target: ")'],
-				\[' Ant Doc', 'AntDoc'],
+	let g:unite_source_menu_menus.notes.command_candidates = [
+				\[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
+				\[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
+				\[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
+				\[' pandoc org', 'Dispatch! pandoc % -o (%:r).org'],
+				\[' pandoc rst', 'Dispatch! pandoc % -o (%:r).rst'],
+				\[' pandoc latex', 'Dispatch! pandoc % -o (%:r).tex'],
+				\[' pandoc epub3', 'Dispatch! pandoc % -o (%:r).epub'],
+				\[' pandoc html5', 'Dispatch! pandoc % -o (%:r).html'],
 				\]
-	nnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=eclim -start-insert menu:eclim<CR>
+	nnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=notes -start-insert menu:notes<CR>
+	vnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=notes -start-insert menu:notes<CR>
 
 	" Interface for common Dispatch commands
 	let g:unite_source_menu_menus.dispatch = {
@@ -897,12 +948,6 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' tex word count', 'Dispatch! texcount %'],
 				\[' ctags in current dir', 'Dispatch! ctags -R .'],
 				\[' ctags in buffer dir', 'CD | Dispatch! ctags -R .'],
-				\[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
-				\[' pandoc org', 'Dispatch! pandoc % -o (%:r).org'],
-				\[' pandoc rst', 'Dispatch! pandoc % -o (%:r).rst'],
-				\[' pandoc latex', 'Dispatch! pandoc % -o (%:r).tex'],
-				\[' pandoc epub3', 'Dispatch! pandoc % -o (%:r).epub'],
-				\[' pandoc html5', 'Dispatch! pandoc % -o (%:r).html'],
 				\[' g++ make', 'Dispatch! make'],
 				\[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -g %'],
 				\[' g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
@@ -913,8 +958,8 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
 				\[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
 				\[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-				\[' git push master', 'Dispatch! git push -u origin master'],
-				\[' git pull master', 'Dispatch! git pull -u origin master'],
+				\[' git push', 'Dispatch! git push'],
+				\[' git pull', 'Dispatch! git pull'],
 				\[' git push branch', 'exe "Dispatch! git push -u origin" input("branch: ")'],
 				\[' git pull branch', 'exe "Dispatch! git pull -u origin" input("branch: ")'],
 				\[' tmux list sessions', 'Dispatch! tmux list-sessions'],
@@ -932,12 +977,12 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
 				\]
 	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
-"}}}
+	"}}}
 
 " Setup plugins, indents and syntax
 filetype plugin indent on
 syntax on
 
 " Set colorscheme
-set background=light
+set background=dark
 colorscheme PaperColor
