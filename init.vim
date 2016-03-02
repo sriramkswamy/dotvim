@@ -140,12 +140,9 @@ endif
 	nnoremap col :<C-u>setlocal list!<CR>
 	nnoremap cos :<C-u>setlocal spell!<CR>
 	nnoremap coi :<C-u>setlocal ignorecase!<CR>
-	nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 	nnoremap coh :setlocal hlsearch!<CR>
-
-	" Map some more stuff similar to unimpaired
-	nnoremap coj :setlocal colorcolumn=<CR>
-	nnoremap cof :setlocal colorcolumn=80,100<CR>
+	nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
+	nnoremap cof :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 
 	" Escape out of insert mode, because iTerm2 delays it assuming <Esc> to be an escape sequence
 	inoremap <silent> <C-g> <Esc>
