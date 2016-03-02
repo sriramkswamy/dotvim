@@ -162,6 +162,8 @@ endif
 	" Local indent highlight - super useful
 	Plug 'tweekmonster/local-indent.vim'
 	highlight LocalIndentGuide ctermfg=3 ctermbg=1 cterm=inverse
+	nnoremap coj :LocalIndentGuide +hl +cc<CR>
+	nnoremap cok :LocalIndentGuide -hl -cc<CR>
 "}}}
 
 " Statusline - from scrooloose {{{
@@ -230,7 +232,7 @@ endif
 "}}}
 
 " Unite {{{
-	Plug 'Shougo/unite.vim'
+	Plug 'Shougo/unite.vim' | Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 	autocmd FileType unite call s:unite_my_settings()
 	function! s:unite_my_settings()
 		imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
@@ -244,7 +246,7 @@ endif
 	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
-	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project -direction=botright file_rec file/new<CR>
+	nnoremap <silent> <Leader>p :Unite -start-insert -buffer-name=project -direction=botright file_rec/git file/new<CR>
 	nnoremap <silent> <Leader>n :Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 	" Yank history
@@ -384,33 +386,12 @@ endif
 	inoremap ```<Tab> ``````<Esc>hhi
 	inoremap ```<CR> ```<CR>```<Esc>O
 
+	" For collaborative work
+	Plug 'editorconfig/editorconfig-vim'
+	let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
 	" Semantic split and join
 	Plug 'AndrewRadev/splitjoin.vim'
-
-	" Switch between common things
-	Plug 'AndrewRadev/switch.vim'
-	let g:switch_mapping = "-"
-	let g:switch_custom_definitions =
-				\ [
-				\   ['TODO', 'DONE', 'WAITING', 'CANCELLED'],
-				\   ['*', '/', '+', '-'],
-				\   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ],
-				\    [ '\\tiny', '\\scriptsize', '\\footnotesize', '\\small', '\\normalsize', '\\large', '\\Large', '\\LARGE', '\\huge', '\\Huge' ],
-				\    [ '\\displaystyle', '\\scriptstyle', '\\scriptscriptstyle', '\\textstyle' ],
-				\    [ '\\part', '\\chapter', '\\section', '\\subsection', '\\subsubsection', '\\paragraph', '\\subparagraph' ],
-				\    [ 'part:', 'chap:', 'sec:', 'subsec:', 'subsubsec:' ],
-				\    [ 'article', 'report', 'book', 'letter', 'slides' ],
-				\    [ 'a4paper', 'a5paper', 'b5paper', 'executivepaper', 'legalpaper', 'letterpaper', 'beamer', 'subfiles', 'standalone' ],
-				\    [ 'onecolumn', 'twocolumn' ],
-				\    [ 'oneside', 'twoside' ],
-				\    [ 'draft', 'final' ],
-				\    [ 'AnnArbor', 'Antibes', 'Bergen', 'Berkeley',
-				\      'Berlin', 'Boadilla', 'CambridgeUS', 'Copenhagen', 'Darmstadt',
-				\      'Dresden', 'Frankfurt', 'Goettingen', 'Hannover', 'Ilmenau',
-				\      'JuanLesPins', 'Luebeck', 'Madrid', 'Malmoe', 'Marburg',
-				\      'Montpellier', 'PaloAlto', 'Pittsburgh', 'Rochester', 'Singapore',
-				\      'Szeged', 'Warsaw' ]
-				\ ]
 
 	" Better '.' command
 	Plug 'tpope/vim-repeat'
@@ -698,7 +679,6 @@ endif
 
 	" Traverse files within a project - create a .projections.json first
 	Plug 'tpope/vim-projectionist'
-	nnoremap <Leader><Tab> :A<CR>
 "}}}
 
 " Searching {{{
@@ -801,15 +781,12 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\ 'description' : 'OS interaction and configs',
 		\}
 	let g:unite_source_menu_menus.osinteract.command_candidates = [
-		\[' lcd to buffer directory', 'LCD'],
-		\[' cd to buffer directory', 'CD'],
-		\[' cd to project directory', 'Rooter'],
+		\[' alternate file', 'A'],
+		\[' cd to buffer dir', 'CD'],
+		\[' cd to project dir', 'Rooter'],
 		\[' create .projections.json', 'e .projections.json'],
 		\[' Source vimrc', 'so $MYVIMRC'],
 		\[' Edit vimrc', 'e $MYVIMRC'],
-		\[' Highlight local indent', 'LocalIndentGuide +hl'],
-		\[' Unhighlight local indent', 'LocalIndentGuide -hl'],
-		\[' Notes', 'cd ~/Dropbox/notes | Unite -buffer-name=notes directory file directory/new file/new'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
@@ -832,58 +809,58 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\['py Rename', 'call jedi#rename()'],
 				\['py Rename Visual', 'call jedi#rename_visual()'],
 				\['r Rename Visual', 'call jedi#rename_visual()'],
-				\[' eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-				\[' eclim Project List', 'ProjectList'],
-				\[' eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-				\[' eclim Project Validate', 'Validate'],
-				\[' eclim New Project', 'exe "NewProjectEntry " input("project: ")'],
-				\[' eclim New Jar', 'exe "NewJarEntry " input("jar: ")'],
-				\[' eclim New Var', 'exe "NewVarEntry " input("var: ")'],
-				\[' eclim Create Variables', 'exe "VariableCreate " input("var: ")'],
-				\[' eclim Delete Variables', 'exe "VariableDelete " input("var: ")'],
-				\[' eclim List Variables', 'VariableList'],
-				\[' eclim Maven Initialize', 'MvnRepo'],
-				\[' eclim Maven Classpath',  'exe "Mvn " input("path: ")'],
-				\[' eclim Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-				\[' eclim Search', 'exe "JavaSearch " input("string: ")'],
-				\[' eclim Context Search', 'JavaSearchContext'],
-				\[' eclim Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-				\[' eclim Project Status', 'Jps'],
-				\[' eclim Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-				\[' eclim Toggle Breakpoint', 'JavaBreakpointToggle'],
-				\[' eclim List Breakpoint', 'JavaBreakpointList'],
-				\[' eclim Remove Breakpoint', 'JavaBreakpointRemove'],
-				\[' eclim Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-				\[' eclim Debug Status', 'JavaDebugStatus'],
-				\[' eclim Debug Suspend', 'JavaDebugThreadSuspendAll'],
-				\[' eclim Debug Resume', 'JavaDebugThreadResumeAll'],
-				\[' eclim Debug Stop', 'JavaDebugStop'],
-				\[' eclim Doc Comment', 'JavaDocComment'],
-				\[' eclim Doc Preview', 'JavaDocPreview'],
-				\[' eclim Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-				\[' eclim Doc Execute', 'JavaDoc'],
-				\[' eclim Code Format', 'JavaFormat'],
-				\[' eclim Refactor Rename',  'exe "JavaRename " input("name: ")'],
-				\[' eclim Refactor Move',  'exe "JavaMove " input("destination: ")'],
-				\[' eclim Refactor Undo', 'RefactorUndo'],
-				\[' eclim Refactor Undo Peek', 'RefactorUndoPeek'],
-				\[' eclim Refactor Redo', 'RefactorRedo'],
-				\[' eclim Refactor Redo Peek', 'RefactorRedoPeek'],
-				\[' eclim Class Heirarchy', 'JavaHeirarchy'],
-				\[' eclim Call Heirarchy', 'JavaCallHeirarchy'],
-				\[' eclim Import', 'JavaImport'],
-				\[' eclim Import Organized', 'JavaImportOrganized'],
-				\[' eclim Getter', 'JavaGet'],
-				\[' eclim Setter', 'JavaSet'],
-				\[' eclim Getter and Setter', 'JavaGetSet'],
-				\[' eclim Override/Implement', 'JavaImpl'],
-				\[' eclim Delegate', 'JavaDelegate'],
-				\[' eclim Unit Test', 'exe "JUnit " input("testname: ")'],
-				\[' eclim Unit Find Test', 'JUnitFindTest'],
-				\[' eclim Unit Test Results', 'JUnitResult'],
-				\[' eclim Unit Test Stubs', 'JUnitImpl'],
-				\[' eclim Ant Run', 'exe "Ant " input("target: ")'],
-				\[' eclim Ant Doc', 'AntDoc'],
+				\['eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+				\['eclim Project List', 'ProjectList'],
+				\['eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+				\['eclim Project Validate', 'Validate'],
+				\['eclim New Project', 'exe "NewProjectEntry " input("project: ")'],
+				\['eclim New Jar', 'exe "NewJarEntry " input("jar: ")'],
+				\['eclim New Var', 'exe "NewVarEntry " input("var: ")'],
+				\['eclim Create Variables', 'exe "VariableCreate " input("var: ")'],
+				\['eclim Delete Variables', 'exe "VariableDelete " input("var: ")'],
+				\['eclim List Variables', 'VariableList'],
+				\['eclim Maven Initialize', 'MvnRepo'],
+				\['eclim Maven Classpath',  'exe "Mvn " input("path: ")'],
+				\['eclim Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+				\['eclim Search', 'exe "JavaSearch " input("string: ")'],
+				\['eclim Context Search', 'JavaSearchContext'],
+				\['eclim Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+				\['eclim Project Status', 'Jps'],
+				\['eclim Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+				\['eclim Toggle Breakpoint', 'JavaBreakpointToggle'],
+				\['eclim List Breakpoint', 'JavaBreakpointList'],
+				\['eclim Remove Breakpoint', 'JavaBreakpointRemove'],
+				\['eclim Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+				\['eclim Debug Status', 'JavaDebugStatus'],
+				\['eclim Debug Suspend', 'JavaDebugThreadSuspendAll'],
+				\['eclim Debug Resume', 'JavaDebugThreadResumeAll'],
+				\['eclim Debug Stop', 'JavaDebugStop'],
+				\['eclim Doc Comment', 'JavaDocComment'],
+				\['eclim Doc Preview', 'JavaDocPreview'],
+				\['eclim Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+				\['eclim Doc Execute', 'JavaDoc'],
+				\['eclim Code Format', 'JavaFormat'],
+				\['eclim Refactor Rename',  'exe "JavaRename " input("name: ")'],
+				\['eclim Refactor Move',  'exe "JavaMove " input("destination: ")'],
+				\['eclim Refactor Undo', 'RefactorUndo'],
+				\['eclim Refactor Undo Peek', 'RefactorUndoPeek'],
+				\['eclim Refactor Redo', 'RefactorRedo'],
+				\['eclim Refactor Redo Peek', 'RefactorRedoPeek'],
+				\['eclim Class Heirarchy', 'JavaHeirarchy'],
+				\['eclim Call Heirarchy', 'JavaCallHeirarchy'],
+				\['eclim Import', 'JavaImport'],
+				\['eclim Import Organized', 'JavaImportOrganized'],
+				\['eclim Getter', 'JavaGet'],
+				\['eclim Setter', 'JavaSet'],
+				\['eclim Getter and Setter', 'JavaGetSet'],
+				\['eclim Override/Implement', 'JavaImpl'],
+				\['eclim Delegate', 'JavaDelegate'],
+				\['eclim Unit Test', 'exe "JUnit " input("testname: ")'],
+				\['eclim Unit Find Test', 'JUnitFindTest'],
+				\['eclim Unit Test Results', 'JUnitResult'],
+				\['eclim Unit Test Stubs', 'JUnitImpl'],
+				\['eclim Ant Run', 'exe "Ant " input("target: ")'],
+				\['eclim Ant Doc', 'AntDoc'],
 				\]
 	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 
@@ -925,14 +902,15 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\ 'description' : 'notes interaction',
 				\}
 	let g:unite_source_menu_menus.notes.command_candidates = [
+				\[' dir', 'cd ~/Dropbox/notes | Unite -buffer-name=notes -start-insert directory file directory/new file/new'],
 				\[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
 				\[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
-				\[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o (%:r).pdf'],
-				\[' pandoc org', 'Dispatch! pandoc % -o (%:r).org'],
-				\[' pandoc rst', 'Dispatch! pandoc % -o (%:r).rst'],
-				\[' pandoc latex', 'Dispatch! pandoc % -o (%:r).tex'],
-				\[' pandoc epub3', 'Dispatch! pandoc % -o (%:r).epub'],
-				\[' pandoc html5', 'Dispatch! pandoc % -o (%:r).html'],
+				\[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
+				\[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
+				\[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
+				\[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
+				\[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
+				\[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
 				\]
 	nnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=notes -start-insert menu:notes<CR>
 	vnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=notes -start-insert menu:notes<CR>
@@ -946,15 +924,19 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' ctags in current dir', 'Dispatch! ctags -R .'],
 				\[' ctags in buffer dir', 'CD | Dispatch! ctags -R .'],
 				\[' g++ make', 'Dispatch! make'],
-				\[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -g %'],
-				\[' g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-				\[' g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -g %'],
-				\[' g++ hybrid', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
+				\[' g++ build', 'Dispatch! make -C build'],
+				\[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -O2 -g %'],
+				\[' g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
+				\[' g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -O2 -g %'],
+				\[' g++ hybrid', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
+				\[' g++ armadillo', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
 				\[' gcc make', 'Dispatch! make'],
-				\[' gcc single', 'Dispatch! gcc! -Wall -lgsl -lcblas -llapack -g %'],
-				\[' gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
-				\[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -g %'],
-				\[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -g %'],
+				\[' gcc build', 'Dispatch! make -C build'],
+				\[' gcc single', 'Dispatch! gcc! -Wall -lgsl -lcblas -llapack -O2 -g %'],
+				\[' gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
+				\[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g %'],
+				\[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
+				\[' gcc armadillo', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
 				\[' git push', 'Dispatch! git push'],
 				\[' git pull', 'Dispatch! git pull'],
 				\[' git push branch', 'exe "Dispatch! git push -u origin" input("branch: ")'],
