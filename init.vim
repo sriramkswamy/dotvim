@@ -84,7 +84,7 @@ endif
 	set splitright
 	set splitbelow
 	" Gui fonts
-	set guifont=Fira\ Mono:h12
+	set guifont=Fira\ Mono:h14
 	set guicursor+=a:blinkon0
 
 	" Set leader
@@ -133,14 +133,14 @@ endif
 	" <C-x><C-d> for macro completion - never used
 
 	" Toggle few options - inspired by unimpaired
-	nnoremap con :<C-u>setlocal number!<CR>
-	nnoremap cor :<C-u>setlocal relativenumber!<CR>
-	nnoremap cow :<C-u>setlocal wrap!<CR>
-	nnoremap coc :<C-u>setlocal cursorline!<CR>
-	nnoremap col :<C-u>setlocal list!<CR>
-	nnoremap cos :<C-u>setlocal spell!<CR>
-	nnoremap coi :<C-u>setlocal ignorecase!<CR>
-	nnoremap coh :setlocal hlsearch!<CR>
+	nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
+	nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
+	nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
+	nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
+	nnoremap col :<C-u>setlocal list!<CR>:set list?<CR>
+	nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
+	nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
+	nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
 	nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 	nnoremap cof :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 
@@ -390,11 +390,10 @@ endif
 	Plug 'editorconfig/editorconfig-vim'
 	let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 
-	" Semantic split and join
-	Plug 'AndrewRadev/splitjoin.vim'
-
 	" Better '.' command
 	Plug 'tpope/vim-repeat'
+	" Subvert, Abolish and coerce
+	Plug 'tpope/vim-abolish'
 "}}}
 
 " Text objects, operators and motions {{{
@@ -499,10 +498,6 @@ endif
 	nnoremap <silent> gw :GV<CR>
 	nnoremap <silent> gW :GV!<CR>
 	vnoremap <silent> gw :GV<CR>
-
-	" Better branching and merge
-	Plug 'idanarye/vim-merginal'
-	nnoremap <silent> gm :MerginalToggle<CR>
 "}}}
 
 " Eclim - Eclipse plus Vim {{{
@@ -515,6 +510,7 @@ endif
 " Autocompletion {{{
 	" C/C++ autocompletion
 	Plug 'justmao945/vim-clang'
+	let g:clang_compilation_database = './build'
 	let g:clang_c_options = '-std=gnu11'
 	let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 	let g:clang_diagsopt = ''   " disable diagnostics
@@ -876,8 +872,9 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' git checkout', 'Gread'],
 				\[' git rm', 'Gremove'],
 				\[' git cd', 'Gcd'],
-				\[' git push', 'Gpush'],
-				\[' git pull', 'Gpull'],
+				\[' git branch', 'Dispatch! git branch -a'],
+				\[' git push', 'Dispatch! git push'],
+				\[' git pull', 'Dispatch! git pull'],
 				\[' git fetch', 'Gfetch'],
 				\[' git merge', 'Gmerge'],
 				\[' git browse', 'Gbrowse'],
@@ -920,9 +917,6 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\ 'description' : 'dispatch interaction',
 				\}
 	let g:unite_source_menu_menus.dispatch.command_candidates = [
-				\[' tex word count', 'Dispatch! texcount %'],
-				\[' ctags in current dir', 'Dispatch! ctags -R .'],
-				\[' ctags in buffer dir', 'CD | Dispatch! ctags -R .'],
 				\[' g++ make', 'Dispatch! make'],
 				\[' g++ build', 'Dispatch! make -C build'],
 				\[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -O2 -g %'],
@@ -937,10 +931,6 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g %'],
 				\[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
 				\[' gcc armadillo', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
-				\[' git push', 'Dispatch! git push'],
-				\[' git pull', 'Dispatch! git pull'],
-				\[' git push branch', 'exe "Dispatch! git push -u origin" input("branch: ")'],
-				\[' git pull branch', 'exe "Dispatch! git pull -u origin" input("branch: ")'],
 				\[' tmux list sessions', 'Dispatch! tmux list-sessions'],
 				\[' tmux list windows', 'Dispatch! tmux list-windows'],
 				\[' tmux list panes', 'Dispatch! tmux list-panes'],
@@ -953,6 +943,9 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' tmux show window options', 'Dispatch! tmux show-window-options'],
 				\[' tmux show environment', 'Dispatch! tmux show-environment'],
 				\[' tmux show messages', 'Dispatch! tmux show-messages'],
+				\[' tex word count', 'Dispatch! texcount %'],
+				\[' ctags in current dir', 'Dispatch! ctags -R .'],
+				\[' ctags in buffer dir', 'CD | Dispatch! ctags -R .'],
 				\[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
 				\]
 	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
