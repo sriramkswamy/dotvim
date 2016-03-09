@@ -523,7 +523,7 @@ endif
 	let g:jedi#goto_definitions_command = ""
 	let g:jedi#documentation_command = "K"
 	let g:jedi#usages_command = ""
-	let g:jedi#completions_command = "<C-Space>"
+	let g:jedi#completions_command = ""
 	let g:jedi#rename_command = ""
 "}}}
 
@@ -533,8 +533,9 @@ endif
 	" LaTeX already included in polyglot
 	let g:LatexBox_Folding = 1
 
-	" C/C++/ObjC indexer (for cmake projects)
+	" C/C++/ObjC indexer (for cmake projects) and autocomplete
 	Plug 'lyuts/vim-rtags'
+	autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 	let g:rtagsUseDefaultMappings = 0
 	let g:rtagsUseLocationList = 0
 	let g:rtagsMinCharsForCommandCompletion = 2
@@ -554,10 +555,6 @@ endif
 " File/Buffer navigation {{{
 	" Path for the builtin 'find' command
 	set path=.,**
-
-	" I use 'e','E','b' and 'B' for normal movements - tried changing but muscle memorized
-	nnoremap <silent> w :vsplit<CR>
-	nnoremap <silent> W :split<CR>
 
 	" Quickfix and Location list maps
 	nnoremap <silent> <Leader>l :lopen<CR>
@@ -624,6 +621,16 @@ endif
 	nnoremap ]t :tnext<CR>
 	nnoremap [T :tfirst<CR>
 	nnoremap ]T :tlast<CR>
+
+	" Tabs
+	nnoremap <C-p> :tabnext<CR>
+	nnoremap <C-n> :tabprevious<CR>
+
+	" Windows
+	nnoremap + :vsplit<CR>
+	nnoremap - :split<CR>
+	nnoremap w <C-w>
+	nnoremap W <C-w>c
 
 	" Auto-center
 	nnoremap <silent> <C-o> <C-o>zz
@@ -759,8 +766,6 @@ endif
 	" Zoom and split when in Tmux(>v1.8)
 	if exists('$TMUX')
 		nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
-		nnoremap <silent> + :call system("tmux split-window -h")<CR>
-		nnoremap <silent> - :call system("tmux split-window -v")<CR>
 	endif
 "}}}
 
