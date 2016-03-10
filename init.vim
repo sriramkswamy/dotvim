@@ -247,7 +247,7 @@ endif
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
 	nnoremap <silent> <Leader>p :Unite -start-insert -buffer-name=project -direction=botright file_rec/git file/new<CR>
-	nnoremap <silent> <Leader>n :Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
+	inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 	" Yank history
 	Plug 'Shougo/neoyank.vim'
@@ -469,7 +469,6 @@ endif
 	let g:UltiSnipsExpandTrigger="<tab>"
 	let g:UltiSnipsJumpForwardTrigger="<tab>"
 	let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-	let g:UltiSnipsListSnippets = "<C-j>"
 
 	" :UltiSnipsEdit to split your window.
 	let g:UltiSnipsEditSplit="vertical"
