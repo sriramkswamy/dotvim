@@ -199,18 +199,6 @@ endif
 	endfunction
 	command! -nargs=* QFilter call GrepQuickFix(<q-args>)
 
-	" Filter from location list - doesn't work, read help
-	function! GrepLocList(pat)
-	  let all = getloclist(^)
-	  for d in all
-		if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
-		  call remove(all, index(all,d))
-		endif
-	  endfor
-	  call setloclist(^)
-	endfunction
-	command! -nargs=* LFilter call GrepLocList(<q-args>)
-
 	" Unimpaired inspired mappings
 	nnoremap [q :cprevious<CR>
 	nnoremap ]q :cnext<CR>
