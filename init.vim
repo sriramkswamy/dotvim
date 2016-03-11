@@ -268,6 +268,9 @@ endif
 	" Common directory changes
 	command! CD cd %:p:h
 	command! LCD lcd %:p:h
+
+	" Traverse files within a project - create a .projections.json first
+	Plug 'tpope/vim-projectionist'
 "}}}
 
 " Statusline - from scrooloose {{{
@@ -711,11 +714,6 @@ endif
 	endif
 "}}}
 
-" Project management {{{
-	" Traverse files within a project - create a .projections.json first
-	Plug 'tpope/vim-projectionist'
-"}}}
-
 " Searching {{{
 	" Auto-center
 	nnoremap <silent> n nzz
@@ -781,7 +779,6 @@ endif
 	" Dispatch stuff
 	Plug 'tpope/vim-dispatch'
 	nnoremap <silent> <Leader>c :Copen<CR>
-	nnoremap <silent> <Leader>C :cclose<CR>
 	nnoremap <Leader>sd :Dispatch!<Space>
 
 	" Launch appropriate REPL
@@ -797,7 +794,6 @@ endif
 				\ 'python': 'ipython',
 				\ 'julia': 'julia',
 				\}
-	nnoremap <silent> <Leader>sj :TxSetPane<CR>
 
 	" Zoom and split when in Tmux(>v1.8)
 	if exists('$TMUX')
@@ -990,7 +986,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
 				\]
 	nnoremap <silent> <Leader>i :Unite -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
-	"}}}
+"}}}
 
 " Setup plugins, indents and syntax
 filetype plugin indent on
