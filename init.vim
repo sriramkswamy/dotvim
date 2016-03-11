@@ -158,12 +158,6 @@ endif
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 	let g:undotree_WindowLayout = 2
 	nnoremap <silent> U :UndotreeToggle<CR>
-
-	" Local indent highlight - super useful
-	Plug 'tweekmonster/local-indent.vim'
-	highlight LocalIndentGuide ctermfg=3 ctermbg=1 cterm=inverse
-	nnoremap coj :LocalIndentGuide +hl +cc<CR>
-	nnoremap cok :LocalIndentGuide -hl -cc<CR>
 "}}}
 
 " Statusline - from scrooloose {{{
@@ -232,7 +226,7 @@ endif
 "}}}
 
 " Unite {{{
-	Plug 'Shougo/unite.vim' | Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+	Plug 'Shougo/unite.vim'
 	autocmd FileType unite call s:unite_my_settings()
 	function! s:unite_my_settings()
 		imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
@@ -242,16 +236,20 @@ endif
 	let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 
 	" Unite default functionality maps
-	nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file directory directory/new<CR>
-	nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
+	nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file file/new directory directory/new<CR>
+	nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
+	nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project file_rec file/new<CR>
+	nnoremap <silent> <Leader>n :UniteWithProjectDir -start-insert -buffer-name=nav directory directory/new<CR>
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
-	nnoremap <silent> <Leader>. :Unite -direction=botright -buffer-name=resume resume<CR>
-	nnoremap <silent> <Leader>p :Unite -start-insert -buffer-name=project -direction=botright file_rec/git file/new<CR>
+	nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>
+	nnoremap <silent> <Leader>" :Unite -buffer-name=registers register<CR>
+	nnoremap <silent> <Leader>; :Unite -buffer-name=changes change<CR>
+	nnoremap <silent> <Leader>: :Unite -buffer-name=commands command<CR>
 	inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 	" Yank history
 	Plug 'Shougo/neoyank.vim'
-	nnoremap <silent> <Leader>y :Unite -buffer-name=yank -direction=botright history/yank<CR>
+	nnoremap <silent> <C-p> :Unite -buffer-name=yank history/yank<CR>
 
 	" Outline
 	Plug 'Shougo/unite-outline'
@@ -336,7 +334,7 @@ endif
 	nnoremap & g&
 
 	" Elementary splitting
-	let @s = 'Do<Esc>p^d0==k$'
+	nnoremap gz Dop==k$
 
 	" Strip trailing whitespace
 	function! StripWhitespace()
@@ -418,12 +416,8 @@ endif
 	xmap s   <Plug>VSurround
 	xmap S  <Plug>VgSurround
 
-	" Custom text objects
-	Plug 'kana/vim-textobj-user'
 	" Operate on functions in variable segments (between - or _ or camelCase) - (operator)iv/av
-	Plug 'Julian/vim-textobj-variable-segment'
-	" Operate on functions in function blocks - (operator)if/af/iF/aF
-	Plug 'sriramkswamy/vim-textobj-function'
+	Plug 'kana/vim-textobj-user' |  Plug 'Julian/vim-textobj-variable-segment'
 
 	" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
 	Plug 'michaeljsmith/vim-indent-object'
@@ -452,15 +446,65 @@ endif
 	Plug 'tpope/vim-commentary'
 	autocmd FileType matlab setlocal commentstring=%\ %s
 
-	" Easy alignment - gz operator
-	" I use it interactively
-	Plug 'junegunn/vim-easy-align'
-	xmap gz <Plug>(EasyAlign)
-	nmap gz <Plug>(EasyAlign)
-	vnoremap gi :EasyAlign /\s\+/<CR>
-	vnoremap go :EasyAlign *\|<CR>
-	vnoremap g= :EasyAlign *=<CR>
-	vnoremap g& :EasyAlign *&<CR>
+	" Easy alignment - I hardly use tabs and also have custom maps for them
+	Plug 'godlygeek/tabular'
+	vnoremap gt :Tabularize /\s\+<CR>
+	vnoremap g= :Tabularize /=<CR>
+	vnoremap g& :Tabularize /&<CR>
+	vnoremap gT :Tabularize /<bar><CR>
+	vnoremap g: :Tabularize /:<CR>
+
+	" Auto-align when typing =
+	inoremap <silent> = =<Esc>:call <SID>equalalign()<CR>a
+	function! s:equalalign()
+		let p = '^.*=\s.*$'
+		if exists(':Tabularize') && getline('.') =~# '^.*=' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+			let column = strlen(substitute(getline('.')[0:col('.')],'[^=]','','g'))
+			let position = strlen(matchstr(getline('.')[0:col('.')],'.*=\s*\zs.*'))
+			Tabularize/=/l1
+			normal! 0
+			call search(repeat('[^=]*=',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+		endif
+	endfunction
+
+	" Auto-align when typing &
+	inoremap <silent> & &<Esc>:call <SID>ampalign()<CR>a
+	function! s:ampalign()
+		let p = '^.*&\s.*$'
+		if exists(':Tabularize') && getline('.') =~# '^.*=' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+			let column = strlen(substitute(getline('.')[0:col('.')],'[^=]','','g'))
+			let position = strlen(matchstr(getline('.')[0:col('.')],'.*=\s*\zs.*'))
+			Tabularize/=/l1
+			normal! 0
+			call search(repeat('[^=]*=',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+		endif
+	endfunction
+
+	" Auto-align when typing :
+	inoremap <silent> : :<Esc>:call <SID>colonalign()<CR>a
+	function! s:colonalign()
+		let p = '^.*:\s.*$'
+		if exists(':Tabularize') && getline('.') =~# '^.*=' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+			let column = strlen(substitute(getline('.')[0:col('.')],'[^=]','','g'))
+			let position = strlen(matchstr(getline('.')[0:col('.')],'.*=\s*\zs.*'))
+			Tabularize/=/l1
+			normal! 0
+			call search(repeat('[^=]*=',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+		endif
+	endfunction
+
+	" Auto-align when typing |
+	inoremap <silent> <Bar>   <Bar><Esc>:call <SID>baralign()<CR>a
+	function! s:baralign()
+		let p = '^\s*|\s.*\s|\s*$'
+		if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+			let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+			let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+			Tabularize/|/l1
+			normal! 0
+			call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+		endif
+	endfunction
 "}}}
 
 " Snippets {{{
@@ -538,9 +582,6 @@ endif
 	let g:rtagsUseDefaultMappings = 0
 	let g:rtagsUseLocationList = 0
 	let g:rtagsMinCharsForCommandCompletion = 2
-
-	" Vimscript
-	Plug 'tpope/vim-scriptease'
 "}}}
 
 " Syntax checking {{{
@@ -557,9 +598,9 @@ endif
 
 	" Quickfix and Location list maps
 	nnoremap <silent> <Leader>l :lopen<CR>
-	nnoremap <silent> <Leader>c :copen<CR>
+	nnoremap <silent> <Leader>h :copen<CR>
 	nnoremap <silent> <Leader>L :lclose<CR>
-	nnoremap <silent> <Leader>C :cclose<CR>
+	nnoremap <silent> <Leader>H :cclose<CR>
 
 	" this is our 'main' function: it couldn't be simpler
 	function! MRU(arg)
@@ -620,10 +661,8 @@ endif
 	nnoremap ]t :tnext<CR>
 	nnoremap [T :tfirst<CR>
 	nnoremap ]T :tlast<CR>
-
-	" Tabs
-	nnoremap <C-p> :tabnext<CR>
-	nnoremap <C-n> :tabprevious<CR>
+	nnoremap ]n /^<\+HEAD$<CR>
+	nnoremap [n ?^<\+HEAD$<CR>
 
 	" Windows
 	nnoremap + :vsplit<CR>
@@ -670,15 +709,6 @@ endif
 "}}}
 
 " Project management {{{
-	" Root to the project directory
-	Plug 'airblade/vim-rooter'
-	let g:rooter_manual_only = 1
-	let g:rooter_disable_map = 1
-	let g:rooter_patterns = ['.git/', '.svn/', '.hg/']
-	let g:rooter_use_lcd = 1
-	let g:rooter_change_directory_for_non_project_files = 1
-	let g:rooter_silent_chdir = 1
-
 	" Traverse files within a project - create a .projections.json first
 	Plug 'tpope/vim-projectionist'
 "}}}
@@ -713,7 +743,7 @@ endif
 	nmap # <Plug>(anzu-sharp-with-echo)
 	" clear status
 	nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
-	nnoremap <Leader>h :Unite -buffer-name=anzu -direction=botright -horizontal -winheight=10 anzu<CR>
+	nnoremap <C-n> :Unite -buffer-name=anzu -horizontal -winheight=10 anzu<CR>
 
     " Vim grepper
 	Plug 'mhinz/vim-grepper'
@@ -730,6 +760,10 @@ endif
 "}}}
 
 " REPL and Tmux {{{
+	" Error format and make programs
+	autocmd FileType python set makeprg=pylint\ %
+	autocmd FileType python set errorformat=%f:%l:%m
+
 	let g:C_UseTool_cmake = 'yes'
 	let g:C_UseTool_doxygen = 'yes'
 
@@ -743,8 +777,8 @@ endif
 
 	" Dispatch stuff
 	Plug 'tpope/vim-dispatch'
-	nnoremap <silent> <Leader>v :Copen<CR>
-	nnoremap <silent> <Leader>V :cclose<CR>
+	nnoremap <silent> <Leader>c :Copen<CR>
+	nnoremap <silent> <Leader>C :cclose<CR>
 	nnoremap <Leader>sd :Dispatch!<Space>
 
 	" Launch appropriate REPL
@@ -783,10 +817,9 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 	let g:unite_source_menu_menus.osinteract.command_candidates = [
 		\[' alternate file', 'A'],
 		\[' cd to buffer dir', 'CD'],
-		\[' cd to project dir', 'Rooter'],
 		\[' create .projections.json', 'e .projections.json'],
+		\[' Edit vimrc', 'vsp $MYVIMRC'],
 		\[' Source vimrc', 'so $MYVIMRC'],
-		\[' Edit vimrc', 'e $MYVIMRC'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
@@ -862,7 +895,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\['eclim Ant Run', 'exe "Ant " input("target: ")'],
 				\['eclim Ant Doc', 'AntDoc'],
 				\]
-	nnoremap <silent> <Leader>j :Unite -direction=botright -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
+	nnoremap <silent> <Leader>j :Unite -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 
 	" Interface for Git
 	let g:unite_source_menu_menus.git = {
@@ -896,7 +929,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' git grep',  'exe "Ggrep " input("string: ")'],
 				\[' git prompt', 'exe "Git! " input("command: ")'],
 				\] " Append ' --' after log to get commit info commit buffers
-	nnoremap <silent> <Leader>o :Unite -direction=botright -silent -buffer-name=git -start-insert menu:git<CR>
+	nnoremap <silent> <Leader>o :Unite -silent -buffer-name=git -start-insert menu:git<CR>
 
 	" Interface for Notes
 	let g:unite_source_menu_menus.notes = {
@@ -913,8 +946,8 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
 				\[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
 				\]
-	nnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=notes -start-insert menu:notes<CR>
-	vnoremap <silent> <Leader>e :Unite -direction=botright -silent -buffer-name=notes -start-insert menu:notes<CR>
+	nnoremap <silent> <Leader>e :Unite -silent -buffer-name=notes -start-insert menu:notes<CR>
+	vnoremap <silent> <Leader>e :Unite -silent -buffer-name=notes -start-insert menu:notes<CR>
 
 	" Interface for common Dispatch commands
 	let g:unite_source_menu_menus.dispatch = {
@@ -953,7 +986,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
 				\[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
 				\]
-	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
+	nnoremap <silent> <Leader>i :Unite -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
 	"}}}
 
 " Setup plugins, indents and syntax
