@@ -98,6 +98,12 @@ endif
 	" Help
 	nnoremap <Leader>x :help<Space>
 
+	" Folding
+	nnoremap <silent> ]z zj
+	nnoremap <silent> [z zk
+	nnoremap t zf
+	vnoremap t zf
+
 	" Kill, save or quit
 	nnoremap <silent> <Leader>k :bd!<CR>
 	nnoremap <silent> <Leader>w :w<CR>
@@ -128,9 +134,6 @@ endif
 	" File complete - keyword completion done by <C-p> (it's more intuitive)
 	inoremap <silent> <C-_> <C-x><C-f>
 	" <C-x><C-l> for line completion - rarely used
-	" <C-x><C-v> for command-line completion - never used...interesting though
-	" <C-x><C-t> for thesaurus completion - never used
-	" <C-x><C-d> for macro completion - never used
 
 	" Toggle few options - inspired by unimpaired
 	nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
@@ -158,6 +161,113 @@ endif
 	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 	let g:undotree_WindowLayout = 2
 	nnoremap <silent> U :UndotreeToggle<CR>
+"}}}
+
+" File/Buffer navigation {{{
+	" Path for the builtin 'find' command
+	set path=.,**
+
+	" Quickfix and Location list maps
+	nnoremap <silent> <Leader>l :lopen<CR>
+	nnoremap <silent> <Leader>h :copen<CR>
+	nnoremap <silent> <Leader>L :lclose<CR>
+	nnoremap <silent> <Leader>H :cclose<CR>
+
+	" this is our 'main' function: it couldn't be simpler
+	function! MRU(arg)
+		execute 'edit ' . a:arg
+	endfunction
+	" the completion function, again it's very simple
+	function! MRUComplete(ArgLead, CmdLine, CursorPos)
+		return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
+	endfunction
+	" the actual command
+	" it accepts only one argument
+	" it's set to use the function above for completion
+	command! -nargs=1 -complete=customlist,MRUComplete MRU call MRU(<f-args>)
+	nnoremap <Leader>r :MRU<Space>
+
+	" Filter from quickfix list
+	function! GrepQuickFix(pat)
+		let all = getqflist()
+		for d in all
+			if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
+				call remove(all, index(all,d))
+			endif
+		endfor
+		call setqflist(all)
+	endfunction
+	command! -nargs=* QFilter call GrepQuickFix(<q-args>)
+
+	" Filter from location list - doesn't work, read help
+	function! GrepLocList(pat)
+	  let all = getloclist(^)
+	  for d in all
+		if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
+		  call remove(all, index(all,d))
+		endif
+	  endfor
+	  call setloclist(^)
+	endfunction
+	command! -nargs=* LFilter call GrepLocList(<q-args>)
+
+	" Unimpaired inspired mappings
+	nnoremap [q :cprevious<CR>
+	nnoremap ]q :cnext<CR>
+	nnoremap [Q :cfirst<CR>
+	nnoremap ]Q :clast<CR>
+	nnoremap [l :lprevious<CR>
+	nnoremap ]l :lnext<CR>
+	nnoremap [L :lfirst<CR>
+	nnoremap ]L :llast<CR>
+	nnoremap [b :bprevious<CR>
+	nnoremap ]b :bnext<CR>
+	nnoremap [B :bfirst<CR>
+	nnoremap ]B :blast<CR>
+	nnoremap [a :previous<CR>
+	nnoremap ]a :next<CR>
+	nnoremap [A :first<CR>
+	nnoremap ]A :last<CR>
+	nnoremap [t :tprevious<CR>
+	nnoremap ]t :tnext<CR>
+	nnoremap [T :tfirst<CR>
+	nnoremap ]T :tlast<CR>
+	nnoremap ]n /^<\+HEAD$<CR>
+	nnoremap [n ?^<\+HEAD$<CR>
+
+	" Windows
+	nnoremap + :vsplit<CR>
+	nnoremap - :split<CR>
+	nnoremap w <C-w>
+	nnoremap W <C-w>c
+
+	" Auto-center
+	nnoremap <silent> <C-o> <C-o>zz
+	nnoremap <silent> <C-i> <C-i>zz
+	nnoremap <silent> G Gzz
+	nnoremap <silent> k gk
+	nnoremap <silent> j gj
+
+	" '%' matching
+	runtime macros/matchit.vim
+	set showmatch
+	" Tags for movement
+	set tags=./tags;,tags;
+
+	" Tags
+	nnoremap T :tag *
+
+	" Jumplist
+	nnoremap <C-k> <C-o>
+	nnoremap <C-j> <C-i>
+
+	" Folding
+	nnoremap <silent> <Tab> za
+	nnoremap <silent> <C-i> za
+
+	" Common directory changes
+	command! CD cd %:p:h
+	command! LCD lcd %:p:h
 "}}}
 
 " Statusline - from scrooloose {{{
@@ -242,9 +352,7 @@ endif
 	nnoremap <silent> <Leader>n :UniteWithProjectDir -start-insert -buffer-name=nav directory directory/new<CR>
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 	nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>
-	nnoremap <silent> <Leader>" :Unite -buffer-name=registers register<CR>
-	nnoremap <silent> <Leader>; :Unite -buffer-name=changes change<CR>
-	nnoremap <silent> <Leader>: :Unite -buffer-name=commands command<CR>
+	nnoremap <silent> <Leader>' :Unite -buffer-name=registers register<CR>
 	inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 	" Yank history
@@ -253,7 +361,7 @@ endif
 
 	" Outline
 	Plug 'Shougo/unite-outline'
-	nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
+	nnoremap <silent> <C-o> :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
 "}}}
 
 " FileTypes {{{
@@ -421,6 +529,17 @@ endif
 
 	" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
 	Plug 'michaeljsmith/vim-indent-object'
+
+	" Markdown section
+	onoremap im :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvNkh"<cr>
+	xnoremap im :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvNkh"<cr>
+	onoremap am :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvNkh"<cr>
+	xnoremap am :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvNkh"<cr>
+	" Not sure how to make a generalized regex for the last one
+	onoremap iM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvG$"<cr>
+	xnoremap iM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvG$"<cr>
+	onoremap aM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvG$"<cr>
+	xnoremap aM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvG$"<cr>
 
 	" Operate on entire file
 	onoremap ia :<C-u>normal! ggvG$<CR>
@@ -590,122 +709,6 @@ endif
 	if has('nvim')
 	  autocmd! BufWritePost * Neomake
 	endif
-"}}}
-
-" File/Buffer navigation {{{
-	" Path for the builtin 'find' command
-	set path=.,**
-
-	" Quickfix and Location list maps
-	nnoremap <silent> <Leader>l :lopen<CR>
-	nnoremap <silent> <Leader>h :copen<CR>
-	nnoremap <silent> <Leader>L :lclose<CR>
-	nnoremap <silent> <Leader>H :cclose<CR>
-
-	" this is our 'main' function: it couldn't be simpler
-	function! MRU(arg)
-		execute 'edit ' . a:arg
-	endfunction
-	" the completion function, again it's very simple
-	function! MRUComplete(ArgLead, CmdLine, CursorPos)
-		return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
-	endfunction
-	" the actual command
-	" it accepts only one argument
-	" it's set to use the function above for completion
-	command! -nargs=1 -complete=customlist,MRUComplete MRU call MRU(<f-args>)
-	nnoremap <Leader>r :MRU<Space>
-
-	" Filter from quickfix list
-	function! GrepQuickFix(pat)
-		let all = getqflist()
-		for d in all
-			if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
-				call remove(all, index(all,d))
-			endif
-		endfor
-		call setqflist(all)
-	endfunction
-	command! -nargs=* QFilter call GrepQuickFix(<q-args>)
-
-	" Filter from location list - doesn't work, read help
-	function! GrepLocList(pat)
-	  let all = getloclist(^)
-	  for d in all
-		if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
-		  call remove(all, index(all,d))
-		endif
-	  endfor
-	  call setloclist(^)
-	endfunction
-	command! -nargs=* LFilter call GrepLocList(<q-args>)
-
-	" Unimpaired inspired mappings
-	nnoremap [q :cprevious<CR>
-	nnoremap ]q :cnext<CR>
-	nnoremap [Q :cfirst<CR>
-	nnoremap ]Q :clast<CR>
-	nnoremap [l :lprevious<CR>
-	nnoremap ]l :lnext<CR>
-	nnoremap [L :lfirst<CR>
-	nnoremap ]L :llast<CR>
-	nnoremap [b :bprevious<CR>
-	nnoremap ]b :bnext<CR>
-	nnoremap [B :bfirst<CR>
-	nnoremap ]B :blast<CR>
-	nnoremap [a :previous<CR>
-	nnoremap ]a :next<CR>
-	nnoremap [A :first<CR>
-	nnoremap ]A :last<CR>
-	nnoremap [t :tprevious<CR>
-	nnoremap ]t :tnext<CR>
-	nnoremap [T :tfirst<CR>
-	nnoremap ]T :tlast<CR>
-	nnoremap ]n /^<\+HEAD$<CR>
-	nnoremap [n ?^<\+HEAD$<CR>
-
-	" Windows
-	nnoremap + :vsplit<CR>
-	nnoremap - :split<CR>
-	nnoremap w <C-w>
-	nnoremap W <C-w>c
-
-	" Auto-center
-	nnoremap <silent> <C-o> <C-o>zz
-	nnoremap <silent> <C-i> <C-i>zz
-	nnoremap <silent> G Gzz
-	nnoremap <silent> k gk
-	nnoremap <silent> j gj
-
-	" '%' matching
-	runtime macros/matchit.vim
-	set showmatch
-	" Tags for movement
-	set tags=./tags;,tags;
-
-	" Tags
-	nnoremap T :tag *
-
-	" Move across closed folds using ]z and [z
-	function! NextClosedFold(dir)
-		let cmd = 'norm!z' . a:dir
-		let view = winsaveview()
-		let [l0, l, open] = [0, view.lnum, 1]
-		while l != l0 && open
-			exe cmd
-			let [l0, l] = [l, line('.')]
-			let open = foldclosed(l) < 0
-		endwhile
-		if open
-			call winrestview(view)
-		endif
-	endfunction
-	nnoremap <silent> ]z :call NextClosedFold('j')<CR>
-	nnoremap <silent> [z :call NextClosedFold('k')<CR>
-
-	" Common directory changes
-	command! CD cd %:p:h
-	command! LCD lcd %:p:h
 "}}}
 
 " Project management {{{
@@ -996,3 +999,5 @@ syntax on
 " Set colorscheme
 set background=dark
 colorscheme PaperColor
+
+" vim:set noet sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
