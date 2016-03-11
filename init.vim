@@ -951,6 +951,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' ctags in current dir', 'Dispatch! ctags -R .'],
 				\[' ctags in buffer dir', 'CD | Dispatch! ctags -R .'],
 				\[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
+				\[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
 				\]
 	nnoremap <silent> <Leader>i :Unite -direction=botright -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
 	"}}}
