@@ -446,7 +446,7 @@ endif
 	Plug 'tpope/vim-commentary'
 	autocmd FileType matlab setlocal commentstring=%\ %s
 
-	" Easy alignment - I hardly use tabs and also have custom maps for them
+	" Easy alignment
 	Plug 'godlygeek/tabular'
 	vnoremap gt :Tabularize /\s\+<CR>
 	vnoremap g= :Tabularize /=<CR>
