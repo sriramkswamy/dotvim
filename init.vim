@@ -705,9 +705,6 @@ endif
 "}}}
 
 " Syntax checking {{{
-	" Using Vim's make and makeprg
-	Plug '~/.config/nvim/config'
-
 	Plug 'benekastah/neomake' " Async operations for Neovim
 	nnoremap <Leader>m :Neomake<CR>
 	if has('nvim')
