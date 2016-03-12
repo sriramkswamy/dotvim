@@ -93,7 +93,6 @@ endif
 	" This is basically because of the memory I developed from my Emacs experiments
 	nnoremap <Leader>d :
 	vnoremap <Leader>d :
-	nnoremap <silent> <Leader><Leader> q/
 
 	" Help
 	nnoremap <Leader>x :help<Space>
@@ -106,11 +105,11 @@ endif
 
 	" Kill, save or quit
 	nnoremap <silent> <Leader>k :bd!<CR>
-	nnoremap <silent> <Leader>w :w<CR>
+	nnoremap <silent> <Leader>w :update<CR>
 	nnoremap <silent> <Leader>q :q<CR>
 
-	" Put me in command history instead
-	nnoremap <silent> Q q:
+	" Format instead of Ex mode
+	nnoremap <silent> Q gq
 
 	" Keep me in visual mode
 	vnoremap <silent> > >gv
@@ -131,7 +130,7 @@ endif
 	inoremap <silent> <C-d> <C-x><C-u>
 	" Dictionary - don't use this if you need <C-l> (I don't quite get <C-l>)
 	inoremap <silent> <C-l> <C-x><C-k>
-	" File complete - keyword completion done by <C-p> (it's more intuitive)
+	" File complete - You can use this by typing <C-/>
 	inoremap <silent> <C-_> <C-x><C-f>
 	" <C-x><C-l> for line completion - rarely used
 
@@ -147,9 +146,6 @@ endif
 	nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 	nnoremap cof :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 
-	" Escape out of insert mode, because iTerm2 delays it assuming <Esc> to be an escape sequence
-	inoremap <silent> <C-g> <Esc>
-
 	" Readline-ish bindings in Command-line mode
 	cnoremap <C-a> <Home>
 	cnoremap <C-e> <End>
@@ -158,7 +154,7 @@ endif
 	Plug 'NLKNguyen/papercolor-theme'
 
 	" Undotree
-	Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
+	Plug 'mbbill/undotree'
 	let g:undotree_WindowLayout = 2
 	nnoremap <silent> U :UndotreeToggle<CR>
 "}}}
@@ -239,6 +235,7 @@ endif
 	" '%' matching
 	runtime macros/matchit.vim
 	set showmatch
+
 	" Tags for movement
 	set tags=./tags;,tags;
 
@@ -344,6 +341,8 @@ endif
 	nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 	nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>
 	nnoremap <silent> <Leader>' :Unite -buffer-name=registers register<CR>
+	nnoremap <silent> <Leader>; q:
+	nnoremap <silent> <Leader>/ q/
 	inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 	" Yank history
@@ -402,6 +401,8 @@ endif
 	set encoding=utf-8
 	" Don't wrap the lines - Can be toggled with unimpaired's 'cow'
 	set nowrap
+	set linebreak
+	set nolist
 	" Use backspace for multiple purposes while moving
 	set backspace=indent,eol,start
 	" Indentation
@@ -491,6 +492,7 @@ endif
 	Plug 'tpope/vim-repeat'
 	" Subvert, Abolish and coerce
 	Plug 'tpope/vim-abolish'
+	nnoremap <Leader><Leader> :Subvert /
 "}}}
 
 " Text objects, operators and motions {{{
@@ -499,8 +501,12 @@ endif
 	nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
 
 	" Blank line
-	nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
-	nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
+	nnoremap [o  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
+	nnoremap ]o  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
+
+	" Blank character before/after current word
+	nnoremap [<Space> i l
+	nnoremap ]<Space> a h
 
 	" Better surround - cs/ds/ys(to add surrounding)
 	Plug 'tpope/vim-surround'
@@ -515,22 +521,22 @@ endif
 	xmap s   <Plug>VSurround
 	xmap S  <Plug>VgSurround
 
-	" Operate on functions in variable segments (between - or _ or camelCase) - (operator)iv/av
-	Plug 'kana/vim-textobj-user' |  Plug 'Julian/vim-textobj-variable-segment'
+	" Adds certain niceties
+	Plug 'wellle/targets.vim'
+
+	" Create text objects
+	Plug 'kana/vim-textobj-user'
+	" Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av
+	Plug 'Julian/vim-textobj-variable-segment'
+	" Operate on functions - (operator)if/af
+	Plug 'sriramkswamy/vim-textobj-function'
+	" Operate on comments - (operator)ic/ac
+	Plug 'sriramkswamy/vim-textobj-comment'
+	" Operate on sections - (operator)im/am for markdown and (operator)is/as for latex
+	" Plug 'sriramkswamy/vim-textobj-section'
 
 	" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
 	Plug 'michaeljsmith/vim-indent-object'
-
-	" Markdown section
-	onoremap im :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvNkh"<cr>
-	xnoremap im :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvNkh"<cr>
-	onoremap am :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvNkh"<cr>
-	xnoremap am :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvNkh"<cr>
-	" Not sure how to make a generalized regex for the last one
-	onoremap iM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvG$"<cr>
-	xnoremap iM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rjvG$"<cr>
-	onoremap aM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvG$"<cr>
-	xnoremap aM :<c-u>execute "normal! ?^#\\+.*\\w$\r:nohlsearch\rvG$"<cr>
 
 	" Operate on entire file
 	onoremap ia :<C-u>normal! ggvG$<CR>
@@ -692,9 +698,16 @@ endif
 	let g:rtagsUseDefaultMappings = 0
 	let g:rtagsUseLocationList = 0
 	let g:rtagsMinCharsForCommandCompletion = 2
+
+	" Vimscript and test suite
+	Plug 'tpope/vim-scriptease'
+	Plug 'kana/vim-vspec'
 "}}}
 
 " Syntax checking {{{
+	" Using Vim's make and makeprg
+	Plug '~/.config/nvim/config'
+
 	Plug 'benekastah/neomake' " Async operations for Neovim
 	nnoremap <Leader>m :Neomake<CR>
 	if has('nvim')
@@ -749,10 +762,6 @@ endif
 "}}}
 
 " REPL and Tmux {{{
-	" Error format and make programs
-	autocmd FileType python set makeprg=pylint\ %
-	autocmd FileType python set errorformat=%f:%l:%m
-
 	let g:C_UseTool_cmake = 'yes'
 	let g:C_UseTool_doxygen = 'yes'
 
@@ -802,11 +811,14 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 		\ 'description' : 'OS interaction and configs',
 		\}
 	let g:unite_source_menu_menus.osinteract.command_candidates = [
-		\[' alternate file', 'A'],
-		\[' cd to buffer dir', 'CD'],
-		\[' create .projections.json', 'e .projections.json'],
-		\[' Edit vimrc', 'vsp $MYVIMRC'],
-		\[' Source vimrc', 'so $MYVIMRC'],
+				\[' alternate file', 'A'],
+				\[' cd to buffer dir', 'CD'],
+				\[' ctags in current dir', 'Dispatch! ctags -R .'],
+				\[' tex word count', 'Dispatch! texcount %'],
+				\[' Source vimrc', 'so $MYVIMRC'],
+				\[' Edit vimrc', 'vsp $MYVIMRC'],
+				\[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
+				\[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
 		\]
 	nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
@@ -967,11 +979,6 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 				\[' tmux show window options', 'Dispatch! tmux show-window-options'],
 				\[' tmux show environment', 'Dispatch! tmux show-environment'],
 				\[' tmux show messages', 'Dispatch! tmux show-messages'],
-				\[' tex word count', 'Dispatch! texcount %'],
-				\[' ctags in current dir', 'Dispatch! ctags -R .'],
-				\[' ctags in buffer dir', 'CD | Dispatch! ctags -R .'],
-				\[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
-				\[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
 				\]
 	nnoremap <silent> <Leader>i :Unite -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
 "}}}
