@@ -110,6 +110,7 @@ endif
 
 	" Format instead of Ex mode
 	nnoremap <silent> Q gq
+	vnoremap <silent> Q gq
 
 	" Keep me in visual mode
 	vnoremap <silent> > >gv
