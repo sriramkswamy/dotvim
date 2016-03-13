@@ -93,6 +93,7 @@ set guicursor+=a:blinkon0
 " Maps without leader {{{2
 " Format instead of Ex mode
 nnoremap <silent> Q gq
+nnoremap <silent> QQ gqq
 vnoremap <silent> Q gq
 " Keep me in visual mode
 vnoremap <silent> > >gv
@@ -735,17 +736,25 @@ endfunction
 " Text objects, operators and motions {{{1
 " Move line and add blanks {{{2
 " Move the current line
-nnoremap mk  :<c-u>execute 'move -1-'. v:count1<cr>
-nnoremap mj  :<c-u>execute 'move +'. v:count1<cr>
+nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
+nmap mk <Plug>MoveLineUp
+nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repeat#set("\<Plug>MoveLineDown", v:count)<CR>
+nmap mj <Plug>MoveLineDown
 " Blank line
-nnoremap mO  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
-nnoremap mo  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
+nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
+nmap mO <Plug>BlankLineUp
+nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
+nmap mo <Plug>BlankLineDown
 " Blank character before/after current word
-nnoremap mi i l
-nnoremap ma a h
+nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v:count)<CR>
+nmap mi <Plug>BlankCharLeft
+nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
+nmap ma <Plug>BlankCharRight
 " Blank character before/after current line - 'm' for mark still works (?)
-nnoremap mI mmI `ml
-nnoremap mA mmA `m
+nmap <silent> <Plug>BlankCharStart mmI `ml:call repeat#set("\<Plug>BlankCharStart", v:count)<CR>
+nmap mI <Plug>BlankCharStart
+nmap <silent> <Plug>BlankCharEnd mmA `m:call repeat#set("\<Plug>BlankCharEnd", v:count)<CR>
+nmap mA <Plug>BlankCharEnd
 
 " Motions {{{2
 nnoremap ]r f,eb
@@ -903,16 +912,26 @@ autocmd FileType matlab setlocal commentstring=%\ %s
 Plug 'vim-scripts/ReplaceWithRegister'
 " Exchange stuff - cx(motion/textobject) and repeat it at the new point
 Plug 'tommcdo/vim-exchange'
-nmap ml cxiweecxiw
-nmap mh cxiwbcxiw
-nmap mL cxiWEEcxiW
-nmap mH cxiWBcxiW
-nmap m} cxip}jcxip
-nmap m{ cxip{kcxip
-nmap m) cxis)cxis
-nmap m( cxis(cxis
-nmap mn cxiwcxgn
-nmap mN cxiwcxgN
+nmap <silent> <Plug>ExchangeWordRight cxiweecxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
+nmap ml <Plug>ExchangeWordRight
+nmap <silent> <Plug>ExchangeWordLeft cxiwbcxiw :call repeat#set("\<Plug>ExchangeWordLeft", v:count)<CR>
+nmap mh <Plug>ExchangeWordLeft
+nmap <silent> <Plug>ExchangeWORDRight cxiWEEcxiW :call repeat#set("\<Plug>ExchangeWORDRight", v:count)<CR>
+nmap mL <Plug>ExchangeWORDRight
+nmap <silent> <Plug>ExchangeWORDLeft cxiWBcxiW :call repeat#set("\<Plug>ExchangeWORDLeft", v:count)<CR>
+nmap mH <Plug>ExchangeWORDLeft
+nmap <silent> <Plug>ExchangeParaRight cxip}jcxip :call repeat#set("\<Plug>ExchangeParaRight", v:count)<CR>
+nmap m} <Plug>ExchangeParaRight
+nmap <silent> <Plug>ExchangeParaLeft cxip{kcxip :call repeat#set("\<Plug>ExchangeParaLeft", v:count)<CR>
+nmap m{ <Plug>ExchangeParaLeft
+nmap <silent> <Plug>ExchangeSentRight cxis)cxis :call repeat#set("\<Plug>ExchangeSentRight", v:count)<CR>
+nmap m) <Plug>ExchangeSentRight
+nmap <silent> <Plug>ExchangeSentLeft cxis(cxis :call repeat#set("\<Plug>ExchangeSentLeft", v:count)<CR>
+nmap m( <Plug>ExchangeSentLeft
+nmap <silent> <Plug>ExchangeSearchNext cxiwcxgn :call repeat#set("\<Plug>ExchangeSearchNext", v:count)<CR>
+nmap mn <Plug>ExchangeSearchNext
+nmap <silent> <Plug>ExchangeSearchPrev cxiwcxgN :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
+nmap mN <Plug>ExchangeSearchPrev
 
 " Snippets {{{1
 if has('python') || has('python3')
