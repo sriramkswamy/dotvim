@@ -42,7 +42,7 @@ set scrolloff=3
 " Sync with OS clipboard
 set clipboard=unnamed
 " Color the current line
-set nocursorline " Can be toggled with 'coc'
+set cursorline " Can be toggled with 'coc'
 " Ex commands
 set wildmenu
 set wildmode=list:longest,full
@@ -94,18 +94,16 @@ set guicursor+=a:blinkon0
 " Format instead of Ex mode
 nnoremap <silent> Q gq
 vnoremap <silent> Q gq
-
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
-
 " 'Zoom' into the current buffer
 nnoremap <silent> Z :only<CR>
-
+" Add mark - frees up 'm' which I use for moving stuff
+nnoremap + m
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
-
 " Complete tags - don't use if you need <C-]> (...but why?)
 inoremap <silent> <C-]> <C-x><C-]>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
@@ -117,7 +115,6 @@ inoremap <silent> <C-l> <C-x><C-k>
 " File complete - You can use this by typing <C-/>
 inoremap <silent> <C-_> <C-x><C-f>
 " <C-x><C-l> for line completion - rarely used
-
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
@@ -129,28 +126,26 @@ nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
 nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap cof :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
-
+nnoremap coz :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
 
 " Leader and maps {{{2
 " Set leader
 let mapleader="\<Space>"
-
 " This is basically because of the memory I developed from my Emacs experiments
 nnoremap <Leader>d :
 vnoremap <Leader>d :
-
 " Help
 nnoremap <Leader>x :help<Space>
-
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
-nnoremap t zf
-vnoremap t zf
-
+nnoremap - zf
+vnoremap - zf
 " Kill, save or quit
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
@@ -163,6 +158,8 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'mbbill/undotree'
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
+" Preview the registers
+Plug 'junegunn/vim-peekaboo'
 " Markdown folding
 Plug 'nelstrom/vim-markdown-folding'
 let g:markdown_fold_style = 'nested'
@@ -218,6 +215,9 @@ nnoremap <C-j> <C-i>
 " Folding
 nnoremap <silent> <Tab> za
 nnoremap <silent> <C-i> za
+" Histories
+nnoremap <silent> <Leader>; q:
+nnoremap <silent> <Leader>/ q/
 
 " Functions and commands {{{2
 " this is our 'main' function: it couldn't be simpler
@@ -250,6 +250,30 @@ command! -nargs=* QFilter call GrepQuickFix(<q-args>)
 command! CD cd %:p:h
 command! LCD lcd %:p:h
 
+" Alternate between header and source files
+" (credit to junegunn's vimrc)
+function! s:A()
+  let name = expand('%:r')
+  let ext = tolower(expand('%:e'))
+  let sources = ['c', 'cc', 'cpp', 'cxx']
+  let headers = ['h', 'hh', 'hpp', 'hxx']
+  for pair in [[sources, headers], [headers, sources]]
+    let [set1, set2] = pair
+    if index(set1, ext) >= 0
+      for h in set2
+        let aname = name.'.'.h
+        for a in [aname, toupper(aname)]
+          if filereadable(a)
+            execute 'e' a
+            return
+          end
+        endfor
+      endfor
+    endif
+  endfor
+endfunction
+command! A call <sid>A()
+
 " Leader maps {{{2
 " Quickfix and Location list maps
 nnoremap <silent> <Leader>l :lopen<CR>
@@ -258,8 +282,13 @@ nnoremap <silent> <Leader>L :lclose<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
 
 " Plugins {{{2
-" Traverse files within a project - create a .projections.json first
-Plug 'tpope/vim-projectionist'
+" Documentation browser - just Dash for now
+Plug 'keith/investigate.vim'
+let g:investigate_use_dash=1
+" Open the File manager or Terminal
+Plug 'justinmk/vim-gtfo'
+" Open the url in browser or search for the word using Google/Wiki
+Plug 'dhruvasagar/vim-open-url'
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -330,15 +359,13 @@ endfunction
 let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 
 " Unite default functionality maps
-nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file file/new directory directory/new<CR>
+nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
 nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
 nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project file_rec file/new<CR>
-nnoremap <silent> <Leader>n :UniteWithProjectDir -start-insert -buffer-name=nav directory directory/new<CR>
+nnoremap <silent> <Leader>n :UniteWithProjectDir -buffer-name=nav -vertical directory directory/new<CR>
 nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>
-nnoremap <silent> <Leader>' :Unite -buffer-name=registers register<CR>
-nnoremap <silent> <Leader>; q:
-nnoremap <silent> <Leader>/ q/
+nnoremap <silent> <C-o> :Unite -buffer-name=jumps -start-insert jump<CR>
 inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 " Helper plugins {{{2
@@ -347,7 +374,7 @@ Plug 'Shougo/neoyank.vim'
 nnoremap <silent> <C-p> :Unite -buffer-name=yank history/yank<CR>
 " Outline
 Plug 'Shougo/unite-outline'
-nnoremap <silent> <C-o> :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
+nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
 " Vim anzu - integrates with Unite too
 Plug 'osyo-manga/vim-anzu'
 nmap n <Plug>(anzu-n-with-echo)
@@ -571,7 +598,6 @@ autocmd BufNewFile,BufReadPost *.jl set filetype=julia
 autocmd BufNewFile,BufReadPost *.m set filetype=matlab
 autocmd BufNewFile,BufRead *.plt set filetype=gnuplot
 autocmd BufNewFile,BufRead *.r,*.R set filetype=R
-
 " TeX and Markdown support
 let g:tex_flavor='latex'
 let g:vim_markdown_disabled = 1
@@ -605,7 +631,10 @@ nnoremap <silent> Y y$
 nnoremap & g&
 " Elementary splitting
 nnoremap gz Dop==k$
-
+" %% for current buffer file name
+" :: for current buffer file path
+cnoremap %% <c-r>=expand('%')<cr>
+cnoremap :: <c-r>=expand('%:p:h')<cr>/
 " Easier pairs when required
 inoremap {<Tab> {}<Esc>i
 inoremap {<CR> {<CR>}<Esc>O
@@ -634,6 +663,7 @@ function! StripWhitespace()
 	call setreg('/', old_query)
 endfunction
 command! StripWhiteSpace :call StripWhitespace()
+nnoremap gow :StripWhiteSpace<CR>
 
 " Convert tabs to whitespace
 function! TabsToWhitespace()
@@ -644,6 +674,7 @@ function! TabsToWhitespace()
 	call setreg('/', old_query)
 endfunction
 command! TabsToWhiteSpace :call TabsToWhitespace()
+nnoremap got :TabsToWhitespace<CR>
 
 " strip ^M character at end of lines
 function! StripM()
@@ -654,6 +685,7 @@ function! StripM()
 	call setreg('/', old_query)
 endfunction
 command! StripM :call StripM()
+nnoremap gom :StripM<CR>
 
 " Plugins {{{2
 " For collaborative work
@@ -664,75 +696,9 @@ Plug 'tpope/vim-repeat'
 " Subvert, Abolish and coerce
 Plug 'tpope/vim-abolish'
 nnoremap <Leader><Leader> :Subvert /
-
-" Text objects, operators and motions {{{1
-" Move line and add blanks {{{2
-" Move the current line
-nnoremap [e  :<c-u>execute 'move -1-'. v:count1<cr>
-nnoremap ]e  :<c-u>execute 'move +'. v:count1<cr>
-" Blank line
-nnoremap [o  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
-nnoremap ]o  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
-" Blank character before/after current word
-nnoremap [<Space> i l
-nnoremap ]<Space> a h
-
-" onoremap based text objects {{{2
-" Operate on entire file
-onoremap ia :<C-u>normal! ggvG$<CR>
-xnoremap ia :<C-u>normal! ggvG$<CR>
-onoremap aa :<C-u>normal! ggvG$<CR>
-xnoremap aa :<C-u>normal! ggvG$<CR>
-" Operate on entire line
-onoremap il :<C-u>normal! _vg_<CR>
-xnoremap il :<C-u>normal! _vg_<CR>
-onoremap al :<C-u>normal! 0v$<CR>
-xnoremap al :<C-u>normal! 0v$<CR>
-" From romainl
-for char in [ '$', ',', '_', '.', ':', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
-	execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
-	execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
-	execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
-	execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
-endfor
-
-" Operator plugins {{{2
-" Better surround - cs/ds/ys(to add surrounding)
-Plug 'tpope/vim-surround'
-let g:surround_no_mappings = 1
-nmap ds  <Plug>Dsurround
-nmap cs  <Plug>Csurround
-nmap s  <Plug>Ysurround
-nmap S  <Plug>YSurround
-nmap ss <Plug>Yssurround
-nmap Ss <Plug>YSsurround
-nmap SS <Plug>YSsurround
-xmap s   <Plug>VSurround
-xmap S  <Plug>VgSurround
-" Easy commenting - gc(motion/textobject)
-Plug 'tpope/vim-commentary'
-autocmd FileType matlab setlocal commentstring=%\ %s
-
-" Text object plugins {{{2
-" Adds certain niceties
-Plug 'wellle/targets.vim'
-" Create text objects
-Plug 'kana/vim-textobj-user'
-" Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av
-Plug 'Julian/vim-textobj-variable-segment'
-" Operate on functions - (operator)if/af
-Plug 'sriramkswamy/vim-textobj-function'
-" Operate on comments - (operator)ic/ac
-Plug 'sriramkswamy/vim-textobj-comment'
-" Operate on markdown sections - (operator)im/am for markdown sections
-Plug '~/Documents/workspace/github/vim-textobj-markdown'
-" Plug 'sriramkswamy/vim-textobj-markdown'
-" Operate on latex sections - (operator)ix/ax for latex sections
-" Plug 'sriramkswamy/vim-textobj-latex-section'
-" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
-Plug 'michaeljsmith/vim-indent-object'
-
-" Easy alignment plugin and auto-align {{{2
+" Semantic split and join
+Plug 'AndrewRadev/splitjoin.vim'
+" Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular'
 vnoremap gt :Tabularize /\s\+<CR>
 vnoremap g= :Tabularize /=<CR>
@@ -766,12 +732,196 @@ function! s:baralign()
 	endif
 endfunction
 
+" Text objects, operators and motions {{{1
+" Move line and add blanks {{{2
+" Move the current line
+nnoremap mk  :<c-u>execute 'move -1-'. v:count1<cr>
+nnoremap mj  :<c-u>execute 'move +'. v:count1<cr>
+" Blank line
+nnoremap mO  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
+nnoremap mo  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
+" Blank character before/after current word
+nnoremap mi i l
+nnoremap ma a h
+" Blank character before/after current line - 'm' for mark still works (?)
+nnoremap mI mmI `ml
+nnoremap mA mmA `m
+
+" Motions {{{2
+nnoremap ]r f,eb
+nnoremap [r F,be
+
+" Text objects {{{2
+" Onoremap based {{{3
+" Operate on entire file
+onoremap ia :<C-u>normal! ggvG$<CR>
+xnoremap ia :<C-u>normal! ggvG$<CR>
+onoremap aa :<C-u>normal! ggvG$<CR>
+xnoremap aa :<C-u>normal! ggvG$<CR>
+" Operate on entire line
+onoremap il :<C-u>normal! _vg_<CR>
+xnoremap il :<C-u>normal! _vg_<CR>
+onoremap al :<C-u>normal! 0v$<CR>
+xnoremap al :<C-u>normal! 0v$<CR>
+" Operate on 'next' objects - must create better maps
+onoremap in) :<C-u>normal! f(vi(<CR>
+xnoremap in) :<C-u>normal! f(vi(<CR>
+onoremap an) :<C-u>normal! f(va(<CR>
+xnoremap an) :<C-u>normal! f(va(<CR>
+onoremap in( :<C-u>normal! f(vi(<CR>
+xnoremap in( :<C-u>normal! f(vi(<CR>
+onoremap an( :<C-u>normal! f(va(<CR>
+xnoremap an( :<C-u>normal! f(va(<CR>
+onoremap in] :<C-u>normal! f[vi[<CR>
+xnoremap in] :<C-u>normal! f[vi[<CR>
+onoremap an] :<C-u>normal! f[va[<CR>
+xnoremap an] :<C-u>normal! f[va[<CR>
+onoremap in[ :<C-u>normal! f[vi[<CR>
+xnoremap in[ :<C-u>normal! f[vi[<CR>
+onoremap an[ :<C-u>normal! f[va[<CR>
+xnoremap an[ :<C-u>normal! f[va[<CR>
+onoremap in} :<C-u>normal! f{vi{<CR>
+xnoremap in} :<C-u>normal! f{vi{<CR>
+onoremap an} :<C-u>normal! f{va{<CR>
+xnoremap an} :<C-u>normal! f{va{<CR>
+onoremap in{ :<C-u>normal! f{vi{<CR>
+xnoremap in{ :<C-u>normal! f{vi{<CR>
+onoremap an{ :<C-u>normal! f{va{<CR>
+xnoremap an{ :<C-u>normal! f<va<<CR>
+onoremap in> :<C-u>normal! f<vi<<CR>
+xnoremap in> :<C-u>normal! f<vi<<CR>
+onoremap an> :<C-u>normal! f<va<<CR>
+xnoremap an> :<C-u>normal! f<va<<CR>
+onoremap in< :<C-u>normal! f<vi<<CR>
+xnoremap in< :<C-u>normal! f<vi<<CR>
+onoremap an< :<C-u>normal! f<va<<CR>
+xnoremap an< :<C-u>normal! f<va<<CR>
+" Operate on 'last' objects - must create better maps
+onoremap iN) :<C-u>normal! F)vi(<CR>
+xnoremap iN) :<C-u>normal! F)vi(<CR>
+onoremap aN) :<C-u>normal! F)va(<CR>
+xnoremap aN) :<C-u>normal! F)va(<CR>
+onoremap iN( :<C-u>normal! F)vi(<CR>
+xnoremap iN( :<C-u>normal! F)vi(<CR>
+onoremap aN( :<C-u>normal! F)va(<CR>
+xnoremap aN( :<C-u>normal! F)va(<CR>
+onoremap iN] :<C-u>normal! F]vi[<CR>
+xnoremap iN] :<C-u>normal! F]vi[<CR>
+onoremap aN] :<C-u>normal! F]va[<CR>
+xnoremap aN] :<C-u>normal! F]va[<CR>
+onoremap iN[ :<C-u>normal! F]vi[<CR>
+xnoremap iN[ :<C-u>normal! F]vi[<CR>
+onoremap aN[ :<C-u>normal! F]va[<CR>
+xnoremap aN[ :<C-u>normal! F]va[<CR>
+onoremap iN} :<C-u>normal! F}vi{<CR>
+xnoremap iN} :<C-u>normal! F}vi{<CR>
+onoremap aN} :<C-u>normal! F}va{<CR>
+xnoremap aN} :<C-u>normal! F}va{<CR>
+onoremap iN{ :<C-u>normal! F}vi{<CR>
+xnoremap iN{ :<C-u>normal! F}vi{<CR>
+onoremap aN{ :<C-u>normal! F}va{<CR>
+xnoremap aN{ :<C-u>normal! F}va{<CR>
+onoremap iN> :<C-u>normal! F>vi<<CR>
+xnoremap iN> :<C-u>normal! F>vi<<CR>
+onoremap aN> :<C-u>normal! F>va<<CR>
+xnoremap aN> :<C-u>normal! F>va<<CR>
+onoremap iN< :<C-u>normal! F>vi<<CR>
+xnoremap iN< :<C-u>normal! F>vi<<CR>
+onoremap aN< :<C-u>normal! F>va<<CR>
+xnoremap aN< :<C-u>normal! F>va<<CR>
+" From romainl
+for char in [ '$', ',', '_', '.', ':', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
+	execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
+	execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
+	execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
+	execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
+endfor
+
+" Text object plugins {{{3
+" Create text objects
+Plug 'kana/vim-textobj-user'
+" Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av
+Plug 'Julian/vim-textobj-variable-segment'
+" Operate on functions - (operator)if/af
+Plug 'sriramkswamy/vim-textobj-function'
+" Operate on comments - (operator)ic/ac
+Plug 'sriramkswamy/vim-textobj-comment'
+" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
+Plug 'michaeljsmith/vim-indent-object'
+" Operate on arguments - (operator)ir/ar - doesn't depend on kana's plugin
+Plug 'AndrewRadev/sideways.vim'
+nnoremap mR :SidewaysLeft<cr>
+nnoremap mr :SidewaysRight<cr>
+omap ar <Plug>SidewaysArgumentTextobjA
+xmap ar <Plug>SidewaysArgumentTextobjA
+omap ir <Plug>SidewaysArgumentTextobjI
+xmap ir <Plug>SidewaysArgumentTextobjI
+
+" Operators {{{2
+" Functions {{{3
+" Nice for quick vimscript testing.
+function! SourceVimscript(type)
+  let sel_save = &selection
+  let &selection = "inclusive"
+  let reg_save = @"
+  if a:type == 'line'
+    silent execute "normal! '[V']y"
+  elseif a:type == 'char'
+    silent execute "normal! `[v`]y"
+  elseif a:type == "visual"
+    silent execute "normal! gvy"
+  elseif a:type == "currentline"
+    silent execute "normal! yy"
+  endif
+  let @" = substitute(@", '\n\s*\\', '', 'g')
+  " source the content
+  @"
+  let &selection = sel_save
+  let @" = reg_save
+endfunction
+nnoremap <silent> g: :set opfunc=SourceVimscript<cr>g@
+vnoremap <silent> g: :<c-U>call SourceVimscript("visual")<cr>
+nnoremap <silent> g:: :call SourceVimscript("currentline")<cr>
+
+" Plugins {{{3
+" Better surround - cs/ds/ys(to add surrounding)
+Plug 'tpope/vim-surround'
+let g:surround_no_mappings = 1
+nmap ds  <Plug>Dsurround
+nmap cs  <Plug>Csurround
+nmap s  <Plug>Ysurround
+nmap S  <Plug>YSurround
+nmap ss <Plug>Yssurround
+nmap Ss <Plug>YSsurround
+nmap SS <Plug>YSsurround
+xmap s   <Plug>VSurround
+xmap S  <Plug>VgSurround
+" Easy commenting - gc(motion/textobject)
+Plug 'tpope/vim-commentary'
+autocmd FileType matlab setlocal commentstring=%\ %s
+" Replace the object with content in register - ["x]gr(motion/textobject)
+Plug 'vim-scripts/ReplaceWithRegister'
+" Exchange stuff - cx(motion/textobject) and repeat it at the new point
+Plug 'tommcdo/vim-exchange'
+nmap ml cxiweecxiw
+nmap mh cxiwbcxiw
+nmap mL cxiWEEcxiW
+nmap mH cxiWBcxiW
+nmap m} cxip}jcxip
+nmap m{ cxip{kcxip
+nmap m) cxis)cxis
+nmap m( cxis(cxis
+nmap mn cxiwcxgn
+nmap mN cxiwcxgN
+
 " Snippets {{{1
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsEditSplit="vertical"
+if has('python') || has('python3')
+	Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
+	let g:UltiSnipsExpandTrigger="<tab>"
+	let g:UltiSnipsJumpForwardTrigger="<tab>"
+	let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+	let g:UltiSnipsEditSplit="vertical"
+endif
 
 " Version control {{{1
 " Also adds text objects ah/ih for changeset but normal vim-diff changeset motions hold - ]([)c
@@ -784,13 +934,12 @@ omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 nnoremap <silent> gy :SignifyToggleHighlight<CR>
 " Git Wrapper
-Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
 nnoremap <silent> gl :Glog<CR>
-" Gitk - I use 'gq' for formatting
-Plug 'junegunn/gv.vim'
+" gv.vim - I use 'gq' for formatting
 nnoremap <silent> gw :GV<CR>
 nnoremap <silent> gW :GV!<CR>
 vnoremap <silent> gw :GV<CR>
