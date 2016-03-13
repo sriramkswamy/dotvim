@@ -1110,6 +1110,7 @@ function! MarkdownA()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
+
 function! MarkdownI()
     call search('^#\+.*$', 'bc')
     normal! j
@@ -1130,6 +1131,7 @@ function! LatexA()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
+
 function! LatexI()
     call search('^\\\%[sub]section', 'bc')
     normal! j
