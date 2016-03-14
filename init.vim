@@ -168,6 +168,20 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Preview the registers
 Plug 'junegunn/vim-peekaboo'
+" Better and more functional start screen
+Plug 'mhinz/vim-startify'
+let g:startify_bookmarks =[ '~/Documents/workspace', '~/.zshrc', '~/.zshenv', '~/.alias']
+let g:startify_files_number = 10
+let g:startify_update_oldfiles = 1
+let g:startify_session_persistence = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_skiplist = [
+            \ 'COMMIT_EDITMSG',
+            \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
+            \ 'bundle/.*/doc',
+            \ ]
+let g:startify_custom_footer =
+        \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
 " Markdown folding
 Plug 'nelstrom/vim-markdown-folding'
 let g:markdown_fold_style = 'nested'
@@ -204,6 +218,8 @@ nnoremap [t :tprevious<CR>
 nnoremap ]t :tnext<CR>
 nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
+nnoremap ]n /^<\+HEAD$<CR>
+nnoremap [n ?^<\+HEAD$<CR>
 " Tags
 nnoremap T :tag *
 " Auto-center
@@ -285,8 +301,17 @@ let g:netrw_browse_split=4
 nnoremap <silent> <Leader>v :30Vexplore<CR>
 
 " Plugins {{{2
-" Open the url in browser or search for the word using Google/Wiki
-Plug 'dhruvasagar/vim-open-url'
+" Google stuff
+Plug 'szw/vim-g'
+nnoremap gOO :Google<Space>
+nnoremap goo :Googlef<Space>
+nnoremap go :Googlef <cWORD><CR>
+nnoremap gO :Google <cWORD><CR>
+vnoremap gO :Google<CR>
+vnoremap go :Googlef<CR>
+" Open the documentation
+Plug 'keith/investigate.vim'
+let g:investigate_use_dash=1
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -392,11 +417,12 @@ let g:unite_source_menu_menus.osinteract.command_candidates = [
             \[' cd to buffer dir', 'CD'],
             \[' ctags in current dir', 'Dispatch! ctags -R .'],
             \[' tex word count', 'Dispatch! texcount %'],
-            \[' Source vimrc', 'so $MYVIMRC'],
+            \[' gist file', 'exe "Dispatch! gist -f % -d " input("description: ")'],
             \[' Edit vimrc', 'vsp $MYVIMRC'],
             \[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
-            \[' gist file', 'exe "Dispatch! gist -f % -d " input("description: ")'],
             \[' finder', 'Dispatch! open -a Finder .'],
+            \[' session load', 'SLoad'],
+            \[' session save', 'SSave'],
             \]
 nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
@@ -701,18 +727,14 @@ nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight",
 nmap ]<Space> <Plug>BlankCharRight
 
 " Motions {{{2
-" Maps {{{3
-nnoremap ]n /^<\+HEAD$<CR>
-nnoremap [n ?^<\+HEAD$<CR>
-
-" Plugins {{{3
 Plug 'justinmk/vim-sneak'
-nmap w <Plug>Sneak_s
-nmap W <Plug>Sneak_S
-xmap w <Plug>Sneak_s
-xmap W <Plug>Sneak_S
-omap w <Plug>Sneak_s
-omap W <Plug>Sneak_S
+let g:sneak#streak = 1
+nmap w <Plug>Sneak_f
+nmap W <Plug>Sneak_F
+xmap w <Plug>Sneak_f
+xmap W <Plug>Sneak_F
+omap w <Plug>Sneak_f
+omap W <Plug>Sneak_F
 
 " Text objects {{{2
 " Onoremap based {{{3
