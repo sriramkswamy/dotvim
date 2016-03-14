@@ -284,9 +284,6 @@ nnoremap <silent> <Leader>; q:
 nnoremap <silent> <Leader>/ q/
 
 " Plugins {{{2
-" Documentation browser - just Dash for now
-Plug 'keith/investigate.vim'
-let g:investigate_use_dash=1
 " Open the File manager or Terminal
 Plug 'justinmk/vim-gtfo'
 " Open the url in browser or search for the word using Google/Wiki
@@ -1076,25 +1073,15 @@ if exists('$TMUX')
     nmap m[ <Plug>SwapTmuxDown
     nnoremap <silent> Wv :call system("tmux split-window -h")<CR>
     nnoremap <silent> Ws :call system("tmux split-window -v")<CR>
-    nnoremap <silent> Wh :call system("tmux select-pane -L")<CR>
-    nnoremap <silent> Wl :call system("tmux select-pane -R")<CR>
-    nnoremap <silent> Wk :call system("tmux select-pane -U")<CR>
-    nnoremap <silent> Wj :call system("tmux select-pane -D")<CR>
 elseif has('nvim')
     nnoremap <silent> Wv :vsplit<CR>:terminal<CR>
     nnoremap <silent> Ws :split<CR>:terminal<CR>
-    nnoremap <silent> Wh <C-w>h
-    nnoremap <silent> Wl <C-w>l
-    nnoremap <silent> Wk <C-w>k
-    nnoremap <silent> Wj <C-w>j
 else
-    nnoremap <silent> Wv :echo "Not in Tmux or NeoVim"<CR>
-    nnoremap <silent> Ws :echo "Not in Tmux or NeoVim"<CR>
-    nnoremap <silent> Wh :echo "Not in Tmux or NeoVim"<CR>
-    nnoremap <silent> Wl :echo "Not in Tmux or NeoVim"<CR>
-    nnoremap <silent> Wk :echo "Not in Tmux or NeoVim"<CR>
-    nnoremap <silent> Wj :echo "Not in Tmux or NeoVim"<CR>
+    nnoremap <silent> Wv :call system("open -a iTerm")<CR>
+    nnoremap <silent> Ws :call system("open -a iTerm")<CR>
 endif
+" Navigate between Tmux and Vim - I wish there was another way...
+Plug 'christoomey/vim-tmux-navigator'
 
 " Plugins {{{2
 " Common *nix commands
