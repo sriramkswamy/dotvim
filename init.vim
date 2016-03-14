@@ -30,6 +30,15 @@ endif
 set title
 " Turn on numbering and relativenumber
 set number " Can be toggled with 'con'
+augroup toggle_relative_number  " can be toggled normally with 'cor'
+    autocmd!
+    autocmd BufEnter * :setlocal relativenumber
+    autocmd WinEnter * :setlocal relativenumber
+    autocmd InsertEnter * :setlocal norelativenumber
+    autocmd BufLeave * :setlocal norelativenumber
+    autocmd WinLeave * :setlocal norelativenumber
+    autocmd InsertLeave * :setlocal relativenumber
+augroup END
 set relativenumber " Can be toggled with 'cor'
 " Automatically read and write buffers
 set autoread
@@ -216,26 +225,19 @@ nnoremap <C-j> <C-i>
 " Folding
 nnoremap <silent> <Tab> za
 nnoremap <silent> <C-i> za
-" Histories
-nnoremap <silent> <Leader>; q:
-nnoremap <silent> <Leader>/ q/
 
 " Functions and commands {{{2
-" this is our 'main' function: it couldn't be simpler
+" MRU files - Stack overflow
 function! MRU(arg)
     execute 'edit ' . a:arg
 endfunction
-" the completion function, again it's very simple
 function! MRUComplete(ArgLead, CmdLine, CursorPos)
     return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
 endfunction
-" the actual command
-" it accepts only one argument
-" it's set to use the function above for completion
 command! -nargs=1 -complete=customlist,MRUComplete MRU call MRU(<f-args>)
 nnoremap <Leader>r :MRU<Space>
 
-" Filter from quickfix list
+" Filter from quickfix list - someone's vimrc
 function! GrepQuickFix(pat)
     let all = getqflist()
     for d in all
@@ -251,8 +253,7 @@ command! -nargs=* QFilter call GrepQuickFix(<q-args>)
 command! CD cd %:p:h
 command! LCD lcd %:p:h
 
-" Alternate between header and source files
-" (credit to junegunn's vimrc)
+" Alternate between header and source files - junegunn
 function! s:A()
     let name = expand('%:r')
     let ext = tolower(expand('%:e'))
@@ -281,6 +282,8 @@ nnoremap <silent> <Leader>l :lopen<CR>
 nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>L :lclose<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
+nnoremap <silent> <Leader>; q:
+nnoremap <silent> <Leader>/ q/
 
 " Plugins {{{2
 " Documentation browser - just Dash for now
@@ -699,7 +702,6 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 Plug 'tpope/vim-repeat'
 " Subvert, Abolish and coerce
 Plug 'tpope/vim-abolish'
-nnoremap <Leader><Leader> :Subvert /
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
@@ -1064,9 +1066,16 @@ let g:C_UseTool_doxygen = 'yes'
 if has('nvim')
     tnoremap <C-g> <C-\><C-n>
 endif
-" Zoom and split when in Tmux(>v1.8)
+" Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
+    nmap <silent> <Plug>SwapTmuxUp :call system("tmux swap-pane -U")<CR>
+                \ :call repeat#set("\<Plug>SwapTmuxUp", v:count)<CR>
+    nmap m] <Plug>SwapTmuxUp
+    nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
+                \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
+    nmap m[ <Plug>SwapTmuxDown
+    nnoremap <silent> <Leader><Leader> :call system("tmux split-window -h")<CR>
 endif
 
 " Plugins {{{2
