@@ -100,10 +100,9 @@ set guifont=Fira\ Mono:h14
 set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
-" Format instead of Ex mode
-nnoremap <silent> Q gq
-nnoremap <silent> QQ gqq
-vnoremap <silent> Q gq
+" Window mode instead of ex mode
+nnoremap <silent> m <C-w>
+nnoremap <silent> mm <C-w><C-w>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
@@ -184,8 +183,6 @@ runtime macros/matchit.vim
 set showmatch
 
 " Maps without leader {{{2
-" Windows
-nnoremap w <C-w>
 " Unimpaired inspired mappings
 nnoremap [q :cprevious<CR>
 nnoremap ]q :cnext<CR>
@@ -207,8 +204,6 @@ nnoremap [t :tprevious<CR>
 nnoremap ]t :tnext<CR>
 nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
-nnoremap ]n /^<\+HEAD$<CR>
-nnoremap [n ?^<\+HEAD$<CR>
 " Tags
 nnoremap T :tag *
 " Auto-center
@@ -284,8 +279,6 @@ nnoremap <silent> <Leader>; q:
 nnoremap <silent> <Leader>/ q/
 
 " Plugins {{{2
-" Open the File manager or Terminal
-Plug 'justinmk/vim-gtfo'
 " Open the url in browser or search for the word using Google/Wiki
 Plug 'dhruvasagar/vim-open-url'
 
@@ -395,8 +388,9 @@ let g:unite_source_menu_menus.osinteract.command_candidates = [
             \[' tex word count', 'Dispatch! texcount %'],
             \[' Source vimrc', 'so $MYVIMRC'],
             \[' Edit vimrc', 'vsp $MYVIMRC'],
-            \[' iTunes Song', 'Dispatch! osascript ~/applescripts/itunes.scpt'],
             \[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
+            \[' gist file', 'exe "Dispatch! gist -f % -d " input("description: ")'],
+            \[' finder', 'Dispatch! open -a Finder .'],
             \]
 nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
@@ -665,7 +659,7 @@ function! StripWhitespace()
     call setreg('/', old_query)
 endfunction
 command! StripWhiteSpace :call StripWhitespace()
-nnoremap gos :StripWhiteSpace<CR>
+nnoremap crw :StripWhiteSpace<CR>
 
 " Convert tabs to whitespace
 function! TabsToWhitespace()
@@ -676,18 +670,18 @@ function! TabsToWhitespace()
     call setreg('/', old_query)
 endfunction
 command! TabsToWhitespace :call TabsToWhitespace()
-nnoremap gow :TabsToWhitespace<CR>
+nnoremap crt :TabsToWhitespace<CR>
 
 " strip ^M character at end of lines
-function! StripM()
+function! StripNewLine()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
     :%s/\r//g
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfunction
-command! StripM :call StripM()
-nnoremap gom :StripM<CR>
+command! StripNewLine :call StripM()
+nnoremap crn :StripNewLine<CR>
 
 " Plugins {{{2
 " For collaborative work
@@ -738,116 +732,55 @@ endfunction
 " Move line and add blanks {{{2
 " Move the current line
 nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
-nmap mk <Plug>MoveLineUp
+nmap [e <Plug>MoveLineUp
 nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repeat#set("\<Plug>MoveLineDown", v:count)<CR>
-nmap mj <Plug>MoveLineDown
+nmap ]e <Plug>MoveLineDown
 " Blank line
 nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
-nmap mO <Plug>BlankLineUp
+nmap [o <Plug>BlankLineUp
 nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
-nmap mo <Plug>BlankLineDown
+nmap ]o <Plug>BlankLineDown
 " Blank character before/after current word
 nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v:count)<CR>
-nmap mi <Plug>BlankCharLeft
+nmap [<Space> <Plug>BlankCharLeft
 nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
-nmap ma <Plug>BlankCharRight
-" Blank character before/after current line - 'm' for mark still works (?)
-nmap <silent> <Plug>BlankCharStart mmI `ml:call repeat#set("\<Plug>BlankCharStart", v:count)<CR>
-nmap mI <Plug>BlankCharStart
-nmap <silent> <Plug>BlankCharEnd mmA `m:call repeat#set("\<Plug>BlankCharEnd", v:count)<CR>
-nmap mA <Plug>BlankCharEnd
+nmap ]<Space> <Plug>BlankCharRight
 
 " Motions {{{2
-nnoremap ]r f,eb
-nnoremap [r F,be
+" Maps {{{3
+nnoremap ]n /^<\+HEAD$<CR>
+nnoremap [n ?^<\+HEAD$<CR>
+
+" Plugins {{{3
+Plug 'justinmk/vim-sneak'
+nmap w <Plug>Sneak_s
+nmap W <Plug>Sneak_S
+xmap w <Plug>Sneak_s
+xmap W <Plug>Sneak_S
+omap w <Plug>Sneak_s
+omap W <Plug>Sneak_S
 
 " Text objects {{{2
 " Onoremap based {{{3
 " Operate on entire file
-onoremap ia :<C-u>normal! ggvG$<CR>
-xnoremap ia :<C-u>normal! ggvG$<CR>
+onoremap ia :<C-u>normal! gg^vGg_<CR>
+xnoremap ia :<C-u>normal! gg^vGg_<CR>
 onoremap aa :<C-u>normal! ggvG$<CR>
 xnoremap aa :<C-u>normal! ggvG$<CR>
 " Operate on entire line
-onoremap il :<C-u>normal! _vg_<CR>
-xnoremap il :<C-u>normal! _vg_<CR>
+onoremap il :<C-u>normal! ^vg_<CR>
+xnoremap il :<C-u>normal! ^vg_<CR>
 onoremap al :<C-u>normal! 0v$<CR>
 xnoremap al :<C-u>normal! 0v$<CR>
-" Operate on 'next' objects - must create better maps
-onoremap in) :<C-u>normal! f(vi(<CR>
-xnoremap in) :<C-u>normal! f(vi(<CR>
-onoremap an) :<C-u>normal! f(va(<CR>
-xnoremap an) :<C-u>normal! f(va(<CR>
-onoremap in( :<C-u>normal! f(vi(<CR>
-xnoremap in( :<C-u>normal! f(vi(<CR>
-onoremap an( :<C-u>normal! f(va(<CR>
-xnoremap an( :<C-u>normal! f(va(<CR>
-onoremap in] :<C-u>normal! f[vi[<CR>
-xnoremap in] :<C-u>normal! f[vi[<CR>
-onoremap an] :<C-u>normal! f[va[<CR>
-xnoremap an] :<C-u>normal! f[va[<CR>
-onoremap in[ :<C-u>normal! f[vi[<CR>
-xnoremap in[ :<C-u>normal! f[vi[<CR>
-onoremap an[ :<C-u>normal! f[va[<CR>
-xnoremap an[ :<C-u>normal! f[va[<CR>
-onoremap in} :<C-u>normal! f{vi{<CR>
-xnoremap in} :<C-u>normal! f{vi{<CR>
-onoremap an} :<C-u>normal! f{va{<CR>
-xnoremap an} :<C-u>normal! f{va{<CR>
-onoremap in{ :<C-u>normal! f{vi{<CR>
-xnoremap in{ :<C-u>normal! f{vi{<CR>
-onoremap an{ :<C-u>normal! f{va{<CR>
-xnoremap an{ :<C-u>normal! f<va<<CR>
-onoremap in> :<C-u>normal! f<vi<<CR>
-xnoremap in> :<C-u>normal! f<vi<<CR>
-onoremap an> :<C-u>normal! f<va<<CR>
-xnoremap an> :<C-u>normal! f<va<<CR>
-onoremap in< :<C-u>normal! f<vi<<CR>
-xnoremap in< :<C-u>normal! f<vi<<CR>
-onoremap an< :<C-u>normal! f<va<<CR>
-xnoremap an< :<C-u>normal! f<va<<CR>
-" Operate on 'last' objects - must create better maps
-onoremap iN) :<C-u>normal! F)vi(<CR>
-xnoremap iN) :<C-u>normal! F)vi(<CR>
-onoremap aN) :<C-u>normal! F)va(<CR>
-xnoremap aN) :<C-u>normal! F)va(<CR>
-onoremap iN( :<C-u>normal! F)vi(<CR>
-xnoremap iN( :<C-u>normal! F)vi(<CR>
-onoremap aN( :<C-u>normal! F)va(<CR>
-xnoremap aN( :<C-u>normal! F)va(<CR>
-onoremap iN] :<C-u>normal! F]vi[<CR>
-xnoremap iN] :<C-u>normal! F]vi[<CR>
-onoremap aN] :<C-u>normal! F]va[<CR>
-xnoremap aN] :<C-u>normal! F]va[<CR>
-onoremap iN[ :<C-u>normal! F]vi[<CR>
-xnoremap iN[ :<C-u>normal! F]vi[<CR>
-onoremap aN[ :<C-u>normal! F]va[<CR>
-xnoremap aN[ :<C-u>normal! F]va[<CR>
-onoremap iN} :<C-u>normal! F}vi{<CR>
-xnoremap iN} :<C-u>normal! F}vi{<CR>
-onoremap aN} :<C-u>normal! F}va{<CR>
-xnoremap aN} :<C-u>normal! F}va{<CR>
-onoremap iN{ :<C-u>normal! F}vi{<CR>
-xnoremap iN{ :<C-u>normal! F}vi{<CR>
-onoremap aN{ :<C-u>normal! F}va{<CR>
-xnoremap aN{ :<C-u>normal! F}va{<CR>
-onoremap iN> :<C-u>normal! F>vi<<CR>
-xnoremap iN> :<C-u>normal! F>vi<<CR>
-onoremap aN> :<C-u>normal! F>va<<CR>
-xnoremap aN> :<C-u>normal! F>va<<CR>
-onoremap iN< :<C-u>normal! F>vi<<CR>
-xnoremap iN< :<C-u>normal! F>vi<<CR>
-onoremap aN< :<C-u>normal! F>va<<CR>
-xnoremap aN< :<C-u>normal! F>va<<CR>
-" From romainl
-for char in [ '$', ',', '_', '.', ':', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '`' ]
-    execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
-    execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
-    execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
-    execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
-endfor
 
 " Text object plugins {{{3
+" Adds some niceties
+Plug 'wellle/targets.vim'
+let g:targets_nlNL = 'nN  '
+let g:targets_argTrigger = 'r'
+let g:targets_argOpening = '[({[]'
+let g:targets_argClosing = '[]})]'
+let g:targets_argSeparator = '[,;]'
 " Create text objects
 Plug 'kana/vim-textobj-user'
 " Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av
@@ -858,14 +791,6 @@ Plug 'sriramkswamy/vim-textobj-function'
 Plug 'sriramkswamy/vim-textobj-comment'
 " Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
 Plug 'michaeljsmith/vim-indent-object'
-" Operate on arguments - (operator)ir/ar - doesn't depend on kana's plugin
-Plug 'AndrewRadev/sideways.vim'
-nnoremap mR :SidewaysLeft<cr>
-nnoremap mr :SidewaysRight<cr>
-omap ar <Plug>SidewaysArgumentTextobjA
-xmap ar <Plug>SidewaysArgumentTextobjA
-omap ir <Plug>SidewaysArgumentTextobjI
-xmap ir <Plug>SidewaysArgumentTextobjI
 
 " Operators {{{2
 " Functions {{{3
@@ -914,25 +839,26 @@ Plug 'vim-scripts/ReplaceWithRegister'
 " Exchange stuff - cx(motion/textobject) and repeat it at the new point
 Plug 'tommcdo/vim-exchange'
 nmap <silent> <Plug>ExchangeWordRight cxiweecxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
-nmap ml <Plug>ExchangeWordRight
+nmap ]w <Plug>ExchangeWordRight
 nmap <silent> <Plug>ExchangeWordLeft cxiwbcxiw :call repeat#set("\<Plug>ExchangeWordLeft", v:count)<CR>
-nmap mh <Plug>ExchangeWordLeft
+nmap [w <Plug>ExchangeWordLeft
 nmap <silent> <Plug>ExchangeWORDRight cxiWEEcxiW :call repeat#set("\<Plug>ExchangeWORDRight", v:count)<CR>
-nmap mL <Plug>ExchangeWORDRight
+nmap ]W <Plug>ExchangeWORDRight
 nmap <silent> <Plug>ExchangeWORDLeft cxiWBcxiW :call repeat#set("\<Plug>ExchangeWORDLeft", v:count)<CR>
-nmap mH <Plug>ExchangeWORDLeft
+nmap [W <Plug>ExchangeWORDLeft
 nmap <silent> <Plug>ExchangeParaRight cxip}jcxip :call repeat#set("\<Plug>ExchangeParaRight", v:count)<CR>
-nmap m} <Plug>ExchangeParaRight
+nmap ]p <Plug>ExchangeParaRight
 nmap <silent> <Plug>ExchangeParaLeft cxip{kcxip :call repeat#set("\<Plug>ExchangeParaLeft", v:count)<CR>
-nmap m{ <Plug>ExchangeParaLeft
-nmap <silent> <Plug>ExchangeSentRight cxis)cxis :call repeat#set("\<Plug>ExchangeSentRight", v:count)<CR>
-nmap m) <Plug>ExchangeSentRight
-nmap <silent> <Plug>ExchangeSentLeft cxis(cxis :call repeat#set("\<Plug>ExchangeSentLeft", v:count)<CR>
-nmap m( <Plug>ExchangeSentLeft
+nmap [p <Plug>ExchangeParaLeft
 nmap <silent> <Plug>ExchangeSearchNext cxiwcxgn :call repeat#set("\<Plug>ExchangeSearchNext", v:count)<CR>
-nmap mn <Plug>ExchangeSearchNext
+nmap ]N <Plug>ExchangeSearchNext
 nmap <silent> <Plug>ExchangeSearchPrev cxiwcxgN :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
-nmap mN <Plug>ExchangeSearchPrev
+nmap [N <Plug>ExchangeSearchPrev
+" Needs targets.vim
+nmap <silent> <Plug>ExchangeArgNext cxIrf,lcxIr :call repeat#set("\<Plug>ExchangeSearchNext", v:count)<CR>
+nmap ]r <Plug>ExchangeArgNext
+nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
+nmap [r <Plug>ExchangeArgPrev
 
 " Snippets {{{1
 if has('python') || has('python3')
@@ -1067,18 +993,18 @@ if exists('$TMUX')
     nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
     nmap <silent> <Plug>SwapTmuxUp :call system("tmux swap-pane -U")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxUp", v:count)<CR>
-    nmap m] <Plug>SwapTmuxUp
+    nmap ]R <Plug>SwapTmuxUp
     nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
-    nmap m[ <Plug>SwapTmuxDown
-    nnoremap <silent> Wv :call system("tmux split-window -h")<CR>
-    nnoremap <silent> Ws :call system("tmux split-window -v")<CR>
+    nmap [R <Plug>SwapTmuxDown
+    nnoremap <silent> mV :call system("tmux split-window -h")<CR>
+    nnoremap <silent> mS :call system("tmux split-window -v")<CR>
 elseif has('nvim')
-    nnoremap <silent> Wv :vsplit<CR>:terminal<CR>
-    nnoremap <silent> Ws :split<CR>:terminal<CR>
+    nnoremap <silent> mV :vsplit<CR>:terminal<CR>
+    nnoremap <silent> mS :split<CR>:terminal<CR>
 else
-    nnoremap <silent> Wv :call system("open -a Terminal")<CR>
-    nnoremap <silent> Ws :call system("open -a Terminal")<CR>
+    nnoremap <silent> mV :call system("open -a Terminal")<CR>
+    nnoremap <silent> mS :call system("open -a Terminal")<CR>
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
