@@ -1077,8 +1077,8 @@ elseif has('nvim')
     nnoremap <silent> Wv :vsplit<CR>:terminal<CR>
     nnoremap <silent> Ws :split<CR>:terminal<CR>
 else
-    nnoremap <silent> Wv :call system("open -a iTerm")<CR>
-    nnoremap <silent> Ws :call system("open -a iTerm")<CR>
+    nnoremap <silent> Wv :call system("open -a Terminal")<CR>
+    nnoremap <silent> Ws :call system("open -a Terminal")<CR>
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
