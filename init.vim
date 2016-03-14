@@ -278,6 +278,12 @@ nnoremap <silent> <Leader>H :cclose<CR>
 nnoremap <silent> <Leader>; q:
 nnoremap <silent> <Leader>/ q/
 
+" netrw {{{2
+let g:netrw_liststyle=3
+let g:netrw_banner=0
+let g:netrw_browse_split=4
+nnoremap <silent> <Leader>v :30Vexplore<CR>
+
 " Plugins {{{2
 " Open the url in browser or search for the word using Google/Wiki
 Plug 'dhruvasagar/vim-open-url'
@@ -626,7 +632,7 @@ nnoremap & g&
 " Elementary splitting
 nnoremap gz Dop==k$
 " Blank the current line
-nnoremap gob cc
+nnoremap crb cc
 " %% for current buffer file name
 " :: for current buffer file path
 cnoremap %% <c-r>=expand('%')<cr>
