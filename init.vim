@@ -220,8 +220,8 @@ nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Jumplist
-nnoremap <C-k> <C-o>
-nnoremap <C-j> <C-i>
+nnoremap <C-p> <C-o>
+nnoremap <C-n> <C-i>
 " Folding
 nnoremap <silent> <Tab> za
 nnoremap <silent> <C-i> za
@@ -375,7 +375,7 @@ inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisni
 " Helper plugins {{{2
 " Yank history
 Plug 'Shougo/neoyank.vim'
-nnoremap <silent> <C-p> :Unite -buffer-name=yank history/yank<CR>
+nnoremap <silent> <Leader>y :Unite -buffer-name=yank history/yank<CR>
 " Outline
 Plug 'Shougo/unite-outline'
 nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
@@ -386,7 +386,7 @@ nmap N <Plug>(anzu-N-with-echo)
 nmap * <Plug>(anzu-star-with-echo)
 nmap # <Plug>(anzu-sharp-with-echo)
 nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
-nnoremap <C-n> :Unite -buffer-name=anzu -horizontal -winheight=10 anzu<CR>
+nnoremap <Leader>n :Unite -buffer-name=anzu -horizontal -winheight=10 anzu<CR>
 
 " Interfaces/Menus - The best part of Unite {{{2
 " Interface for OS interaction{{{3
@@ -1076,6 +1076,10 @@ if exists('$TMUX')
                 \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
     nmap m[ <Plug>SwapTmuxDown
     nnoremap <silent> <Leader><Leader> :call system("tmux split-window -h")<CR>
+    nmap <silent> <Left> :call system("tmux select-pane -L")<CR>
+    nmap <silent> <Right> :call system("tmux select-pane -R")<CR>
+    nmap <silent> <Up> :call system("tmux select-pane -U")<CR>
+    nmap <silent> <Down> :call system("tmux select-pane -D")<CR>
 endif
 
 " Plugins {{{2
