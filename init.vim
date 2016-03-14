@@ -107,8 +107,6 @@ vnoremap <silent> Q gq
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
-" 'Zoom' into the current buffer
-nnoremap <silent> Z :only<CR>
 " Add mark - frees up 'm' which I use for moving stuff
 nnoremap + m
 " Navigate in insert mode
@@ -154,6 +152,7 @@ nnoremap <Leader>x :help<Space>
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
+nnoremap <silent> Z zM
 nnoremap - zf
 vnoremap - zf
 " Kill, save or quit
@@ -187,7 +186,6 @@ set showmatch
 " Maps without leader {{{2
 " Windows
 nnoremap w <C-w>
-nnoremap W <C-w>c
 " Unimpaired inspired mappings
 nnoremap [q :cprevious<CR>
 nnoremap ]q :cnext<CR>
@@ -702,6 +700,7 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 Plug 'tpope/vim-repeat'
 " Subvert, Abolish and coerce
 Plug 'tpope/vim-abolish'
+nnoremap <Leader><Leader> :Subvert /
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
@@ -1075,11 +1074,26 @@ if exists('$TMUX')
     nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
     nmap m[ <Plug>SwapTmuxDown
-    nnoremap <silent> <Leader><Leader> :call system("tmux split-window -h")<CR>
-    nmap <silent> <Left> :call system("tmux select-pane -L")<CR>
-    nmap <silent> <Right> :call system("tmux select-pane -R")<CR>
-    nmap <silent> <Up> :call system("tmux select-pane -U")<CR>
-    nmap <silent> <Down> :call system("tmux select-pane -D")<CR>
+    nnoremap <silent> Wv :call system("tmux split-window -h")<CR>
+    nnoremap <silent> Ws :call system("tmux split-window -v")<CR>
+    nnoremap <silent> Wh :call system("tmux select-pane -L")<CR>
+    nnoremap <silent> Wl :call system("tmux select-pane -R")<CR>
+    nnoremap <silent> Wk :call system("tmux select-pane -U")<CR>
+    nnoremap <silent> Wj :call system("tmux select-pane -D")<CR>
+elseif has('nvim')
+    nnoremap <silent> Wv :vsplit<CR>:terminal<CR>
+    nnoremap <silent> Ws :split<CR>:terminal<CR>
+    nnoremap <silent> Wh <C-w>h
+    nnoremap <silent> Wl <C-w>l
+    nnoremap <silent> Wk <C-w>k
+    nnoremap <silent> Wj <C-w>j
+else
+    nnoremap <silent> Wv :echo "Not in Tmux or NeoVim"<CR>
+    nnoremap <silent> Ws :echo "Not in Tmux or NeoVim"<CR>
+    nnoremap <silent> Wh :echo "Not in Tmux or NeoVim"<CR>
+    nnoremap <silent> Wl :echo "Not in Tmux or NeoVim"<CR>
+    nnoremap <silent> Wk :echo "Not in Tmux or NeoVim"<CR>
+    nnoremap <silent> Wj :echo "Not in Tmux or NeoVim"<CR>
 endif
 
 " Plugins {{{2
