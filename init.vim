@@ -185,6 +185,7 @@ let g:startify_custom_footer =
 " Markdown folding
 Plug 'nelstrom/vim-markdown-folding'
 let g:markdown_fold_style = 'nested'
+nnoremap coZ :FoldToggle<CR>
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
