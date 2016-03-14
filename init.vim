@@ -419,58 +419,6 @@ let g:unite_source_menu_menus.jumptoany.command_candidates = [
             \['py Rename', 'call jedi#rename()'],
             \['py Rename Visual', 'call jedi#rename_visual()'],
             \['r Rename Visual', 'call jedi#rename_visual()'],
-            \['eclim Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-            \['eclim Project List', 'ProjectList'],
-            \['eclim Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-            \['eclim Project Validate', 'Validate'],
-            \['eclim New Project', 'exe "NewProjectEntry " input("project: ")'],
-            \['eclim New Jar', 'exe "NewJarEntry " input("jar: ")'],
-            \['eclim New Var', 'exe "NewVarEntry " input("var: ")'],
-            \['eclim Create Variables', 'exe "VariableCreate " input("var: ")'],
-            \['eclim Delete Variables', 'exe "VariableDelete " input("var: ")'],
-            \['eclim List Variables', 'VariableList'],
-            \['eclim Maven Initialize', 'MvnRepo'],
-            \['eclim Maven Classpath',  'exe "Mvn " input("path: ")'],
-            \['eclim Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-            \['eclim Search', 'exe "JavaSearch " input("string: ")'],
-            \['eclim Context Search', 'JavaSearchContext'],
-            \['eclim Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-            \['eclim Project Status', 'Jps'],
-            \['eclim Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-            \['eclim Toggle Breakpoint', 'JavaBreakpointToggle'],
-            \['eclim List Breakpoint', 'JavaBreakpointList'],
-            \['eclim Remove Breakpoint', 'JavaBreakpointRemove'],
-            \['eclim Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-            \['eclim Debug Status', 'JavaDebugStatus'],
-            \['eclim Debug Suspend', 'JavaDebugThreadSuspendAll'],
-            \['eclim Debug Resume', 'JavaDebugThreadResumeAll'],
-            \['eclim Debug Stop', 'JavaDebugStop'],
-            \['eclim Doc Comment', 'JavaDocComment'],
-            \['eclim Doc Preview', 'JavaDocPreview'],
-            \['eclim Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-            \['eclim Doc Execute', 'JavaDoc'],
-            \['eclim Code Format', 'JavaFormat'],
-            \['eclim Refactor Rename',  'exe "JavaRename " input("name: ")'],
-            \['eclim Refactor Move',  'exe "JavaMove " input("destination: ")'],
-            \['eclim Refactor Undo', 'RefactorUndo'],
-            \['eclim Refactor Undo Peek', 'RefactorUndoPeek'],
-            \['eclim Refactor Redo', 'RefactorRedo'],
-            \['eclim Refactor Redo Peek', 'RefactorRedoPeek'],
-            \['eclim Class Heirarchy', 'JavaHeirarchy'],
-            \['eclim Call Heirarchy', 'JavaCallHeirarchy'],
-            \['eclim Import', 'JavaImport'],
-            \['eclim Import Organized', 'JavaImportOrganized'],
-            \['eclim Getter', 'JavaGet'],
-            \['eclim Setter', 'JavaSet'],
-            \['eclim Getter and Setter', 'JavaGetSet'],
-            \['eclim Override/Implement', 'JavaImpl'],
-            \['eclim Delegate', 'JavaDelegate'],
-            \['eclim Unit Test', 'exe "JUnit " input("testname: ")'],
-            \['eclim Unit Find Test', 'JUnitFindTest'],
-            \['eclim Unit Test Results', 'JUnitResult'],
-            \['eclim Unit Test Stubs', 'JUnitImpl'],
-            \['eclim Ant Run', 'exe "Ant " input("target: ")'],
-            \['eclim Ant Doc', 'AntDoc'],
             \]
 nnoremap <silent> <Leader>j :Unite -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
 
@@ -895,12 +843,6 @@ nnoremap <silent> gl :Glog<CR>
 nnoremap <silent> gw :GV<CR>
 nnoremap <silent> gW :GV!<CR>
 vnoremap <silent> gw :GV<CR>
-
-" Eclim - Eclipse plus Vim {{{1
-let g:EclimShowQuickfixSigns = 0
-let g:EclimShowLoclistSigns = 0
-let g:EclimShowCurrentError = 0
-let g:EclimShowCurrentErrorBalloon = 0
 
 " Autocompletion {{{1
 " vim-omnicomplete activation {{{2
