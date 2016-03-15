@@ -169,20 +169,6 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Preview the registers
 Plug 'junegunn/vim-peekaboo'
-" Better and more functional start screen
-Plug 'mhinz/vim-startify'
-let g:startify_bookmarks =[ '~/Documents/workspace', '~/.zshrc', '~/.zshenv', '~/.alias']
-let g:startify_files_number = 10
-let g:startify_update_oldfiles = 1
-let g:startify_session_persistence = 1
-let g:startify_change_to_vcs_root = 1
-let g:startify_skiplist = [
-            \ 'COMMIT_EDITMSG',
-            \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
-            \ 'bundle/.*/doc',
-            \ ]
-let g:startify_custom_footer =
-        \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
 " Markdown folding
 Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 let g:markdown_fold_style = 'nested'
@@ -787,13 +773,12 @@ nmap ]<Space> <Plug>BlankCharRight
 
 " Motions {{{2
 Plug 'justinmk/vim-sneak'
-let g:sneak#streak = 1
-nmap w <Plug>Sneak_f
-nmap W <Plug>Sneak_F
-xmap w <Plug>Sneak_f
-xmap W <Plug>Sneak_F
-omap w <Plug>Sneak_f
-omap W <Plug>Sneak_F
+nmap w <Plug>Sneak_s
+nmap W <Plug>Sneak_S
+xmap w <Plug>Sneak_s
+xmap W <Plug>Sneak_S
+omap w <Plug>Sneak_s
+omap W <Plug>Sneak_S
 
 " Text objects {{{2
 " Onoremap based {{{3
@@ -970,6 +955,18 @@ autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
+" Helpers for prose writing
+Plug 'reedes/vim-wordy'
+let g:wordy#ring = [
+            \ 'weak',
+            \ 'weasel',
+            \ 'puffery',
+            \ ['problematic', 'redundant', 'vague-time', 'said-synonyms',],
+            \ ['contractions', 'opinion', ],
+            \ ['being', 'passive-voice', ],
+            \ ['colloquial', 'idiomatic', 'similies', ],
+            \ 'business-jargon',
+            \ ]
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
