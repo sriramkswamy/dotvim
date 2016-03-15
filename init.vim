@@ -956,7 +956,7 @@ let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
 " Helpers for prose writing
-Plug 'reedes/vim-wordy'
+Plug 'reedes/vim-wordy' , {'for': ['markdown', 'latex']}
 let g:wordy#ring = [
             \ 'weak',
             \ 'weasel',
@@ -967,6 +967,8 @@ let g:wordy#ring = [
             \ ['colloquial', 'idiomatic', 'similies', ],
             \ 'business-jargon',
             \ ]
+nnoremap ]k :NextWordy<CR>
+nnoremap [k :PrevWordy<CR>
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
