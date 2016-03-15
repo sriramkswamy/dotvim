@@ -130,10 +130,11 @@ nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
 nnoremap col :<C-u>setlocal list!<CR>:set list?<CR>
 nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
 nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
-nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
+nnoremap coh :<C-u>setlocal hlsearch!<CR>:set hlsearch?<CR>
+nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
-nnoremap cof :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
-nnoremap coz :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
+nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
+nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -185,7 +186,7 @@ let g:startify_custom_footer =
 " Markdown folding
 Plug 'nelstrom/vim-markdown-folding'
 let g:markdown_fold_style = 'nested'
-nnoremap coZ :FoldToggle<CR>
+nnoremap coF :FoldToggle<CR>
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -235,18 +236,10 @@ nnoremap <C-n> <C-i>
 " Folding
 nnoremap <silent> <Tab> za
 nnoremap <silent> <C-i> za
+" Open the file with the correct application in the background - OS X only
+nnoremap gF :!open -g -j <cfile><CR>
 
 " Functions and commands {{{2
-" MRU files - Stack overflow
-function! MRU(arg)
-    execute 'edit ' . a:arg
-endfunction
-function! MRUComplete(ArgLead, CmdLine, CursorPos)
-    return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
-endfunction
-command! -nargs=1 -complete=customlist,MRUComplete MRU call MRU(<f-args>)
-nnoremap <Leader>r :MRU<Space>
-
 " Filter from quickfix list - someone's vimrc
 function! GrepQuickFix(pat)
     let all = getqflist()
@@ -285,6 +278,63 @@ function! s:A()
     endfor
 endfunction
 command! A call <sid>A()
+
+" Next and previous indent - junegunn
+function! s:indent_len(str)
+    return type(a:str) == 1 ? len(matchstr(a:str, '^\s*')) : 0
+endfunction
+function! s:go_indent(times, dir)
+    for _ in range(a:times)
+        let l = line('.')
+        let x = line('$')
+        let i = s:indent_len(getline(l))
+        let e = empty(getline(l))
+    while l >= 1 && l <= x
+      let line = getline(l + a:dir)
+      let l += a:dir
+      if s:indent_len(line) != i || empty(line) != e
+        break
+      endif
+    endwhile
+    let l = min([max([1, l]), x])
+    execute 'normal! '. l .'G^'
+  endfor
+endfunction
+nnoremap <silent> ]i :<c-u>call <SID>go_indent(v:count1, 1)<cr>
+nnoremap <silent> [i :<c-u>call <SID>go_indent(v:count1, -1)<cr>
+
+" Go to project root - only for git - junegunn
+function! s:root()
+  let root = systemlist('git rev-parse --show-toplevel')[0]
+  if v:shell_error
+    echo 'Not in git repo'
+  else
+    execute 'lcd' root
+    echo 'Changed directory to: '.root
+  endif
+endfunction
+command! Root call s:root()
+
+" Get TODO stuff - only from git repos - junegunn
+function! s:todo() abort
+    let entries = []
+    for cmd in ['git grep -n -e TODO -e FIXME -e XXX 2> /dev/null',
+                \ 'grep -rn -e TODO -e FIXME -e XXX * 2> /dev/null']
+        let lines = split(system(cmd), '\n')
+        if v:shell_error != 0 | continue | endif
+        for line in lines
+            let [fname, lno, text] = matchlist(line, '^\([^:]*\):\([^:]*\):\(.*\)')[1:3]
+            call add(entries, { 'filename': fname, 'lnum': lno, 'text': text })
+        endfor
+        break
+    endfor
+    if !empty(entries)
+        call setqflist(entries)
+        copen
+    endif
+endfunction
+command! Todo call s:todo()
+nnoremap <Leader>t :Todo<CR>
 
 " Leader maps {{{2
 " Quickfix and Location list maps
@@ -416,14 +466,13 @@ let g:unite_source_menu_menus.osinteract = {
 let g:unite_source_menu_menus.osinteract.command_candidates = [
             \[' alternate file', 'A'],
             \[' cd to buffer dir', 'CD'],
+            \[' cd to project dir', 'Root'],
             \[' ctags in current dir', 'Dispatch! ctags -R .'],
-            \[' tex word count', 'Dispatch! texcount %'],
             \[' gist file', 'exe "Dispatch! gist -f % -d " input("description: ")'],
             \[' Edit vimrc', 'vsp $MYVIMRC'],
-            \[' spotlight', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
             \[' finder', 'Dispatch! open -a Finder .'],
-            \[' session load', 'SLoad'],
             \[' session save', 'SSave'],
+            \[' session load', 'SLoad'],
             \]
 nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
 
@@ -491,6 +540,7 @@ let g:unite_source_menu_menus.notes.command_candidates = [
             \[' dir', 'cd ~/Dropbox/notes | Unite -buffer-name=notes -start-insert directory file directory/new file/new'],
             \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
             \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
+            \[' tex word count', 'Dispatch! texcount %'],
             \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
             \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
             \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
@@ -499,15 +549,16 @@ let g:unite_source_menu_menus.notes.command_candidates = [
             \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
             \]
 nnoremap <silent> <Leader>e :Unite -silent -buffer-name=notes -start-insert menu:notes<CR>
-vnoremap <silent> <Leader>e :Unite -silent -buffer-name=notes -start-insert menu:notes<CR>
 
-" Interface for common Dispatch commands {{{3
-let g:unite_source_menu_menus.dispatch = {
-            \ 'description' : 'dispatch interaction',
+" Interface for common build commands - keeps changeing {{{3
+let g:unite_source_menu_menus.build = {
+            \ 'description' : 'build things',
             \}
-let g:unite_source_menu_menus.dispatch.command_candidates = [
+let g:unite_source_menu_menus.build.command_candidates = [
             \[' g++ make', 'Dispatch! make'],
             \[' g++ build', 'Dispatch! make -C build'],
+            \[' g++ docs', 'Dispatch! make -C build doc'],
+            \[' g++ latex', 'Dispatch! make -C docs/latex'],
             \[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -O2 -g %'],
             \[' g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
             \[' g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -O2 -g %'],
@@ -515,25 +566,30 @@ let g:unite_source_menu_menus.dispatch.command_candidates = [
             \[' g++ armadillo', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
             \[' gcc make', 'Dispatch! make'],
             \[' gcc build', 'Dispatch! make -C build'],
+            \[' gcc latex', 'Dispatch! make -C docs/latex'],
+            \[' gcc docs', 'Dispatch! make -C build doc'],
             \[' gcc single', 'Dispatch! gcc! -Wall -lgsl -lcblas -llapack -O2 -g %'],
             \[' gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
             \[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g %'],
             \[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
             \[' gcc armadillo', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
-            \[' tmux list sessions', 'Dispatch! tmux list-sessions'],
-            \[' tmux list windows', 'Dispatch! tmux list-windows'],
-            \[' tmux list panes', 'Dispatch! tmux list-panes'],
-            \[' tmux list clients', 'Dispatch! tmux list-clients'],
-            \[' tmux list keys', 'Dispatch! tmux list-keys'],
-            \[' tmux list commands', 'Dispatch! tmux list-commands'],
-            \[' tmux list buffers', 'Dispatch! tmux list-buffers'],
-            \[' tmux show buffer', 'Dispatch! tmux show-buffer'],
-            \[' tmux show options', 'Dispatch! tmux show-options'],
-            \[' tmux show window options', 'Dispatch! tmux show-window-options'],
-            \[' tmux show environment', 'Dispatch! tmux show-environment'],
-            \[' tmux show messages', 'Dispatch! tmux show-messages'],
             \]
-nnoremap <silent> <Leader>i :Unite -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
+nnoremap <silent> <Leader>i :Unite -silent -buffer-name=build -start-insert menu:build<CR>
+
+" Interface for common dispatch commands {{{3
+let g:unite_source_menu_menus.dispatch = {
+            \ 'description' : 'dispatch things',
+            \}
+let g:unite_source_menu_menus.dispatch.command_candidates = [
+            \[' spot home', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
+            \[' spot doc', 'exe "Dispatch! mdfind -onlyin ~/Documents " input("string: ")'],
+            \[' spot workspace', 'exe "Dispatch! mdfind -onlyin ~/Documents/workspace " input("string: ")'],
+            \[' spot box', 'exe "Dispatch! mdfind -onlyin ~/Box\\ Sync " input("string: ")'],
+            \[' spot dropbox', 'exe "Dispatch! mdfind -onlyin ~/Dropbox " input("string: ")'],
+            \[' spot root', 'exe "Dispatch! mdfind -onlyin / " input("string: ")'],
+            \[' locate', 'exe "Dispatch! locate " input("string: ")'],
+            \]
+nnoremap <silent> <Leader>r :Unite -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
 
 " FileTypes {{{1
 " Set commands {{{2
@@ -677,6 +733,8 @@ nnoremap <Leader><Leader> :Subvert /
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular'
+nnoremap gl :Tabularize /
+vnoremap gl :Tabularize /
 vnoremap gt :Tabularize /\s\+<CR>
 vnoremap g= :Tabularize /=<CR>
 vnoremap g& :Tabularize /&<CR>
@@ -749,6 +807,11 @@ onoremap il :<C-u>normal! ^vg_<CR>
 xnoremap il :<C-u>normal! ^vg_<CR>
 onoremap al :<C-u>normal! 0v$<CR>
 xnoremap al :<C-u>normal! 0v$<CR>
+" Operate within markdown code block
+xnoremap <silent> iM g_?^```<cr>jo/^```<cr>kV:<c-u>nohl<cr>gv
+xnoremap <silent> aM g_?^```<cr>o/^```<cr>V:<c-u>nohl<cr>gv
+onoremap <silent> iM :<C-U>execute "normal vi`"<cr>
+onoremap <silent> aM :<C-U>execute "normal va`"<cr>
 
 " Text object plugins {{{3
 " Adds some niceties
@@ -928,6 +991,7 @@ set grepprg=grep\ -nH\ $*
 
 " Maps without leader {{{2
 " Auto-center
+nnoremap <silent> crh :nohl<CR>
 nnoremap <silent> n nzz
 nnoremap <silent> * *zz
 nnoremap <silent> # #zz
