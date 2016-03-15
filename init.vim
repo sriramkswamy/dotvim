@@ -164,7 +164,7 @@ nnoremap <silent> <Leader>q :q<CR>
 " Colorscheme
 Plug 'NLKNguyen/papercolor-theme'
 " Undotree
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Preview the registers
@@ -184,7 +184,7 @@ let g:startify_skiplist = [
 let g:startify_custom_footer =
         \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
 " Markdown folding
-Plug 'nelstrom/vim-markdown-folding'
+Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
 let g:markdown_fold_style = 'nested'
 nnoremap coF :FoldToggle<CR>
 
@@ -353,7 +353,7 @@ nnoremap <silent> <Leader>v :30Vexplore<CR>
 
 " Plugins {{{2
 " Google stuff
-Plug 'szw/vim-g'
+Plug 'szw/vim-g' , {'on': ['Google', 'Googlef']}
 nnoremap gOO :Google<Space>
 nnoremap goo :Googlef<Space>
 nnoremap go :Googlef <cWORD><CR>
@@ -732,7 +732,7 @@ nnoremap <Leader><Leader> :Subvert /
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
-Plug 'godlygeek/tabular'
+Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 nnoremap gl :Tabularize /
 vnoremap gl :Tabularize /
 vnoremap gt :Tabularize /\s\+<CR>
@@ -920,7 +920,7 @@ omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 nnoremap <silent> gy :SignifyToggleHighlight<CR>
 " Git Wrapper
-Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'
+Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim' , {'on': 'GV'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
@@ -943,13 +943,13 @@ autocmd CompleteDone * pclose
 
 " Language plugins {{{2
 " C/C++ autocompletion
-Plug 'justmao945/vim-clang'
+Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
 let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
 let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
 " Python autocompletion
-Plug 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python set omnifunc=jedi#completions
 let g:jedi#goto_command = ""
 let g:jedi#goto_assignments_command = ""
@@ -965,14 +965,14 @@ Plug 'sheerun/vim-polyglot'
 " LaTeX already included in polyglot
 let g:LatexBox_Folding = 1
 " C/C++/ObjC indexer (for cmake projects) and autocomplete
-Plug 'lyuts/vim-rtags'
+Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
 autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
 
 " Syntax checking {{{1
-Plug 'benekastah/neomake' " Async operations for Neovim
+Plug 'benekastah/neomake' , {'on' : 'Neomake'}
 nnoremap <Leader>m :Neomake<CR>
 if has('nvim')
     autocmd! BufWritePost * Neomake
