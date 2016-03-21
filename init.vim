@@ -101,13 +101,15 @@ set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
 " Window mode instead of ex mode
-nnoremap <silent> m <C-w>
-nnoremap <silent> mm <C-w><C-w>
+nnoremap <silent> gw <C-w>
+nnoremap <silent> gww <C-w><C-w>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
 " Add mark - frees up 'm' which I use for moving stuff
 nnoremap + m
+" Repeat the last macro instead of ex-mode
+nnoremap Q @@
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
@@ -115,13 +117,14 @@ inoremap <silent> <C-b> <left>
 inoremap <silent> <C-]> <C-x><C-]>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
-" Usercomplete - <C-d> seems similar to <C-w>
-inoremap <silent> <C-d> <C-x><C-u>
+" Usercomplete - don't use this if you need <C-u> (useful...I prefer <Esc>cc)
+inoremap <silent> <C-u> <C-x><C-u>
 " Dictionary - don't use this if you need <C-l> (I don't quite get <C-l>)
-inoremap <silent> <C-l> <C-x><C-k>
+inoremap <silent> <C-d> <C-x><C-k>
 " File complete - You can use this by typing <C-/>
 inoremap <silent> <C-_> <C-x><C-f>
-" <C-x><C-l> for line completion - rarely used
+" Line complete - <C-w> does the same thing
+inoremap <silent> <C-l> <C-x><C-l>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
@@ -717,6 +720,8 @@ Plug 'tpope/vim-abolish'
 nnoremap <Leader><Leader> :Subvert /
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
+" Swap things easily with <C-a> and <C-x>
+Plug 'mjbrownie/swapit'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 nnoremap gl :Tabularize /
@@ -905,15 +910,11 @@ omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 nnoremap <silent> gy :SignifyToggleHighlight<CR>
 " Git Wrapper
-Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim' , {'on': 'GV'}
+Plug 'tpope/vim-fugitive'
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
 nnoremap <silent> gl :Glog<CR>
-" gv.vim - I use 'gq' for formatting
-nnoremap <silent> gw :GV<CR>
-nnoremap <silent> gW :GV!<CR>
-vnoremap <silent> gw :GV<CR>
 
 " Autocompletion {{{1
 " vim-omnicomplete activation {{{2
@@ -1049,10 +1050,11 @@ Plug 'tpope/vim-eunuch'
 " Dispatch stuff
 Plug 'tpope/vim-dispatch'
 nnoremap <silent> <Leader>c :Copen<CR>
-nnoremap <Leader>sd :Dispatch!<Space>
+nnoremap <Leader>s :Dispatch!<Space>
+nnoremap <Leader>g :Spawn tig<CR>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
-let g:tmuxify_map_prefix = '<Leader>s'
+let g:tmuxify_map_prefix = 'm'
 let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
 let g:tmuxify_run = {
             \ 'sh': 'bash %',
