@@ -228,13 +228,13 @@ nnoremap gF :!open -g -j <cfile><CR>
 " Functions and commands {{{2
 " Filter from quickfix list - someone's vimrc
 function! GrepQuickFix(pat)
-    let all = getqflist()
-    for d in all
+    let qfl = getqflist()
+    for d in qfl
         if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
-            call remove(all, index(all,d))
+            call remove(qfl, index(qfl,d))
         endif
     endfor
-    call setqflist(all)
+    call setqflist(qfl)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
 
@@ -1070,7 +1070,6 @@ call plug#end()
 " Wrap up Unite settings {{{1
 " Enable fuzzy matching and sorting in all Unite functions
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
 
 " Sections text object - (operator)im/am for markdown and (operator)ix/ax for latex {{{1
 call textobj#user#plugin('markdown', { '-': {

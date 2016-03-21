@@ -86,13 +86,23 @@ snippet duni "doxygen union special command"
 \union
 endsnippet
 
-snippet din "doxygen inline comment" b
-/** $1 */$0
+snippet dd "doxygen inline comment" b
+/** ${1:${VISUAL:doc line}} */$0
 endsnippet
 
 snippet dbl "doxygen block comment" b
 /**
- * $1
+ * ${1:${VISUAL:doc block}}
  */
 $0
+endsnippet
+
+snippet cc "comment line" i
+/* ${0:${VISUAL:comment line}} */
+endsnippet
+
+snippet cb "comment block" i
+/*
+ * ${0:${VISUAL:comment block}}
+ */
 endsnippet
