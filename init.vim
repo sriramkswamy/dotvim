@@ -165,7 +165,7 @@ nnoremap <silent> <Leader>q :q<CR>
 
 " Plugins {{{2
 " Colorscheme
-Plug 'NLKNguyen/papercolor-theme'
+Plug 'flazz/vim-colorschemes'
 " Undotree
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
@@ -349,9 +349,18 @@ nnoremap go :Googlef <cWORD><CR>
 nnoremap gO :Google <cWORD><CR>
 vnoremap gO :Google<CR>
 vnoremap go :Googlef<CR>
-" Open the documentation
-Plug 'keith/investigate.vim'
-let g:investigate_use_dash=1
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+nnoremap <silent> <Leader>p :FZF<CR>
+" Choose colorschemes
+nnoremap <silent> <Leader>b :call fzf#run({
+\   'source':
+\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
+\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
+\   'sink':    'colo',
+\   'options': '+m',
+\   'left':    30
+\ })<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -424,7 +433,6 @@ let g:unite_source_menu_menus = {} " Useful when building interfaces at appropri
 " Unite default functionality maps
 nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
 nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
-nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -buffer-name=project file_rec file/new<CR>
 nnoremap <silent> <Leader>n :UniteWithProjectDir -buffer-name=nav -vertical directory directory/new<CR>
 nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>

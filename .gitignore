@@ -2,5 +2,7 @@ autoload/**
 eclim/**
 plugged/**
 plugin/**
+undodir/**
 tags
+vimrc
 .netrwhist
