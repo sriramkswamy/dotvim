@@ -529,23 +529,65 @@ let g:unite_source_menu_menus.git.command_candidates = [
             \] " Append ' --' after log to get commit info commit buffers
 nnoremap <silent> <Leader>o :Unite -silent -buffer-name=git -start-insert menu:git<CR>
 
-" Interface for Notes {{{3
-let g:unite_source_menu_menus.notes = {
-            \ 'description' : 'notes interaction',
+" Interface for Eclim {{{3
+let g:unite_source_menu_menus.eclim = {
+            \ 'description' : 'eclim interaction',
             \}
-let g:unite_source_menu_menus.notes.command_candidates = [
-            \[' dir', 'cd ~/Dropbox/notes | Unite -buffer-name=notes -start-insert directory file directory/new file/new'],
-            \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
-            \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
-            \[' tex word count', 'Dispatch! texcount %'],
-            \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
-            \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
-            \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
-            \[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
-            \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
-            \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
-            \]
-nnoremap <silent> <Leader>e :Unite -silent -buffer-name=notes -start-insert menu:notes<CR>
+let g:unite_source_menu_menus.eclim.command_candidates = [
+			\['Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+			\['Project List', 'ProjectList'],
+			\['Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+			\['Project Validate', 'Validate'],
+			\['New Project', 'exe "NewProjectEntry " input("project: ")'],
+			\['New Jar', 'exe "NewJarEntry " input("jar: ")'],
+			\['New Var', 'exe "NewVarEntry " input("var: ")'],
+			\['Create Variables', 'exe "VariableCreate " input("var: ")'],
+			\['Delete Variables', 'exe "VariableDelete " input("var: ")'],
+			\['List Variables', 'VariableList'],
+			\['Maven Initialize', 'MvnRepo'],
+			\['Maven Classpath',  'exe "Mvn " input("path: ")'],
+			\['Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+			\['Search', 'exe "JavaSearch " input("string: ")'],
+			\['Context Search', 'JavaSearchContext'],
+			\['Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+			\['Project Status', 'Jps'],
+			\['Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+			\['Toggle Breakpoint', 'JavaBreakpointToggle'],
+			\['List Breakpoint', 'JavaBreakpointList'],
+			\['Remove Breakpoint', 'JavaBreakpointRemove'],
+			\['Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+			\['Debug Status', 'JavaDebugStatus'],
+			\['Debug Suspend', 'JavaDebugThreadSuspendAll'],
+			\['Debug Resume', 'JavaDebugThreadResumeAll'],
+			\['Debug Stop', 'JavaDebugStop'],
+			\['Doc Comment', 'JavaDocComment'],
+			\['Doc Preview', 'JavaDocPreview'],
+			\['Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+			\['Doc Execute', 'JavaDoc'],
+			\['Code Format', 'JavaFormat'],
+			\['Refactor Rename',  'exe "JavaRename " input("name: ")'],
+			\['Refactor Move',  'exe "JavaMove " input("destination: ")'],
+			\['Refactor Undo', 'RefactorUndo'],
+			\['Refactor Undo Peek', 'RefactorUndoPeek'],
+			\['Refactor Redo', 'RefactorRedo'],
+			\['Refactor Redo Peek', 'RefactorRedoPeek'],
+			\['Class Heirarchy', 'JavaHeirarchy'],
+			\['Call Heirarchy', 'JavaCallHeirarchy'],
+			\['Import', 'JavaImport'],
+			\['Import Organized', 'JavaImportOrganized'],
+			\['Getter', 'JavaGet'],
+			\['Setter', 'JavaSet'],
+			\['Getter and Setter', 'JavaGetSet'],
+			\['Override/Implement', 'JavaImpl'],
+			\['Delegate', 'JavaDelegate'],
+			\['Unit Test', 'exe "JUnit " input("testname: ")'],
+			\['Unit Find Test', 'JUnitFindTest'],
+			\['Unit Test Results', 'JUnitResult'],
+			\['Unit Test Stubs', 'JUnitImpl'],
+			\['Ant Run', 'exe "Ant " input("target: ")'],
+			\['Ant Doc', 'AntDoc'],
+			\]
+nnoremap <silent> <Leader>e :Unite -silent -buffer-name=eclim -start-insert menu:eclim<CR>
 
 " Interface for common build commands - keeps changeing {{{3
 let g:unite_source_menu_menus.build = {
@@ -578,12 +620,20 @@ let g:unite_source_menu_menus.dispatch = {
             \ 'description' : 'dispatch things',
             \}
 let g:unite_source_menu_menus.dispatch.command_candidates = [
+            \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
+            \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
+            \[' tex word count', 'Dispatch! texcount %'],
             \[' spot home', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
             \[' spot doc', 'exe "Dispatch! mdfind -onlyin ~/Documents " input("string: ")'],
             \[' spot workspace', 'exe "Dispatch! mdfind -onlyin ~/Documents/workspace " input("string: ")'],
             \[' spot box', 'exe "Dispatch! mdfind -onlyin ~/Box\\ Sync " input("string: ")'],
             \[' spot dropbox', 'exe "Dispatch! mdfind -onlyin ~/Dropbox " input("string: ")'],
-            \[' spot root', 'exe "Dispatch! mdfind -onlyin / " input("string: ")'],
+            \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
+            \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
+            \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
+            \[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
+            \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
+            \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
             \[' locate', 'exe "Dispatch! locate " input("string: ")'],
             \]
 nnoremap <silent> <Leader>r :Unite -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
@@ -964,7 +1014,7 @@ autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
-" Helpers for prose writing
+" Helpers for prose writing {{{2
 Plug 'reedes/vim-wordy' , {'for': ['markdown', 'latex']}
 let g:wordy#ring = [
             \ 'weak',
@@ -978,6 +1028,11 @@ let g:wordy#ring = [
             \ ]
 nnoremap ]k :NextWordy<CR>
 nnoremap [k :PrevWordy<CR>
+" Eclim - Eclipse plus Vim {{{2
+let g:EclimShowQuickfixSigns = 0
+let g:EclimShowLoclistSigns = 0
+let g:EclimShowCurrentError = 0
+let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
