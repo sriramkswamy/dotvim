@@ -4,26 +4,14 @@ set nocompatible " be iMproved
 filetype off " required
 
 " Auto install vim-plug {{{1
-if has('nvim')
-    if empty(glob('~/.config/nvim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
-    endif
-else
-    if empty(glob('~/.vim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
-    endif
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
 " Start plugin installation {{{1
-if has('nvim')
-    call plug#begin('~/.config/nvim/plugged')
-else
-    call plug#begin('~/.vim/plugged')
-endif
+call plug#begin('~/.vim/plugged')
 
 " Buffer behaviour {{{1
 " Set options {{{2
@@ -51,7 +39,7 @@ set scrolloff=3
 " Sync with OS clipboard
 set clipboard=unnamed
 " Color the current line
-set cursorline " Can be toggled with 'coc'
+set nocursorline " Can be toggled with 'coc'
 " Ex commands
 set wildmenu
 set wildmode=list:longest,full
@@ -211,8 +199,6 @@ nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
 nnoremap ]n /^<\+HEAD$<CR>
 nnoremap [n ?^<\+HEAD$<CR>
-" Tags
-nnoremap T :tag *
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
@@ -278,29 +264,29 @@ function! s:go_indent(times, dir)
         let x = line('$')
         let i = s:indent_len(getline(l))
         let e = empty(getline(l))
-    while l >= 1 && l <= x
-      let line = getline(l + a:dir)
-      let l += a:dir
-      if s:indent_len(line) != i || empty(line) != e
-        break
-      endif
-    endwhile
-    let l = min([max([1, l]), x])
-    execute 'normal! '. l .'G^'
-  endfor
+        while l >= 1 && l <= x
+            let line = getline(l + a:dir)
+            let l += a:dir
+            if s:indent_len(line) != i || empty(line) != e
+                break
+            endif
+        endwhile
+        let l = min([max([1, l]), x])
+        execute 'normal! '. l .'G^'
+    endfor
 endfunction
 nnoremap <silent> ]i :<c-u>call <SID>go_indent(v:count1, 1)<cr>
 nnoremap <silent> [i :<c-u>call <SID>go_indent(v:count1, -1)<cr>
 
 " Go to project root - only for git - junegunn
 function! s:root()
-  let root = systemlist('git rev-parse --show-toplevel')[0]
-  if v:shell_error
-    echo 'Not in git repo'
-  else
-    execute 'lcd' root
-    echo 'Changed directory to: '.root
-  endif
+    let root = systemlist('git rev-parse --show-toplevel')[0]
+    if v:shell_error
+        echo 'Not in git repo'
+    else
+        execute 'lcd' root
+        echo 'Changed directory to: '.root
+    endif
 endfunction
 command! Root call s:root()
 
@@ -349,18 +335,47 @@ nnoremap go :Googlef <cWORD><CR>
 nnoremap gO :Google <cWORD><CR>
 vnoremap gO :Google<CR>
 vnoremap go :Googlef<CR>
-" Plugin outside ~/.vim/plugged with post-update hook
+" FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 nnoremap <silent> <Leader>p :FZF<CR>
-" Choose colorschemes
+
+" Choose colorschemes {{{4
 nnoremap <silent> <Leader>b :call fzf#run({
-\   'source':
-\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
-\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
-\   'sink':    'colo',
-\   'options': '+m',
-\   'left':    30
-\ })<CR>
+            \   'source':
+            \     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
+            \         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
+            \   'sink':    'colo',
+            \   'options': '+m',
+            \   'left':    30
+            \ })<CR>
+
+" Tags {{{4
+function! s:tags_sink(line)
+    let parts = split(a:line, '\t\zs')
+    let excmd = matchstr(parts[2:], '^.*\ze;"\t')
+    execute 'silent e' parts[1][:-2]
+    let [magic, &magic] = [&magic, 0]
+    execute excmd
+    let &magic = magic
+endfunction
+
+function! s:tags()
+    if empty(tagfiles())
+        echohl WarningMsg
+        echom 'Preparing tags'
+        echohl None
+        call system('ctags -R')
+    endif
+
+    call fzf#run({
+                \ 'source':  'cat '.join(map(tagfiles(), 'fnamemodify(v:val, ":S")')).
+                \            '| grep -v ^!',
+                \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
+                \ 'down':    '40%',
+                \ 'sink':    function('s:tags_sink')})
+endfunction
+command! Tags call s:tags()
+nnoremap T :Tags<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -384,13 +399,25 @@ set statusline+=%*
 set statusline+=%#warningmsg#
 set statusline+=%m
 set statusline+=%*
-"display a warning if &paste is set
+"display a warning if &spell is set
 set statusline+=%#error#
-set statusline+=%{&paste?'[paste]':''}
+set statusline+=%{&spell?'[spell]':''}
 set statusline+=%*
 "display a warning if &paste is set
 set statusline+=%#error#
 set statusline+=%{&paste?'[paste]':''}
+set statusline+=%*
+"display a warning if &ignorecase is set
+set statusline+=%#error#
+set statusline+=%{&ignorecase?'':'[case]'}
+set statusline+=%*
+"display a warning if &wrap is set
+set statusline+=%#error#
+set statusline+=%{&wrap?'[wrap]':''}
+set statusline+=%*
+"display a warning if &list is set
+set statusline+=%#error#
+set statusline+=%{&list?'[list]':''}
 set statusline+=%*
 
 set statusline+=%=      "left/right separator
@@ -408,7 +435,7 @@ function! StatuslineTrailingSpaceWarning()
             return b:statusline_trailing_space_warning
         endif
         if search('\s\+$', 'nw') != 0
-            let b:statusline_trailing_space_warning = '[\s]'
+            let b:statusline_trailing_space_warning = ' [\s]'
         else
             let b:statusline_trailing_space_warning = ''
         endif
@@ -534,59 +561,59 @@ let g:unite_source_menu_menus.eclim = {
             \ 'description' : 'eclim interaction',
             \}
 let g:unite_source_menu_menus.eclim.command_candidates = [
-			\['Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-			\['Project List', 'ProjectList'],
-			\['Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-			\['Project Validate', 'Validate'],
-			\['New Project', 'exe "NewProjectEntry " input("project: ")'],
-			\['New Jar', 'exe "NewJarEntry " input("jar: ")'],
-			\['New Var', 'exe "NewVarEntry " input("var: ")'],
-			\['Create Variables', 'exe "VariableCreate " input("var: ")'],
-			\['Delete Variables', 'exe "VariableDelete " input("var: ")'],
-			\['List Variables', 'VariableList'],
-			\['Maven Initialize', 'MvnRepo'],
-			\['Maven Classpath',  'exe "Mvn " input("path: ")'],
-			\['Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-			\['Search', 'exe "JavaSearch " input("string: ")'],
-			\['Context Search', 'JavaSearchContext'],
-			\['Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-			\['Project Status', 'Jps'],
-			\['Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-			\['Toggle Breakpoint', 'JavaBreakpointToggle'],
-			\['List Breakpoint', 'JavaBreakpointList'],
-			\['Remove Breakpoint', 'JavaBreakpointRemove'],
-			\['Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-			\['Debug Status', 'JavaDebugStatus'],
-			\['Debug Suspend', 'JavaDebugThreadSuspendAll'],
-			\['Debug Resume', 'JavaDebugThreadResumeAll'],
-			\['Debug Stop', 'JavaDebugStop'],
-			\['Doc Comment', 'JavaDocComment'],
-			\['Doc Preview', 'JavaDocPreview'],
-			\['Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-			\['Doc Execute', 'JavaDoc'],
-			\['Code Format', 'JavaFormat'],
-			\['Refactor Rename',  'exe "JavaRename " input("name: ")'],
-			\['Refactor Move',  'exe "JavaMove " input("destination: ")'],
-			\['Refactor Undo', 'RefactorUndo'],
-			\['Refactor Undo Peek', 'RefactorUndoPeek'],
-			\['Refactor Redo', 'RefactorRedo'],
-			\['Refactor Redo Peek', 'RefactorRedoPeek'],
-			\['Class Heirarchy', 'JavaHeirarchy'],
-			\['Call Heirarchy', 'JavaCallHeirarchy'],
-			\['Import', 'JavaImport'],
-			\['Import Organized', 'JavaImportOrganized'],
-			\['Getter', 'JavaGet'],
-			\['Setter', 'JavaSet'],
-			\['Getter and Setter', 'JavaGetSet'],
-			\['Override/Implement', 'JavaImpl'],
-			\['Delegate', 'JavaDelegate'],
-			\['Unit Test', 'exe "JUnit " input("testname: ")'],
-			\['Unit Find Test', 'JUnitFindTest'],
-			\['Unit Test Results', 'JUnitResult'],
-			\['Unit Test Stubs', 'JUnitImpl'],
-			\['Ant Run', 'exe "Ant " input("target: ")'],
-			\['Ant Doc', 'AntDoc'],
-			\]
+            \['Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+            \['Project List', 'ProjectList'],
+            \['Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+            \['Project Validate', 'Validate'],
+            \['New Project', 'exe "NewProjectEntry " input("project: ")'],
+            \['New Jar', 'exe "NewJarEntry " input("jar: ")'],
+            \['New Var', 'exe "NewVarEntry " input("var: ")'],
+            \['Create Variables', 'exe "VariableCreate " input("var: ")'],
+            \['Delete Variables', 'exe "VariableDelete " input("var: ")'],
+            \['List Variables', 'VariableList'],
+            \['Maven Initialize', 'MvnRepo'],
+            \['Maven Classpath',  'exe "Mvn " input("path: ")'],
+            \['Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+            \['Search', 'exe "JavaSearch " input("string: ")'],
+            \['Context Search', 'JavaSearchContext'],
+            \['Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+            \['Project Status', 'Jps'],
+            \['Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+            \['Toggle Breakpoint', 'JavaBreakpointToggle'],
+            \['List Breakpoint', 'JavaBreakpointList'],
+            \['Remove Breakpoint', 'JavaBreakpointRemove'],
+            \['Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+            \['Debug Status', 'JavaDebugStatus'],
+            \['Debug Suspend', 'JavaDebugThreadSuspendAll'],
+            \['Debug Resume', 'JavaDebugThreadResumeAll'],
+            \['Debug Stop', 'JavaDebugStop'],
+            \['Doc Comment', 'JavaDocComment'],
+            \['Doc Preview', 'JavaDocPreview'],
+            \['Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+            \['Doc Execute', 'JavaDoc'],
+            \['Code Format', 'JavaFormat'],
+            \['Refactor Rename',  'exe "JavaRename " input("name: ")'],
+            \['Refactor Move',  'exe "JavaMove " input("destination: ")'],
+            \['Refactor Undo', 'RefactorUndo'],
+            \['Refactor Undo Peek', 'RefactorUndoPeek'],
+            \['Refactor Redo', 'RefactorRedo'],
+            \['Refactor Redo Peek', 'RefactorRedoPeek'],
+            \['Class Heirarchy', 'JavaHeirarchy'],
+            \['Call Heirarchy', 'JavaCallHeirarchy'],
+            \['Import', 'JavaImport'],
+            \['Import Organized', 'JavaImportOrganized'],
+            \['Getter', 'JavaGet'],
+            \['Setter', 'JavaSet'],
+            \['Getter and Setter', 'JavaGetSet'],
+            \['Override/Implement', 'JavaImpl'],
+            \['Delegate', 'JavaDelegate'],
+            \['Unit Test', 'exe "JUnit " input("testname: ")'],
+            \['Unit Find Test', 'JUnitFindTest'],
+            \['Unit Test Results', 'JUnitResult'],
+            \['Unit Test Stubs', 'JUnitImpl'],
+            \['Ant Run', 'exe "Ant " input("target: ")'],
+            \['Ant Doc', 'AntDoc'],
+            \]
 nnoremap <silent> <Leader>e :Unite -silent -buffer-name=eclim -start-insert menu:eclim<CR>
 
 " Interface for common build commands - keeps changeing {{{3
@@ -622,12 +649,13 @@ let g:unite_source_menu_menus.dispatch = {
 let g:unite_source_menu_menus.dispatch.command_candidates = [
             \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
             \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
-            \[' tex word count', 'Dispatch! texcount %'],
             \[' spot home', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
             \[' spot doc', 'exe "Dispatch! mdfind -onlyin ~/Documents " input("string: ")'],
             \[' spot workspace', 'exe "Dispatch! mdfind -onlyin ~/Documents/workspace " input("string: ")'],
             \[' spot box', 'exe "Dispatch! mdfind -onlyin ~/Box\\ Sync " input("string: ")'],
             \[' spot dropbox', 'exe "Dispatch! mdfind -onlyin ~/Dropbox " input("string: ")'],
+            \[' spot root', 'exe "Dispatch! mdfind -onlyin / " input("string: ")'],
+            \[' tex word count', 'Dispatch! texcount %'],
             \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
             \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
             \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
@@ -1031,15 +1059,21 @@ nnoremap [k :PrevWordy<CR>
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
-let g:EclimShowCurrentError = 0
+let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
-Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-nnoremap <Leader>m :Neomake<CR>
-if has('nvim')
-    autocmd! BufWritePost * Neomake
-endif
+Plug 'scrooloose/syntastic'
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_cursor_column = 0
+let g:syntastic_mode_map = {
+            \ "mode": "passive",
+            \ "active_filetypes": [],
+            \ "passive_filetypes": [] }
+nnoremap <Leader>m :SyntasticCheck<CR>
 
 " Searching {{{1
 " Set commands {{{2
@@ -1082,10 +1116,6 @@ xmap gs <plug>(GrepperOperator)
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
-" Go to normal mode
-if has('nvim')
-    tnoremap <C-g> <C-\><C-n>
-endif
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
@@ -1097,9 +1127,6 @@ if exists('$TMUX')
     nmap [R <Plug>SwapTmuxDown
     nnoremap <silent> mV :call system("tmux split-window -h")<CR>
     nnoremap <silent> mS :call system("tmux split-window -v")<CR>
-elseif has('nvim')
-    nnoremap <silent> mV :vsplit<CR>:terminal<CR>
-    nnoremap <silent> mS :split<CR>:terminal<CR>
 else
     nnoremap <silent> mV :call system("open -a Terminal")<CR>
     nnoremap <silent> mS :call system("open -a Terminal")<CR>
@@ -1185,4 +1212,4 @@ syntax on
 
 " Set colorscheme {{{1
 set background=dark
-colorscheme PaperColor
+colorscheme alduin
