@@ -88,9 +88,10 @@ set guifont=Fira\ Mono:h14
 set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
-" Window mode instead of ex mode
-nnoremap <silent> gw <C-w>
-nnoremap <silent> gww <C-w><C-w>
+" Splits
+nnoremap <silent> gw <C-w>v
+nnoremap <silent> gW <C-w>s
+nnoremap <silent> Z :only<CR>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
@@ -135,15 +136,11 @@ cnoremap <C-p> <Up>
 " Leader and maps {{{2
 " Set leader
 let mapleader="\<Space>"
-" This is basically because of the memory I developed from my Emacs experiments
-nnoremap <Leader>d :
-vnoremap <Leader>d :
 " Help
 nnoremap <Leader>x :help<Space>
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
-nnoremap <silent> Z zM
 nnoremap - zf
 vnoremap - zf
 " Kill, save or quit
@@ -735,10 +732,6 @@ set complete-=i
 nnoremap <silent> Y y$
 " '&' remembers the flags of the last substitute
 nnoremap & g&
-" Elementary splitting
-nnoremap gz Dop==k$
-" Blank the current line
-nnoremap crb cc
 " %% for current buffer file name
 " :: for current buffer file path
 cnoremap %% <c-r>=expand('%')<cr>
@@ -792,7 +785,7 @@ function! StripNewLine()
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfunction
-command! StripNewLine :call StripM()
+command! StripNewLine :call StripNewLine()
 nnoremap crn :StripNewLine<CR>
 
 " Plugins {{{2
@@ -801,6 +794,12 @@ Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 " Better '.' command
 Plug 'tpope/vim-repeat'
+" Elementary splitting
+nmap <Plug>ElementarySplit Dop==k$:call repeat#set("\<Plug>ElementarySplit", v:count)<CR>
+nmap gz <Plug>ElementarySplit
+" Blank the current line
+nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
+nmap crb <Plug>BlankCurrentLine
 " Subvert, Abolish and coerce
 Plug 'tpope/vim-abolish'
 nnoremap <Leader><Leader> :Subvert /
@@ -1140,7 +1139,14 @@ Plug 'tpope/vim-eunuch'
 " Dispatch stuff
 Plug 'tpope/vim-dispatch'
 nnoremap <silent> <Leader>c :Copen<CR>
-nnoremap <Leader>s :Dispatch!<Space>
+nnoremap <Leader>d :Dispatch!<Space>
+vnoremap <Leader>d :Dispatch!<Space>
+nnoremap <Leader>D :Dispatch<Space>
+vnoremap <Leader>D :Dispatch<Space>
+nnoremap <Leader>s :Spawn!<Space>
+vnoremap <Leader>s :Spawn!<Space>
+nnoremap <Leader>S :Spawn<Space>
+vnoremap <Leader>S :Spawn<Space>
 nnoremap <Leader>g :Spawn tig<CR>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
@@ -1212,4 +1218,4 @@ syntax on
 
 " Set colorscheme {{{1
 set background=dark
-colorscheme alduin
+colorscheme lucius
