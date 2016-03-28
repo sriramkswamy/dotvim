@@ -854,7 +854,6 @@ let g:multi_cursor_next_key='<C-o>'
 let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-n>'
 let g:multi_cursor_quit_key='<C-k>'
-let g:multi_cursor_exit_from_insert_mode=0
 
 " Text objects, operators and motions {{{1
 " Move line and add blanks {{{2
