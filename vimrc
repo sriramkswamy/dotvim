@@ -1,6 +1,6 @@
 " vim:set et sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
 
-set nocompatible " be iMproved
+set nocompatible " be improved
 filetype off " required
 
 " Auto install vim-plug {{{1
@@ -36,8 +36,6 @@ set hidden
 " Automatically scroll when I reach within 3 lines towards end of screen
 set sidescrolloff=3
 set scrolloff=3
-" Sync with OS clipboard
-set clipboard=unnamed
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
 " Ex commands
@@ -127,6 +125,11 @@ nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
+" Clipboard
+nnoremap cp "+p
+nnoremap cy "+y
+vnoremap cp "+p
+vnoremap cy "+y
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -147,6 +150,9 @@ vnoremap - zf
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
+" Because of Emacs experiments...M-x
+nnoremap <Leader>d :
+vnoremap <Leader>d :
 
 " Plugins {{{2
 " Colorscheme
@@ -214,6 +220,9 @@ nnoremap <silent> <Tab> za
 nnoremap <silent> <C-i> za
 " Open the file with the correct application in the background - OS X only
 nnoremap gF :!open -g -j <cfile><CR>
+vnoremap gF :!open -g -j <cfile><CR>
+" Vimrc
+nnoremap cv :vsp $MYVIMRC<CR>
 
 " Functions and commands {{{2
 " Filter from quickfix list - someone's vimrc
@@ -244,7 +253,9 @@ nnoremap cql :LFilter<Space>
 
 " Common directory changes
 command! CD cd %:p:h
+nnoremap cdb :CD<CR>
 command! LCD lcd %:p:h
+nnoremap cdl :CD<CR>
 
 " Alternate between header and source files - junegunn
 function! s:A()
@@ -268,6 +279,7 @@ function! s:A()
     endfor
 endfunction
 command! A call <sid>A()
+nnoremap <Leader><Tab> :A<CR>
 
 " Next and previous indent - junegunn
 function! s:indent_len(str)
@@ -304,6 +316,7 @@ function! s:root()
     endif
 endfunction
 command! Root call s:root()
+nnoremap cdr :Root<CR>
 
 " Get TODO stuff - only from git repos - junegunn
 function! s:todo() abort
@@ -339,7 +352,6 @@ nnoremap <silent> <Leader>/ q/
 let g:netrw_liststyle=3
 let g:netrw_banner=0
 let g:netrw_browse_split=4
-nnoremap <silent> <Leader>v :30Vexplore<CR>
 
 " Plugins {{{2
 " Google stuff
@@ -475,7 +487,7 @@ let g:unite_source_menu_menus = {} " Useful when building interfaces at appropri
 " Unite default functionality maps
 nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
 nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
-nnoremap <silent> <Leader>n :UniteWithProjectDir -buffer-name=nav -vertical directory directory/new<CR>
+nnoremap <silent> <Leader>v :UniteWithProjectDir -buffer-name=nav -vertical directory directory/new<CR>
 nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>
 nnoremap <silent> <C-o> :Unite -buffer-name=jumps -start-insert jump<CR>
@@ -488,33 +500,8 @@ nnoremap <silent> <Leader>y :Unite -buffer-name=yank history/yank<CR>
 " Outline
 Plug 'Shougo/unite-outline'
 nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
-" Vim anzu - integrates with Unite too
-Plug 'osyo-manga/vim-anzu'
-nmap n <Plug>(anzu-n-with-echo)
-nmap N <Plug>(anzu-N-with-echo)
-nmap * <Plug>(anzu-star-with-echo)
-nmap # <Plug>(anzu-sharp-with-echo)
-nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
-nnoremap <Leader>n :Unite -buffer-name=anzu -horizontal -winheight=10 anzu<CR>
 
 " Interfaces/Menus - The best part of Unite {{{2
-" Interface for OS interaction{{{3
-let g:unite_source_menu_menus.osinteract = {
-            \ 'description' : 'OS interaction and configs',
-            \}
-let g:unite_source_menu_menus.osinteract.command_candidates = [
-            \[' alternate file', 'A'],
-            \[' cd to buffer dir', 'CD'],
-            \[' cd to project dir', 'Root'],
-            \[' ctags in current dir', 'Dispatch! ctags -R .'],
-            \[' gist file', 'exe "Dispatch! gist -f % -d " input("description: ")'],
-            \[' Edit vimrc', 'vsp $MYVIMRC'],
-            \[' finder', 'Dispatch! open -a Finder .'],
-            \[' session save', 'SSave'],
-            \[' session load', 'SLoad'],
-            \]
-nnoremap <silent> <Leader>a :Unite -silent -buffer-name=osinteract -quick-match menu:osinteract<CR>
-
 " Interface for semantic jumping {{{3
 let g:unite_source_menu_menus.jumptoany= {
             \ 'description' : 'Jump to anything',
@@ -1107,6 +1094,8 @@ set hlsearch " Can be toggled with unimpaired's 'coh'
 set incsearch
 " Grep
 set grepprg=grep\ -nH\ $*
+" Populate location list with previous search pattern ugly hack
+nnoremap <Leader>n q/k^yg_:q<CR>:lvim /<C-R>"/ %<CR>
 
 " Maps without leader {{{2
 " Auto-center
@@ -1162,15 +1151,19 @@ Plug 'tpope/vim-eunuch'
 " Dispatch stuff
 Plug 'tpope/vim-dispatch'
 nnoremap <silent> <Leader>c :Copen<CR>
-nnoremap <Leader>d :Dispatch!<Space>
-vnoremap <Leader>d :Dispatch!<Space>
-nnoremap <Leader>D :Dispatch<Space>
-vnoremap <Leader>D :Dispatch<Space>
+nnoremap <Leader>a :Dispatch!<Space>
+vnoremap <Leader>a :Dispatch!<Space>
+nnoremap <Leader>A :Dispatch<Space>
+vnoremap <Leader>A :Dispatch<Space>
 nnoremap <Leader>s :Spawn!<Space>
 vnoremap <Leader>s :Spawn!<Space>
 nnoremap <Leader>S :Spawn<Space>
 vnoremap <Leader>S :Spawn<Space>
+" Commandline utilities
 nnoremap <Leader>g :Spawn tig<CR>
+nnoremap cdf :Dispatch! open .<CR>
+nnoremap gpf :Dispatch! gist -f % -d<Space>
+nnoremap gpc :Dispatch! gist -Pcd<Space>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'
