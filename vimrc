@@ -1,5 +1,4 @@
 " vim:set et sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
-
 set nocompatible " be improved
 filetype off " required
 
@@ -345,8 +344,6 @@ nnoremap <silent> <Leader>l :lopen<CR>
 nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>L :lclose<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
-nnoremap <silent> <Leader>; q:
-nnoremap <silent> <Leader>/ q/
 
 " netrw {{{2
 let g:netrw_liststyle=3
@@ -849,11 +846,14 @@ endfunction
 " Multiple cursors - fancy {{{3
 Plug 'terryma/vim-multiple-cursors'
 nnoremap cm :MultipleCursorsFind<Space>
+vnoremap cm :MultipleCursorsFind<Space>
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-o>'
 let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-n>'
-let g:multi_cursor_quit_key='<C-k>'
+let g:multi_cursor_quit_key='<Esc>'
+let g:multi_cursor_exit_from_visual_mode=0
+let g:multi_cursor_exit_from_insert_mode=0
 
 " Text objects, operators and motions {{{1
 " Move line and add blanks {{{2
