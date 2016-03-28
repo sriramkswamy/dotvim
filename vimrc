@@ -1,5 +1,6 @@
 " vim:set et sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
-set nocompatible " be improved
+
+set nocompatible " not a necessity, but still
 
 " Auto install vim-plug {{{1
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -98,17 +99,15 @@ nnoremap Q @@
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
-" Complete tags - don't use if you need <C-]> (...but why?)
-inoremap <silent> <C-]> <C-x><C-]>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
-" Usercomplete - don't use this if you need <C-u> (useful...I prefer <Esc>cc)
-inoremap <silent> <C-u> <C-x><C-u>
-" Dictionary - don't use this if you need <C-l> (I don't quite get <C-l>)
+" Usercomplete - don't use this if you need <C-]> (but...why?)
+inoremap <silent> <C-]> <C-x><C-u>
+" Dictionary - <C-w> does the same thing
 inoremap <silent> <C-d> <C-x><C-k>
 " File complete - You can use this by typing <C-/>
 inoremap <silent> <C-_> <C-x><C-f>
-" Line complete - <C-w> does the same thing
+" Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
 inoremap <silent> <C-l> <C-x><C-l>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
@@ -123,6 +122,7 @@ nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
+nnoremap coF :FoldToggle<CR>
 " Clipboard
 nnoremap cp "+p
 nnoremap cy "+y
@@ -151,6 +151,8 @@ nnoremap <silent> <Leader>q :q<CR>
 " Because of Emacs experiments...M-x
 nnoremap <Leader>d :
 vnoremap <Leader>d :
+" Markdown folding
+let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
 " Colorscheme
@@ -161,10 +163,18 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Preview the registers
 Plug 'junegunn/vim-peekaboo'
-" Markdown folding
-Plug 'nelstrom/vim-markdown-folding' , {'for': 'markdown'}
-let g:markdown_fold_style = 'nested'
-nnoremap coF :FoldToggle<CR>
+" Start screen - fancy
+Plug 'mhinz/vim-startify'
+let g:startify_list_order = ['files', 'dir', 'sessions', 'bookmarks']
+let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
+let g:startify_session_persistence = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_skiplist = [
+            \ 'COMMIT_EDITMSG',
+            \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
+            \ 'plugged/.*/doc',
+            \ ]
+nnoremap cq :SClose<CR>
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -198,8 +208,8 @@ nnoremap [t :tprevious<CR>
 nnoremap ]t :tnext<CR>
 nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
-nnoremap ]n /^<\+HEAD$<CR>
 nnoremap [n ?^<\+HEAD$<CR>
+nnoremap ]n /^<\+HEAD$<CR>
 nnoremap [u :colder<CR>
 nnoremap ]u :cnewer<CR>
 nnoremap [U :lolder<CR>
@@ -252,7 +262,7 @@ nnoremap cU :LFilter<Space>
 command! CD cd %:p:h
 nnoremap cdb :CD<CR>
 command! LCD lcd %:p:h
-nnoremap cdl :CD<CR>
+nnoremap cdl :LCD<CR>
 
 " Alternate between header and source files - junegunn
 function! s:A()
@@ -483,8 +493,6 @@ let g:unite_source_menu_menus = {} " Useful when building interfaces at appropri
 nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
 nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
 nnoremap <silent> <Leader>v :UniteWithProjectDir -buffer-name=nav -vertical directory directory/new<CR>
-nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
-nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>
 inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 " Helper plugins {{{2
@@ -904,12 +912,6 @@ xnoremap <silent> iM g_?^```<cr>jo/^```<cr>kV:<c-u>nohl<cr>gv
 xnoremap <silent> aM g_?^```<cr>o/^```<cr>V:<c-u>nohl<cr>gv
 onoremap <silent> iM :<C-U>execute "normal vi`"<cr>
 onoremap <silent> aM :<C-U>execute "normal va`"<cr>
-for char in [ '"', '+', '*', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
-    execute 'nnoremap cq' . char . ' :<C-u>normal! "' . char . 'gp<CR>'
-endfor
-for char in [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z' ]
-    execute 'nnoremap cq' . char . ' :<C-u>normal! "' . char . 'gp<CR>'
-endfor
 
 " Text object plugins {{{3
 " Adds some niceties
@@ -1194,7 +1196,6 @@ function! MarkdownA()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
-
 function! MarkdownI()
     call search('^#\+.*$', 'bc')
     normal! j
@@ -1215,7 +1216,6 @@ function! LatexA()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
-
 function! LatexI()
     call search('^\\\%[sub]section', 'bc')
     normal! j
