@@ -4,8 +4,7 @@ filetype off " required
 
 " Auto install vim-plug {{{1
 if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
@@ -219,7 +218,6 @@ nnoremap <silent> <Tab> za
 nnoremap <silent> <C-i> za
 " Open the file with the correct application in the background - OS X only
 nnoremap gF :!open -g -j <cfile><CR>
-vnoremap gF :!open -g -j <cfile><CR>
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -847,6 +845,8 @@ endfunction
 Plug 'terryma/vim-multiple-cursors'
 nnoremap cm :MultipleCursorsFind<Space>
 vnoremap cm :MultipleCursorsFind<Space>
+nnoremap cz :MultipleCursorsFind ^<CR>
+vnoremap cz :MultipleCursorsFind ^<CR>
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-o>'
 let g:multi_cursor_prev_key='<C-p>'
