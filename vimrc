@@ -1,5 +1,5 @@
 " vim:set et sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
-filetype off
+set nocompatible " be improved
 
 " Auto install vim-plug {{{1
 if empty(glob('~/.vim/autoload/plug.vim'))
