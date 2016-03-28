@@ -202,10 +202,10 @@ nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
 nnoremap ]n /^<\+HEAD$<CR>
 nnoremap [n ?^<\+HEAD$<CR>
-nnoremap [C :colder<CR>
-nnoremap ]C :cnewer<CR>
-nnoremap [X :lolder<CR>
-nnoremap ]X :lnewer<CR>
+nnoremap [u :colder<CR>
+nnoremap ]u :cnewer<CR>
+nnoremap [U :lolder<CR>
+nnoremap ]U :lnewer<CR>
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
@@ -236,7 +236,7 @@ function! GrepQuickFix(pat)
     call setqflist(qfl)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
-nnoremap cqf :QFilter<Space>
+nnoremap cu :QFilter<Space>
 
 " Filter from location list - someone's vimrc
 function! GrepLocList(pat)
@@ -249,7 +249,7 @@ function! GrepLocList(pat)
     call setloclist(0,ll)
 endfunction
 command! -nargs=* LFilter call GrepLocList(<q-args>)
-nnoremap cql :LFilter<Space>
+nnoremap cU :LFilter<Space>
 
 " Common directory changes
 command! CD cd %:p:h
@@ -904,6 +904,12 @@ xnoremap <silent> iM g_?^```<cr>jo/^```<cr>kV:<c-u>nohl<cr>gv
 xnoremap <silent> aM g_?^```<cr>o/^```<cr>V:<c-u>nohl<cr>gv
 onoremap <silent> iM :<C-U>execute "normal vi`"<cr>
 onoremap <silent> aM :<C-U>execute "normal va`"<cr>
+for char in [ '"', '+', '*', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
+    execute 'nnoremap cq' . char . ' :<C-u>normal! "' . char . 'gp<CR>'
+endfor
+for char in [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z' ]
+    execute 'nnoremap cq' . char . ' :<C-u>normal! "' . char . 'gp<CR>'
+endfor
 
 " Text object plugins {{{3
 " Adds some niceties
@@ -1018,7 +1024,7 @@ nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
 nnoremap <silent> gl :Glog<CR>
 " Merge stuff easily
-nnoremap <silent> gm :Merginal<CR>  
+nnoremap <silent> gm :Merginal<CR>
 
 " Autocompletion {{{1
 " vim-omnicomplete activation {{{2
