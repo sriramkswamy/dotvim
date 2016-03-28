@@ -196,6 +196,10 @@ nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
 nnoremap ]n /^<\+HEAD$<CR>
 nnoremap [n ?^<\+HEAD$<CR>
+nnoremap [C :colder<CR>
+nnoremap ]C :cnewer<CR>
+nnoremap [X :lolder<CR>
+nnoremap ]X :lnewer<CR>
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
@@ -223,6 +227,20 @@ function! GrepQuickFix(pat)
     call setqflist(qfl)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
+nnoremap cqf :QFilter<Space>
+
+" Filter from location list - someone's vimrc
+function! GrepLocList(pat)
+    let ll = getloclist(0)
+    for d in ll
+        if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
+            call remove(ll, index(ll,d))
+        endif
+    endfor
+    call setloclist(0,ll)
+endfunction
+command! -nargs=* LFilter call GrepLocList(<q-args>)
+nnoremap cql :LFilter<Space>
 
 " Common directory changes
 command! CD cd %:p:h
@@ -448,7 +466,7 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 Plug 'Shougo/unite.vim'
 autocmd FileType unite call s:unite_my_settings()
 function! s:unite_my_settings()
-    imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
+    imap <buffer> <TAB>   <Plug>(unite_select_next_line)
     imap <silent><buffer><expr> <C-s>     unite#do_action('split')
     imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
 endfunction
@@ -860,6 +878,11 @@ nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v
 nmap [<Space> <Plug>BlankCharLeft
 nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
 nmap ]<Space> <Plug>BlankCharRight
+" Delete adjacent lines
+nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
+nmap [x <Plug>DeleteLineUp
+nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
+nmap ]x <Plug>DeleteLineDown
 
 " Motions {{{2
 Plug 'justinmk/vim-sneak'
