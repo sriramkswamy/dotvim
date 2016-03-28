@@ -169,12 +169,27 @@ let g:startify_list_order = ['files', 'dir', 'sessions', 'bookmarks']
 let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
 let g:startify_session_persistence = 1
 let g:startify_change_to_vcs_root = 1
+let g:startify_custom_header = ['', '   Vim start screen']
+let g:startify_custom_footer =
+            \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
 let g:startify_skiplist = [
             \ 'COMMIT_EDITMSG',
             \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
             \ 'plugged/.*/doc',
             \ ]
-nnoremap cq :SClose<CR>
+let g:startify_list_order = [
+            \ ['   Recent files:'],
+            \ 'files',
+            \ ['   Recent files in the current directory:'],
+            \ 'dir',
+            \ ['   Sessions:'],
+            \ 'sessions',
+            \ ['   Bookmarks:'],
+            \ 'bookmarks',
+            \ ]
+nnoremap sq :SClose<CR>
+nnoremap sy :SSave<Space>
+nnoremap sp :SLoad<Space>
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -912,6 +927,13 @@ xnoremap <silent> iM g_?^```<cr>jo/^```<cr>kV:<c-u>nohl<cr>gv
 xnoremap <silent> aM g_?^```<cr>o/^```<cr>V:<c-u>nohl<cr>gv
 onoremap <silent> iM :<C-U>execute "normal vi`"<cr>
 onoremap <silent> aM :<C-U>execute "normal va`"<cr>
+" Find a better way...
+for char in [ '"', '+', '*', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
+    execute 'nnoremap cq' . char . ' :<C-u>normal! "' . char . 'p<CR>'
+endfor
+for char in [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z' ]
+    execute 'nnoremap cq' . char . ' :<C-u>normal! "' . char . 'p<CR>'
+endfor
 
 " Text object plugins {{{3
 " Adds some niceties
