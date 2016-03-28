@@ -490,7 +490,6 @@ nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer b
 nnoremap <silent> <Leader>v :UniteWithProjectDir -buffer-name=nav -vertical directory directory/new<CR>
 nnoremap <silent> <Leader>, :Unite -buffer-name=mapping mapping<CR>
 nnoremap <silent> <Leader>. :Unite -buffer-name=resume resume<CR>
-nnoremap <silent> <C-o> :Unite -buffer-name=jumps -start-insert jump<CR>
 inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 " Helper plugins {{{2
@@ -847,6 +846,15 @@ function! s:baralign()
         call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
     endif
 endfunction
+" Multiple cursors - fancy {{{3
+Plug 'terryma/vim-multiple-cursors'
+nnoremap cm :MultipleCursorsFind<Space>
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-o>'
+let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_skip_key='<C-n>'
+let g:multi_cursor_quit_key='<C-k>'
+let g:multi_cursor_exit_from_insert_mode=0
 
 " Text objects, operators and motions {{{1
 " Move line and add blanks {{{2
@@ -1005,11 +1013,13 @@ omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 nnoremap <silent> gy :SignifyToggleHighlight<CR>
 " Git Wrapper
-Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal'
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
 nnoremap <silent> gl :Glog<CR>
+" Merge stuff easily
+nnoremap <silent> gm :Merginal<CR>  
 
 " Autocompletion {{{1
 " vim-omnicomplete activation {{{2
@@ -1051,20 +1061,6 @@ autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
-" Helpers for prose writing {{{2
-Plug 'reedes/vim-wordy' , {'for': ['markdown', 'latex']}
-let g:wordy#ring = [
-            \ 'weak',
-            \ 'weasel',
-            \ 'puffery',
-            \ ['problematic', 'redundant', 'vague-time', 'said-synonyms',],
-            \ ['contractions', 'opinion', ],
-            \ ['being', 'passive-voice', ],
-            \ ['colloquial', 'idiomatic', 'similies', ],
-            \ 'business-jargon',
-            \ ]
-nnoremap ]k :NextWordy<CR>
-nnoremap [k :PrevWordy<CR>
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -1094,7 +1090,7 @@ set hlsearch " Can be toggled with unimpaired's 'coh'
 set incsearch
 " Grep
 set grepprg=grep\ -nH\ $*
-" Populate location list with previous search pattern ugly hack
+" Populate location list with previous search pattern; ugly hack
 nnoremap <Leader>n q/k^yg_:q<CR>:lvim /<C-R>"/ %<CR>
 
 " Maps without leader {{{2
@@ -1136,11 +1132,6 @@ if exists('$TMUX')
     nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
     nmap [R <Plug>SwapTmuxDown
-    nnoremap <silent> mV :call system("tmux split-window -h")<CR>
-    nnoremap <silent> mS :call system("tmux split-window -v")<CR>
-else
-    nnoremap <silent> mV :call system("open -a Terminal")<CR>
-    nnoremap <silent> mS :call system("open -a Terminal")<CR>
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
@@ -1164,6 +1155,7 @@ nnoremap <Leader>g :Spawn tig<CR>
 nnoremap cdf :Dispatch! open .<CR>
 nnoremap gpf :Dispatch! gist -f % -d<Space>
 nnoremap gpc :Dispatch! gist -Pcd<Space>
+nnoremap <silent> gK :Dispatch! open -a Dash<CR>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'
