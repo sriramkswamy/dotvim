@@ -2,6 +2,7 @@ autoload/**
 eclim/**
 plugged/**
 plugin/**
+session/**
 undodir/**
 tags
 .netrwhist
