@@ -504,21 +504,21 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 Plug 'Shougo/unite.vim'
 autocmd FileType unite call s:unite_my_settings()
 function! s:unite_my_settings()
-    imap <buffer> <TAB>   <Plug>(unite_select_next_line)
+    imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
     imap <silent><buffer><expr> <C-s>     unite#do_action('split')
     imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
 endfunction
 let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 
 " Unite default functionality maps
-nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
-nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
-inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
+nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
+nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
+inoremap <silent> <C-j> <C-o>:Unite -start-insert -direction=botright -buffer-name=ultisnips ultisnips<CR>
 
 " Helper plugins {{{2
 " Yank history
 Plug 'Shougo/neoyank.vim'
-nnoremap <silent> <Leader>y :Unite -buffer-name=yank history/yank<CR>
+nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yank history/yank<CR>
 " Outline
 Plug 'Shougo/unite-outline'
 nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
@@ -599,7 +599,7 @@ let g:unite_source_menu_menus.jumpnjava.command_candidates = [
             \['java Ant Run', 'exe "Ant " input("target: ")'],
             \['java Ant Doc', 'AntDoc'],
             \]
-nnoremap <silent> <Leader>j :Unite -silent -buffer-name=jumpnjava -start-insert menu:jumpnjava<CR>
+nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=jumpnjava -start-insert menu:jumpnjava<CR>
 
 " Interface for Git and Fugitive {{{3
 let g:unite_source_menu_menus.versioncontrol = {
@@ -634,7 +634,7 @@ let g:unite_source_menu_menus.versioncontrol.command_candidates = [
             \[' git prompt', 'exe "Git! " input("command: ")'],
             \[' toggle changes', 'SignifyToggleHighlight'],
             \] " Append ' --' after log to get commit info commit buffers
-nnoremap <silent> <Leader>v :Unite -silent -buffer-name=versioncontrol -start-insert menu:versioncontrol<CR>
+nnoremap <silent> <Leader>v :Unite -silent -direction=botright -buffer-name=versioncontrol -start-insert menu:versioncontrol<CR>
 
 
 " Interface for common make commands - keeps changeing {{{3
@@ -661,7 +661,7 @@ let g:unite_source_menu_menus.make.command_candidates = [
             \[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
             \[' gcc armadillo', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
             \]
-nnoremap <silent> <Leader>m :Unite -silent -buffer-name=make -start-insert menu:make<CR>
+nnoremap <silent> <Leader>m :Unite -silent -direction=botright -buffer-name=make -start-insert menu:make<CR>
 
 " Interface for common dispatch commands {{{3
 let g:unite_source_menu_menus.org = {
@@ -678,7 +678,7 @@ let g:unite_source_menu_menus.org.command_candidates = [
             \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
             \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
             \]
-nnoremap <silent> <Leader>o :Unite -silent -buffer-name=org -start-insert menu:org<CR>
+nnoremap <silent> <Leader>o :Unite -silent -direction=botright -buffer-name=org -start-insert menu:org<CR>
 
 " Interface for common recursive system searches {{{3
 let g:unite_source_menu_menus.recursive = {
@@ -693,7 +693,7 @@ let g:unite_source_menu_menus.recursive.command_candidates = [
             \[' spot root', 'exe "Dispatch! mdfind -onlyin / " input("string: ")'],
             \[' locate', 'exe "Dispatch! locate " input("string: ")'],
             \]
-nnoremap <silent> <Leader>r :Unite -silent -buffer-name=recursive -start-insert menu:recursive<CR>
+nnoremap <silent> <Leader>r :Unite -silent -direction=botright -buffer-name=recursive -start-insert menu:recursive<CR>
 
 " FileTypes {{{1
 " Set commands {{{2
