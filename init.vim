@@ -1046,7 +1046,7 @@ xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 " Git Wrapper
-Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal'
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'on' : 'Merginal'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
