@@ -26,14 +26,13 @@ endif
 " Set options {{{2
 set title
 " Turn on numbering and relativenumber
-augroup toggle_numbers  " can be toggled normally with 'cor' and 'con'
+augroup toggle_numbers  " can be toggled normally with 'cor'
     autocmd!
-    autocmd BufEnter * :setlocal relativenumber cursorline
-    autocmd WinEnter * :setlocal relativenumber cursorline
-    autocmd BufLeave * :setlocal norelativenumber nocursorline
-    autocmd WinLeave * :setlocal norelativenumber nocursorline
+    autocmd BufEnter * :setlocal relativenumber cursorline nonumber
+    autocmd WinEnter * :setlocal relativenumber cursorline nonumber
+    autocmd BufLeave * :setlocal norelativenumber nocursorline number
+    autocmd WinLeave * :setlocal norelativenumber nocursorline number
 augroup END
-set relativenumber " Can be toggled with 'cor'
 " Automatically read and write buffers
 set autoread
 set autowrite
@@ -126,12 +125,12 @@ nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
 nnoremap col :<C-u>setlocal list!<CR>:set list?<CR>
 nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
 nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
-nnoremap coh :<C-u>setlocal hlsearch!<CR>:set hlsearch?<CR>
 nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
+nnoremap coh :nohl<CR>
 nnoremap cot :set filetype=
 " Clipboard
 nnoremap cp "*p
@@ -163,8 +162,6 @@ nnoremap <Leader>x :help<Space>
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
-nnoremap - zf
-vnoremap - zf
 " Kill, save or quit
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
@@ -182,13 +179,9 @@ Plug 'flazz/vim-colorschemes'
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
-" Preview the registers
-Plug 'junegunn/vim-peekaboo'
-" Make sure folds don't create a problem
-Plug 'Konfekt/FastFold'
 " Start screen - fancy
 Plug 'mhinz/vim-startify'
-let g:startify_list_order = ['files', 'dir', 'sessions', 'bookmarks']
+let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
 let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
 let g:startify_session_persistence = 1
 let g:startify_change_to_vcs_root = 1
@@ -201,18 +194,18 @@ let g:startify_skiplist = [
             \ 'plugged/.*/doc',
             \ ]
 let g:startify_list_order = [
-            \ ['   Recent files:'],
-            \ 'files',
             \ ['   Recent files in the current directory:'],
             \ 'dir',
+            \ ['   Recent files:'],
+            \ 'files',
             \ ['   Sessions:'],
             \ 'sessions',
             \ ['   Bookmarks:'],
             \ 'bookmarks',
             \ ]
 nnoremap sq :SClose<CR>
-nnoremap sy :SSave<Space>
-nnoremap sp :SLoad<Space>
+nnoremap sp :SSave<Space>
+nnoremap sy :SLoad<Space>
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -250,22 +243,14 @@ nnoremap [<Tab> :tabprevious<CR>
 nnoremap ]<Tab> :tabnext<CR>
 nnoremap [n ?^<\+HEAD$<CR>
 nnoremap ]n /^<\+HEAD$<CR>
-nnoremap [u :colder<CR>
-nnoremap ]u :cnewer<CR>
-nnoremap [U :lolder<CR>
-nnoremap ]U :lnewer<CR>
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
 nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
-" Jumplist
-nnoremap <C-p> <C-o>
-nnoremap <C-n> <C-i>
 " Folding
-nnoremap <silent> <Tab> za
-nnoremap <silent> <C-i> za
+nnoremap <silent> - za
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -281,7 +266,6 @@ function! GrepQuickFix(pat)
     call setqflist(qfl)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
-nnoremap cu :QFilter<Space>
 
 " Filter from location list - someone's vimrc
 function! GrepLocList(pat)
@@ -294,13 +278,10 @@ function! GrepLocList(pat)
     call setloclist(0,ll)
 endfunction
 command! -nargs=* LFilter call GrepLocList(<q-args>)
-nnoremap cU :LFilter<Space>
 
 " Common directory changes
 command! CD cd %:p:h
-nnoremap cdb :CD<CR>
 command! LCD lcd %:p:h
-nnoremap cdl :LCD<CR>
 
 " Alternate between header and source files - junegunn
 function! s:A()
@@ -361,28 +342,6 @@ function! s:root()
     endif
 endfunction
 command! Root call s:root()
-nnoremap cdr :Root<CR>
-
-" Get TODO stuff - only from git repos - junegunn
-function! s:todo() abort
-    let entries = []
-    for cmd in ['git grep -n -e TODO -e FIXME -e XXX 2> /dev/null',
-                \ 'grep -rn -e TODO -e FIXME -e XXX * 2> /dev/null']
-        let lines = split(system(cmd), '\n')
-        if v:shell_error != 0 | continue | endif
-        for line in lines
-            let [fname, lno, text] = matchlist(line, '^\([^:]*\):\([^:]*\):\(.*\)')[1:3]
-            call add(entries, { 'filename': fname, 'lnum': lno, 'text': text })
-        endfor
-        break
-    endfor
-    if !empty(entries)
-        call setqflist(entries)
-        copen
-    endif
-endfunction
-command! Todo call s:todo()
-nnoremap <Leader>t :Todo<CR>
 
 " Leader maps {{{2
 " Quickfix and Location list maps
@@ -390,11 +349,6 @@ nnoremap <silent> <Leader>l :lopen<CR>
 nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>L :lclose<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
-
-" netrw {{{2
-let g:netrw_liststyle=3
-let g:netrw_banner=0
-let g:netrw_browse_split=4
 
 " Plugins {{{2
 " Google stuff
@@ -408,15 +362,6 @@ vnoremap go :Googlef<CR>
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 nnoremap <silent> <Leader>p :FZF<CR>
-" Choose colorschemes {{{4
-nnoremap <silent> <Leader>b :call fzf#run({
-            \   'source':
-            \     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
-            \         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
-            \   'sink':    'colo',
-            \   'options': '+m',
-            \   'left':    30
-            \ })<CR>
 " Tags {{{4
 function! s:tags_sink(line)
     let parts = split(a:line, '\t\zs')
@@ -442,6 +387,48 @@ function! s:tags()
 endfunction
 command! Tags call s:tags()
 nnoremap T :Tags<CR>
+" Goto to anything in the project {{{4
+function! s:ag_to_qf(line)
+  let parts = split(a:line, ':')
+  return {'filename': parts[0], 'lnum': parts[1], 'col': parts[2],
+        \ 'text': join(parts[3:], ':')}
+endfunction
+function! s:ag_handler(lines)
+  if len(a:lines) < 2 | return | endif
+  let cmd = get({'ctrl-x': 'split',
+               \ 'ctrl-v': 'vertical split',
+               \ 'ctrl-t': 'tabe'}, a:lines[0], 'e')
+  let list = map(a:lines[1:], 's:ag_to_qf(v:val)')
+  let first = list[0]
+  execute cmd escape(first.filename, ' %#\')
+  execute first.lnum
+  execute 'normal!' first.col.'|zz'
+  if len(list) > 1
+    call setqflist(list)
+    copen
+    wincmd p
+  endif
+endfunction
+command! -nargs=* Goto call fzf#run({
+\ 'source':  printf('ag --nogroup --column --color "%s"',
+\                   escape(empty(<q-args>) ? '^(?=.)' : <q-args>, '"\')),
+\ 'sink*':    function('<sid>ag_handler'),
+\ 'options': '--ansi --expect=ctrl-t,ctrl-v,ctrl-x --delimiter : --nth 4.. '.
+\            '--multi --bind ctrl-a:select-all,ctrl-d:deselect-all '.
+\            '--color hl:68,hl+:110',
+\ 'down':    '50%'
+\ })
+nnoremap <silent> <C-p> :Goto<CR>
+" Choose colorscheme {{{4
+command! Colors :call fzf#run({
+\   'source':
+\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
+\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
+\   'sink':    'colo',
+\   'options': '+m',
+\   'left':    30
+\ })<CR>
+nnoremap <silent> <Leader>b :Colors<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -538,14 +525,14 @@ nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<C
 " Directory browser like netrw
 Plug 'Shougo/vimfiler.vim'
 let g:vimfiler_as_default_explorer = 1
-nnoremap <silent> <Leader>v :VimFilerExplorer -project<CR>
+nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
 
 " Interfaces/Menus - The best part of Unite {{{2
 " Interface for semantic jumping {{{3
-let g:unite_source_menu_menus.jumptoany= {
-            \ 'description' : 'Jump to anything',
+let g:unite_source_menu_menus.jumpnjava= {
+            \ 'description' : 'Jump or java stuff',
             \}
-let g:unite_source_menu_menus.jumptoany.command_candidates = [
+let g:unite_source_menu_menus.jumpnjava.command_candidates = [
             \['cpp jump to', 'call rtags#JumpTo()'],
             \['cpp jump to parent', 'call rtags#JumpToParent()'],
             \['cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
@@ -559,15 +546,66 @@ let g:unite_source_menu_menus.jumptoany.command_candidates = [
             \['py GoTo Definition', 'call jedi#goto_definitions()'],
             \['py Rename', 'call jedi#rename()'],
             \['py Rename Visual', 'call jedi#rename_visual()'],
-            \['r Rename Visual', 'call jedi#rename_visual()'],
+            \['java Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+            \['java Project List', 'ProjectList'],
+            \['java Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+            \['java Project Validate', 'Validate'],
+            \['java New Project', 'exe "NewProjectEntry " input("project: ")'],
+            \['java New Jar', 'exe "NewJarEntry " input("jar: ")'],
+            \['java New Var', 'exe "NewVarEntry " input("var: ")'],
+            \['java Create Variables', 'exe "VariableCreate " input("var: ")'],
+            \['java Delete Variables', 'exe "VariableDelete " input("var: ")'],
+            \['java List Variables', 'VariableList'],
+            \['java Maven Initialize', 'MvnRepo'],
+            \['java Maven Classpath',  'exe "Mvn " input("path: ")'],
+            \['java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+            \['java Search', 'exe "JavaSearch " input("string: ")'],
+            \['java Context Search', 'JavaSearchContext'],
+            \['java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+            \['java Project Status', 'Jps'],
+            \['java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+            \['java Toggle Breakpoint', 'JavaBreakpointToggle'],
+            \['java List Breakpoint', 'JavaBreakpointList'],
+            \['java Remove Breakpoint', 'JavaBreakpointRemove'],
+            \['java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+            \['java Debug Status', 'JavaDebugStatus'],
+            \['java Debug Suspend', 'JavaDebugThreadSuspendAll'],
+            \['java Debug Resume', 'JavaDebugThreadResumeAll'],
+            \['java Debug Stop', 'JavaDebugStop'],
+            \['java Doc Comment', 'JavaDocComment'],
+            \['java Doc Preview', 'JavaDocPreview'],
+            \['java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+            \['java Doc Execute', 'JavaDoc'],
+            \['java Code Format', 'JavaFormat'],
+            \['java Refactor Rename',  'exe "JavaRename " input("name: ")'],
+            \['java Refactor Move',  'exe "JavaMove " input("destination: ")'],
+            \['java Refactor Undo', 'RefactorUndo'],
+            \['java Refactor Undo Peek', 'RefactorUndoPeek'],
+            \['java Refactor Redo', 'RefactorRedo'],
+            \['java Refactor Redo Peek', 'RefactorRedoPeek'],
+            \['java Class Heirarchy', 'JavaHeirarchy'],
+            \['java Call Heirarchy', 'JavaCallHeirarchy'],
+            \['java Import', 'JavaImport'],
+            \['java Import Organized', 'JavaImportOrganized'],
+            \['java Getter', 'JavaGet'],
+            \['java Setter', 'JavaSet'],
+            \['java Getter and Setter', 'JavaGetSet'],
+            \['java Override/Implement', 'JavaImpl'],
+            \['java Delegate', 'JavaDelegate'],
+            \['java Unit Test', 'exe "JUnit " input("testname: ")'],
+            \['java Unit Find Test', 'JUnitFindTest'],
+            \['java Unit Test Results', 'JUnitResult'],
+            \['java Unit Test Stubs', 'JUnitImpl'],
+            \['java Ant Run', 'exe "Ant " input("target: ")'],
+            \['java Ant Doc', 'AntDoc'],
             \]
-nnoremap <silent> <Leader>j :Unite -silent -buffer-name=jumptoany -start-insert menu:jumptoany<CR>
+nnoremap <silent> <Leader>j :Unite -silent -buffer-name=jumpnjava -start-insert menu:jumpnjava<CR>
 
 " Interface for Git and Fugitive {{{3
-let g:unite_source_menu_menus.git = {
+let g:unite_source_menu_menus.versioncontrol = {
             \ 'description' : 'Git interface',
             \}
-let g:unite_source_menu_menus.git.command_candidates = [
+let g:unite_source_menu_menus.versioncontrol.command_candidates = [
             \[' git status', 'Gstatus'],
             \[' git diff', 'Gvdiff'],
             \[' git stage/add', 'Gwrite'],
@@ -594,74 +632,16 @@ let g:unite_source_menu_menus.git.command_candidates = [
             \[' git mv', 'exe "Gmove " input("destination: ")'],
             \[' git grep',  'exe "Ggrep " input("string: ")'],
             \[' git prompt', 'exe "Git! " input("command: ")'],
+            \[' toggle changes', 'SignifyToggleHighlight'],
             \] " Append ' --' after log to get commit info commit buffers
-nnoremap <silent> <Leader>o :Unite -silent -buffer-name=git -start-insert menu:git<CR>
+nnoremap <silent> <Leader>v :Unite -silent -buffer-name=versioncontrol -start-insert menu:versioncontrol<CR>
 
-" Interface for Eclim {{{3
-let g:unite_source_menu_menus.eclim = {
-            \ 'description' : 'eclim interaction',
-            \}
-let g:unite_source_menu_menus.eclim.command_candidates = [
-            \['Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-            \['Project List', 'ProjectList'],
-            \['Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-            \['Project Validate', 'Validate'],
-            \['New Project', 'exe "NewProjectEntry " input("project: ")'],
-            \['New Jar', 'exe "NewJarEntry " input("jar: ")'],
-            \['New Var', 'exe "NewVarEntry " input("var: ")'],
-            \['Create Variables', 'exe "VariableCreate " input("var: ")'],
-            \['Delete Variables', 'exe "VariableDelete " input("var: ")'],
-            \['List Variables', 'VariableList'],
-            \['Maven Initialize', 'MvnRepo'],
-            \['Maven Classpath',  'exe "Mvn " input("path: ")'],
-            \['Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-            \['Search', 'exe "JavaSearch " input("string: ")'],
-            \['Context Search', 'JavaSearchContext'],
-            \['Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-            \['Project Status', 'Jps'],
-            \['Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-            \['Toggle Breakpoint', 'JavaBreakpointToggle'],
-            \['List Breakpoint', 'JavaBreakpointList'],
-            \['Remove Breakpoint', 'JavaBreakpointRemove'],
-            \['Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-            \['Debug Status', 'JavaDebugStatus'],
-            \['Debug Suspend', 'JavaDebugThreadSuspendAll'],
-            \['Debug Resume', 'JavaDebugThreadResumeAll'],
-            \['Debug Stop', 'JavaDebugStop'],
-            \['Doc Comment', 'JavaDocComment'],
-            \['Doc Preview', 'JavaDocPreview'],
-            \['Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-            \['Doc Execute', 'JavaDoc'],
-            \['Code Format', 'JavaFormat'],
-            \['Refactor Rename',  'exe "JavaRename " input("name: ")'],
-            \['Refactor Move',  'exe "JavaMove " input("destination: ")'],
-            \['Refactor Undo', 'RefactorUndo'],
-            \['Refactor Undo Peek', 'RefactorUndoPeek'],
-            \['Refactor Redo', 'RefactorRedo'],
-            \['Refactor Redo Peek', 'RefactorRedoPeek'],
-            \['Class Heirarchy', 'JavaHeirarchy'],
-            \['Call Heirarchy', 'JavaCallHeirarchy'],
-            \['Import', 'JavaImport'],
-            \['Import Organized', 'JavaImportOrganized'],
-            \['Getter', 'JavaGet'],
-            \['Setter', 'JavaSet'],
-            \['Getter and Setter', 'JavaGetSet'],
-            \['Override/Implement', 'JavaImpl'],
-            \['Delegate', 'JavaDelegate'],
-            \['Unit Test', 'exe "JUnit " input("testname: ")'],
-            \['Unit Find Test', 'JUnitFindTest'],
-            \['Unit Test Results', 'JUnitResult'],
-            \['Unit Test Stubs', 'JUnitImpl'],
-            \['Ant Run', 'exe "Ant " input("target: ")'],
-            \['Ant Doc', 'AntDoc'],
-            \]
-nnoremap <silent> <Leader>e :Unite -silent -buffer-name=eclim -start-insert menu:eclim<CR>
 
-" Interface for common build commands - keeps changeing {{{3
-let g:unite_source_menu_menus.build = {
-            \ 'description' : 'build things',
+" Interface for common make commands - keeps changeing {{{3
+let g:unite_source_menu_menus.make = {
+            \ 'description' : 'make things',
             \}
-let g:unite_source_menu_menus.build.command_candidates = [
+let g:unite_source_menu_menus.make.command_candidates = [
             \[' g++ make', 'Dispatch! make'],
             \[' g++ build', 'Dispatch! make -C build'],
             \[' g++ docs', 'Dispatch! make -C build doc'],
@@ -681,21 +661,15 @@ let g:unite_source_menu_menus.build.command_candidates = [
             \[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
             \[' gcc armadillo', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
             \]
-nnoremap <silent> <Leader>i :Unite -silent -buffer-name=build -start-insert menu:build<CR>
+nnoremap <silent> <Leader>m :Unite -silent -buffer-name=make -start-insert menu:make<CR>
 
 " Interface for common dispatch commands {{{3
-let g:unite_source_menu_menus.dispatch = {
-            \ 'description' : 'dispatch things',
+let g:unite_source_menu_menus.org = {
+            \ 'description' : 'Org mode equivalent',
             \}
-let g:unite_source_menu_menus.dispatch.command_candidates = [
+let g:unite_source_menu_menus.org.command_candidates = [
             \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
             \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
-            \[' spot home', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
-            \[' spot doc', 'exe "Dispatch! mdfind -onlyin ~/Documents " input("string: ")'],
-            \[' spot workspace', 'exe "Dispatch! mdfind -onlyin ~/Documents/workspace " input("string: ")'],
-            \[' spot box', 'exe "Dispatch! mdfind -onlyin ~/Box\\ Sync " input("string: ")'],
-            \[' spot dropbox', 'exe "Dispatch! mdfind -onlyin ~/Dropbox " input("string: ")'],
-            \[' spot root', 'exe "Dispatch! mdfind -onlyin / " input("string: ")'],
             \[' tex word count', 'Dispatch! texcount %'],
             \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
             \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
@@ -703,9 +677,23 @@ let g:unite_source_menu_menus.dispatch.command_candidates = [
             \[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
             \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
             \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
+            \]
+nnoremap <silent> <Leader>o :Unite -silent -buffer-name=org -start-insert menu:org<CR>
+
+" Interface for common recursive system searches {{{3
+let g:unite_source_menu_menus.recursive = {
+            \ 'description' : 'Recursive system searches',
+            \}
+let g:unite_source_menu_menus.recursive.command_candidates = [
+            \[' spot home', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
+            \[' spot doc', 'exe "Dispatch! mdfind -onlyin ~/Documents " input("string: ")'],
+            \[' spot workspace', 'exe "Dispatch! mdfind -onlyin ~/Documents/workspace " input("string: ")'],
+            \[' spot box', 'exe "Dispatch! mdfind -onlyin ~/Box\\ Sync " input("string: ")'],
+            \[' spot dropbox', 'exe "Dispatch! mdfind -onlyin ~/Dropbox " input("string: ")'],
+            \[' spot root', 'exe "Dispatch! mdfind -onlyin / " input("string: ")'],
             \[' locate', 'exe "Dispatch! locate " input("string: ")'],
             \]
-nnoremap <silent> <Leader>r :Unite -silent -buffer-name=dispatch -start-insert menu:dispatch<CR>
+nnoremap <silent> <Leader>r :Unite -silent -buffer-name=recursive -start-insert menu:recursive<CR>
 
 " FileTypes {{{1
 " Set commands {{{2
@@ -797,6 +785,12 @@ inoremap `<Tab> ``<Esc>i
 inoremap `<CR> `<CR>`<Esc>O
 inoremap ```<Tab> ``````<Esc>hhi
 inoremap ```<CR> ```<CR>```<Esc>O
+" Macros in visual mode
+function! ExecuteMacroOverVisualRange()
+    echo "@".getcmdline()
+    execute ":'<,'>normal @".nr2char(getchar())
+endfunction
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
 " Functions and commands {{{2
 " Strip trailing whitespace
@@ -847,10 +841,17 @@ nmap crb <Plug>BlankCurrentLine
 " Subvert, Abolish and coerce
 Plug 'tpope/vim-abolish'
 nnoremap <Leader><Leader> :Subvert /
+" Org mode like editing embedded code editing
+Plug 'AndrewRadev/inline_edit.vim'
+nnoremap <Leader>i :InlineEdit<CR>
+vnoremap <Leader>i :InlineEdit<CR>
+" Preview the substitution
+Plug 'osyo-manga/vim-over'
+let g:over_command_line_prompt = ">"
+nnoremap <Leader>s :OverCommandLine<CR>
+vnoremap <Leader>s :OverCommandLine<CR>
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
-" Swap things easily with <C-a> and <C-x>
-Plug 'mjbrownie/swapit'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 nnoremap gt :Tabularize /
@@ -937,7 +938,7 @@ xnoremap il :<C-u>normal! ^vg_<CR>
 onoremap al :<C-u>normal! 0v$<CR>
 xnoremap al :<C-u>normal! 0v$<CR>
 " Edit a macro
-nnoremap cq  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+nnoremap cq :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
 " Text object plugins {{{3
 " Adds some niceties
@@ -1044,13 +1045,14 @@ omap ih <Plug>(signify-motion-inner-pending)
 xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
-nnoremap <silent> gy :SignifyToggleHighlight<CR>
 " Git Wrapper
-Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal'
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
 nnoremap <silent> gl :Glog<CR>
+" Merginal
+nnoremap <silent> gm :Merginal<CR>
 
 " Autocompletion {{{1
 " vim-omnicomplete activation {{{2
@@ -1100,7 +1102,7 @@ let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-nnoremap <Leader>m :Neomake<CR>
+nnoremap <Leader>e :Neomake<CR>
 if has('nvim')
     autocmd! BufWritePost * Neomake
 endif
@@ -1116,11 +1118,10 @@ set incsearch
 " Grep
 set grepprg=grep\ -nH\ $*
 " Populate location list with previous search pattern; ugly hack
-nnoremap <Leader>n q/k^yg_:q<CR>:lvim /<C-R>"/ %<CR>
+nnoremap <C-n> q/k^yg_:q<CR>:lvim /<C-R>"/ %<CR>
 
 " Maps without leader {{{2
 " Auto-center
-nnoremap <silent> crh :nohl<CR>
 nnoremap <silent> n nzz
 nnoremap <silent> * *zz
 nnoremap <silent> # #zz
@@ -1177,15 +1178,8 @@ nnoremap <Leader>a :Dispatch!<Space>
 vnoremap <Leader>a :Dispatch!<Space>
 nnoremap <Leader>A :Dispatch<Space>
 vnoremap <Leader>A :Dispatch<Space>
-nnoremap <Leader>s :Spawn!<Space>
-vnoremap <Leader>s :Spawn!<Space>
-nnoremap <Leader>S :Spawn<Space>
-vnoremap <Leader>S :Spawn<Space>
 " Commandline utilities
 nnoremap <Leader>g :Spawn tig<CR>
-nnoremap cdf :Dispatch! open .<CR>
-nnoremap gpf :Dispatch! gist -f % -d<Space>
-nnoremap gpc :Dispatch! gist -Pcd<Space>
 nnoremap <silent> gK :Dispatch! open -a Dash<CR>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
@@ -1280,4 +1274,4 @@ syntax on
 
 " Set colorscheme {{{1
 set background=dark
-colorscheme gruvbox
+colorscheme janah
