@@ -407,8 +407,6 @@ nnoremap go :Googlef <cWORD><CR>
 nnoremap gO :Google <cWORD><CR>
 vnoremap gO :Google<CR>
 vnoremap go :Googlef<CR>
-" Directory browser like netrw
-Plug 'justinmk/vim-dirvish'
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 nnoremap <silent> <Leader>p :FZF<CR>
@@ -530,7 +528,6 @@ let g:unite_source_menu_menus = {} " Useful when building interfaces at appropri
 " Unite default functionality maps
 nnoremap <silent> <Leader>f :UniteWithBufferDir -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
 nnoremap <silent> <Leader>u :Unite -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
-nnoremap <silent> <Leader>v :UniteWithProjectDir -buffer-name=nav -vertical directory directory/new<CR>
 inoremap <silent> <C-j> <C-o>:Unite -start-insert -buffer-name=ultisnips ultisnips<CR>
 
 " Helper plugins {{{2
@@ -540,6 +537,10 @@ nnoremap <silent> <Leader>y :Unite -buffer-name=yank history/yank<CR>
 " Outline
 Plug 'Shougo/unite-outline'
 nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
+" Directory browser like netrw
+Plug 'Shougo/vimfiler.vim'
+let g:vimfiler_as_default_explorer = 1
+nnoremap <silent> <Leader>v :VimFilerExplorer -project<CR>
 
 " Interfaces/Menus - The best part of Unite {{{2
 " Interface for semantic jumping {{{3
