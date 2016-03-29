@@ -1137,9 +1137,10 @@ vnoremap # y?<C-R>"<CR>
 Plug 'mhinz/vim-grepper'
 " Mimic :grep and make ag the default tool.
 let g:grepper = {
-            \ 'tools': [ 'pt', 'ag', 'git', 'grep'],
+            \ 'tools': [ 'pt', 'ag', 'ack', 'git', 'grep'],
             \ 'open':  0,
             \ 'jump':  0,
+            \ 'next_tool': ']g'
             \ }
 nnoremap gss :Grepper -tool pt -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
@@ -1276,4 +1277,4 @@ syntax on
 
 " Set colorscheme {{{1
 set background=dark
-colorscheme lucius
+colorscheme gruvbox
