@@ -1,7 +1,5 @@
 " vim:set et sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
 
-set nocompatible " not a necessity, but still
-
 " Auto install vim-plug {{{1
 if has('nvim')
     if empty(glob('~/.config/nvim/autoload/plug.vim'))
