@@ -123,11 +123,10 @@ nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
+nnoremap cot :set filetype=
 " Clipboard
 nnoremap cp "+p
 nnoremap cy "+y
-vnoremap cp "+p
-vnoremap cy "+y
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -223,6 +222,8 @@ nnoremap [t :tprevious<CR>
 nnoremap ]t :tnext<CR>
 nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
+nnoremap [<Tab> :tabprevious<CR>
+nnoremap ]<Tab> :tabnext<CR>
 nnoremap [n ?^<\+HEAD$<CR>
 nnoremap ]n /^<\+HEAD$<CR>
 nnoremap [u :colder<CR>
@@ -241,8 +242,6 @@ nnoremap <C-n> <C-i>
 " Folding
 nnoremap <silent> <Tab> za
 nnoremap <silent> <C-i> za
-" Open the file with the correct application in the background - OS X only
-nnoremap gF :!open -g -j <cfile><CR>
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -831,13 +830,18 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'mjbrownie/swapit'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
-nnoremap gl :Tabularize /
-vnoremap gl :Tabularize /
-vnoremap gt :Tabularize /\s\+<CR>
+nnoremap gt :Tabularize /
+vnoremap gt :Tabularize /
+nnoremap gT :Tabularize<CR>
+vnoremap gT :Tabularize<CR>
+nnoremap g<Tab> :Tabularize /\s\+<CR>
+vnoremap g<Tab> :Tabularize /\s\+<CR>
+nnoremap g= :Tabularize /=<CR>
 vnoremap g= :Tabularize /=<CR>
+nnoremap g& :Tabularize /&<CR>
 vnoremap g& :Tabularize /&<CR>
-vnoremap gT :Tabularize /<bar><CR>
-vnoremap g: :Tabularize /:<CR>
+nnoremap g<Bar> :Tabularize /<bar><CR>
+vnoremap g<Bar> :Tabularize /<bar><CR>
 
 " Auto-align when typing =
 inoremap <silent> = =<Esc>:call <SID>equalalign()<CR>a
@@ -864,12 +868,11 @@ function! s:baralign()
         call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
     endif
 endfunction
+
 " Multiple cursors - fancy {{{3
 Plug 'terryma/vim-multiple-cursors'
-nnoremap cm :MultipleCursorsFind<Space>
-vnoremap cm :MultipleCursorsFind<Space>
-nnoremap cz :MultipleCursorsFind ^<CR>
-vnoremap cz :MultipleCursorsFind ^<CR>
+vnoremap M :MultipleCursorsFind<Space>
+vnoremap Z :MultipleCursorsFind ^<CR>
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-o>'
 let g:multi_cursor_prev_key='<C-p>'
@@ -922,11 +925,6 @@ onoremap il :<C-u>normal! ^vg_<CR>
 xnoremap il :<C-u>normal! ^vg_<CR>
 onoremap al :<C-u>normal! 0v$<CR>
 xnoremap al :<C-u>normal! 0v$<CR>
-" Operate within markdown code block
-xnoremap <silent> iM g_?^```<cr>jo/^```<cr>kV:<c-u>nohl<cr>gv
-xnoremap <silent> aM g_?^```<cr>o/^```<cr>V:<c-u>nohl<cr>gv
-onoremap <silent> iM :<C-U>execute "normal vi`"<cr>
-onoremap <silent> aM :<C-U>execute "normal va`"<cr>
 " Find a better way...
 for char in [ '"', '+', '*', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
     execute 'nnoremap cq' . char . ' :<C-u>normal! "' . char . 'p<CR>'
@@ -1139,11 +1137,11 @@ vnoremap # y?<C-R>"<CR>
 Plug 'mhinz/vim-grepper'
 " Mimic :grep and make ag the default tool.
 let g:grepper = {
-            \ 'tools': ['ag', 'git', 'grep'],
+            \ 'tools': [ 'pt', 'ag', 'git', 'grep'],
             \ 'open':  0,
-            \ 'jump':  1,
+            \ 'jump':  0,
             \ }
-nnoremap gss :Grepper -tool ag -noswitch<CR>
+nnoremap gss :Grepper -tool pt -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
@@ -1243,6 +1241,31 @@ function! LatexI()
     normal! j
     let head_pos = getpos('.')
     call search('\%$\|\(\n\ze\\\%[sub]section\)', 'c')
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+
+" Markdown code text object - (operator)iM/aM {{{1
+call textobj#user#plugin('markcode', { '-': {
+            \ 'select-a-function': 'MarkcodeA', 'select-a': 'aM',
+            \ 'select-i-function': 'MarkcodeI', 'select-i': 'iM',
+            \ }, })
+function! MarkcodeA()
+    call search('^```\w*$', 'bc')
+    normal! 0
+    let head_pos = getpos('.')
+    normal! j
+    call search('^```$', 'c')
+    normal! $
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+function! MarkcodeI()
+    call search('^```\w*$', 'bc')
+    normal! j0
+    let head_pos = getpos('.')
+    call search('^```$', 'c')
+    normal! k$
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
