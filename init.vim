@@ -117,6 +117,8 @@ inoremap <silent> <C-d> <C-x><C-k>
 inoremap <silent> <C-_> <C-x><C-f>
 " Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
 inoremap <silent> <C-l> <C-x><C-l>
+" In-file completion - <C-p> takes care of other files
+inoremap <silent> <C-n> <C-x><C-p>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
@@ -182,10 +184,10 @@ nnoremap <silent> U :UndotreeToggle<CR>
 " Start screen - fancy
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
-let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.config/nvim/init.vim', '~/.zshrc', '~/.zshenv' ]
+let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
 let g:startify_session_persistence = 1
 let g:startify_change_to_vcs_root = 1
-let g:startify_custom_header = ['', '   (Neo)Vim start screen']
+let g:startify_custom_header = ['', '   Vim start screen']
 let g:startify_custom_footer =
             \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
 let g:startify_skiplist = [
@@ -521,7 +523,7 @@ Plug 'Shougo/neoyank.vim'
 nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yank history/yank<CR>
 " Outline
 Plug 'Shougo/unite-outline'
-nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=40 outline<CR>
+nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
 " Directory browser like netrw
 Plug 'Shougo/vimfiler.vim'
 let g:vimfiler_as_default_explorer = 1
@@ -1274,4 +1276,4 @@ syntax on
 
 " Set colorscheme {{{1
 set background=dark
-colorscheme janah
+colorscheme zenburn

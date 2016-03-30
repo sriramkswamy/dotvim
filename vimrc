@@ -117,6 +117,8 @@ inoremap <silent> <C-d> <C-x><C-k>
 inoremap <silent> <C-_> <C-x><C-f>
 " Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
 inoremap <silent> <C-l> <C-x><C-l>
+" In-file completion - <C-p> takes care of other files
+inoremap <silent> <C-n> <C-x><C-p>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
@@ -1274,4 +1276,4 @@ syntax on
 
 " Set colorscheme {{{1
 set background=dark
-colorscheme janah
+colorscheme zenburn
