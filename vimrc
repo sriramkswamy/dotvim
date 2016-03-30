@@ -1183,6 +1183,8 @@ vnoremap <Leader>A :Dispatch<Space>
 " Commandline utilities
 nnoremap <Leader>g :Spawn tig<CR>
 nnoremap <silent> gK :Dispatch! open -a Dash<CR>
+nnoremap gp :Dispatch! gist % -cd ""<Left>
+nnoremap gP :Dispatch! gist -Pcd ""<Left>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'
