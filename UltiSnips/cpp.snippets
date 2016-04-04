@@ -106,3 +106,9 @@ snippet cb "comment block" i
  * ${0:${VISUAL:comment block}}
  */
 endsnippet
+
+snippet forc "for container" b
+for(${1:auto} ${2:i} = ${3:var.begin()}; $2 != ${4:var.end()}; ++$2) {
+  $0
+}
+endsnippet
