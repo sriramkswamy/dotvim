@@ -25,14 +25,6 @@ endif
 " Buffer behaviour {{{1
 " Set options {{{2
 set title
-" Turn on numbering and relativenumber
-augroup toggle_numbers  " can be toggled normally with 'cor'
-    autocmd!
-    autocmd BufEnter * :setlocal relativenumber cursorline nonumber
-    autocmd WinEnter * :setlocal relativenumber cursorline nonumber
-    autocmd BufLeave * :setlocal norelativenumber nocursorline number
-    autocmd WinLeave * :setlocal norelativenumber nocursorline number
-augroup END
 " Automatically read and write buffers
 set autoread
 set autowrite
@@ -121,6 +113,7 @@ inoremap <silent> <C-l> <C-x><C-l>
 inoremap <silent> <C-n> <C-x><C-p>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
+nnoremap coo <C-w><C-w>:<C-u>setlocal number!<CR>:set number?<CR><C-w><C-w>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
 nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
@@ -284,6 +277,8 @@ command! -nargs=* LFilter call GrepLocList(<q-args>)
 " Common directory changes
 command! CD cd %:p:h
 command! LCD lcd %:p:h
+command! WCD :windo cd %:p:h<CR>
+command! TCD :tabdo cd %:p:h<CR>
 
 " Alternate between header and source files - junegunn
 function! s:A()
@@ -421,17 +416,6 @@ command! -nargs=* Goto call fzf#run({
 \ 'down':    '50%'
 \ })
 nnoremap <silent> <C-p> :Goto<CR>
-" Choose colorscheme {{{4
-command! Colors :call fzf#run({
-\   'source':
-\     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
-\         "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"),
-\   'sink':    'colo',
-\   'options': '+m',
-\   'left':    30
-\ })<CR>
-nnoremap <silent> <Leader>b :Colors<CR>
-
 " Statusline - from scrooloose {{{1
 " Basic setup
 set statusline =%#identifier#
@@ -648,20 +632,20 @@ let g:unite_source_menu_menus.make.command_candidates = [
             \[' g++ build', 'Dispatch! make -C build'],
             \[' g++ docs', 'Dispatch! make -C build doc'],
             \[' g++ latex', 'Dispatch! make -C docs/latex'],
-            \[' g++ single', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -O2 -g %'],
-            \[' g++ openmp', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
-            \[' g++ mpi', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -O2 -g %'],
-            \[' g++ hybrid', 'Dispatch! /usr/local/openmpi/bin/mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
-            \[' g++ armadillo', 'Dispatch! g++ -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
+            \[' g++ single', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' g++ openmp', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' g++ mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' g++ hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' g++ armadillo', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
             \[' gcc make', 'Dispatch! make'],
             \[' gcc build', 'Dispatch! make -C build'],
             \[' gcc latex', 'Dispatch! make -C docs/latex'],
             \[' gcc docs', 'Dispatch! make -C build doc'],
-            \[' gcc single', 'Dispatch! gcc! -Wall -lgsl -lcblas -llapack -O2 -g %'],
-            \[' gcc openmp', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
-            \[' gcc mpi', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g %'],
-            \[' gcc hybrid', 'Dispatch! /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g %'],
-            \[' gcc armadillo', 'Dispatch! gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g %'],
+            \[' gcc single', 'Dispatch! cd %:p:h | gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gcc openmp', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' gcc mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gcc hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' gcc armadillo', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
             \]
 nnoremap <silent> <Leader>m :Unite -silent -direction=botright -buffer-name=make -start-insert menu:make<CR>
 
@@ -758,8 +742,6 @@ set shiftwidth=4
 set shiftround
 " Max text width
 set textwidth=80
-" Don't include headers, use ctags
-set complete-=i
 
 " Maps without leader {{{2
 " Make 'Y' work like 'C' and 'D'
@@ -869,19 +851,6 @@ vnoremap g& :Tabularize /&<CR>
 nnoremap g<Bar> :Tabularize /<bar><CR>
 vnoremap g<Bar> :Tabularize /<bar><CR>
 
-" Auto-align when typing =
-inoremap <silent> = =<Esc>:call <SID>equalalign()<CR>a
-function! s:equalalign()
-    let p = '^.*=\s.*$'
-    if exists(':Tabularize') && getline('.') =~# '^.*=' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-        let column = strlen(substitute(getline('.')[0:col('.')],'[^=]','','g'))
-        let position = strlen(matchstr(getline('.')[0:col('.')],'.*=\s*\zs.*'))
-        Tabularize/=/l1
-        normal! 0
-        call search(repeat('[^=]*=',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-    endif
-endfunction
-
 " Auto-align when typing |
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>baralign()<CR>a
 function! s:baralign()
@@ -920,12 +889,12 @@ nmap ]x <Plug>DeleteLineDown
 
 " Motions {{{2
 Plug 'justinmk/vim-sneak'
-nmap w <Plug>Sneak_s
-nmap W <Plug>Sneak_S
-xmap w <Plug>Sneak_s
-xmap W <Plug>Sneak_S
-omap w <Plug>Sneak_s
-omap W <Plug>Sneak_S
+nmap e <Plug>Sneak_s
+xmap e <Plug>Sneak_s
+omap e <Plug>Sneak_s
+nmap E <Plug>Sneak_S
+xmap E <Plug>Sneak_S
+omap E <Plug>Sneak_S
 
 " Text objects {{{2
 " Onoremap based {{{3
@@ -1007,11 +976,11 @@ autocmd FileType matlab setlocal commentstring=%\ %s
 Plug 'vim-scripts/ReplaceWithRegister'
 " Exchange stuff - cx(motion/textobject) and repeat it at the new point
 Plug 'tommcdo/vim-exchange'
-nmap <silent> <Plug>ExchangeWordRight cxiweecxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
+nmap <silent> <Plug>ExchangeWordRight cxiwwcxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
 nmap ]w <Plug>ExchangeWordRight
 nmap <silent> <Plug>ExchangeWordLeft cxiwbcxiw :call repeat#set("\<Plug>ExchangeWordLeft", v:count)<CR>
 nmap [w <Plug>ExchangeWordLeft
-nmap <silent> <Plug>ExchangeWORDRight cxiWEEcxiW :call repeat#set("\<Plug>ExchangeWORDRight", v:count)<CR>
+nmap <silent> <Plug>ExchangeWORDRight cxiWWcxiW :call repeat#set("\<Plug>ExchangeWORDRight", v:count)<CR>
 nmap ]W <Plug>ExchangeWORDRight
 nmap <silent> <Plug>ExchangeWORDLeft cxiWBcxiW :call repeat#set("\<Plug>ExchangeWORDLeft", v:count)<CR>
 nmap [W <Plug>ExchangeWORDLeft
@@ -1120,7 +1089,7 @@ set incsearch
 " Grep
 set grepprg=grep\ -nH\ $*
 " Populate location list with previous search pattern; ugly hack
-nnoremap <C-n> q/k^yg_:q<CR>:lvim /<C-R>"/ %<CR>
+nnoremap <C-n> :lvim // %<CR>
 
 " Maps without leader {{{2
 " Auto-center
