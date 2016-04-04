@@ -126,7 +126,6 @@ nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
 nnoremap coh :nohl<CR>
-nnoremap cot :set filetype=
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
@@ -139,6 +138,9 @@ cnoremap <C-p> <Up>
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
 command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 " Cursor behavior
+if has('nvim')
+    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+end
 if empty($TMUX)
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
@@ -152,8 +154,6 @@ endif
 " Leader and maps {{{2
 " Set leader
 let mapleader="\<Space>"
-" Help
-nnoremap <Leader>x :help<Space>
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
@@ -161,9 +161,6 @@ nnoremap <silent> [z zk
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
-" Because of Emacs experiments...M-x
-nnoremap <Leader>d :
-vnoremap <Leader>d :
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -277,6 +274,7 @@ command! -nargs=* LFilter call GrepLocList(<q-args>)
 " Common directory changes
 command! CD cd %:p:h
 command! LCD lcd %:p:h
+nnoremap cd :LCD<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
 
@@ -339,6 +337,7 @@ function! s:root()
     endif
 endfunction
 command! Root call s:root()
+nnoremap cu :Root<CR>
 
 " Leader maps {{{2
 " Quickfix and Location list maps
@@ -358,64 +357,30 @@ vnoremap gO :Google<CR>
 vnoremap go :Googlef<CR>
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-nnoremap <silent> <Leader>p :FZF<CR>
-" Tags {{{4
-function! s:tags_sink(line)
-    let parts = split(a:line, '\t\zs')
-    let excmd = matchstr(parts[2:], '^.*\ze;"\t')
-    execute 'silent e' parts[1][:-2]
-    let [magic, &magic] = [&magic, 0]
-    execute excmd
-    let &magic = magic
-endfunction
-function! s:tags()
-    if empty(tagfiles())
-        echohl WarningMsg
-        echom 'Preparing tags'
-        echohl None
-        call system('ctags -R')
-    endif
-    call fzf#run({
-                \ 'source':  'cat '.join(map(tagfiles(), 'fnamemodify(v:val, ":S")')).
-                \            '| grep -v ^!',
-                \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
-                \ 'down':    '40%',
-                \ 'sink':    function('s:tags_sink')})
-endfunction
-command! Tags call s:tags()
-nnoremap T :Tags<CR>
-" Goto to anything in the project {{{4
-function! s:ag_to_qf(line)
-  let parts = split(a:line, ':')
-  return {'filename': parts[0], 'lnum': parts[1], 'col': parts[2],
-        \ 'text': join(parts[3:], ':')}
-endfunction
-function! s:ag_handler(lines)
-  if len(a:lines) < 2 | return | endif
-  let cmd = get({'ctrl-x': 'split',
-               \ 'ctrl-v': 'vertical split',
-               \ 'ctrl-t': 'tabe'}, a:lines[0], 'e')
-  let list = map(a:lines[1:], 's:ag_to_qf(v:val)')
-  let first = list[0]
-  execute cmd escape(first.filename, ' %#\')
-  execute first.lnum
-  execute 'normal!' first.col.'|zz'
-  if len(list) > 1
-    call setqflist(list)
-    copen
-    wincmd p
-  endif
-endfunction
-command! -nargs=* Goto call fzf#run({
-\ 'source':  printf('ag --nogroup --column --color "%s"',
-\                   escape(empty(<q-args>) ? '^(?=.)' : <q-args>, '"\')),
-\ 'sink*':    function('<sid>ag_handler'),
-\ 'options': '--ansi --expect=ctrl-t,ctrl-v,ctrl-x --delimiter : --nth 4.. '.
-\            '--multi --bind ctrl-a:select-all,ctrl-d:deselect-all '.
-\            '--color hl:68,hl+:110',
-\ 'down':    '50%'
-\ })
-nnoremap <silent> <C-p> :Goto<CR>
+Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix='Fzf'
+command! -nargs=1 FzfSpotlight call fzf#run({
+            \ 'source': 'mdfind -onlyin ~ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Spotlight> "'
+            \ })
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> T :FzfTags<CR>
+nnoremap <silent> gL :FzfCommits<CR>
+nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <C-p> :FzfAg<CR>
+nnoremap <silent> <Leader>p :FzfGitFiles<CR>
+nnoremap <silent> <Leader>f :FzfBuffers<CR>
+nnoremap <silent> <Leader>b :FzfColors<CR>
+nnoremap <silent> <Leader>x :FzfHelptags<CR>
+nnoremap <silent> <Leader>/ :FzfHistory/<CR>
+nnoremap <silent> <Leader>; :FzfHistory:<CR>
+nnoremap <Leader><Leader> :FzfCommands<CR>
+vnoremap <Leader><Leader> :FzfCommands<CR>
+inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+nnoremap <Leader>r :FzfSpotlight<Space>
+nnoremap <Leader>R :FzfLocate<Space>
+
 " Statusline - from scrooloose {{{1
 " Basic setup
 set statusline =%#identifier#
@@ -495,19 +460,14 @@ function! s:unite_my_settings()
     imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
 endfunction
 let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
-
-" Unite default functionality maps
-nnoremap <silent> <Leader>f :UniteWithBufferDir -direction=botright -buffer-name=findfile -start-insert file directory file/new directory/new<CR>
-nnoremap <silent> <Leader>u :Unite -direction=botright -buffer-name=bufswitch -start-insert buffer buffer_tab<CR>
-inoremap <silent> <C-j> <C-o>:Unite -start-insert -direction=botright -buffer-name=ultisnips ultisnips<CR>
+" Keep a menu for unite stuff but prefer FZF wherever possible
+nnoremap <silent> <Leader>d :Unite -start-insert -direction=botright -buffer-name=files file file/new directory directory/new<CR>
+nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-name=sources source<CR>
 
 " Helper plugins {{{2
 " Yank history
 Plug 'Shougo/neoyank.vim'
 nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yank history/yank<CR>
-" Outline
-Plug 'Shougo/unite-outline'
-nnoremap <silent> t :Unite -buffer-name=outline -vertical -winwidth=35 outline<CR>
 " Directory browser like netrw
 Plug 'Shougo/vimfiler.vim'
 let g:vimfiler_as_default_explorer = 1
@@ -666,21 +626,6 @@ let g:unite_source_menu_menus.org.command_candidates = [
             \]
 nnoremap <silent> <Leader>o :Unite -silent -direction=botright -buffer-name=org -start-insert menu:org<CR>
 
-" Interface for common recursive system searches {{{3
-let g:unite_source_menu_menus.recursive = {
-            \ 'description' : 'Recursive system searches',
-            \}
-let g:unite_source_menu_menus.recursive.command_candidates = [
-            \[' spot home', 'exe "Dispatch! mdfind -onlyin ~ " input("string: ")'],
-            \[' spot doc', 'exe "Dispatch! mdfind -onlyin ~/Documents " input("string: ")'],
-            \[' spot workspace', 'exe "Dispatch! mdfind -onlyin ~/Documents/workspace " input("string: ")'],
-            \[' spot box', 'exe "Dispatch! mdfind -onlyin ~/Box\\ Sync " input("string: ")'],
-            \[' spot dropbox', 'exe "Dispatch! mdfind -onlyin ~/Dropbox " input("string: ")'],
-            \[' spot root', 'exe "Dispatch! mdfind -onlyin / " input("string: ")'],
-            \[' locate', 'exe "Dispatch! locate " input("string: ")'],
-            \]
-nnoremap <silent> <Leader>r :Unite -silent -direction=botright -buffer-name=recursive -start-insert menu:recursive<CR>
-
 " FileTypes {{{1
 " Set commands {{{2
 " Ignore list
@@ -824,7 +769,6 @@ nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:cou
 nmap crb <Plug>BlankCurrentLine
 " Subvert, Abolish and coerce
 Plug 'tpope/vim-abolish'
-nnoremap <Leader><Leader> :Subvert /
 " Org mode like editing embedded code editing
 Plug 'AndrewRadev/inline_edit.vim'
 nnoremap <Leader>i :InlineEdit<CR>
@@ -1017,7 +961,7 @@ xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 " Git Wrapper
-Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'on' : 'Merginal'}
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal'
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
 " Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
@@ -1073,9 +1017,9 @@ let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-nnoremap <Leader>e :Neomake<CR>
+nnoremap <Leader>e :Neomake!<CR>
 if has('nvim')
-    autocmd! BufWritePost * Neomake
+    autocmd! BufWritePost * Neomake!
 endif
 
 " Searching {{{1
@@ -1138,6 +1082,9 @@ if exists('$TMUX')
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
+if has('nvim')
+    nmap <silent> <BS> :TmuxNavigateLeft<CR>
+endif
 
 " Plugins {{{2
 " Common *nix commands
