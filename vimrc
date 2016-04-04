@@ -368,18 +368,21 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> gL :FzfCommits<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <C-p> :FzfAg<CR>
+nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
-nnoremap <silent> <Leader>f :FzfBuffers<CR>
+nnoremap <silent> <Leader>f :FzfFiles<CR>
+nnoremap <silent> <Leader>d :FzfBuffers<CR>
 nnoremap <silent> <Leader>b :FzfColors<CR>
 nnoremap <silent> <Leader>x :FzfHelptags<CR>
 nnoremap <silent> <Leader>/ :FzfHistory/<CR>
 nnoremap <silent> <Leader>; :FzfHistory:<CR>
+nnoremap <silent> <Leader>, :FzfMaps<CR>
+nnoremap <silent> <Leader>` :FzfMarks<CR>
 nnoremap <Leader><Leader> :FzfCommands<CR>
 vnoremap <Leader><Leader> :FzfCommands<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
 nnoremap <Leader>r :FzfSpotlight<Space>
-nnoremap <Leader>R :FzfLocate<Space>
+nnoremap <Leader>R :FzfLocate!<Space>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -461,7 +464,6 @@ function! s:unite_my_settings()
 endfunction
 let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 " Keep a menu for unite stuff but prefer FZF wherever possible
-nnoremap <silent> <Leader>d :Unite -start-insert -direction=botright -buffer-name=files file file/new directory directory/new<CR>
 nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-name=sources source<CR>
 
 " Helper plugins {{{2
