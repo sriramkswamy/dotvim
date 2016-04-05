@@ -876,6 +876,7 @@ let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
+nnoremap <silent> <Leader>t :vsp <bar> term<CR>
 tnoremap <C-g> <C-\><C-n>
 
 " Zoom when in Tmux(>v1.8)
