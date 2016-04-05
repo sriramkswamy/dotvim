@@ -159,15 +159,15 @@ nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
 nnoremap <Leader>x :help<Space>
 " Muscle memory
-nnoremap <Leader>d :
-vnoremap <Leader>d :
+nnoremap <Leader>f :
+vnoremap <Leader>f :
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
 " Colorscheme
 Plug 'flazz/vim-colorschemes'
-nnoremap <Leader>b :colorscheme<Space>
+nnoremap <Leader>c :colorscheme<Space>
 " Undotree
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
@@ -440,7 +440,7 @@ endfunction
 let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 " Keep a menu for unite stuff but prefer FZF wherever possible
 nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-name=sources source<CR>
-nnoremap <silent> <Leader>f :Unite -start-insert -direction=botright -buffer-name=files file_rec<CR>
+nnoremap <silent> <Leader>d :Unite -start-insert -direction=botright -buffer-name=files file_rec<CR>
 nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -direction=botright -buffer-name=gitfiles file_rec<CR>
 nnoremap <silent> <Leader>a :Unite -start-insert -direction=botright -buffer-name=buffers buffer<CR>
 nnoremap <silent> <Leader>, :Unite -start-insert -direction=botright -buffer-name=maps map<CR>
@@ -995,7 +995,6 @@ let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
 Plug 'scrooloose/syntastic'
-nnoremap <Leader>e :SyntasticCheck<CR>
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
@@ -1062,14 +1061,16 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-eunuch'
 " Dispatch stuff
 Plug 'tpope/vim-dispatch'
-nnoremap <silent> <Leader>c :Copen<CR>
+nnoremap <Leader>m :Dispatch!<Space>
+nnoremap <silent> <Leader>o :Copen<CR>
+nnoremap <silent> <Leader>O :cclose<CR>
 " Commandline utilities
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
 nnoremap <silent> <C-p> :Dispatch! ag --vimgrep \^.<CR>
 nnoremap <Leader>r :Dispatch! mdfind -onlyin ~<Space>
 nnoremap <Leader>R :Dispatch! locate<Space>
-nnoremap <silent> <Leader>g :Spawn tig<CR>
+nnoremap <silent> <Leader>e :Spawn tig<CR>
 nnoremap <silent> <Leader>n :Spawn ranger<CR>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
