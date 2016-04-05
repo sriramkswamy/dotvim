@@ -139,8 +139,8 @@ nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
 " Muscle memory
-nnoremap <Leader>d :
-vnoremap <Leader>d :
+nnoremap <Leader>f :
+vnoremap <Leader>f :
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -327,8 +327,6 @@ command! Expense vsplit ~/Dropbox/notes/expenses.dat
 " Quickfix and Location list maps
 nnoremap <silent> <Leader>l :lopen<CR>
 nnoremap <silent> <Leader>h :copen<CR>
-nnoremap <silent> <Leader>L :lclose<CR>
-nnoremap <silent> <Leader>H :cclose<CR>
 
 " Plugins {{{2
 " Google stuff
@@ -354,9 +352,9 @@ nnoremap <silent> gL :FzfCommits<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
-nnoremap <silent> <Leader>f :FzfFiles<CR>
+nnoremap <silent> <Leader>d :FzfFiles<CR>
 nnoremap <silent> <Leader>a :FzfBuffers<CR>
-nnoremap <silent> <Leader>b :FzfColors<CR>
+nnoremap <silent> <Leader>c :FzfColors<CR>
 nnoremap <silent> <Leader>x :FzfHelptags<CR>
 nnoremap <silent> <Leader>/ :FzfHistory/<CR>
 nnoremap <silent> <Leader>; :FzfHistory:<CR>
@@ -829,7 +827,6 @@ command! CppProjects call rtags#ProjectList()
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-nnoremap <Leader>e :Neomake<CR>
 autocmd! BufWritePost * Neomake
 
 " Searching {{{1
@@ -876,8 +873,9 @@ let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
-nnoremap <silent> <Leader>t :vsp <bar> term<CR>
+nnoremap <silent> <Leader>u :vsp <bar> term<CR>
 tnoremap <C-g> <C-\><C-n>
+nnoremap <silent> <Leader>n :terminal ranger<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
@@ -898,10 +896,11 @@ nmap <silent> <BS> :TmuxNavigateLeft<CR>
 Plug 'tpope/vim-eunuch'
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
-nnoremap <silent> <Leader>c :Copen<CR>
+nnoremap <Leader>m :Dispatch!<Space>
+nnoremap <silent> <Leader>o :Copen<CR>
+nnoremap <silent> <Leader>O :cclose<CR>
 " Commandline utilities
-nnoremap <silent> <Leader>g :Spawn tig<CR>
-nnoremap <silent> <Leader>n :Spawn ranger<CR>
+nnoremap <silent> <Leader>e :Spawn tig<CR>
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
 " Dispatch based commands
