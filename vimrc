@@ -21,6 +21,12 @@ set hidden
 " Automatically scroll when I reach within 3 lines towards end of screen
 set sidescrolloff=3
 set scrolloff=3
+" Set numbers and relative numbers - can be toggled with 'con' and 'cor'
+augroup toggle_numbers
+    autocmd!
+    autocmd WinEnter,BufEnter * :setlocal relativenumber nonumber
+    autocmd WinLeave,BufLeave * :setlocal norelativenumber number
+augroup end
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
 " Format options
@@ -167,7 +173,7 @@ Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers
-Plug 'junegunn/peekaboo'
+Plug 'junegunn/vim-peekaboo'
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
@@ -424,7 +430,7 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Unite {{{1
 " Defaults {{{2
-Plug 'Shougo/unite.vim' | Plug 'Shougo/vimproc.vim'
+Plug 'Shougo/unite.vim'
 autocmd FileType unite call s:unite_my_settings()
 function! s:unite_my_settings()
     imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
@@ -435,7 +441,7 @@ let g:unite_source_menu_menus = {} " Useful when building interfaces at appropri
 " Keep a menu for unite stuff but prefer FZF wherever possible
 nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-name=sources source<CR>
 nnoremap <silent> <Leader>f :Unite -start-insert -direction=botright -buffer-name=files file_rec<CR>
-nnoremap <silent> <Leader>p :Unite -start-insert -direction=botright -buffer-name=gitfiles file_rec/git<CR>
+nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -direction=botright -buffer-name=gitfiles file_rec<CR>
 nnoremap <silent> <Leader>a :Unite -start-insert -direction=botright -buffer-name=buffers buffer<CR>
 nnoremap <silent> <Leader>, :Unite -start-insert -direction=botright -buffer-name=maps map<CR>
 inoremap <silent> <C-j> <Esc>:Unite -start-insert -direction=botright -buffer-name=snippets ultisnips<CR>
