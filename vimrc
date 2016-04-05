@@ -1,26 +1,14 @@
 " vim:set et sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
 
 " Auto install vim-plug {{{1
-if has('nvim')
-    if empty(glob('~/.config/nvim/autoload/plug.vim'))
-        silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
-    endif
-else
-    if empty(glob('~/.vim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
-    endif
-end
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
 
 " Start plugin installation {{{1
-if has('nvim')
-    call plug#begin('~/.config/nvim/plugged')
-else
-    call plug#begin('~/.vim/plugged')
-endif
+call plug#begin('~/.vim/plugged')
 
 " Buffer behaviour {{{1
 " Set options {{{2
@@ -35,13 +23,17 @@ set sidescrolloff=3
 set scrolloff=3
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
+" Format options
+set formatoptions=tcqj
+" Display options
+set display=lastline
 " Ex commands
 set wildmenu
 set wildmode=list:longest,full
 set completeopt=menuone,longest,preview
 set complete-=i " disable scanning include files
 set complete-=t " disable scanning tags
-set history=50
+set history=10000
 " Undo history
 set undolevels=1000
 set undodir=~/.vim/undodir
@@ -63,7 +55,7 @@ set foldlevel=2
 " Enable mouse
 set mouse=a
 " Set list characters - Can be toggled with 'col'
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
+set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:+
 set listchars+=trail:-
 set showbreak=↪
 " Easier Regex
@@ -126,6 +118,7 @@ nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
 nnoremap coh :nohl<CR>
+nnoremap cot :set ft=
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
@@ -138,9 +131,6 @@ cnoremap <C-p> <Up>
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
 command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 " Cursor behavior
-if has('nvim')
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-end
 if empty($TMUX)
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
@@ -161,17 +151,24 @@ nnoremap <silent> [z zk
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
+nnoremap <Leader>x :help<Space>
+" Muscle memory
+nnoremap <Leader>d :
+vnoremap <Leader>d :
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
 " Colorscheme
 Plug 'flazz/vim-colorschemes'
+nnoremap <Leader>b :colorscheme<Space>
 " Undotree
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
-" Start screen - fancy
+" Registers
+Plug 'junegunn/peekaboo'
+" Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
 let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
@@ -355,34 +352,6 @@ nnoremap go :Googlef <cWORD><CR>
 nnoremap gO :Google <cWORD><CR>
 vnoremap gO :Google<CR>
 vnoremap go :Googlef<CR>
-" FZF {{{3
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-let g:fzf_command_prefix='Fzf'
-command! -nargs=1 FzfSpotlight call fzf#run({
-            \ 'source': 'mdfind -onlyin ~ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Spotlight> "'
-            \ })
-nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> T :FzfTags<CR>
-nnoremap <silent> gL :FzfCommits<CR>
-nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <C-p> :FzfAg!<CR>
-nnoremap <silent> <Leader>p :FzfGitFiles<CR>
-nnoremap <silent> <Leader>f :FzfFiles<CR>
-nnoremap <silent> <Leader>d :FzfBuffers<CR>
-nnoremap <silent> <Leader>b :FzfColors<CR>
-nnoremap <silent> <Leader>x :FzfHelptags<CR>
-nnoremap <silent> <Leader>/ :FzfHistory/<CR>
-nnoremap <silent> <Leader>; :FzfHistory:<CR>
-nnoremap <silent> <Leader>, :FzfMaps<CR>
-nnoremap <silent> <Leader>` :FzfMarks<CR>
-nnoremap <Leader><Leader> :FzfCommands<CR>
-vnoremap <Leader><Leader> :FzfCommands<CR>
-inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
-nnoremap <Leader>r :FzfSpotlight<Space>
-nnoremap <Leader>R :FzfLocate!<Space>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -455,7 +424,7 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Unite {{{1
 " Defaults {{{2
-Plug 'Shougo/unite.vim'
+Plug 'Shougo/unite.vim' | Plug 'Shougo/vimproc.vim'
 autocmd FileType unite call s:unite_my_settings()
 function! s:unite_my_settings()
     imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
@@ -465,22 +434,23 @@ endfunction
 let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 " Keep a menu for unite stuff but prefer FZF wherever possible
 nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-name=sources source<CR>
+nnoremap <silent> <Leader>f :Unite -start-insert -direction=botright -buffer-name=files file_rec<CR>
+nnoremap <silent> <Leader>p :Unite -start-insert -direction=botright -buffer-name=gitfiles file_rec/git<CR>
+nnoremap <silent> <Leader>a :Unite -start-insert -direction=botright -buffer-name=buffers buffer<CR>
+nnoremap <silent> <Leader>, :Unite -start-insert -direction=botright -buffer-name=maps map<CR>
+inoremap <silent> <C-j> <Esc>:Unite -start-insert -direction=botright -buffer-name=snippets ultisnips<CR>
 
 " Helper plugins {{{2
-" Yank history
-Plug 'Shougo/neoyank.vim'
-nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yank history/yank<CR>
-" Directory browser like netrw
-Plug 'Shougo/vimfiler.vim'
-let g:vimfiler_as_default_explorer = 1
-nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
+Plug 'tsukkee/unite-tag'
+nnoremap <silent> t :Unite -start-insert -direction=botright -buffer-name=outline tag:%<CR>
+nnoremap <silent> T :Unite -start-insert -direction=botright -buffer-name=outline tag<CR>
 
 " Interfaces/Menus - The best part of Unite {{{2
 " Interface for semantic jumping {{{3
-let g:unite_source_menu_menus.jumpnjava= {
+let g:unite_source_menu_menus.gotoanything= {
             \ 'description' : 'Jump or java stuff',
             \}
-let g:unite_source_menu_menus.jumpnjava.command_candidates = [
+let g:unite_source_menu_menus.gotoanything.command_candidates = [
             \['cpp jump to', 'call rtags#JumpTo()'],
             \['cpp jump to parent', 'call rtags#JumpToParent()'],
             \['cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
@@ -547,7 +517,7 @@ let g:unite_source_menu_menus.jumpnjava.command_candidates = [
             \['java Ant Run', 'exe "Ant " input("target: ")'],
             \['java Ant Doc', 'AntDoc'],
             \]
-nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=jumpnjava -start-insert menu:jumpnjava<CR>
+nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=gotoanything -start-insert menu:gotoanything<CR>
 
 " Interface for Git and Fugitive {{{3
 let g:unite_source_menu_menus.versioncontrol = {
@@ -1018,11 +988,12 @@ let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
-Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-nnoremap <Leader>e :Neomake!<CR>
-if has('nvim')
-    autocmd! BufWritePost * Neomake!
-endif
+Plug 'scrooloose/syntastic'
+nnoremap <Leader>e :SyntasticCheck<CR>
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
 
 " Searching {{{1
 " Set commands {{{2
@@ -1067,11 +1038,6 @@ xmap gs <plug>(GrepperOperator)
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
-" Neovim terminal - Go to normal mode
-if has('nvim')
-    tnoremap <C-g> <C-\><C-n>
-endif
-
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
@@ -1084,9 +1050,6 @@ if exists('$TMUX')
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
-if has('nvim')
-    nmap <silent> <BS> :TmuxNavigateLeft<CR>
-endif
 
 " Plugins {{{2
 " Common *nix commands
@@ -1094,15 +1057,14 @@ Plug 'tpope/vim-eunuch'
 " Dispatch stuff
 Plug 'tpope/vim-dispatch'
 nnoremap <silent> <Leader>c :Copen<CR>
-nnoremap <Leader>a :Dispatch!<Space>
-vnoremap <Leader>a :Dispatch!<Space>
-nnoremap <Leader>A :Dispatch<Space>
-vnoremap <Leader>A :Dispatch<Space>
 " Commandline utilities
-nnoremap <Leader>g :Spawn tig<CR>
-nnoremap <silent> gK :Dispatch! open -a Dash<CR>
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
+nnoremap <silent> <C-p> :Dispatch! ag --vimgrep \^.<CR>
+nnoremap <Leader>r :Dispatch! mdfind -onlyin ~<Space>
+nnoremap <Leader>R :Dispatch! locate<Space>
+nnoremap <silent> <Leader>g :Spawn tig<CR>
+nnoremap <silent> <Leader>n :Spawn ranger<CR>
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'

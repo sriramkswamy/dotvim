@@ -829,8 +829,8 @@ command! CppProjects call rtags#ProjectList()
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-nnoremap <Leader>e :Neomake!<CR>
-autocmd! BufWritePost * Neomake!
+nnoremap <Leader>e :Neomake<CR>
+autocmd! BufWritePost * Neomake
 
 " Searching {{{1
 " Set commands {{{2
