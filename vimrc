@@ -35,13 +35,17 @@ set sidescrolloff=3
 set scrolloff=3
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
+" Format options
+set formatoptions=tcqj
+" Display options
+set display=lastline
 " Ex commands
 set wildmenu
 set wildmode=list:longest,full
 set completeopt=menuone,longest,preview
 set complete-=i " disable scanning include files
 set complete-=t " disable scanning tags
-set history=50
+set history=10000
 " Undo history
 set undolevels=1000
 set undodir=~/.vim/undodir
@@ -63,7 +67,7 @@ set foldlevel=2
 " Enable mouse
 set mouse=a
 " Set list characters - Can be toggled with 'col'
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
+set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:+
 set listchars+=trail:-
 set showbreak=↪
 " Easier Regex
