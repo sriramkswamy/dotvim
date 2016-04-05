@@ -1,47 +1,37 @@
 " vim:set et sts=0 sw=4 ts=4 tw=80 foldmethod=marker:
 
 " Auto install vim-plug {{{1
-if has('nvim')
-    if empty(glob('~/.config/nvim/autoload/plug.vim'))
-        silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
-    endif
-else
-    if empty(glob('~/.vim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
-    endif
-end
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
 
 " Start plugin installation {{{1
-if has('nvim')
-    call plug#begin('~/.config/nvim/plugged')
-else
-    call plug#begin('~/.vim/plugged')
-endif
+call plug#begin('~/.config/nvim/plugged')
 
 " Buffer behaviour {{{1
 " Set options {{{2
 set title
 " Automatically read and write buffers
-set autoread
 set autowrite
 " Hide unloaded buffers
 set hidden
 " Automatically scroll when I reach within 3 lines towards end of screen
 set sidescrolloff=3
 set scrolloff=3
+" Set numbers and relative numbers - can be toggled with 'con' and 'cor'
+augroup toggle_numbers
+    autocmd!
+    autocmd WinEnter,BufEnter * :setlocal relativenumber nonumber
+    autocmd WinLeave,BufLeave * :setlocal norelativenumber number
+augroup end
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
 " Ex commands
-set wildmenu
 set wildmode=list:longest,full
 set completeopt=menuone,longest,preview
-set complete-=i " disable scanning include files
 set complete-=t " disable scanning tags
-set history=50
 " Undo history
 set undolevels=1000
 set undodir=~/.vim/undodir
@@ -60,8 +50,6 @@ set foldmethod=manual
 set foldnestmax=10
 set nofoldenable
 set foldlevel=2
-" Enable mouse
-set mouse=a
 " Set list characters - Can be toggled with 'col'
 set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
 set listchars+=trail:-
@@ -138,18 +126,7 @@ cnoremap <C-p> <Up>
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
 command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
 " Cursor behavior
-if has('nvim')
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-end
-if empty($TMUX)
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-else
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-endif
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 " Leader and maps {{{2
 " Set leader
@@ -171,7 +148,9 @@ Plug 'flazz/vim-colorschemes'
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
-" Start screen - fancy
+" Registers
+Plug 'junegunn/vim-peekaboo'
+" Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
 let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
@@ -203,8 +182,6 @@ nnoremap sy :SLoad<Space>
 " Set commands {{{2
 " Path for the builtin 'find' command
 set path=.,**
-" Tags for movement
-set tags=./tags;,tags;
 " '%' matching
 runtime macros/matchit.vim
 set showmatch
@@ -339,6 +316,10 @@ endfunction
 command! Root call s:root()
 nnoremap cu :Root<CR>
 
+" Notes and expenses
+command! Note vsplit ~/Dropbox/notes/notes.md
+command! Expense vsplit ~/Dropbox/notes/expenses.dat
+
 " Leader maps {{{2
 " Quickfix and Location list maps
 nnoremap <silent> <Leader>l :lopen<CR>
@@ -378,8 +359,8 @@ nnoremap <silent> <Leader>/ :FzfHistory/<CR>
 nnoremap <silent> <Leader>; :FzfHistory:<CR>
 nnoremap <silent> <Leader>, :FzfMaps<CR>
 nnoremap <silent> <Leader>` :FzfMarks<CR>
-nnoremap <Leader><Leader> :FzfCommands<CR>
-vnoremap <Leader><Leader> :FzfCommands<CR>
+nnoremap <Leader>j :FzfCommands<CR>
+vnoremap <Leader>j :FzfCommands<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
 nnoremap <Leader>r :FzfSpotlight<Space>
 nnoremap <Leader>R :FzfLocate!<Space>
@@ -389,11 +370,11 @@ nnoremap <Leader>R :FzfLocate!<Space>
 set statusline =%#identifier#
 set statusline+=[%f]    "tail of the filename
 set statusline+=%*
-"display a warning if fileformat isnt unix
+"display a warning if fileformat isn't unix
 set statusline+=%#warningmsg#
 set statusline+=%{&ff!='unix'?'['.&ff.']':''}
 set statusline+=%*
-"display a warning if file encoding isnt utf-8
+"display a warning if file encoding isn't utf-8
 set statusline+=%#warningmsg#
 set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
 set statusline+=%*
@@ -431,7 +412,6 @@ set statusline+=%=      "left/right separator
 set statusline+=%c,     "cursor column
 set statusline+=%l      "cursor line/total lines
 set statusline+=\ %P    "percent through file
-set laststatus=2
 
 "return '[\s]' if trailing white space is detected
 "return '' otherwise
@@ -452,181 +432,6 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
-
-" Unite {{{1
-" Defaults {{{2
-Plug 'Shougo/unite.vim'
-autocmd FileType unite call s:unite_my_settings()
-function! s:unite_my_settings()
-    imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
-    imap <silent><buffer><expr> <C-s>     unite#do_action('split')
-    imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
-endfunction
-let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
-" Keep a menu for unite stuff but prefer FZF wherever possible
-nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-name=sources source<CR>
-
-" Helper plugins {{{2
-" Yank history
-Plug 'Shougo/neoyank.vim'
-nnoremap <silent> <Leader>y :Unite -direction=botright -buffer-name=yank history/yank<CR>
-" Directory browser like netrw
-Plug 'Shougo/vimfiler.vim'
-let g:vimfiler_as_default_explorer = 1
-nnoremap <silent> <Leader>n :VimFilerExplorer -project<CR>
-
-" Interfaces/Menus - The best part of Unite {{{2
-" Interface for semantic jumping {{{3
-let g:unite_source_menu_menus.jumpnjava= {
-            \ 'description' : 'Jump or java stuff',
-            \}
-let g:unite_source_menu_menus.jumpnjava.command_candidates = [
-            \['cpp jump to', 'call rtags#JumpTo()'],
-            \['cpp jump to parent', 'call rtags#JumpToParent()'],
-            \['cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
-            \['cpp symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
-            \['cpp virtuals', 'call rtags#FindVirtuals()'],
-            \['cpp reindex', 'call rtags#ReindexFile()'],
-            \['cpp rename', 'call rtags#RenameSymbolUnderCursor()'],
-            \['cpp projects', 'call rtags#ProjectList()'],
-            \['py GoTo Command', 'call jedi#goto()'],
-            \['py GoTo Assignment', 'call jedi#goto_assignments()'],
-            \['py GoTo Definition', 'call jedi#goto_definitions()'],
-            \['py Rename', 'call jedi#rename()'],
-            \['py Rename Visual', 'call jedi#rename_visual()'],
-            \['java Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-            \['java Project List', 'ProjectList'],
-            \['java Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-            \['java Project Validate', 'Validate'],
-            \['java New Project', 'exe "NewProjectEntry " input("project: ")'],
-            \['java New Jar', 'exe "NewJarEntry " input("jar: ")'],
-            \['java New Var', 'exe "NewVarEntry " input("var: ")'],
-            \['java Create Variables', 'exe "VariableCreate " input("var: ")'],
-            \['java Delete Variables', 'exe "VariableDelete " input("var: ")'],
-            \['java List Variables', 'VariableList'],
-            \['java Maven Initialize', 'MvnRepo'],
-            \['java Maven Classpath',  'exe "Mvn " input("path: ")'],
-            \['java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-            \['java Search', 'exe "JavaSearch " input("string: ")'],
-            \['java Context Search', 'JavaSearchContext'],
-            \['java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-            \['java Project Status', 'Jps'],
-            \['java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-            \['java Toggle Breakpoint', 'JavaBreakpointToggle'],
-            \['java List Breakpoint', 'JavaBreakpointList'],
-            \['java Remove Breakpoint', 'JavaBreakpointRemove'],
-            \['java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-            \['java Debug Status', 'JavaDebugStatus'],
-            \['java Debug Suspend', 'JavaDebugThreadSuspendAll'],
-            \['java Debug Resume', 'JavaDebugThreadResumeAll'],
-            \['java Debug Stop', 'JavaDebugStop'],
-            \['java Doc Comment', 'JavaDocComment'],
-            \['java Doc Preview', 'JavaDocPreview'],
-            \['java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-            \['java Doc Execute', 'JavaDoc'],
-            \['java Code Format', 'JavaFormat'],
-            \['java Refactor Rename',  'exe "JavaRename " input("name: ")'],
-            \['java Refactor Move',  'exe "JavaMove " input("destination: ")'],
-            \['java Refactor Undo', 'RefactorUndo'],
-            \['java Refactor Undo Peek', 'RefactorUndoPeek'],
-            \['java Refactor Redo', 'RefactorRedo'],
-            \['java Refactor Redo Peek', 'RefactorRedoPeek'],
-            \['java Class Heirarchy', 'JavaHeirarchy'],
-            \['java Call Heirarchy', 'JavaCallHeirarchy'],
-            \['java Import', 'JavaImport'],
-            \['java Import Organized', 'JavaImportOrganized'],
-            \['java Getter', 'JavaGet'],
-            \['java Setter', 'JavaSet'],
-            \['java Getter and Setter', 'JavaGetSet'],
-            \['java Override/Implement', 'JavaImpl'],
-            \['java Delegate', 'JavaDelegate'],
-            \['java Unit Test', 'exe "JUnit " input("testname: ")'],
-            \['java Unit Find Test', 'JUnitFindTest'],
-            \['java Unit Test Results', 'JUnitResult'],
-            \['java Unit Test Stubs', 'JUnitImpl'],
-            \['java Ant Run', 'exe "Ant " input("target: ")'],
-            \['java Ant Doc', 'AntDoc'],
-            \]
-nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=jumpnjava -start-insert menu:jumpnjava<CR>
-
-" Interface for Git and Fugitive {{{3
-let g:unite_source_menu_menus.versioncontrol = {
-            \ 'description' : 'Git interface',
-            \}
-let g:unite_source_menu_menus.versioncontrol.command_candidates = [
-            \[' git status', 'Gstatus'],
-            \[' git diff', 'Gvdiff'],
-            \[' git stage/add', 'Gwrite'],
-            \[' git commit', 'Gcommit'],
-            \[' git checkout', 'Gread'],
-            \[' git rm', 'Gremove'],
-            \[' git cd', 'Gcd'],
-            \[' git branch', 'Dispatch! git branch -a'],
-            \[' git push', 'Dispatch! git push'],
-            \[' git pull', 'Dispatch! git pull'],
-            \[' git fetch', 'Gfetch'],
-            \[' git merge', 'Gmerge'],
-            \[' git browse', 'Gbrowse'],
-            \[' git head', 'Gedit HEAD^'],
-            \[' git parent', 'edit %:h'],
-            \[' git log commit buffers', 'Glog --'],
-            \[' git log current file', 'Glog -- %'],
-            \[' git log last n commits', 'exe "Glog -" input("num: ")'],
-            \[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
-            \[' git log until date', 'exe "Glog --until=" input("day: ")'],
-            \[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
-            \[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
-            \[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
-            \[' git mv', 'exe "Gmove " input("destination: ")'],
-            \[' git grep',  'exe "Ggrep " input("string: ")'],
-            \[' git prompt', 'exe "Git! " input("command: ")'],
-            \[' toggle changes', 'SignifyToggleHighlight'],
-            \] " Append ' --' after log to get commit info commit buffers
-nnoremap <silent> <Leader>v :Unite -silent -direction=botright -buffer-name=versioncontrol -start-insert menu:versioncontrol<CR>
-
-
-" Interface for common make commands - keeps changeing {{{3
-let g:unite_source_menu_menus.make = {
-            \ 'description' : 'make things',
-            \}
-let g:unite_source_menu_menus.make.command_candidates = [
-            \[' g++ make', 'Dispatch! make'],
-            \[' g++ build', 'Dispatch! make -C build'],
-            \[' g++ docs', 'Dispatch! make -C build doc'],
-            \[' g++ latex', 'Dispatch! make -C docs/latex'],
-            \[' g++ single', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' g++ openmp', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' g++ mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' g++ hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' g++ armadillo', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
-            \[' gcc make', 'Dispatch! make'],
-            \[' gcc build', 'Dispatch! make -C build'],
-            \[' gcc latex', 'Dispatch! make -C docs/latex'],
-            \[' gcc docs', 'Dispatch! make -C build doc'],
-            \[' gcc single', 'Dispatch! cd %:p:h | gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gcc openmp', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gcc mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gcc hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gcc armadillo', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
-            \]
-nnoremap <silent> <Leader>m :Unite -silent -direction=botright -buffer-name=make -start-insert menu:make<CR>
-
-" Interface for common dispatch commands {{{3
-let g:unite_source_menu_menus.org = {
-            \ 'description' : 'Org mode equivalent',
-            \}
-let g:unite_source_menu_menus.org.command_candidates = [
-            \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
-            \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
-            \[' tex word count', 'Dispatch! texcount %'],
-            \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
-            \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
-            \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
-            \[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
-            \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
-            \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
-            \]
-nnoremap <silent> <Leader>o :Unite -silent -direction=botright -buffer-name=org -start-insert menu:org<CR>
 
 " FileTypes {{{1
 " Set commands {{{2
@@ -672,17 +477,11 @@ let g:vim_markdown_math = 1
 
 " Text editing {{{1
 " Set commands {{{2
-set encoding=utf-8
 " Don't wrap the lines - Can be toggled with unimpaired's 'cow'
 set nowrap
 set linebreak
 set nolist
-" Use backspace for multiple purposes while moving
-set backspace=indent,eol,start
 " Indentation
-set autoindent
-set smartindent
-set smarttab
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -999,6 +798,11 @@ let g:jedi#documentation_command = "K"
 let g:jedi#usages_command = ""
 let g:jedi#completions_command = ""
 let g:jedi#rename_command = ""
+command! PyGoTo call jedi#goto()
+command! PyGoToAssignment call jedi#goto_assignments()
+command! PyGoToDefinition call jedi#goto_definitions()
+command! PyRename call jedi#rename()
+command! PyRenameVisual call jedi#rename_visual()
 
 " Language helpers {{{1
 " Auto-complete and nicities for many languages
@@ -1011,6 +815,14 @@ autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
+command! CppJumpTo call rtags#JumpTo()
+command! CppJumpToParent call rtags#JumpToParent()
+command! CppReference call rtags#FindRefsOfWordUnderCursor()
+command! CppSymbol call rtags#FindSymbolsOfWordUnderCursor()
+command! CppVirtuals call rtags#FindVirtuals()
+command! CppReindex call rtags#ReindexFile()
+command! CppRename call rtags#RenameSymbolUnderCursor()
+command! CppProjects call rtags#ProjectList()
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -1020,9 +832,7 @@ let g:EclimShowCurrentErrorBalloon = 0
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
 nnoremap <Leader>e :Neomake!<CR>
-if has('nvim')
-    autocmd! BufWritePost * Neomake!
-endif
+autocmd! BufWritePost * Neomake!
 
 " Searching {{{1
 " Set commands {{{2
@@ -1068,9 +878,7 @@ let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
-if has('nvim')
-    tnoremap <C-g> <C-\><C-n>
-endif
+tnoremap <C-g> <C-\><C-n>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
@@ -1084,14 +892,12 @@ if exists('$TMUX')
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
-if has('nvim')
-    nmap <silent> <BS> :TmuxNavigateLeft<CR>
-endif
+nmap <silent> <BS> :TmuxNavigateLeft<CR>
 
 " Plugins {{{2
 " Common *nix commands
 Plug 'tpope/vim-eunuch'
-" Dispatch stuff
+" Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
 nnoremap <silent> <Leader>c :Copen<CR>
 nnoremap <Leader>a :Dispatch!<Space>
@@ -1099,11 +905,40 @@ vnoremap <Leader>a :Dispatch!<Space>
 nnoremap <Leader>A :Dispatch<Space>
 vnoremap <Leader>A :Dispatch<Space>
 " Commandline utilities
-nnoremap <Leader>g :Spawn tig<CR>
-nnoremap <silent> gK :Dispatch! open -a Dash<CR>
+nnoremap <silent> <Leader>g :Spawn tig<CR>
+nnoremap <silent> <Leader>n :Spawn ranger<CR>
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
-" Launch appropriate REPL
+" Dispatch based commands
+command! GitPush Dispatch! git push
+command! GitPull Dispatch! git pull
+command! GppMake Dispatch! make
+command! GppBuild Dispatch! make -C build
+command! GppDocs Dispatch! make -C build doc
+command! GppLatex Dispatch! make -C docs/latex
+command! GppSingle Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GppOpenmp Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GppMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GppHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GppArmadillo Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
+command! GccMake Dispatch! make
+command! GccBuild Dispatch! make -C build
+command! GccLatex Dispatch! make -C docs/latex
+command! GccDocs Dispatch! make -C build doc
+command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GccHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GccArmadillo Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
+command! TexCount Dispatch! texcount %
+command! PandocPdf Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf
+command! PandocOrg Dispatch! pandoc % -o %:r.org
+command! PandocRst Dispatch! pandoc % -o %:r.rst
+command! PandocLatex Dispatch! pandoc % -o %:r.tex
+command! PandocEpub3 Dispatch! pandoc % -o %:r.epub
+command! PandocHtml5 Dispatch! pandoc % -o %:r.html
+
+" Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'
 let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
@@ -1119,10 +954,6 @@ let g:tmuxify_run = {
 
 " Stop plugin installation {{{1
 call plug#end()
-
-" Wrap up Unite settings {{{1
-" Enable fuzzy matching and sorting in all Unite functions
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
 
 " Sections text object - (operator)im/am for markdown and (operator)ix/ax for latex {{{1
 call textobj#user#plugin('markdown', { '-': {
