@@ -138,6 +138,9 @@ nnoremap <silent> [z zk
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
+" Muscle memory
+nnoremap <Leader>d :
+vnoremap <Leader>d :
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -352,7 +355,7 @@ nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
 nnoremap <silent> <Leader>f :FzfFiles<CR>
-nnoremap <silent> <Leader>d :FzfBuffers<CR>
+nnoremap <silent> <Leader>a :FzfBuffers<CR>
 nnoremap <silent> <Leader>b :FzfColors<CR>
 nnoremap <silent> <Leader>x :FzfHelptags<CR>
 nnoremap <silent> <Leader>/ :FzfHistory/<CR>
@@ -823,11 +826,6 @@ command! CppVirtuals call rtags#FindVirtuals()
 command! CppReindex call rtags#ReindexFile()
 command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
-" Eclim - Eclipse plus Vim {{{2
-let g:EclimShowQuickfixSigns = 0
-let g:EclimShowLoclistSigns = 0
-let g:EclimShowCurrentError = 1
-let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
@@ -900,10 +898,6 @@ Plug 'tpope/vim-eunuch'
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
 nnoremap <silent> <Leader>c :Copen<CR>
-nnoremap <Leader>a :Dispatch!<Space>
-vnoremap <Leader>a :Dispatch!<Space>
-nnoremap <Leader>A :Dispatch<Space>
-vnoremap <Leader>A :Dispatch<Space>
 " Commandline utilities
 nnoremap <silent> <Leader>g :Spawn tig<CR>
 nnoremap <silent> <Leader>n :Spawn ranger<CR>
