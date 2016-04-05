@@ -443,7 +443,7 @@ nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-nam
 nnoremap <silent> <Leader>d :Unite -start-insert -direction=botright -buffer-name=files file_rec<CR>
 nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -direction=botright -buffer-name=gitfiles file_rec<CR>
 nnoremap <silent> <Leader>a :Unite -start-insert -direction=botright -buffer-name=buffers buffer<CR>
-nnoremap <silent> <Leader>, :Unite -start-insert -direction=botright -buffer-name=maps map<CR>
+nnoremap <silent> <Leader>, :Unite -start-insert -direction=botright -buffer-name=maps mapping<CR>
 inoremap <silent> <C-j> <Esc>:Unite -start-insert -direction=botright -buffer-name=snippets ultisnips<CR>
 
 " Helper plugins {{{2
