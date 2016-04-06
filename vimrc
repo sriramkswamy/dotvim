@@ -122,8 +122,6 @@ nnoremap cot :set ft=
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
-" Free <Tab>
-nnoremap <C-p> <C-o>
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -244,8 +242,7 @@ nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Folding
-nnoremap <silent> - zc
-nnoremap <silent> <Tab> za
+nnoremap <silent> - za
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -923,6 +920,7 @@ nnoremap <silent> <Leader>O :cclose<CR>
 " Commandline utilities
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
+nnoremap <silent> <C-p> :Dispatch! ag \^.<CR>
 nnoremap <Leader>r :Dispatch! mdfind -onlyin ~<Space>
 nnoremap <Leader>R :Dispatch! locate<Space>
 nnoremap <silent> <Leader>e :Spawn tig<CR>
