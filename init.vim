@@ -20,12 +20,6 @@ set hidden
 " Automatically scroll when I reach within 3 lines towards end of screen
 set sidescrolloff=3
 set scrolloff=3
-" Set numbers and relative numbers - can be toggled with 'con' and 'cor'
-augroup toggle_numbers
-    autocmd!
-    autocmd WinEnter,BufEnter * :setlocal relativenumber nonumber
-    autocmd WinLeave,BufLeave * :setlocal norelativenumber number
-augroup end
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
 " Ex commands
@@ -46,12 +40,12 @@ set noswapfile
 set nowb
 let g:session_autosave = 'no'
 " Fold options
-set foldmethod=manual
-set foldnestmax=10
+set foldmethod=indent
+set foldnestmax=4
 set nofoldenable
 set foldlevel=2
 " Set list characters - Can be toggled with 'col'
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:␣
+set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:+
 set listchars+=trail:-
 set showbreak=↪
 " Easier Regex
@@ -117,6 +111,8 @@ nnoremap coh :nohl<CR>
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
+" Free <Tab>
+nnoremap <C-p> <C-i>
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -153,6 +149,9 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers
 Plug 'junegunn/vim-peekaboo'
+" Distraction free - fancy
+Plug 'junegunn/goyo.vim'
+nnoremap cod :Goyo<CR>
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
@@ -222,7 +221,8 @@ nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Folding
-nnoremap <silent> - za
+nnoremap <silent> - zc
+nnoremap <silent> <Tab> za
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -326,7 +326,9 @@ command! Expense vsplit ~/Dropbox/notes/expenses.dat
 " Leader maps {{{2
 " Quickfix and Location list maps
 nnoremap <silent> <Leader>l :lopen<CR>
+nnoremap <silent> <Leader>L :lclose<CR>
 nnoremap <silent> <Leader>h :copen<CR>
+nnoremap <silent> <Leader>H :cclose<CR>
 
 " Plugins {{{2
 " Google stuff
@@ -350,7 +352,6 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> gL :FzfCommits<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
 nnoremap <silent> <Leader>d :FzfFiles<CR>
 nnoremap <silent> <Leader>a :FzfBuffers<CR>
@@ -789,21 +790,6 @@ let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
 let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
-" Python autocompletion
-Plug 'davidhalter/jedi-vim' , {'for': 'python'}
-autocmd filetype python set omnifunc=jedi#completions
-let g:jedi#goto_command = ""
-let g:jedi#goto_assignments_command = ""
-let g:jedi#goto_definitions_command = ""
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = ""
-let g:jedi#completions_command = ""
-let g:jedi#rename_command = ""
-command! PyGoTo call jedi#goto()
-command! PyGoToAssignment call jedi#goto_assignments()
-command! PyGoToDefinition call jedi#goto_definitions()
-command! PyRename call jedi#rename()
-command! PyRenameVisual call jedi#rename_visual()
 
 " Language helpers {{{1
 " Auto-complete and nicities for many languages
@@ -824,6 +810,35 @@ command! CppVirtuals call rtags#FindVirtuals()
 command! CppReindex call rtags#ReindexFile()
 command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
+" Python autocompletion and some jumping
+Plug 'davidhalter/jedi-vim' , {'for': 'python'}
+autocmd filetype python set omnifunc=jedi#completions
+let g:jedi#goto_command = ""
+let g:jedi#goto_assignments_command = ""
+let g:jedi#goto_definitions_command = ""
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = ""
+let g:jedi#completions_command = ""
+let g:jedi#rename_command = ""
+command! PyGoTo call jedi#goto()
+command! PyGoToAssignment call jedi#goto_assignments()
+command! PyGoToDefinition call jedi#goto_definitions()
+command! PyRename call jedi#rename()
+command! PyRenameVisual call jedi#rename_visual()
+" Much better Python text objects and goodies
+Plug 'tweekmonster/braceless.vim'
+command! BracelessOn BracelessEnable +indent +fold +highlight-cc2
+command! BracelessOff BracelessEnable -indent -fold -highlight-cc2
+autocmd FileType python BracelessOn
+let g:braceless_generate_scripts = 1
+let g:braceless_enable_easymotion = 0
+let g:braceless_block_key = 'b'
+let g:braceless_easymotion_segment_key = ''
+" Eclim - Eclipse plus Vim {{{2
+let g:EclimShowQuickfixSigns = 0
+let g:EclimShowLoclistSigns = 0
+let g:EclimShowCurrentError = 1
+let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
