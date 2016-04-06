@@ -827,8 +827,8 @@ command! PyRename call jedi#rename()
 command! PyRenameVisual call jedi#rename_visual()
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
-command! BracelessOn BracelessEnable +indent +fold +highlight-cc2
-command! BracelessOff BracelessEnable -indent -fold -highlight-cc2
+command! BracelessOn BracelessEnable +indent +fold +highlight
+command! BracelessOff BracelessEnable -indent -fold -highlight
 autocmd FileType python BracelessOn
 let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
