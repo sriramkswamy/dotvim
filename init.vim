@@ -111,8 +111,6 @@ nnoremap coh :nohl<CR>
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
-" Free <Tab>
-nnoremap <C-p> <C-i>
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -221,8 +219,7 @@ nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Folding
-nnoremap <silent> - zc
-nnoremap <silent> <Tab> za
+nnoremap <silent> - za
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -352,6 +349,7 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> gL :FzfCommits<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
 nnoremap <silent> <Leader>d :FzfFiles<CR>
 nnoremap <silent> <Leader>a :FzfBuffers<CR>
