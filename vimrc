@@ -21,12 +21,6 @@ set hidden
 " Automatically scroll when I reach within 3 lines towards end of screen
 set sidescrolloff=3
 set scrolloff=3
-" Set numbers and relative numbers - can be toggled with 'con' and 'cor'
-augroup toggle_numbers
-    autocmd!
-    autocmd WinEnter,BufEnter * :setlocal relativenumber nonumber
-    autocmd WinLeave,BufLeave * :setlocal norelativenumber number
-augroup end
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
 " Format options
@@ -54,8 +48,8 @@ set noswapfile
 set nowb
 let g:session_autosave = 'no'
 " Fold options
-set foldmethod=manual
-set foldnestmax=10
+set foldmethod=indent
+set foldnestmax=4
 set nofoldenable
 set foldlevel=2
 " Enable mouse
@@ -128,6 +122,8 @@ nnoremap cot :set ft=
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
+" Free <Tab>
+nnoremap <C-p> <C-o>
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -174,6 +170,9 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers
 Plug 'junegunn/vim-peekaboo'
+" Distraction free - fancy
+Plug 'junegunn/goyo.vim'
+nnoremap cod :Goyo<CR>
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
@@ -245,7 +244,8 @@ nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Folding
-nnoremap <silent> - za
+nnoremap <silent> - zc
+nnoremap <silent> <Tab> za
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -345,8 +345,8 @@ nnoremap cu :Root<CR>
 " Leader maps {{{2
 " Quickfix and Location list maps
 nnoremap <silent> <Leader>l :lopen<CR>
-nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>L :lclose<CR>
+nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
 
 " Plugins {{{2
@@ -450,159 +450,6 @@ inoremap <silent> <C-j> <Esc>:Unite -start-insert -direction=botright -buffer-na
 Plug 'tsukkee/unite-tag'
 nnoremap <silent> t :Unite -start-insert -direction=botright -buffer-name=outline tag:%<CR>
 nnoremap <silent> T :Unite -start-insert -direction=botright -buffer-name=outline tag<CR>
-
-" Interfaces/Menus - The best part of Unite {{{2
-" Interface for semantic jumping {{{3
-let g:unite_source_menu_menus.gotoanything= {
-            \ 'description' : 'Jump or java stuff',
-            \}
-let g:unite_source_menu_menus.gotoanything.command_candidates = [
-            \['cpp jump to', 'call rtags#JumpTo()'],
-            \['cpp jump to parent', 'call rtags#JumpToParent()'],
-            \['cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
-            \['cpp symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
-            \['cpp virtuals', 'call rtags#FindVirtuals()'],
-            \['cpp reindex', 'call rtags#ReindexFile()'],
-            \['cpp rename', 'call rtags#RenameSymbolUnderCursor()'],
-            \['cpp projects', 'call rtags#ProjectList()'],
-            \['py GoTo Command', 'call jedi#goto()'],
-            \['py GoTo Assignment', 'call jedi#goto_assignments()'],
-            \['py GoTo Definition', 'call jedi#goto_definitions()'],
-            \['py Rename', 'call jedi#rename()'],
-            \['py Rename Visual', 'call jedi#rename_visual()'],
-            \['java Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-            \['java Project List', 'ProjectList'],
-            \['java Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-            \['java Project Validate', 'Validate'],
-            \['java New Project', 'exe "NewProjectEntry " input("project: ")'],
-            \['java New Jar', 'exe "NewJarEntry " input("jar: ")'],
-            \['java New Var', 'exe "NewVarEntry " input("var: ")'],
-            \['java Create Variables', 'exe "VariableCreate " input("var: ")'],
-            \['java Delete Variables', 'exe "VariableDelete " input("var: ")'],
-            \['java List Variables', 'VariableList'],
-            \['java Maven Initialize', 'MvnRepo'],
-            \['java Maven Classpath',  'exe "Mvn " input("path: ")'],
-            \['java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-            \['java Search', 'exe "JavaSearch " input("string: ")'],
-            \['java Context Search', 'JavaSearchContext'],
-            \['java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-            \['java Project Status', 'Jps'],
-            \['java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-            \['java Toggle Breakpoint', 'JavaBreakpointToggle'],
-            \['java List Breakpoint', 'JavaBreakpointList'],
-            \['java Remove Breakpoint', 'JavaBreakpointRemove'],
-            \['java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-            \['java Debug Status', 'JavaDebugStatus'],
-            \['java Debug Suspend', 'JavaDebugThreadSuspendAll'],
-            \['java Debug Resume', 'JavaDebugThreadResumeAll'],
-            \['java Debug Stop', 'JavaDebugStop'],
-            \['java Doc Comment', 'JavaDocComment'],
-            \['java Doc Preview', 'JavaDocPreview'],
-            \['java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-            \['java Doc Execute', 'JavaDoc'],
-            \['java Code Format', 'JavaFormat'],
-            \['java Refactor Rename',  'exe "JavaRename " input("name: ")'],
-            \['java Refactor Move',  'exe "JavaMove " input("destination: ")'],
-            \['java Refactor Undo', 'RefactorUndo'],
-            \['java Refactor Undo Peek', 'RefactorUndoPeek'],
-            \['java Refactor Redo', 'RefactorRedo'],
-            \['java Refactor Redo Peek', 'RefactorRedoPeek'],
-            \['java Class Heirarchy', 'JavaHeirarchy'],
-            \['java Call Heirarchy', 'JavaCallHeirarchy'],
-            \['java Import', 'JavaImport'],
-            \['java Import Organized', 'JavaImportOrganized'],
-            \['java Getter', 'JavaGet'],
-            \['java Setter', 'JavaSet'],
-            \['java Getter and Setter', 'JavaGetSet'],
-            \['java Override/Implement', 'JavaImpl'],
-            \['java Delegate', 'JavaDelegate'],
-            \['java Unit Test', 'exe "JUnit " input("testname: ")'],
-            \['java Unit Find Test', 'JUnitFindTest'],
-            \['java Unit Test Results', 'JUnitResult'],
-            \['java Unit Test Stubs', 'JUnitImpl'],
-            \['java Ant Run', 'exe "Ant " input("target: ")'],
-            \['java Ant Doc', 'AntDoc'],
-            \]
-nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=gotoanything -start-insert menu:gotoanything<CR>
-
-" Interface for Git and Fugitive {{{3
-let g:unite_source_menu_menus.versioncontrol = {
-            \ 'description' : 'Git interface',
-            \}
-let g:unite_source_menu_menus.versioncontrol.command_candidates = [
-            \[' git status', 'Gstatus'],
-            \[' git diff', 'Gvdiff'],
-            \[' git stage/add', 'Gwrite'],
-            \[' git commit', 'Gcommit'],
-            \[' git checkout', 'Gread'],
-            \[' git rm', 'Gremove'],
-            \[' git cd', 'Gcd'],
-            \[' git branch', 'Dispatch! git branch -a'],
-            \[' git push', 'Dispatch! git push'],
-            \[' git pull', 'Dispatch! git pull'],
-            \[' git fetch', 'Gfetch'],
-            \[' git merge', 'Gmerge'],
-            \[' git browse', 'Gbrowse'],
-            \[' git head', 'Gedit HEAD^'],
-            \[' git parent', 'edit %:h'],
-            \[' git log commit buffers', 'Glog --'],
-            \[' git log current file', 'Glog -- %'],
-            \[' git log last n commits', 'exe "Glog -" input("num: ")'],
-            \[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
-            \[' git log until date', 'exe "Glog --until=" input("day: ")'],
-            \[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
-            \[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
-            \[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
-            \[' git mv', 'exe "Gmove " input("destination: ")'],
-            \[' git grep',  'exe "Ggrep " input("string: ")'],
-            \[' git prompt', 'exe "Git! " input("command: ")'],
-            \[' toggle changes', 'SignifyToggleHighlight'],
-            \] " Append ' --' after log to get commit info commit buffers
-nnoremap <silent> <Leader>v :Unite -silent -direction=botright -buffer-name=versioncontrol -start-insert menu:versioncontrol<CR>
-
-
-" Interface for common make commands - keeps changeing {{{3
-let g:unite_source_menu_menus.make = {
-            \ 'description' : 'make things',
-            \}
-let g:unite_source_menu_menus.make.command_candidates = [
-            \[' g++ make', 'Dispatch! make'],
-            \[' g++ build', 'Dispatch! make -C build'],
-            \[' g++ docs', 'Dispatch! make -C build doc'],
-            \[' g++ latex', 'Dispatch! make -C docs/latex'],
-            \[' g++ single', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' g++ openmp', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' g++ mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' g++ hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' g++ armadillo', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
-            \[' gcc make', 'Dispatch! make'],
-            \[' gcc build', 'Dispatch! make -C build'],
-            \[' gcc latex', 'Dispatch! make -C docs/latex'],
-            \[' gcc docs', 'Dispatch! make -C build doc'],
-            \[' gcc single', 'Dispatch! cd %:p:h | gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gcc openmp', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gcc mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gcc hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gcc armadillo', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
-            \]
-nnoremap <silent> <Leader>m :Unite -silent -direction=botright -buffer-name=make -start-insert menu:make<CR>
-
-" Interface for common dispatch commands {{{3
-let g:unite_source_menu_menus.org = {
-            \ 'description' : 'Org mode equivalent',
-            \}
-let g:unite_source_menu_menus.org.command_candidates = [
-            \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
-            \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
-            \[' tex word count', 'Dispatch! texcount %'],
-            \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
-            \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
-            \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
-            \[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
-            \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
-            \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
-            \]
-nnoremap <silent> <Leader>o :Unite -silent -direction=botright -buffer-name=org -start-insert menu:org<CR>
 
 " FileTypes {{{1
 " Set commands {{{2
@@ -965,16 +812,6 @@ let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
 let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
-" Python autocompletion
-Plug 'davidhalter/jedi-vim' , {'for': 'python'}
-autocmd filetype python set omnifunc=jedi#completions
-let g:jedi#goto_command = ""
-let g:jedi#goto_assignments_command = ""
-let g:jedi#goto_definitions_command = ""
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = ""
-let g:jedi#completions_command = ""
-let g:jedi#rename_command = ""
 
 " Language helpers {{{1
 " Auto-complete and nicities for many languages
@@ -987,6 +824,25 @@ autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
+" Python autocompletion
+Plug 'davidhalter/jedi-vim' , {'for': 'python'}
+autocmd filetype python set omnifunc=jedi#completions
+let g:jedi#goto_command = ""
+let g:jedi#goto_assignments_command = ""
+let g:jedi#goto_definitions_command = ""
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = ""
+let g:jedi#completions_command = ""
+let g:jedi#rename_command = ""
+" Much better Python text objects and goodies
+Plug 'tweekmonster/braceless.vim'
+command! BracelessOn BracelessEnable +indent +fold +highlight-cc2
+command! BracelessOff BracelessEnable -indent -fold -highlight-cc2
+autocmd FileType python BracelessOn
+let g:braceless_generate_scripts = 1
+let g:braceless_enable_easymotion = 0
+let g:braceless_block_key = 'b'
+let g:braceless_easymotion_segment_key = ''
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -1067,7 +923,6 @@ nnoremap <silent> <Leader>O :cclose<CR>
 " Commandline utilities
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
-nnoremap <silent> <C-p> :Dispatch! ag --vimgrep \^.<CR>
 nnoremap <Leader>r :Dispatch! mdfind -onlyin ~<Space>
 nnoremap <Leader>R :Dispatch! locate<Space>
 nnoremap <silent> <Leader>e :Spawn tig<CR>
@@ -1092,6 +947,135 @@ call plug#end()
 " Wrap up Unite settings {{{1
 " Enable fuzzy matching and sorting in all Unite functions
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
+
+" Interfaces/Menus - The best part of Unite {{{1
+let g:unite_source_menu_menus.doanything= {
+            \ 'description' : 'Goto Anything',
+            \}
+let g:unite_source_menu_menus.doanything.command_candidates = [
+            \[' git status', 'Gstatus'],
+            \[' git diff', 'Gvdiff'],
+            \[' git write', 'Gwrite'],
+            \[' git commit', 'Gcommit'],
+            \[' git checkout', 'Gread'],
+            \[' git rm', 'Gremove'],
+            \[' git cd', 'Gcd'],
+            \[' git branch', 'Dispatch! git branch -a'],
+            \[' git push', 'Dispatch! git push'],
+            \[' git pull', 'Dispatch! git pull'],
+            \[' git fetch', 'Gfetch'],
+            \[' git merge', 'Gmerge'],
+            \[' git browse', 'Gbrowse'],
+            \[' git head', 'Gedit HEAD^'],
+            \[' git parent', 'edit %:h'],
+            \[' git log commit buffers', 'Glog --'],
+            \[' git log current file', 'Glog -- %'],
+            \[' git log last n commits', 'exe "Glog -" input("num: ")'],
+            \[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
+            \[' git log until date', 'exe "Glog --until=" input("day: ")'],
+            \[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
+            \[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
+            \[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
+            \[' git mv', 'exe "Gmove " input("destination: ")'],
+            \[' git grep',  'exe "Ggrep " input("string: ")'],
+            \[' git prompt', 'exe "Git! " input("command: ")'],
+            \[' toggle changes', 'SignifyToggleHighlight'],
+            \[' gpp make', 'Dispatch! make'],
+            \[' gpp build', 'Dispatch! make -C build'],
+            \[' gpp docs', 'Dispatch! make -C build doc'],
+            \[' gpp latex', 'Dispatch! make -C docs/latex'],
+            \[' gpp single', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gpp openmp', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' gpp mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gpp hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' gpp armadillo', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
+            \[' gcc make', 'Dispatch! make'],
+            \[' gcc build', 'Dispatch! make -C build'],
+            \[' gcc latex', 'Dispatch! make -C docs/latex'],
+            \[' gcc docs', 'Dispatch! make -C build doc'],
+            \[' gcc single', 'Dispatch! cd %:p:h | gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gcc openmp', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' gcc mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gcc hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
+            \[' gcc armadillo', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
+            \[' cpp jump to', 'call rtags#JumpTo()'],
+            \[' cpp jump to parent', 'call rtags#JumpToParent()'],
+            \[' cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
+            \[' cpp symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
+            \[' cpp virtuals', 'call rtags#FindVirtuals()'],
+            \[' cpp reindex', 'call rtags#ReindexFile()'],
+            \[' cpp rename', 'call rtags#RenameSymbolUnderCursor()'],
+            \[' cpp projects', 'call rtags#ProjectList()'],
+            \[' py GoTo Command', 'call jedi#goto()'],
+            \[' py GoTo Assignment', 'call jedi#goto_assignments()'],
+            \[' py GoTo Definition', 'call jedi#goto_definitions()'],
+            \[' py Rename', 'call jedi#rename()'],
+            \[' py Rename Visual', 'call jedi#rename_visual()'],
+            \[' java Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
+            \[' java Project List', 'ProjectList'],
+            \[' java Project New Source', 'exe "NewSrcEntry " input("source: ")'],
+            \[' java Project Validate', 'Validate'],
+            \[' java New Project', 'exe "NewProjectEntry " input("project: ")'],
+            \[' java New Jar', 'exe "NewJarEntry " input("jar: ")'],
+            \[' java New Var', 'exe "NewVarEntry " input("var: ")'],
+            \[' java Create Variables', 'exe "VariableCreate " input("var: ")'],
+            \[' java Delete Variables', 'exe "VariableDelete " input("var: ")'],
+            \[' java List Variables', 'VariableList'],
+            \[' java Maven Initialize', 'MvnRepo'],
+            \[' java Maven Classpath',  'exe "Mvn " input("path: ")'],
+            \[' java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
+            \[' java Search', 'exe "JavaSearch " input("string: ")'],
+            \[' java Context Search', 'JavaSearchContext'],
+            \[' java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
+            \[' java Project Status', 'Jps'],
+            \[' java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
+            \[' java Toggle Breakpoint', 'JavaBreakpointToggle'],
+            \[' java List Breakpoint', 'JavaBreakpointList'],
+            \[' java Remove Breakpoint', 'JavaBreakpointRemove'],
+            \[' java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
+            \[' java Debug Status', 'JavaDebugStatus'],
+            \[' java Debug Suspend', 'JavaDebugThreadSuspendAll'],
+            \[' java Debug Resume', 'JavaDebugThreadResumeAll'],
+            \[' java Debug Stop', 'JavaDebugStop'],
+            \[' java Doc Comment', 'JavaDocComment'],
+            \[' java Doc Preview', 'JavaDocPreview'],
+            \[' java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
+            \[' java Doc Execute', 'JavaDoc'],
+            \[' java Code Format', 'JavaFormat'],
+            \[' java Refactor Rename',  'exe "JavaRename " input("name: ")'],
+            \[' java Refactor Move',  'exe "JavaMove " input("destination: ")'],
+            \[' java Refactor Undo', 'RefactorUndo'],
+            \[' java Refactor Undo Peek', 'RefactorUndoPeek'],
+            \[' java Refactor Redo', 'RefactorRedo'],
+            \[' java Refactor Redo Peek', 'RefactorRedoPeek'],
+            \[' java Class Heirarchy', 'JavaHeirarchy'],
+            \[' java Call Heirarchy', 'JavaCallHeirarchy'],
+            \[' java Import', 'JavaImport'],
+            \[' java Import Organized', 'JavaImportOrganized'],
+            \[' java Getter', 'JavaGet'],
+            \[' java Setter', 'JavaSet'],
+            \[' java Getter and Setter', 'JavaGetSet'],
+            \[' java Override/Implement', 'JavaImpl'],
+            \[' java Delegate', 'JavaDelegate'],
+            \[' java Unit Test', 'exe "JUnit " input("testname: ")'],
+            \[' java Unit Find Test', 'JUnitFindTest'],
+            \[' java Unit Test Results', 'JUnitResult'],
+            \[' java Unit Test Stubs', 'JUnitImpl'],
+            \[' java Ant Run', 'exe "Ant " input("target: ")'],
+            \[' java Ant Doc', 'AntDoc'],
+            \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
+            \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
+            \[' tex word count', 'Dispatch! texcount %'],
+            \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
+            \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
+            \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
+            \[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
+            \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
+            \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
+            \[' braceless on', 'BracelessEnable +indent +fold +highlight-cc2'],
+            \[' braceless off', 'BracelessEnable -indent -fold -highlight-cc2'],
+            \]
+nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=doanything -start-insert menu:doanything<CR>
 
 " Sections text object - (operator)im/am for markdown and (operator)ix/ax for latex {{{1
 call textobj#user#plugin('markdown', { '-': {
