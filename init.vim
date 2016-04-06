@@ -889,6 +889,7 @@ let g:C_UseTool_doxygen = 'yes'
 nnoremap <silent> <Leader>u :vsp <bar> term<CR>
 tnoremap <C-g> <C-\><C-n>
 nnoremap <silent> <Leader>n :terminal ranger<CR>
+nnoremap <silent> <Leader>e :terminal tig<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
@@ -913,7 +914,6 @@ nnoremap <Leader>m :Dispatch!<Space>
 nnoremap <silent> <Leader>o :Copen<CR>
 nnoremap <silent> <Leader>O :cclose<CR>
 " Commandline utilities
-nnoremap <silent> <Leader>e :Spawn tig<CR>
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
 " Dispatch based commands
