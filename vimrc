@@ -115,7 +115,7 @@ nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
 nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
-nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
+nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
 nnoremap coh :nohl<CR>
 nnoremap cot :set ft=
@@ -171,6 +171,9 @@ Plug 'junegunn/vim-peekaboo'
 " Distraction free - fancy
 Plug 'junegunn/goyo.vim'
 nnoremap cod :Goyo<CR>
+Plug 'junegunn/limelight.vim'
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
@@ -803,25 +806,27 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 autocmd CompleteDone * pclose
 
 " Language plugins {{{2
-" C/C++ autocompletion
+
+" Language helpers {{{1
+" Syntax and nicities for many languages {{{2
+Plug 'sheerun/vim-polyglot'
+" LaTeX already included in polyglot
+let g:LatexBox_Folding = 1
+" C/C++ {{{2
+" Autocompletion
 Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
 let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
 let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
-
-" Language helpers {{{1
-" Auto-complete and nicities for many languages
-Plug 'sheerun/vim-polyglot'
-" LaTeX already included in polyglot
-let g:LatexBox_Folding = 1
-" C/C++/ObjC indexer (for cmake projects) and autocomplete
+" Indexer (for cmake projects)
 Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
 autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
-" Python autocompletion
+" Python {{{2
+" Autocompletion and jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python set omnifunc=jedi#completions
 let g:jedi#goto_command = ""
@@ -840,6 +845,9 @@ let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
 let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
+" JavaSctipt {{{2
+" Tern based autocompletion and navigation
+Plug 'ternjs/tern_for_vim'
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -1072,6 +1080,10 @@ let g:unite_source_menu_menus.doanything.command_candidates = [
             \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
             \[' braceless on', 'BracelessEnable +indent +fold +highlight-cc2'],
             \[' braceless off', 'BracelessEnable -indent -fold -highlight-cc2'],
+            \[' plug install', 'PlugInstall'],
+            \[' plug clean', 'PlugClean'],
+            \[' plug update', 'PlugUpdate'],
+            \[' plug upgrade', 'PlugUpgrade'],
             \]
 nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=doanything -start-insert menu:doanything<CR>
 
