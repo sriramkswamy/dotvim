@@ -105,7 +105,7 @@ nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
 nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
-nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'manual' : 'expr'<CR><CR>
+nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
 nnoremap coh :nohl<CR>
 " Clipboard
@@ -150,6 +150,9 @@ Plug 'junegunn/vim-peekaboo'
 " Distraction free - fancy
 Plug 'junegunn/goyo.vim'
 nnoremap cod :Goyo<CR>
+Plug 'junegunn/limelight.vim'
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
@@ -347,7 +350,6 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ })
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
-nnoremap <silent> gL :FzfCommits<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
@@ -781,20 +783,19 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
-" Language plugins {{{2
-" C/C++ autocompletion
+" Language helpers {{{1
+" Syntax and nicities for many languages {{{2
+Plug 'sheerun/vim-polyglot'
+" LaTeX already included in polyglot
+let g:LatexBox_Folding = 1
+" C/C++ {{{2
+" Autocompletion
 Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
 let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
 let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
-
-" Language helpers {{{1
-" Auto-complete and nicities for many languages
-Plug 'sheerun/vim-polyglot'
-" LaTeX already included in polyglot
-let g:LatexBox_Folding = 1
-" C/C++/ObjC indexer (for cmake projects) and autocomplete
+" Indexer (for cmake projects)
 Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
 autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
@@ -808,7 +809,8 @@ command! CppVirtuals call rtags#FindVirtuals()
 command! CppReindex call rtags#ReindexFile()
 command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
-" Python autocompletion and some jumping
+" Python {{{2
+" Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python set omnifunc=jedi#completions
 let g:jedi#goto_command = ""
@@ -832,6 +834,9 @@ let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
 let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
+" JavaSctipt {{{2
+" Tern based autocompletion and navigation
+Plug 'ternjs/tern_for_vim'
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
