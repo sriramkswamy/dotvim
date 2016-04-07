@@ -439,7 +439,6 @@ function! s:unite_my_settings()
 endfunction
 let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
 " Keep a menu for unite stuff but prefer FZF wherever possible
-nnoremap <silent> <Leader>u :Unite -start-insert -direction=botright -buffer-name=sources source<CR>
 nnoremap <silent> <Leader>d :Unite -start-insert -direction=botright -buffer-name=files file_rec<CR>
 nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -direction=botright -buffer-name=gitfiles file_rec<CR>
 nnoremap <silent> <Leader>a :Unite -start-insert -direction=botright -buffer-name=buffers buffer<CR>
@@ -933,6 +932,11 @@ nnoremap <Leader>r :Dispatch! mdfind -onlyin ~<Space>
 nnoremap <Leader>R :Dispatch! locate<Space>
 nnoremap <silent> <Leader>e :Spawn tig<CR>
 nnoremap <silent> <Leader>n :Spawn ranger<CR>
+if has('$TMUX')
+    nnoremap <silent> <Leader>u :call system("tmux split-window -h")<CR>
+else
+    nnoremap <silent> <Leader>u :Spawn<CR>
+endif
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'
