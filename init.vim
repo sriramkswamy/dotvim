@@ -91,8 +91,6 @@ inoremap <silent> <C-d> <C-x><C-k>
 inoremap <silent> <C-_> <C-x><C-f>
 " Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
 inoremap <silent> <C-l> <C-x><C-l>
-" In-file completion - <C-p> takes care of other files
-inoremap <silent> <C-n> <C-x><C-p>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
 nnoremap coo <C-w><C-w>:<C-u>setlocal number!<CR>:set number?<CR><C-w><C-w>
@@ -145,23 +143,18 @@ Plug 'flazz/vim-colorschemes'
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
-" Registers
+" Registers - fancy
 Plug 'junegunn/vim-peekaboo'
-" Distraction free - fancy
-Plug 'junegunn/goyo.vim'
-nnoremap cod :Goyo<CR>
-Plug 'junegunn/limelight.vim'
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
 let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
 let g:startify_session_persistence = 1
 let g:startify_change_to_vcs_root = 1
-let g:startify_custom_header = ['', '   Vim start screen']
+let g:startify_custom_header = ['', '   Vim/Neovim']
 let g:startify_custom_footer =
-            \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
+            \ ['', "   Vim is charityware. Please read ':help uganda'.",
+            \  "   Neovim is a Vim fork. Please read ':help nvim' if in Neovim."]
 let g:startify_skiplist = [
             \ 'COMMIT_EDITMSG',
             \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
@@ -211,10 +204,8 @@ nnoremap [t :tprevious<CR>
 nnoremap ]t :tnext<CR>
 nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
-nnoremap [<Tab> :tabprevious<CR>
-nnoremap ]<Tab> :tabnext<CR>
-nnoremap [n ?^<\+HEAD$<CR>
-nnoremap ]n /^<\+HEAD$<CR>
+nnoremap [n ?^<\+\s*HEAD$<CR>
+nnoremap ]n /^<\+\s*HEAD$<CR>
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
@@ -331,14 +322,6 @@ nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
 
 " Plugins {{{2
-" Google stuff
-Plug 'szw/vim-g' , {'on': ['Google', 'Googlef']}
-nnoremap gOO :Google<Space>
-nnoremap goo :Googlef<Space>
-nnoremap go :Googlef <cWORD><CR>
-nnoremap gO :Google <cWORD><CR>
-vnoremap gO :Google<CR>
-vnoremap go :Googlef<CR>
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -585,10 +568,10 @@ vnoremap <Leader>s :OverCommandLine<CR>
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
-nnoremap gt :Tabularize /
-vnoremap gt :Tabularize /
-nnoremap gT :Tabularize<CR>
-vnoremap gT :Tabularize<CR>
+nnoremap gl :Tabularize /
+vnoremap gl :Tabularize /
+nnoremap gL :Tabularize<CR>
+vnoremap gL :Tabularize<CR>
 nnoremap g<Tab> :Tabularize /\s\+<CR>
 vnoremap g<Tab> :Tabularize /\s\+<CR>
 nnoremap g= :Tabularize /=<CR>
@@ -597,6 +580,8 @@ nnoremap g& :Tabularize /&<CR>
 vnoremap g& :Tabularize /&<CR>
 nnoremap g<Bar> :Tabularize /<bar><CR>
 vnoremap g<Bar> :Tabularize /<bar><CR>
+nnoremap g: :Tabularize /:<CR>
+vnoremap g: :Tabularize /:<CR>
 
 " Auto-align when typing |
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>baralign()<CR>a
@@ -699,9 +684,9 @@ function! SourceVimscript(type)
     let &selection = sel_save
     let @" = reg_save
 endfunction
-nnoremap <silent> g: :set opfunc=SourceVimscript<cr>g@
-vnoremap <silent> g: :<c-U>call SourceVimscript("visual")<cr>
-nnoremap <silent> g:: :call SourceVimscript("currentline")<cr>
+nnoremap <silent> go :set opfunc=SourceVimscript<cr>g@
+vnoremap <silent> go :<c-U>call SourceVimscript("visual")<cr>
+nnoremap <silent> goo :call SourceVimscript("currentline")<cr>
 
 " Plugins {{{3
 " Better surround - cs/ds/ys(to add surrounding)
@@ -764,12 +749,11 @@ xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 " Git Wrapper
-Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal'
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
+" Blame people!
 nnoremap <silent> gb :Gblame<CR>
-" Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
-nnoremap <silent> gl :Glog<CR>
-" Merginal
+" Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
 
 " Autocompletion {{{1
@@ -836,7 +820,10 @@ let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
 " JavaSctipt {{{2
 " Tern based autocompletion and navigation
-Plug 'ternjs/tern_for_vim'
+Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
+" HTML/CSS {{{2
+Plug 'rstacruz/sparkup'
+let g:sparkupNextMapping = '<C-Y>'
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -1038,5 +1025,5 @@ filetype plugin indent on
 syntax on
 
 " Set colorscheme {{{1
-set background=dark
-colorscheme zenburn
+set background=light
+colorscheme PaperColor
