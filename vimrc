@@ -73,7 +73,7 @@ set showmode
 set splitright
 set splitbelow
 " Gui fonts
-set guifont=Fira\ Mono:h14
+set guifont=Hack:h14
 set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
@@ -168,12 +168,6 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers
 Plug 'junegunn/vim-peekaboo'
-" Distraction free - fancy
-Plug 'junegunn/goyo.vim'
-nnoremap cod :Goyo<CR>
-Plug 'junegunn/limelight.vim'
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
@@ -234,8 +228,6 @@ nnoremap [t :tprevious<CR>
 nnoremap ]t :tnext<CR>
 nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
-nnoremap [<Tab> :tabprevious<CR>
-nnoremap ]<Tab> :tabnext<CR>
 nnoremap [n ?^<\+HEAD$<CR>
 nnoremap ]n /^<\+HEAD$<CR>
 " Auto-center
@@ -350,15 +342,6 @@ nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
 
 " Plugins {{{2
-" Google stuff
-Plug 'szw/vim-g' , {'on': ['Google', 'Googlef']}
-nnoremap gOO :Google<Space>
-nnoremap goo :Googlef<Space>
-nnoremap go :Googlef <cWORD><CR>
-nnoremap gO :Google <cWORD><CR>
-vnoremap gO :Google<CR>
-vnoremap go :Googlef<CR>
-
 " Statusline - from scrooloose {{{1
 " Basic setup
 set statusline =%#identifier#
@@ -606,10 +589,10 @@ vnoremap <Leader>s :OverCommandLine<CR>
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
-nnoremap gt :Tabularize /
-vnoremap gt :Tabularize /
-nnoremap gT :Tabularize<CR>
-vnoremap gT :Tabularize<CR>
+nnoremap gl :Tabularize /
+vnoremap gl :Tabularize /
+nnoremap gL :Tabularize<CR>
+vnoremap gL :Tabularize<CR>
 nnoremap g<Tab> :Tabularize /\s\+<CR>
 vnoremap g<Tab> :Tabularize /\s\+<CR>
 nnoremap g= :Tabularize /=<CR>
@@ -618,6 +601,8 @@ nnoremap g& :Tabularize /&<CR>
 vnoremap g& :Tabularize /&<CR>
 nnoremap g<Bar> :Tabularize /<bar><CR>
 vnoremap g<Bar> :Tabularize /<bar><CR>
+nnoremap g: :Tabularize /:<CR>
+vnoremap g: :Tabularize /:<CR>
 
 " Auto-align when typing |
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>baralign()<CR>a
@@ -720,9 +705,9 @@ function! SourceVimscript(type)
     let &selection = sel_save
     let @" = reg_save
 endfunction
-nnoremap <silent> g: :set opfunc=SourceVimscript<cr>g@
-vnoremap <silent> g: :<c-U>call SourceVimscript("visual")<cr>
-nnoremap <silent> g:: :call SourceVimscript("currentline")<cr>
+nnoremap <silent> go :set opfunc=SourceVimscript<cr>g@
+vnoremap <silent> go :<c-U>call SourceVimscript("visual")<cr>
+nnoremap <silent> goo :call SourceVimscript("currentline")<cr>
 
 " Plugins {{{3
 " Better surround - cs/ds/ys(to add surrounding)
@@ -785,11 +770,9 @@ xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 " Git Wrapper
-Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal'
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> gb :Gblame<CR>
-" Use this like a time machine - Traverse using unimpaired's ]q, [q, ]Q and [Q
-nnoremap <silent> gl :Glog<CR>
 " Merginal
 nnoremap <silent> gm :Merginal<CR>
 
@@ -847,6 +830,9 @@ let g:braceless_easymotion_segment_key = ''
 " JavaSctipt {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim'
+" HTML/CSS {{{2
+Plug 'rstacruz/sparkup'
+let g:sparkupNextMapping = '<C-Y>'
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -995,6 +981,7 @@ let g:unite_source_menu_menus.doanything.command_candidates = [
             \[' gpp docs', 'Dispatch! make -C build doc'],
             \[' gpp latex', 'Dispatch! make -C docs/latex'],
             \[' gpp single', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gpp simple', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -g -o %:p:r.out %'],
             \[' gpp openmp', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
             \[' gpp mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
             \[' gpp hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
@@ -1004,6 +991,7 @@ let g:unite_source_menu_menus.doanything.command_candidates = [
             \[' gcc latex', 'Dispatch! make -C docs/latex'],
             \[' gcc docs', 'Dispatch! make -C build doc'],
             \[' gcc single', 'Dispatch! cd %:p:h | gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
+            \[' gcc simple', 'Dispatch! cd %:p:h | gcc -std=c++11 -Wall -g -o %:p:r.out %'],
             \[' gcc openmp', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
             \[' gcc mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
             \[' gcc hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
@@ -1162,5 +1150,5 @@ filetype plugin indent on
 syntax on
 
 " Set colorscheme {{{1
-set background=dark
-colorscheme zenburn
+set background=light
+colorscheme PaperColor
