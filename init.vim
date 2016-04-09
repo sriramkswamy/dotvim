@@ -62,9 +62,6 @@ set showmode
 " Set splits to the right
 set splitright
 set splitbelow
-" Gui fonts
-set guifont=Fira\ Mono:h14
-set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
 " Splits
@@ -915,6 +912,7 @@ command! GppMake Dispatch! make
 command! GppBuild Dispatch! make -C build
 command! GppDocs Dispatch! make -C build doc
 command! GppLatex Dispatch! make -C docs/latex
+command! GppSimple Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %
 command! GppSingle Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
 command! GppOpenmp Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
 command! GppMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
@@ -924,6 +922,7 @@ command! GccMake Dispatch! make
 command! GccBuild Dispatch! make -C build
 command! GccLatex Dispatch! make -C docs/latex
 command! GccDocs Dispatch! make -C build doc
+command! GccSimple Dispatch! cd %:p:h <bar> gcc -std=c++11 -Wall -g -o %:p:r.out %
 command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
 command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
 command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
