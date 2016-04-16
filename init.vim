@@ -106,6 +106,8 @@ nnoremap coh :nohl<CR>
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
+vnoremap <C-p> "*p
+vnoremap <C-y> "*y
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -656,8 +658,8 @@ Plug 'Julian/vim-textobj-variable-segment'
 Plug 'sriramkswamy/vim-textobj-function'
 " Operate on comments - (operator)ic/ac
 Plug 'sriramkswamy/vim-textobj-comment'
-" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
-Plug 'michaeljsmith/vim-indent-object'
+" Operate on indents - (operator)ii/ai/aI
+Plug 'kana/vim-textobj-indent'
 
 " Operators {{{2
 " Functions {{{3
