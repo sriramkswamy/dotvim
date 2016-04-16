@@ -1060,5 +1060,5 @@ filetype plugin indent on
 syntax on
 
 " Set colorscheme {{{1
-set background=light
+set background=dark
 colorscheme PaperColor
