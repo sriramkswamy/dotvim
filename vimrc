@@ -101,8 +101,6 @@ inoremap <silent> <C-d> <C-x><C-k>
 inoremap <silent> <C-_> <C-x><C-f>
 " Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
 inoremap <silent> <C-l> <C-x><C-l>
-" In-file completion - <C-p> takes care of other files
-inoremap <silent> <C-n> <C-x><C-p>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
 nnoremap coo <C-w><C-w>:<C-u>setlocal number!<CR>:set number?<CR><C-w><C-w>
@@ -122,6 +120,8 @@ nnoremap cot :set ft=
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
+vnoremap <C-p> "*p
+vnoremap <C-y> "*y
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -342,6 +342,34 @@ nnoremap <silent> <Leader>h :copen<CR>
 nnoremap <silent> <Leader>H :cclose<CR>
 
 " Plugins {{{2
+" FZF {{{3
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix='Fzf'
+command! -nargs=1 FzfSpotlight call fzf#run({
+            \ 'source': 'mdfind -onlyin ~ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Spotlight> "'
+            \ })
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> T :FzfTags<CR>
+nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <C-p> :FzfAg!<CR>
+nnoremap <silent> <Leader>p :FzfGitFiles<CR>
+nnoremap <silent> <Leader>d :FzfFiles<CR>
+nnoremap <silent> <Leader>a :FzfBuffers<CR>
+nnoremap <silent> <Leader>c :FzfColors<CR>
+nnoremap <silent> <Leader>x :FzfHelptags<CR>
+nnoremap <silent> <Leader>/ :FzfHistory/<CR>
+nnoremap <silent> <Leader>; :FzfHistory:<CR>
+nnoremap <silent> <Leader>, :FzfMaps<CR>
+nnoremap <silent> <Leader>` :FzfMarks<CR>
+nnoremap <Leader>j :FzfCommands<CR>
+vnoremap <Leader>j :FzfCommands<CR>
+inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+nnoremap <Leader>r :FzfSpotlight<Space>
+nnoremap <Leader>R :FzfLocate!<Space>
+
 " Statusline - from scrooloose {{{1
 " Basic setup
 set statusline =%#identifier#
@@ -410,28 +438,6 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
-
-" Unite {{{1
-" Defaults {{{2
-Plug 'Shougo/unite.vim'
-autocmd FileType unite call s:unite_my_settings()
-function! s:unite_my_settings()
-    imap <buffer> <TAB>   <Plug>(unite_select_previous_line)
-    imap <silent><buffer><expr> <C-s>     unite#do_action('split')
-    imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
-endfunction
-let g:unite_source_menu_menus = {} " Useful when building interfaces at appropriate places
-" Keep a menu for unite stuff but prefer FZF wherever possible
-nnoremap <silent> <Leader>d :Unite -start-insert -direction=botright -buffer-name=files file_rec<CR>
-nnoremap <silent> <Leader>p :UniteWithProjectDir -start-insert -direction=botright -buffer-name=gitfiles file_rec<CR>
-nnoremap <silent> <Leader>a :Unite -start-insert -direction=botright -buffer-name=buffers buffer<CR>
-nnoremap <silent> <Leader>, :Unite -start-insert -direction=botright -buffer-name=maps mapping<CR>
-inoremap <silent> <C-j> <Esc>:Unite -start-insert -direction=botright -buffer-name=snippets ultisnips<CR>
-
-" Helper plugins {{{2
-Plug 'tsukkee/unite-tag'
-nnoremap <silent> t :Unite -start-insert -direction=botright -buffer-name=outline tag:%<CR>
-nnoremap <silent> T :Unite -start-insert -direction=botright -buffer-name=outline tag<CR>
 
 " FileTypes {{{1
 " Set commands {{{2
@@ -680,8 +686,8 @@ Plug 'Julian/vim-textobj-variable-segment'
 Plug 'sriramkswamy/vim-textobj-function'
 " Operate on comments - (operator)ic/ac
 Plug 'sriramkswamy/vim-textobj-comment'
-" Operate on indents - (operator)ii/ai/aI - doesn't depend on kana's plugin
-Plug 'michaeljsmith/vim-indent-object'
+" Operate on indents - (operator)ii/ai/aI
+Plug 'kana/vim-textobj-indent'
 
 " Operators {{{2
 " Functions {{{3
@@ -787,8 +793,6 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
-" Language plugins {{{2
-
 " Language helpers {{{1
 " Syntax and nicities for many languages {{{2
 Plug 'sheerun/vim-polyglot'
@@ -807,6 +811,14 @@ autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
+command! CppJumpTo call rtags#JumpTo()
+command! CppJumpToParent call rtags#JumpToParent()
+command! CppReference call rtags#FindRefsOfWordUnderCursor()
+command! CppSymbol call rtags#FindSymbolsOfWordUnderCursor()
+command! CppVirtuals call rtags#FindVirtuals()
+command! CppReindex call rtags#ReindexFile()
+command! CppRename call rtags#RenameSymbolUnderCursor()
+command! CppProjects call rtags#ProjectList()
 " Python {{{2
 " Autocompletion and jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
@@ -818,6 +830,11 @@ let g:jedi#documentation_command = "K"
 let g:jedi#usages_command = ""
 let g:jedi#completions_command = ""
 let g:jedi#rename_command = ""
+command! PyGoTo call jedi#goto()
+command! PyGoToAssignment call jedi#goto_assignments()
+command! PyGoToDefinition call jedi#goto_definitions()
+command! PyRename call jedi#rename()
+command! PyRenameVisual call jedi#rename_visual()
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
 command! BracelessOn BracelessEnable +indent +fold +highlight
@@ -918,11 +935,43 @@ nnoremap <Leader>r :Dispatch! mdfind -onlyin ~<Space>
 nnoremap <Leader>R :Dispatch! locate<Space>
 nnoremap <silent> <Leader>e :Spawn tig<CR>
 nnoremap <silent> <Leader>n :Spawn ranger<CR>
+" Dispatch based commands
+command! GitPush Dispatch! git push
+command! GitPull Dispatch! git pull
+command! GppMake Dispatch! make
+command! GppBuild Dispatch! make -C build
+command! GppDocs Dispatch! make -C build doc
+command! GppLatex Dispatch! make -C docs/latex
+command! GppSimple Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %
+command! GppSingle Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GppOpenmp Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GppMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GppHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GppArmadillo Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
+command! GccMake Dispatch! make
+command! GccBuild Dispatch! make -C build
+command! GccLatex Dispatch! make -C docs/latex
+command! GccDocs Dispatch! make -C build doc
+command! GccSimple Dispatch! cd %:p:h <bar> gcc -std=c++11 -Wall -g -o %:p:r.out %
+command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GccHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GccArmadillo Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
+command! TexCount Dispatch! texcount %
+command! PandocPdf Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf
+command! PandocOrg Dispatch! pandoc % -o %:r.org
+command! PandocRst Dispatch! pandoc % -o %:r.rst
+command! PandocLatex Dispatch! pandoc % -o %:r.tex
+command! PandocEpub3 Dispatch! pandoc % -o %:r.epub
+command! PandocHtml5 Dispatch! pandoc % -o %:r.html
+
 if has('$TMUX')
     nnoremap <silent> <Leader>u :call system("tmux split-window -h")<CR>
 else
     nnoremap <silent> <Leader>u :Spawn<CR>
 endif
+
 " Launch appropriate REPL
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'
@@ -939,145 +988,6 @@ let g:tmuxify_run = {
 
 " Stop plugin installation {{{1
 call plug#end()
-
-" Wrap up Unite settings {{{1
-" Enable fuzzy matching and sorting in all Unite functions
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-
-" Interfaces/Menus - The best part of Unite {{{1
-let g:unite_source_menu_menus.doanything= {
-            \ 'description' : 'Goto Anything',
-            \}
-let g:unite_source_menu_menus.doanything.command_candidates = [
-            \[' git status', 'Gstatus'],
-            \[' git diff', 'Gvdiff'],
-            \[' git write', 'Gwrite'],
-            \[' git commit', 'Gcommit'],
-            \[' git checkout', 'Gread'],
-            \[' git rm', 'Gremove'],
-            \[' git cd', 'Gcd'],
-            \[' git branch', 'Dispatch! git branch -a'],
-            \[' git push', 'Dispatch! git push'],
-            \[' git pull', 'Dispatch! git pull'],
-            \[' git fetch', 'Gfetch'],
-            \[' git merge', 'Gmerge'],
-            \[' git browse', 'Gbrowse'],
-            \[' git head', 'Gedit HEAD^'],
-            \[' git parent', 'edit %:h'],
-            \[' git log commit buffers', 'Glog --'],
-            \[' git log current file', 'Glog -- %'],
-            \[' git log last n commits', 'exe "Glog -" input("num: ")'],
-            \[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
-            \[' git log until date', 'exe "Glog --until=" input("day: ")'],
-            \[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
-            \[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
-            \[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
-            \[' git mv', 'exe "Gmove " input("destination: ")'],
-            \[' git grep',  'exe "Ggrep " input("string: ")'],
-            \[' git prompt', 'exe "Git! " input("command: ")'],
-            \[' toggle changes', 'SignifyToggleHighlight'],
-            \[' gpp make', 'Dispatch! make'],
-            \[' gpp build', 'Dispatch! make -C build'],
-            \[' gpp docs', 'Dispatch! make -C build doc'],
-            \[' gpp latex', 'Dispatch! make -C docs/latex'],
-            \[' gpp single', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gpp simple', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -g -o %:p:r.out %'],
-            \[' gpp openmp', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gpp mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gpp hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gpp armadillo', 'Dispatch! cd %:p:h | g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
-            \[' gcc make', 'Dispatch! make'],
-            \[' gcc build', 'Dispatch! make -C build'],
-            \[' gcc latex', 'Dispatch! make -C docs/latex'],
-            \[' gcc docs', 'Dispatch! make -C build doc'],
-            \[' gcc single', 'Dispatch! cd %:p:h | gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gcc simple', 'Dispatch! cd %:p:h | gcc -std=c++11 -Wall -g -o %:p:r.out %'],
-            \[' gcc openmp', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gcc mpi', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %'],
-            \[' gcc hybrid', 'Dispatch! cd %:p:h | /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %'],
-            \[' gcc armadillo', 'Dispatch! cd %:p:h | gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %'],
-            \[' cpp jump to', 'call rtags#JumpTo()'],
-            \[' cpp jump to parent', 'call rtags#JumpToParent()'],
-            \[' cpp reference', 'call rtags#FindRefsOfWordUnderCursor()'],
-            \[' cpp symbol', 'call rtags#FindSymbolsOfWordUnderCursor()'],
-            \[' cpp virtuals', 'call rtags#FindVirtuals()'],
-            \[' cpp reindex', 'call rtags#ReindexFile()'],
-            \[' cpp rename', 'call rtags#RenameSymbolUnderCursor()'],
-            \[' cpp projects', 'call rtags#ProjectList()'],
-            \[' py GoTo Command', 'call jedi#goto()'],
-            \[' py GoTo Assignment', 'call jedi#goto_assignments()'],
-            \[' py GoTo Definition', 'call jedi#goto_definitions()'],
-            \[' py Rename', 'call jedi#rename()'],
-            \[' py Rename Visual', 'call jedi#rename_visual()'],
-            \[' java Project Create in directory', 'exe "ProjectCreate . -n " input("language: ")'],
-            \[' java Project List', 'ProjectList'],
-            \[' java Project New Source', 'exe "NewSrcEntry " input("source: ")'],
-            \[' java Project Validate', 'Validate'],
-            \[' java New Project', 'exe "NewProjectEntry " input("project: ")'],
-            \[' java New Jar', 'exe "NewJarEntry " input("jar: ")'],
-            \[' java New Var', 'exe "NewVarEntry " input("var: ")'],
-            \[' java Create Variables', 'exe "VariableCreate " input("var: ")'],
-            \[' java Delete Variables', 'exe "VariableDelete " input("var: ")'],
-            \[' java List Variables', 'VariableList'],
-            \[' java Maven Initialize', 'MvnRepo'],
-            \[' java Maven Classpath',  'exe "Mvn " input("path: ")'],
-            \[' java Ivy Initialize',  'exe "IvyRepo " input("path: ")'],
-            \[' java Search', 'exe "JavaSearch " input("string: ")'],
-            \[' java Context Search', 'JavaSearchContext'],
-            \[' java Echo Classpath',  'exe "JavaClasspath " input("delimiter(optional): ")'],
-            \[' java Project Status', 'Jps'],
-            \[' java Debug Start',  'exe "JavaDebugStart " input("port: ")'],
-            \[' java Toggle Breakpoint', 'JavaBreakpointToggle'],
-            \[' java List Breakpoint', 'JavaBreakpointList'],
-            \[' java Remove Breakpoint', 'JavaBreakpointRemove'],
-            \[' java Debug Step',  'exe "JavaDebugStep " input("into/over/return: ")'],
-            \[' java Debug Status', 'JavaDebugStatus'],
-            \[' java Debug Suspend', 'JavaDebugThreadSuspendAll'],
-            \[' java Debug Resume', 'JavaDebugThreadResumeAll'],
-            \[' java Debug Stop', 'JavaDebugStop'],
-            \[' java Doc Comment', 'JavaDocComment'],
-            \[' java Doc Preview', 'JavaDocPreview'],
-            \[' java Doc Search',  'exe "JavaDocSearch " input("string: ")'],
-            \[' java Doc Execute', 'JavaDoc'],
-            \[' java Code Format', 'JavaFormat'],
-            \[' java Refactor Rename',  'exe "JavaRename " input("name: ")'],
-            \[' java Refactor Move',  'exe "JavaMove " input("destination: ")'],
-            \[' java Refactor Undo', 'RefactorUndo'],
-            \[' java Refactor Undo Peek', 'RefactorUndoPeek'],
-            \[' java Refactor Redo', 'RefactorRedo'],
-            \[' java Refactor Redo Peek', 'RefactorRedoPeek'],
-            \[' java Class Heirarchy', 'JavaHeirarchy'],
-            \[' java Call Heirarchy', 'JavaCallHeirarchy'],
-            \[' java Import', 'JavaImport'],
-            \[' java Import Organized', 'JavaImportOrganized'],
-            \[' java Getter', 'JavaGet'],
-            \[' java Setter', 'JavaSet'],
-            \[' java Getter and Setter', 'JavaGetSet'],
-            \[' java Override/Implement', 'JavaImpl'],
-            \[' java Delegate', 'JavaDelegate'],
-            \[' java Unit Test', 'exe "JUnit " input("testname: ")'],
-            \[' java Unit Find Test', 'JUnitFindTest'],
-            \[' java Unit Test Results', 'JUnitResult'],
-            \[' java Unit Test Stubs', 'JUnitImpl'],
-            \[' java Ant Run', 'exe "Ant " input("target: ")'],
-            \[' java Ant Doc', 'AntDoc'],
-            \[' new note', 'vsplit ~/Dropbox/notes/notes.md'],
-            \[' new expense', 'vsplit ~/Dropbox/notes/expenses.dat'],
-            \[' tex word count', 'Dispatch! texcount %'],
-            \[' pandoc pdf', 'Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf'],
-            \[' pandoc org', 'Dispatch! pandoc % -o %:r.org'],
-            \[' pandoc rst', 'Dispatch! pandoc % -o %:r.rst'],
-            \[' pandoc latex', 'Dispatch! pandoc % -o %:r.tex'],
-            \[' pandoc epub3', 'Dispatch! pandoc % -o %:r.epub'],
-            \[' pandoc html5', 'Dispatch! pandoc % -o %:r.html'],
-            \[' braceless on', 'BracelessEnable +indent +fold +highlight-cc2'],
-            \[' braceless off', 'BracelessEnable -indent -fold -highlight-cc2'],
-            \[' plug install', 'PlugInstall'],
-            \[' plug clean', 'PlugClean'],
-            \[' plug update', 'PlugUpdate'],
-            \[' plug upgrade', 'PlugUpgrade'],
-            \]
-nnoremap <silent> <Leader>j :Unite -silent -direction=botright -buffer-name=doanything -start-insert menu:doanything<CR>
 
 " Sections text object - (operator)im/am for markdown and (operator)ix/ax for latex {{{1
 call textobj#user#plugin('markdown', { '-': {
