@@ -22,6 +22,11 @@ set sidescrolloff=3
 set scrolloff=3
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
+augroup toggle_numbers
+  au!
+  autocmd BufEnter,WinEnter * :setlocal nonumber relativenumber
+  autocmd BufLeave,WinLeave * :setlocal number norelativenumber
+augroup END
 " Ex commands
 set wildmode=list:longest,full
 set completeopt=menuone,longest,preview
@@ -136,8 +141,6 @@ vnoremap <Leader>f :
 let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
-" Colorscheme
-Plug 'flazz/vim-colorschemes'
 " Undotree
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
@@ -211,6 +214,8 @@ nnoremap <silent> <C-i> <C-i>zz
 nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
+" Free Tab
+nnoremap <C-p> <C-i>
 " Folding
 nnoremap <silent> - za
 " Vimrc
@@ -229,7 +234,7 @@ function! GrepQuickFix(pat)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
 
-" Filter from location list - someone's vimrc
+" Filter from location list
 function! GrepLocList(pat)
     let ll = getloclist(0)
     for d in ll
@@ -333,7 +338,6 @@ command! -nargs=1 FzfSpotlight call fzf#run({
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
 nnoremap <silent> <Leader>d :FzfFiles<CR>
 nnoremap <silent> <Leader>a :FzfBuffers<CR>
@@ -448,7 +452,7 @@ endfunction
 
 " Autocmds and let commands for filetypes {{{2
 autocmd BufNewFile,BufReadPost *.rkt,*.rktl set filetype=scheme
-autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
+autocmd BufNewFile,BufReadPost *.md,*.mkd,*.markdown set filetype=markdown
 autocmd BufNewFile,BufReadPost *.clj set filetype=clojure
 autocmd BufNewFile,BufReadPost *.jl set filetype=julia
 autocmd BufNewFile,BufReadPost *.m set filetype=matlab
@@ -620,12 +624,12 @@ nmap ]x <Plug>DeleteLineDown
 
 " Motions {{{2
 Plug 'justinmk/vim-sneak'
-nmap e <Plug>Sneak_s
-xmap e <Plug>Sneak_s
-omap e <Plug>Sneak_s
-nmap E <Plug>Sneak_S
-xmap E <Plug>Sneak_S
-omap E <Plug>Sneak_S
+nmap w <Plug>Sneak_s
+xmap w <Plug>Sneak_s
+omap w <Plug>Sneak_s
+nmap W <Plug>Sneak_S
+xmap W <Plug>Sneak_S
+omap W <Plug>Sneak_S
 
 " Text objects {{{2
 " Onoremap based {{{3
@@ -707,7 +711,7 @@ autocmd FileType matlab setlocal commentstring=%\ %s
 Plug 'vim-scripts/ReplaceWithRegister'
 " Exchange stuff - cx(motion/textobject) and repeat it at the new point
 Plug 'tommcdo/vim-exchange'
-nmap <silent> <Plug>ExchangeWordRight cxiwwcxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
+nmap <silent> <Plug>ExchangeWordRight cxiweecxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
 nmap ]w <Plug>ExchangeWordRight
 nmap <silent> <Plug>ExchangeWordLeft cxiwbcxiw :call repeat#set("\<Plug>ExchangeWordLeft", v:count)<CR>
 nmap [w <Plug>ExchangeWordLeft
