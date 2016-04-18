@@ -233,6 +233,8 @@ nnoremap <silent> <C-i> <C-i>zz
 nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
+" Free up Tab
+nnoremap <C-p> <C-i>
 " Folding
 nnoremap <silent> - za
 " Vimrc
@@ -351,7 +353,6 @@ command! -nargs=1 FzfSpotlight call fzf#run({
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <C-p> :FzfAg!<CR>
 nnoremap <silent> <Leader>p :FzfGitFiles<CR>
 nnoremap <silent> <Leader>d :FzfFiles<CR>
 nnoremap <silent> <Leader>a :FzfBuffers<CR>
