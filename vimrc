@@ -159,9 +159,6 @@ vnoremap <Leader>f :
 let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
-" Colorscheme
-Plug 'flazz/vim-colorschemes'
-nnoremap <Leader>c :colorscheme<Space>
 " Undotree
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
