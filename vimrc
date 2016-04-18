@@ -577,9 +577,46 @@ nmap gz <Plug>ElementarySplit
 " Blank the current line
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
-" Subvert, Abolish and coerce
-Plug 'tpope/vim-abolish'
-" Org mode like editing embedded code editing
+" Auto correction - iabbrev collection
+Plug 'sriramkswamy/vim-fat-finger'
+" Switch
+Plug 'AndrewRadev/switch.vim'
+let g:switch_mapping = "<Tab>"
+let g:switch_custom_definitions =
+            \ [
+            \   {
+            \     '\<\(\l\)\(\l\+\(\u\l\+\)\+\)\>': '\=toupper(submatch(1)) . submatch(2)',
+            \     '\<\(\u\l\+\)\(\u\l\+\)\+\>': "\\=tolower(substitute(submatch(0), '\\(\\l\\)\\(\\u\\)', '\\1_\\2', 'g'))",
+            \     '\<\(\l\+\)\(_\l\+\)\+\>': '\U\0',
+            \     '\<\(\u\+\)\(_\u\+\)\+\>': "\\=tolower(substitute(submatch(0), '_', '-', 'g'))",
+            \     '\<\(\l\+\)\(-\l\+\)\+\>': "\\=substitute(submatch(0), '-\\(\\l\\)', '\\u\\1', 'g')",
+            \   },
+            \ ['TODO', 'DONE', 'WAITING', 'CANCELLED'],
+            \ ]
+autocmd FileType tex,plaintex let b:switch_custom_definitions =
+            \ [
+            \    [ '\\tiny', '\\scriptsize', '\\footnotesize', '\\small', '\\normalsize', '\\large', '\\Large', '\\LARGE', '\\huge', '\\Huge' ],
+            \    [ '\\displaystyle', '\\scriptstyle', '\\scriptscriptstyle', '\\textstyle' ],
+            \    [ '\\part', '\\chapter', '\\section', '\\subsection', '\\subsubsection', '\\paragraph', '\\subparagraph' ],
+            \    [ 'part:', 'chap:', 'sec:', 'subsec:', 'subsubsec:' ],
+            \    [ 'fig:', 'sfig:', 'eqn:', 'tab:' ],
+            \    [ 'article', 'report', 'book', 'letter', 'slides' ],
+            \    [ 'a4paper', 'a5paper', 'b5paper', 'executivepaper', 'legalpaper', 'letterpaper', 'beamer', 'subfiles', 'standalone' ],
+            \    [ 'onecolumn', 'twocolumn' ],
+            \    [ 'oneside', 'twoside' ],
+            \    [ 'draft', 'final' ],
+            \    [ 'AnnArbor', 'Antibes', 'Bergen', 'Berkeley',
+            \      'Berlin', 'Boadilla', 'CambridgeUS', 'Copenhagen', 'Darmstadt',
+            \      'Dresden', 'Frankfurt', 'Goettingen', 'Hannover', 'Ilmenau',
+            \      'JuanLesPins', 'Luebeck', 'Madrid', 'Malmoe', 'Marburg',
+            \      'Montpellier', 'PaloAlto', 'Pittsburgh', 'Rochester', 'Singapore',
+            \      'Szeged', 'Warsaw' ]
+            \ ]
+autocmd FileType gitrebase let b:switch_custom_definitions =
+            \ [
+            \   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
+            \ ]
+" Org mode like embedded code editing
 Plug 'AndrewRadev/inline_edit.vim'
 nnoremap <Leader>i :InlineEdit<CR>
 vnoremap <Leader>i :InlineEdit<CR>
