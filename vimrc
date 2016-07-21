@@ -158,7 +158,6 @@ nnoremap <silent> [z zk
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
-nnoremap <Leader>x :help<Space>
 " Open a new tab
 nnoremap <Leader>t :tabe<Space>
 " Opening apps
@@ -173,7 +172,7 @@ let g:markdown_fold_style = 'nested'
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
-" Registers
+" Registers - fancy
 Plug 'junegunn/vim-peekaboo'
 " Start screen - fancy {{{3
 Plug 'mhinz/vim-startify'
@@ -181,9 +180,10 @@ let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
 let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
 let g:startify_session_persistence = 1
 let g:startify_change_to_vcs_root = 1
-let g:startify_custom_header = ['', '   Vim start screen']
+let g:startify_custom_header = ['', '   Vim/Neovim']
 let g:startify_custom_footer =
-            \ ['', "   Vim is charityware. Please read ':help uganda'.", '']
+            \ ['', "   Vim is charityware. Please read ':help uganda'.",
+            \  "   Neovim is a Vim fork. Please read ':help nvim' if in Neovim."]
 let g:startify_skiplist = [
             \ 'COMMIT_EDITMSG',
             \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
@@ -236,15 +236,15 @@ nnoremap [t :tprevious<CR>
 nnoremap ]t :tnext<CR>
 nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
-nnoremap [n ?^<\+HEAD$<CR>
-nnoremap ]n /^<\+HEAD$<CR>
+nnoremap [n ?^<\+\s*HEAD$<CR>
+nnoremap ]n /^<\+\s*HEAD$<CR>
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
 nnoremap <silent> G Gzz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
-" Free up Tab
+" Free Tab
 nnoremap <C-p> <C-i>
 " Folding - lock tab
 nnoremap <silent> <C-i> za
@@ -264,7 +264,7 @@ function! GrepQuickFix(pat)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
 
-" Filter from location list - someone's vimrc
+" Filter from location list
 function! GrepLocList(pat)
     let ll = getloclist(0)
     for d in ll
@@ -371,11 +371,11 @@ inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
 set statusline =%#identifier#
 set statusline+=[%f]    "tail of the filename
 set statusline+=%*
-"display a warning if fileformat isnt unix
+"display a warning if fileformat isn't unix
 set statusline+=%#warningmsg#
 set statusline+=%{&ff!='unix'?'['.&ff.']':''}
 set statusline+=%*
-"display a warning if file encoding isnt utf-8
+"display a warning if file encoding isn't utf-8
 set statusline+=%#warningmsg#
 set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
 set statusline+=%*
@@ -466,7 +466,7 @@ endfunction
 
 " Autocmds and let commands for filetypes {{{2
 autocmd BufNewFile,BufReadPost *.rkt,*.rktl set filetype=scheme
-autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
+autocmd BufNewFile,BufReadPost *.md,*.mkd,*.markdown set filetype=markdown
 autocmd BufNewFile,BufReadPost *.clj set filetype=clojure
 autocmd BufNewFile,BufReadPost *.jl set filetype=julia
 autocmd BufNewFile,BufReadPost *.m set filetype=matlab
@@ -681,12 +681,12 @@ nmap ]x <Plug>DeleteLineDown
 
 " Motions {{{2
 Plug 'justinmk/vim-sneak'
-nmap e <Plug>Sneak_s
-xmap e <Plug>Sneak_s
-omap e <Plug>Sneak_s
-nmap E <Plug>Sneak_S
-xmap E <Plug>Sneak_S
-omap E <Plug>Sneak_S
+nmap w <Plug>Sneak_s
+xmap w <Plug>Sneak_s
+omap w <Plug>Sneak_s
+nmap W <Plug>Sneak_S
+xmap W <Plug>Sneak_S
+omap W <Plug>Sneak_S
 
 " Text objects {{{2
 " Onoremap based {{{3
@@ -768,7 +768,7 @@ autocmd FileType matlab setlocal commentstring=%\ %s
 Plug 'vim-scripts/ReplaceWithRegister'
 " Exchange stuff - cx(motion/textobject) and repeat it at the new point
 Plug 'tommcdo/vim-exchange'
-nmap <silent> <Plug>ExchangeWordRight cxiwwcxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
+nmap <silent> <Plug>ExchangeWordRight cxiweecxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
 nmap ]w <Plug>ExchangeWordRight
 nmap <silent> <Plug>ExchangeWordLeft cxiwbcxiw :call repeat#set("\<Plug>ExchangeWordLeft", v:count)<CR>
 nmap [w <Plug>ExchangeWordLeft
@@ -811,8 +811,9 @@ xmap ah <Plug>(signify-motion-outer-visual)
 " Git Wrapper
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
+" Blame people!
 nnoremap <silent> gb :Gblame<CR>
-" Merginal
+" Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
 
 " Autocompletion {{{1
@@ -859,7 +860,7 @@ augroup filetype_cpp
     autocmd filetype c,cpp nnoremap <buffer> K :call rtags#JumpTo()<CR>
 augroup end
 " Python {{{2
-" Autocompletion and jumping
+" Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python set omnifunc=jedi#completions
 let g:jedi#goto_command = ""
@@ -889,7 +890,7 @@ augroup filetype_python
 augroup end
 " JavaSctipt {{{2
 " Tern based autocompletion and navigation
-Plug 'ternjs/tern_for_vim'
+Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
 augroup filetype_javascript
     autocmd!
     autocmd FileType js,javascript nnoremap <buffer> K :TernDef<CR>
@@ -978,7 +979,7 @@ Plug 'christoomey/vim-tmux-navigator'
 " Plugins {{{2
 " Common *nix commands
 Plug 'tpope/vim-eunuch'
-" Dispatch stuff
+" Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
 nnoremap <Leader>m :Dispatch!<Space>
 nnoremap <silent> <Leader>p :Copen<CR>
