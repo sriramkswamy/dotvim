@@ -22,11 +22,9 @@ set sidescrolloff=3
 set scrolloff=3
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
-augroup toggle_numbers
-  au!
-  autocmd BufEnter,WinEnter * :setlocal nonumber relativenumber
-  autocmd BufLeave,WinLeave * :setlocal number norelativenumber
-augroup END
+" Show line numbers
+set number
+set relativenumber
 " Ex commands
 set wildmode=list:longest,full
 set completeopt=menuone,longest,preview
@@ -80,9 +78,13 @@ vnoremap <silent> < <gv
 nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
+" Remove the highlights
+nnoremap <Esc> :nohl<CR>
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
+inoremap <silent> <C-a> <home>
+inoremap <silent> <C-e> <end>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-]> (but...why?)
@@ -107,7 +109,7 @@ nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
-nnoremap coh :nohl<CR>
+nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
@@ -134,9 +136,12 @@ nnoremap <silent> [z zk
 nnoremap <silent> <Leader>k :bd!<CR>
 nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
-" Muscle memory
-nnoremap <Leader>f :
-vnoremap <Leader>f :
+" Open a new tab
+nnoremap <Leader>t :tabe<Space>
+" Opening apps
+nnoremap <Leader>b :!open -a Papers<CR>
+" Alternate files
+nnoremap <Leader><Tab> :b#<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -172,6 +177,7 @@ let g:startify_list_order = [
             \ ['   Bookmarks:'],
             \ 'bookmarks',
             \ ]
+let g:startify_session_dir = '~/.vimsessions'
 nnoremap sq :SClose<CR>
 nnoremap sp :SSave<Space>
 nnoremap sy :SLoad<Space>
@@ -216,8 +222,8 @@ nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Free Tab
 nnoremap <C-p> <C-i>
-" Folding
-nnoremap <silent> - za
+" Folding - lock tab
+nnoremap <silent> <C-i> za
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
 
@@ -252,30 +258,6 @@ command! LCD lcd %:p:h
 nnoremap cd :LCD<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
-
-" Alternate between header and source files - junegunn
-function! s:A()
-    let name = expand('%:r')
-    let ext = tolower(expand('%:e'))
-    let sources = ['c', 'cc', 'cpp', 'cxx']
-    let headers = ['h', 'hh', 'hpp', 'hxx']
-    for pair in [[sources, headers], [headers, sources]]
-        let [set1, set2] = pair
-        if index(set1, ext) >= 0
-            for h in set2
-                let aname = name.'.'.h
-                for a in [aname, toupper(aname)]
-                    if filereadable(a)
-                        execute 'e' a
-                        return
-                    end
-                endfor
-            endfor
-        endif
-    endfor
-endfunction
-command! A call <sid>A()
-nnoremap <Leader><Tab> :A<CR>
 
 " Next and previous indent - junegunn
 function! s:indent_len(str)
@@ -314,9 +296,10 @@ endfunction
 command! Root call s:root()
 nnoremap cu :Root<CR>
 
-" Notes and expenses
-command! Note vsplit ~/Dropbox/notes/notes.md
+" References, Notes and expenses
+command! NoteGeneral vsplit ~/Dropbox/notes/notes.md
 command! Expense vsplit ~/Dropbox/notes/expenses.dat
+nnoremap <Leader>o :FzfFiles ~/Dropbox/<CR>
 
 " Leader maps {{{2
 " Quickfix and Location list maps
@@ -337,21 +320,27 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ })
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
+nnoremap <silent> g/ :FzfAg<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Leader>p :FzfGitFiles<CR>
-nnoremap <silent> <Leader>d :FzfFiles<CR>
+nnoremap <silent> <Leader>d :FzfGitFiles<CR>
+nnoremap <silent> <Leader>f :FzfFiles %:p:h<CR>
+nnoremap <silent> <Leader>F :FzfFiles ~<CR>
 nnoremap <silent> <Leader>a :FzfBuffers<CR>
 nnoremap <silent> <Leader>c :FzfColors<CR>
 nnoremap <silent> <Leader>x :FzfHelptags<CR>
-nnoremap <silent> <Leader>/ :FzfHistory/<CR>
-nnoremap <silent> <Leader>; :FzfHistory:<CR>
 nnoremap <silent> <Leader>, :FzfMaps<CR>
 nnoremap <silent> <Leader>` :FzfMarks<CR>
+nnoremap <silent> <Leader>A :FzfWindows<CR>
+nnoremap <silent> <Leader>r :FzfHistory<CR>
+nnoremap <silent> <Leader>/ :FzfHistory/<CR>
+nnoremap <Leader>s :FzfSpotlight<Space>
+nnoremap <Leader>S :FzfLocate!<Space>
+nnoremap <Leader>v :FzfFiles ~/Dropbox/PhD/articles/notes/<CR>
 nnoremap <Leader>j :FzfCommands<CR>
+nnoremap <Leader>J :FzfHistory:<CR>
 vnoremap <Leader>j :FzfCommands<CR>
+vnoremap <Leader>J :FzfHistory:<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
-nnoremap <Leader>r :FzfSpotlight<Space>
-nnoremap <Leader>R :FzfLocate!<Space>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -560,7 +549,7 @@ nmap crb <Plug>BlankCurrentLine
 Plug 'sriramkswamy/vim-fat-finger'
 " Switch
 Plug 'AndrewRadev/switch.vim'
-let g:switch_mapping = "<Tab>"
+let g:switch_mapping = "-"
 let g:switch_custom_definitions =
             \ [
             \   {
@@ -602,8 +591,8 @@ vnoremap <Leader>i :InlineEdit<CR>
 " Preview the substitution
 Plug 'osyo-manga/vim-over'
 let g:over_command_line_prompt = ">"
-nnoremap <Leader>s :OverCommandLine<CR>
-vnoremap <Leader>s :OverCommandLine<CR>
+nnoremap <Leader><Leader> :OverCommandLine<CR>
+vnoremap <Leader><Leader> :OverCommandLine<CR>
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
@@ -812,6 +801,8 @@ autocmd CompleteDone * pclose
 Plug 'sheerun/vim-polyglot'
 " LaTeX already included in polyglot
 let g:LatexBox_Folding = 1
+" Vim script {{{2
+Plug 'tpope/vim-scriptease'
 " C/C++ {{{2
 " Autocompletion
 Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
@@ -833,6 +824,10 @@ command! CppVirtuals call rtags#FindVirtuals()
 command! CppReindex call rtags#ReindexFile()
 command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
+augroup filetype_cpp
+    autocmd!
+    autocmd filetype c,cpp nnoremap <buffer> K :call rtags#JumpTo()<CR>
+augroup end
 " Python {{{2
 " Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
@@ -858,9 +853,17 @@ let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
 let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
+augroup filetype_python
+    autocmd!
+    autocmd filetype python nnoremap <buffer> K :call jedi#goto()<CR>
+augroup end
 " JavaSctipt {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
+augroup filetype_javascript
+    autocmd!
+    autocmd FileType js,javascript nnoremap <buffer> K :TernDef<CR>
+augroup end
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
 let g:sparkupNextMapping = '<C-Y>'
@@ -890,10 +893,11 @@ nnoremap <C-n> :lvim // %<CR>
 " Maps without leader {{{2
 " Auto-center
 nnoremap <silent> n nzz
-nnoremap <silent> * *zz
-nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
+" Make '*' act a little better
+nnoremap <silent> * *``
+nnoremap <silent> # #``
 
 " Search for word under visual selection
 vnoremap * y/<C-R>"<CR>
@@ -919,6 +923,7 @@ let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
 nnoremap <silent> <Leader>u :vsp <bar> term<CR>
+nnoremap <silent> <Leader>U :sp <bar> term<CR>
 tnoremap <C-g> <C-\><C-n>
 nnoremap <silent> <Leader>n :terminal ranger<CR>
 nnoremap <silent> <Leader>e :terminal tig<CR>
@@ -943,8 +948,8 @@ Plug 'tpope/vim-eunuch'
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
 nnoremap <Leader>m :Dispatch!<Space>
-nnoremap <silent> <Leader>o :Copen<CR>
-nnoremap <silent> <Leader>O :cclose<CR>
+nnoremap <silent> <Leader>p :Copen<CR>
+nnoremap <silent> <Leader>P :cclose<CR>
 " Commandline utilities
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
@@ -972,12 +977,13 @@ command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgs
 command! GccHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
 command! GccArmadillo Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
 command! TexCount Dispatch! texcount %
-command! PandocPdf Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf
-command! PandocOrg Dispatch! pandoc % -o %:r.org
-command! PandocRst Dispatch! pandoc % -o %:r.rst
-command! PandocLatex Dispatch! pandoc % -o %:r.tex
-command! PandocEpub3 Dispatch! pandoc % -o %:r.epub
-command! PandocHtml5 Dispatch! pandoc % -o %:r.html
+command! ConvertToPDF Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf
+command! ConvertToOrg Dispatch! pandoc % -o %:r.org
+command! ConvertToRst Dispatch! pandoc % -o %:r.rst
+command! ConvertToLatex Dispatch! pandoc % -o %:r.tex
+command! ConvertToEpub3 Dispatch! pandoc % -o %:r.epub
+command! ConvertToHTML5 Dispatch! pandoc % -o %:r.html
+command! ConvertToOPML Dispatch! multimarkdown -t opml % > %:r.opml
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
