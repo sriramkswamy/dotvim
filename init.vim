@@ -79,7 +79,7 @@ nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
 " Remove the highlights
-nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <Esc> :nohl<CR>
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
@@ -560,6 +560,7 @@ let g:switch_custom_definitions =
             \     '\<\(\l\+\)\(-\l\+\)\+\>': "\\=substitute(submatch(0), '-\\(\\l\\)', '\\u\\1', 'g')",
             \   },
             \ ['TODO', 'DONE', 'WAITING', 'CANCELLED'],
+            \ ['[ ]', '[X]'],
             \ ]
 autocmd FileType tex,plaintex let b:switch_custom_definitions =
             \ [
