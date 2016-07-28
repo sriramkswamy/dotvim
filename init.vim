@@ -146,6 +146,12 @@ nnoremap <Leader><Tab> :b#<CR>
 nnoremap <Leader>V :!open %:p:h<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
+" Markdown preview
+let g:instant_markdown_autostart = 0
+augroup filetype_markdown
+    autocmd!
+    autocmd FileType markdown nnoremap <Leader>v :InstantMarkdownPreview<CR>
+augroup end
 
 " Plugins {{{2
 " Undotree
@@ -349,10 +355,6 @@ nnoremap <Leader>on :enew <bar> cd ~/Dropbox/PhD/notes<CR>
 nnoremap <Leader>om :enew <bar> cd ~/Dropbox/PhD/meetings<CR>
 nnoremap <Leader>op :enew <bar> cd ~/Dropbox/PhD/papers<CR>
 nnoremap <Leader>or :enew <bar> cd ~/Dropbox/PhD/reports<CR>
-augroup filetype_markdown
-    autocmd!
-    autocmd FileType markdown nnoremap <Leader>v :!open -a Markoff %<CR>
-augroup end
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -453,7 +455,7 @@ endfunction
 
 " Autocmds and let commands for filetypes {{{2
 autocmd BufNewFile,BufReadPost *.rkt,*.rktl set filetype=scheme
-autocmd BufNewFile,BufReadPost *.md,*.mkd,*.markdown set filetype=markdown
+autocmd BufNewFile,BufReadPost *.txt,*.text,*.md,*.mkd,*.markdown set filetype=markdown
 autocmd BufNewFile,BufReadPost *.clj set filetype=clojure
 autocmd BufNewFile,BufReadPost *.jl set filetype=julia
 autocmd BufNewFile,BufReadPost *.m set filetype=matlab
