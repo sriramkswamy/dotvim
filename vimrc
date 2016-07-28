@@ -92,7 +92,7 @@ nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
 " Remove the highlights
-nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> <BS> :nohl<CR>
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
@@ -320,11 +320,6 @@ endfunction
 command! Root call s:root()
 nnoremap cu :Root<CR>
 
-" References, Notes and expenses
-command! NoteGeneral vsplit ~/Dropbox/notes/notes.md
-command! Expense vsplit ~/Dropbox/notes/expenses.dat
-nnoremap <Leader>o :FzfFiles ~/Dropbox/<CR>
-
 " Leader maps {{{2
 " Quickfix and Location list maps
 nnoremap <silent> <Leader>l :lopen<CR>
@@ -342,6 +337,11 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "Spotlight> "'
             \ })
+command! -nargs=1 FzfPhD call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "PhD> "'
+            \ })
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> g/ :FzfAg<CR>
@@ -357,9 +357,10 @@ nnoremap <silent> <Leader>` :FzfMarks<CR>
 nnoremap <silent> <Leader>A :FzfWindows<CR>
 nnoremap <silent> <Leader>r :FzfHistory<CR>
 nnoremap <silent> <Leader>/ :FzfHistory/<CR>
+nnoremap <Leader>o :FzfPhD<Space>
 nnoremap <Leader>s :FzfSpotlight<Space>
 nnoremap <Leader>S :FzfLocate!<Space>
-nnoremap <Leader>v :FzfFiles ~/Dropbox/PhD/articles/notes/<CR>
+nnoremap <Leader>v :FzfFiles ~/Dropbox/PhD/articles/<CR>
 nnoremap <Leader>j :FzfCommands<CR>
 nnoremap <Leader>J :FzfHistory:<CR>
 vnoremap <Leader>j :FzfCommands<CR>
@@ -862,7 +863,7 @@ augroup end
 " Python {{{2
 " Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
-autocmd filetype python set omnifunc=jedi#completions
+autocmd filetype python setl omnifunc=jedi#completions
 let g:jedi#goto_command = ""
 let g:jedi#goto_assignments_command = ""
 let g:jedi#goto_definitions_command = ""
@@ -875,6 +876,10 @@ command! PyGoToAssignment call jedi#goto_assignments()
 command! PyGoToDefinition call jedi#goto_definitions()
 command! PyRename call jedi#rename()
 command! PyRenameVisual call jedi#rename_visual()
+augroup filetype_python
+    autocmd!
+    autocmd FileType python nnoremap <buffer> K :call jedi#goto()<CR>
+augroup end
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
 command! BracelessOn BracelessEnable +indent +fold +highlight
@@ -884,10 +889,6 @@ let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
 let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
-augroup filetype_python
-    autocmd!
-    autocmd filetype python nnoremap <buffer> K :call jedi#goto()<CR>
-augroup end
 " JavaSctipt {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
@@ -905,11 +906,6 @@ let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
 
 " Syntax checking {{{1
-Plug 'scrooloose/syntastic'
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
 
 " Searching {{{1
 " Set commands {{{2
@@ -941,12 +937,12 @@ vnoremap # y?<C-R>"<CR>
 Plug 'mhinz/vim-grepper'
 " Mimic :grep and make ag the default tool.
 let g:grepper = {
-            \ 'tools': [ 'pt', 'ag', 'ack', 'git', 'grep'],
+            \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
             \ 'open':  0,
             \ 'jump':  0,
             \ 'next_tool': ']g'
             \ }
-nnoremap gss :Grepper -tool pt -noswitch<CR>
+nnoremap gss :Grepper -tool ag -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
@@ -955,7 +951,7 @@ xmap gs <plug>(GrepperOperator)
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
-if has('$TMUX')
+if exists('$TMUX')
     nnoremap <silent> <Leader>u :call system("tmux split-window -h")<CR>
     nnoremap <silent> <Leader>U :call system("tmux split-window -v")<CR>
 else
@@ -987,9 +983,6 @@ nnoremap <silent> <Leader>P :cclose<CR>
 " Commandline utilities
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
-nnoremap <silent> <C-p> :Dispatch! ag \^.<CR>
-nnoremap <Leader>r :Dispatch! mdfind -onlyin ~<Space>
-nnoremap <Leader>R :Dispatch! locate<Space>
 nnoremap <silent> <Leader>e :Spawn tig<CR>
 nnoremap <silent> <Leader>n :Spawn ranger<CR>
 " Dispatch based commands
