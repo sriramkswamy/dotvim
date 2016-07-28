@@ -142,6 +142,8 @@ nnoremap <Leader>t :tabe<Space>
 nnoremap <Leader>b :!open -a Papers<CR>
 " Alternate files
 nnoremap <Leader><Tab> :b#<CR>
+" Open in Finder
+nnoremap <Leader>V :!open %:p:h<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -347,6 +349,10 @@ nnoremap <Leader>on :enew <bar> cd ~/Dropbox/PhD/notes<CR>
 nnoremap <Leader>om :enew <bar> cd ~/Dropbox/PhD/meetings<CR>
 nnoremap <Leader>op :enew <bar> cd ~/Dropbox/PhD/papers<CR>
 nnoremap <Leader>or :enew <bar> cd ~/Dropbox/PhD/reports<CR>
+augroup filetype_markdown
+    autocmd!
+    autocmd FileType markdown nnoremap <Leader>v :!open -a Markoff %<CR>
+augroup end
 
 " Statusline - from scrooloose {{{1
 " Basic setup
