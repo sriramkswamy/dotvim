@@ -313,11 +313,6 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "Spotlight> "'
             \ })
-command! -nargs=1 FzfPhD call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "PhD> "'
-            \ })
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> g/ :FzfAg<CR>
@@ -333,15 +328,25 @@ nnoremap <silent> <Leader>` :FzfMarks<CR>
 nnoremap <silent> <Leader>A :FzfWindows<CR>
 nnoremap <silent> <Leader>r :FzfHistory<CR>
 nnoremap <silent> <Leader>/ :FzfHistory/<CR>
-nnoremap <Leader>o :FzfPhD<Space>
 nnoremap <Leader>s :FzfSpotlight<Space>
 nnoremap <Leader>S :FzfLocate!<Space>
-nnoremap <Leader>v :FzfFiles ~/Dropbox/PhD/articles/<CR>
 nnoremap <Leader>j :FzfCommands<CR>
 nnoremap <Leader>J :FzfHistory:<CR>
 vnoremap <Leader>j :FzfCommands<CR>
 vnoremap <Leader>J :FzfHistory:<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+" PhD related stuff
+command! -nargs=1 FzfPhD call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "PhD> "'
+            \ })
+nnoremap <Leader>os :FzfPhD<Space>
+nnoremap <Leader>of :FzfFiles ~/Dropbox/PhD<CR>
+nnoremap <Leader>on :enew <bar> cd ~/Dropbox/PhD/notes<CR>
+nnoremap <Leader>om :enew <bar> cd ~/Dropbox/PhD/meetings<CR>
+nnoremap <Leader>op :enew <bar> cd ~/Dropbox/PhD/papers<CR>
+nnoremap <Leader>or :enew <bar> cd ~/Dropbox/PhD/reports<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -814,7 +819,7 @@ let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
 " Indexer (for cmake projects)
 Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
-autocmd filetype c,cpp set completefunc=RtagsCompleteFunc
+autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
@@ -828,7 +833,7 @@ command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
 augroup filetype_cpp
     autocmd!
-    autocmd filetype c,cpp nnoremap <buffer> K :call rtags#JumpTo()<CR>
+    autocmd FileType c,cpp nnoremap <buffer> <Leader>g :call rtags#JumpTo()<CR>
 augroup end
 " Python {{{2
 " Autocompletion and some jumping
@@ -848,7 +853,7 @@ command! PyRename call jedi#rename()
 command! PyRenameVisual call jedi#rename_visual()
 augroup filetype_python
     autocmd!
-    autocmd filetype python nnoremap <buffer> K :call jedi#goto()<CR>
+    autocmd FileType python nnoremap <buffer> <Leader>g :call jedi#goto()<CR>
 augroup end
 " JavaSctipt {{{2
 " Much better Python text objects and goodies
@@ -864,7 +869,8 @@ let g:braceless_easymotion_segment_key = ''
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
 augroup filetype_javascript
     autocmd!
-    autocmd FileType js,javascript nnoremap <buffer> K :TernDef<CR>
+    autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
+    autocmd FileType js,javascript nnoremap <buffer> <Leader>g :TernDef<CR>
 augroup end
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
@@ -874,6 +880,9 @@ let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
 let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
+" Documentation browser {{{2
+Plug 'rizzatti/dash.vim'
+nmap <silent> <leader>K <Plug>DashSearch
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
