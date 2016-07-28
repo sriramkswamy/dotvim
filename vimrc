@@ -1124,5 +1124,6 @@ filetype plugin indent on
 syntax on
 
 " Set colorscheme {{{1
+set termguicolors
 set background=dark
 colorscheme PaperColor
