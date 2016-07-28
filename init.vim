@@ -924,13 +924,19 @@ let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
-nnoremap <silent> <Leader>u :vsp <bar> term<CR>
-nnoremap <silent> <Leader>U :sp <bar> term<CR>
 tnoremap <C-g> <C-\><C-n>
 nnoremap <silent> <Leader>n :terminal ranger<CR>
 nnoremap <silent> <Leader>e :terminal tig<CR>
 nnoremap <Leader>Y :vsp <bar> terminal googler<Space>
 nnoremap <silent> <Leader>y :vsp <bar> terminal googler <cWORD><CR>
+
+if exists('$TMUX')
+    nnoremap <silent> <Leader>u :call system("tmux split-window -h")<CR>
+    nnoremap <silent> <Leader>U :call system("tmux split-window -v")<CR>
+else
+    nnoremap <silent> <Leader>u :vsp <bar> terminal<CR>
+    nnoremap <silent> <Leader>U :sp <bar> terminal<CR>
+endif
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
