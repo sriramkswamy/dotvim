@@ -377,10 +377,16 @@ command! -nargs=1 FzfMeetings call fzf#run({
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "Meetings> "'
             \ })
+command! -nargs=1 FzfCourses call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/courses/ <q-args>',
+            \ 'sink' : '!open',
+            \ 'options': '-m --prompt "Courses> "'
+            \ })
 nnoremap <Leader>os :FzfPhD<Space>
 nnoremap <Leader>of :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap <Leader>on :FzfNotes<Space>
 nnoremap <Leader>oa :FzfArticles<Space>
+nnoremap <Leader>oa :FzfCourses<Space>
 nnoremap <Leader>oj :FzfJobs<Space>
 nnoremap <Leader>om :FzfMeetings<Space>
 nnoremap <Leader>op :FzfPapers<Space>
@@ -389,6 +395,7 @@ nnoremap <Leader>bs :enew <bar> cd ~/Dropbox/PhD<CR>
 nnoremap <Leader>bf :terminal ranger ~/Dropbox/PhD<CR>
 nnoremap <Leader>bn :enew <bar> cd ~/Dropbox/PhD/notes<CR>
 nnoremap <Leader>ba :enew <bar> cd ~/Dropbox/PhD/articles<CR>
+nnoremap <Leader>bc :enew <bar> cd ~/Dropbox/PhD/courses<CR>
 nnoremap <Leader>bj :enew <bar> cd ~/Dropbox/PhD/jobs<CR>
 nnoremap <Leader>bm :enew <bar> cd ~/Dropbox/PhD/meetings<CR>
 nnoremap <Leader>bp :enew <bar> cd ~/Dropbox/PhD/papers<CR>
