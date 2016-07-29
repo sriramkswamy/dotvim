@@ -403,12 +403,12 @@ command! -nargs=1 FzfMeetings call fzf#run({
             \ })
 nnoremap <Leader>os :FzfPhD<Space>
 nnoremap <Leader>of :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap <Leader>on :FzfNotes<CR>
-nnoremap <Leader>oa :FzfArticles<CR>
-nnoremap <Leader>oj :FzfJobs<CR>
-nnoremap <Leader>om :FzfMeetings<CR>
-nnoremap <Leader>op :FzfPapers<CR>
-nnoremap <Leader>or :FzfReports<CR>
+nnoremap <Leader>on :FzfNotes<Space>
+nnoremap <Leader>oa :FzfArticles<Space>
+nnoremap <Leader>oj :FzfJobs<Space>
+nnoremap <Leader>om :FzfMeetings<Space>
+nnoremap <Leader>op :FzfPapers<Space>
+nnoremap <Leader>or :FzfReports<Space>
 nnoremap <Leader>bs :enew <bar> cd ~/Dropbox/PhD<CR>
 nnoremap <Leader>bf :terminal ranger ~/Dropbox/PhD<CR>
 nnoremap <Leader>bn :enew <bar> cd ~/Dropbox/PhD/notes<CR>
