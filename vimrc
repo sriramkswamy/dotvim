@@ -388,8 +388,8 @@ command! -nargs=1 FzfPapers call fzf#run({
             \ })
 command! -nargs=1 FzfArticles call fzf#run({
             \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/articles/ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "articles> "'
+            \ 'sink' : '!open',
+            \ 'options': '-m --prompt "Articles> "'
             \ })
 command! -nargs=1 FzfReports call fzf#run({
             \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/reports/ <q-args>',
