@@ -138,8 +138,6 @@ nnoremap <silent> <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :q<CR>
 " Open a new tab
 nnoremap <Leader>t :tabe<Space>
-" Opening apps
-nnoremap <Leader>b :!open -a Papers<CR>
 " Alternate files
 nnoremap <Leader><Tab> :b#<CR>
 " Open in Finder
@@ -349,12 +347,52 @@ command! -nargs=1 FzfPhD call fzf#run({
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "PhD> "'
             \ })
+command! -nargs=1 FzfNotes call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/notes/ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Notes> "'
+            \ })
+command! -nargs=1 FzfJobs call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/jobs/ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Jobs> "'
+            \ })
+command! -nargs=1 FzfPapers call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/papers/ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Papers> "'
+            \ })
+command! -nargs=1 FzfArticles call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/articles/ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "articles> "'
+            \ })
+command! -nargs=1 FzfReports call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/reports/ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Reports> "'
+            \ })
+command! -nargs=1 FzfMeetings call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/meetings/ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Meetings> "'
+            \ })
 nnoremap <Leader>os :FzfPhD<Space>
 nnoremap <Leader>of :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap <Leader>on :enew <bar> cd ~/Dropbox/PhD/notes<CR>
-nnoremap <Leader>om :enew <bar> cd ~/Dropbox/PhD/meetings<CR>
-nnoremap <Leader>op :enew <bar> cd ~/Dropbox/PhD/papers<CR>
-nnoremap <Leader>or :enew <bar> cd ~/Dropbox/PhD/reports<CR>
+nnoremap <Leader>on :FzfNotes<CR>
+nnoremap <Leader>oa :FzfArticles<CR>
+nnoremap <Leader>oj :FzfJobs<CR>
+nnoremap <Leader>om :FzfMeetings<CR>
+nnoremap <Leader>op :FzfPapers<CR>
+nnoremap <Leader>or :FzfReports<CR>
+nnoremap <Leader>bs :enew <bar> cd ~/Dropbox/PhD<CR>
+nnoremap <Leader>bf :terminal ranger ~/Dropbox/PhD<CR>
+nnoremap <Leader>bn :enew <bar> cd ~/Dropbox/PhD/notes<CR>
+nnoremap <Leader>ba :enew <bar> cd ~/Dropbox/PhD/articles<CR>
+nnoremap <Leader>bj :enew <bar> cd ~/Dropbox/PhD/jobs<CR>
+nnoremap <Leader>bm :enew <bar> cd ~/Dropbox/PhD/meetings<CR>
+nnoremap <Leader>bp :enew <bar> cd ~/Dropbox/PhD/papers<CR>
+nnoremap <Leader>br :enew <bar> cd ~/Dropbox/PhD/reports<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
