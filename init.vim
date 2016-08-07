@@ -813,7 +813,7 @@ autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
-command! CppJumpTo call rtags#JumpTo()
+command! CppJumpTo call rtags#JumpTo(g:SAME_WINDOW)
 command! CppJumpToParent call rtags#JumpToParent()
 command! CppReference call rtags#FindRefsOfWordUnderCursor()
 command! CppSymbol call rtags#FindSymbolsOfWordUnderCursor()
@@ -823,7 +823,8 @@ command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
 augroup filetype_cpp
     autocmd!
-    autocmd FileType c,cpp nnoremap <buffer> <Space>g :call rtags#JumpTo()<CR>
+    autocmd FileType c,cpp nnoremap <buffer> <Space>g :call rtags#JumpTo(g:SAME_WINDOW)<CR>
+    autocmd FileType c,cpp nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
 augroup end
 " Python {{{2
 " Autocompletion and some jumping
