@@ -89,7 +89,7 @@ inoremap <silent> <C-e> <end>
 inoremap <silent> <C-o> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-]> (but...why?)
 inoremap <silent> <C-]> <C-x><C-u>
-" Dictionary - <C-w> does the same thing
+" Dictionary - <C-w> achieves the same thing
 inoremap <silent> <C-d> <C-x><C-k>
 " File complete - You can use this by typing <C-/>
 inoremap <silent> <C-_> <C-x><C-f>
@@ -127,28 +127,26 @@ command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1'
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 " Leader and maps {{{2
-" Set leader
-let mapleader="\<Space>"
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
 " Kill, save or quit
-nnoremap <silent> <Leader>k :bd!<CR>
-nnoremap <silent> <Leader>w :update<CR>
-nnoremap <silent> <Leader>q :q<CR>
+nnoremap <silent> <Space>k :bd!<CR>
+nnoremap <silent> <Space>w :update<CR>
+nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
-nnoremap <Leader>t :tabe<Space>
+nnoremap <Space>t :tabe<CR>
 " Alternate files
-nnoremap <Leader><Tab> :b#<CR>
+nnoremap <Space><Tab> :b#<CR>
 " Open in Finder
-nnoremap <Leader>V :!open %:p:h<CR>
+nnoremap <Space>V :!open %:p:h<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 " Markdown preview
 let g:instant_markdown_autostart = 0
 augroup filetype_markdown
     autocmd!
-    autocmd FileType markdown nnoremap <Leader>v :InstantMarkdownPreview<CR>
+    autocmd FileType markdown nnoremap <Space>v :InstantMarkdownPreview<CR>
 augroup end
 
 " Plugins {{{2
@@ -265,51 +263,21 @@ nnoremap cd :LCD<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
 
-" Next and previous indent - junegunn
-function! s:indent_len(str)
-    return type(a:str) == 1 ? len(matchstr(a:str, '^\s*')) : 0
-endfunction
-function! s:go_indent(times, dir)
-    for _ in range(a:times)
-        let l = line('.')
-        let x = line('$')
-        let i = s:indent_len(getline(l))
-        let e = empty(getline(l))
-        while l >= 1 && l <= x
-            let line = getline(l + a:dir)
-            let l += a:dir
-            if s:indent_len(line) != i || empty(line) != e
-                break
-            endif
-        endwhile
-        let l = min([max([1, l]), x])
-        execute 'normal! '. l .'G^'
-    endfor
-endfunction
-nnoremap <silent> ]i :<c-u>call <SID>go_indent(v:count1, 1)<cr>
-nnoremap <silent> [i :<c-u>call <SID>go_indent(v:count1, -1)<cr>
-
-" Go to project root - only for git - junegunn
-function! s:root()
-    let root = systemlist('git rev-parse --show-toplevel')[0]
-    if v:shell_error
-        echo 'Not in git repo'
-    else
-        execute 'lcd' root
-        echo 'Changed directory to: '.root
-    endif
-endfunction
-command! Root call s:root()
-nnoremap cu :Root<CR>
-
 " Leader maps {{{2
 " Quickfix and Location list maps
-nnoremap <silent> <Leader>l :lopen<CR>
-nnoremap <silent> <Leader>L :lclose<CR>
-nnoremap <silent> <Leader>h :copen<CR>
-nnoremap <silent> <Leader>H :cclose<CR>
+nnoremap <silent> <Space>l :lopen<CR>
+nnoremap <silent> <Space>L :lclose<CR>
+nnoremap <silent> <Space>h :copen<CR>
+nnoremap <silent> <Space>H :cclose<CR>
 
 " Plugins {{{2
+" Go to project root automatically - Rooter {{{3
+Plug 'airblade/vim-rooter'
+let g:rooter_change_directory_for_non_project_files = 'current'
+let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
+let g:rooter_use_lcd = 1
+let g:rooter_silent_chdir = 1
+nnoremap cu :Rooter<CR>
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -323,90 +291,51 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> g/ :FzfAg<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Leader>d :FzfGitFiles<CR>
-nnoremap <silent> <Leader>f :FzfFiles %:p:h<CR>
-nnoremap <silent> <Leader>F :FzfFiles ~<CR>
-nnoremap <silent> <Leader>a :FzfBuffers<CR>
-nnoremap <silent> <Leader>c :FzfColors<CR>
-nnoremap <silent> <Leader>x :FzfHelptags<CR>
-nnoremap <silent> <Leader>, :FzfMaps<CR>
-nnoremap <silent> <Leader>` :FzfMarks<CR>
-nnoremap <silent> <Leader>A :FzfWindows<CR>
-nnoremap <silent> <Leader>r :FzfHistory<CR>
-nnoremap <silent> <Leader>/ :FzfHistory/<CR>
-nnoremap <Leader>s :FzfSpotlight<Space>
-nnoremap <Leader>S :FzfLocate!<Space>
-nnoremap <Leader>j :FzfCommands<CR>
-nnoremap <Leader>J :FzfHistory:<CR>
-vnoremap <Leader>j :FzfCommands<CR>
-vnoremap <Leader>J :FzfHistory:<CR>
+nnoremap <silent> <Space>F :FzfFiles %:p:h<CR>
+nnoremap <silent> <Space>f :FzfGitFiles<CR>
+nnoremap <silent> <Space>a :FzfBuffers<CR>
+nnoremap <silent> <Space>c :FzfBCommits<CR>
+nnoremap <silent> <Space>C :FzfCommits<CR>
+nnoremap <silent> <Space>x :FzfHelptags<CR>
+nnoremap <silent> <Space>, :FzfMaps<CR>
+nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>A :FzfWindows<CR>
+nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>/ :FzfHistory/<CR>
+nnoremap <Space>s :FzfSpotlight<Space>
+nnoremap <Space>S :FzfLocate!<Space>
+nnoremap <Space>j :FzfCommands<CR>
+nnoremap <Space>J :FzfHistory:<CR>
+vnoremap <Space>j :FzfCommands<CR>
+vnoremap <Space>J :FzfHistory:<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+" Box related stuff
+command! -nargs=1 FzfBox call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Box\ Sync <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Box> "'
+            \ })
+nnoremap <Space>bs :FzfBox<Space>
+nnoremap <silent> <Space>bf :FzfFiles ~/Box\ Sync<Space>
+nnoremap <Space>bo :enew <bar> cd ~/Box\ Sync/<CR>
+" Dropbox related stuff
+command! -nargs=1 FzfDropbox call fzf#run({
+            \ 'source': 'mdfind -onlyin ~/Dropbox <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Dropbox> "'
+            \ })
+nnoremap <Space>ds :FzfDropbox<Space>
+nnoremap <silent> <Space>df :FzfFiles ~/Dropbox<CR>
+nnoremap <Space>do :enew <bar> cd ~/Dropbox/<CR>
 " PhD related stuff
 command! -nargs=1 FzfPhD call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
+            \ 'source': 'mdfind -onlyin ~/Box\ Sync/PhD <q-args>',
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "PhD> "'
             \ })
-command! -nargs=1 FzfNotes call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/notes/ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Notes> "'
-            \ })
-command! -nargs=1 FzfJobs call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/jobs/ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Jobs> "'
-            \ })
-command! -nargs=1 FzfPapers call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/papers/ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Papers> "'
-            \ })
-command! -nargs=1 FzfArticles call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/articles/ <q-args>',
-            \ 'sink' : '!open',
-            \ 'options': '-m --prompt "Articles> "'
-            \ })
-command! -nargs=1 FzfReports call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/reports/ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Reports> "'
-            \ })
-command! -nargs=1 FzfMeetings call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/meetings/ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Meetings> "'
-            \ })
-command! -nargs=1 FzfCourses call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/courses/ <q-args>',
-            \ 'sink' : '!open',
-            \ 'options': '-m --prompt "Courses> "'
-            \ })
-command! -nargs=1 FzfExpenses call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD/expenses/ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Expenses> "'
-            \ })
-nnoremap <Leader>os :FzfPhD<Space>
-nnoremap <Leader>of :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap <Leader>on :FzfNotes<Space>
-nnoremap <Leader>oa :FzfArticles<Space>
-nnoremap <Leader>oa :FzfCourses<Space>
-nnoremap <Leader>oe :FzfExpenses<Space>
-nnoremap <Leader>oj :FzfJobs<Space>
-nnoremap <Leader>om :FzfMeetings<Space>
-nnoremap <Leader>op :FzfPapers<Space>
-nnoremap <Leader>or :FzfReports<Space>
-nnoremap <Leader>bs :enew <bar> cd ~/Dropbox/PhD<CR>
-nnoremap <Leader>bf :terminal ranger ~/Dropbox/PhD<CR>
-nnoremap <Leader>bn :enew <bar> cd ~/Dropbox/PhD/notes<CR>
-nnoremap <Leader>ba :enew <bar> cd ~/Dropbox/PhD/articles<CR>
-nnoremap <Leader>be :enew <bar> cd ~/Dropbox/PhD/expenses<CR>
-nnoremap <Leader>bc :enew <bar> cd ~/Dropbox/PhD/courses<CR>
-nnoremap <Leader>bj :enew <bar> cd ~/Dropbox/PhD/jobs<CR>
-nnoremap <Leader>bm :enew <bar> cd ~/Dropbox/PhD/meetings<CR>
-nnoremap <Leader>bp :enew <bar> cd ~/Dropbox/PhD/papers<CR>
-nnoremap <Leader>br :enew <bar> cd ~/Dropbox/PhD/reports<CR>
+nnoremap <Space>ps :FzfPhD<Space>
+nnoremap <Space>pf :FzfFiles ~/Box\ Sync/PhD<CR>
+nnoremap <Space>po :enew <bar> cd ~/Box\ Sync/PhD<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -653,13 +582,13 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \ ]
 " Org mode like embedded code editing
 Plug 'AndrewRadev/inline_edit.vim'
-nnoremap <Leader>i :InlineEdit<CR>
-vnoremap <Leader>i :InlineEdit<CR>
+nnoremap <Space>i :InlineEdit<CR>
+vnoremap <Space>i :InlineEdit<CR>
 " Preview the substitution
 Plug 'osyo-manga/vim-over'
 let g:over_command_line_prompt = ">"
-nnoremap <Leader><Leader> :OverCommandLine<CR>
-vnoremap <Leader><Leader> :OverCommandLine<CR>
+nnoremap <Space><Space> :OverCommandLine<CR>
+vnoremap <Space><Space> :OverCommandLine<CR>
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
@@ -894,7 +823,7 @@ command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
 augroup filetype_cpp
     autocmd!
-    autocmd FileType c,cpp nnoremap <buffer> <Leader>g :call rtags#JumpTo()<CR>
+    autocmd FileType c,cpp nnoremap <buffer> <Space>g :call rtags#JumpTo()<CR>
 augroup end
 " Python {{{2
 " Autocompletion and some jumping
@@ -914,7 +843,7 @@ command! PyRename call jedi#rename()
 command! PyRenameVisual call jedi#rename_visual()
 augroup filetype_python
     autocmd!
-    autocmd FileType python nnoremap <buffer> <Leader>g :call jedi#goto()<CR>
+    autocmd FileType python nnoremap <buffer> <Space>g :call jedi#goto()<CR>
 augroup end
 " JavaSctipt {{{2
 " Much better Python text objects and goodies
@@ -931,7 +860,7 @@ Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
 augroup filetype_javascript
     autocmd!
     autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
-    autocmd FileType js,javascript nnoremap <buffer> <Leader>g :TernDef<CR>
+    autocmd FileType js,javascript nnoremap <buffer> <Space>g :TernDef<CR>
 augroup end
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
@@ -995,22 +924,22 @@ let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
-nnoremap <silent> <Leader>n :terminal ranger<CR>
-nnoremap <silent> <Leader>e :terminal tig<CR>
-nnoremap <Leader>Y :vsp <bar> terminal googler<Space>
-nnoremap <silent> <Leader>y :vsp <bar> terminal googler <cWORD><CR>
+nnoremap <silent> <Space>n :terminal ranger<CR>
+nnoremap <silent> <Space>e :terminal tig<CR>
+nnoremap <Space>Y :vsp <bar> terminal googler<Space>
+nnoremap <silent> <Space>y :vsp <bar> terminal googler <cWORD><CR>
 
 if exists('$TMUX')
-    nnoremap <silent> <Leader>u :call system("tmux split-window -h")<CR>
-    nnoremap <silent> <Leader>U :call system("tmux split-window -v")<CR>
+    nnoremap <silent> <Space>u :call system("tmux split-window -h")<CR>
+    nnoremap <silent> <Space>U :call system("tmux split-window -v")<CR>
 else
-    nnoremap <silent> <Leader>u :vsp <bar> terminal<CR>
-    nnoremap <silent> <Leader>U :sp <bar> terminal<CR>
+    nnoremap <silent> <Space>u :vsp <bar> terminal<CR>
+    nnoremap <silent> <Space>U :sp <bar> terminal<CR>
 endif
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
-    nnoremap <silent> <Leader>z :call system("tmux resize-pane -Z")<CR>
+    nnoremap <silent> <Space>z :call system("tmux resize-pane -Z")<CR>
     nmap <silent> <Plug>SwapTmuxUp :call system("tmux swap-pane -U")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxUp", v:count)<CR>
     nmap ]R <Plug>SwapTmuxUp
@@ -1027,9 +956,9 @@ nmap <silent> <BS> :TmuxNavigateLeft<CR>
 Plug 'tpope/vim-eunuch'
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
-nnoremap <Leader>m :Dispatch!<Space>
-nnoremap <silent> <Leader>p :Copen<CR>
-nnoremap <silent> <Leader>P :cclose<CR>
+nnoremap <Space>m :Dispatch!<Space>
+nnoremap <silent> <Space>o :Copen<CR>
+nnoremap <silent> <Space>O :cclose<CR>
 " Commandline utilities
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
@@ -1078,7 +1007,7 @@ let g:tmuxify_run = {
             \ 'python': 'ipython',
             \ 'julia': 'julia',
             \ 'racket': 'racket',
-            \ 'sml': 'smlnj',
+            \ 'sml': 'sml',
             \}
 
 " Stop plugin installation {{{1
