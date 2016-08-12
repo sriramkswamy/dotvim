@@ -6,5 +6,40 @@ endsnippet
 snippet if "if then else" b
 if $1
 then $2
-else $3
+endsnippet
+
+snippet eli "else if" b
+else if $2
+then $0
+endsnippet
+
+snippet el "else" b
+else $0
+endsnippet
+
+snippet iff "if one line" i
+if $1 then $2 else $0
+endsnippet
+
+snippet let "let expression" b
+let
+	$1
+in
+	$0
+end
+endsnippet
+
+snippet lett "let one line" i
+let $1 in $0 end
+endsnippet
+
+snippet dt "datatype bindings" b
+datatype ${1:type} = ${2:constructor name} of ${3:actual type}
+				   | $0
+endsnippet
+
+snippet case "case expression" b
+case ${1:variable} of
+	  ${2:type} => ${3:expression}
+	| $0
 endsnippet
