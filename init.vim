@@ -329,13 +329,13 @@ nnoremap <silent> <Space>df :FzfFiles ~/Dropbox<CR>
 nnoremap <Space>do :enew <bar> cd ~/Dropbox/<CR>
 " PhD related stuff
 command! -nargs=1 FzfPhD call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Box\ Sync/PhD <q-args>',
+            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "PhD> "'
             \ })
 nnoremap <Space>ps :FzfPhD<Space>
-nnoremap <Space>pf :FzfFiles ~/Box\ Sync/PhD<CR>
-nnoremap <Space>po :enew <bar> cd ~/Box\ Sync/PhD<CR>
+nnoremap <Space>pf :FzfFiles ~/Dropbox/PhD<CR>
+nnoremap <Space>po :enew <bar> cd ~/Dropbox/PhD<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -846,7 +846,6 @@ augroup filetype_python
     autocmd!
     autocmd FileType python nnoremap <buffer> <Space>g :call jedi#goto()<CR>
 augroup end
-" JavaSctipt {{{2
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
 command! BracelessOn BracelessEnable +indent +fold +highlight
@@ -856,12 +855,21 @@ let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
 let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
+" JavaScript {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
 augroup filetype_javascript
     autocmd!
     autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
     autocmd FileType js,javascript nnoremap <buffer> <Space>g :TernDef<CR>
+augroup end
+" Go {{{2
+" Autocompletion and navigation
+Plug 'fatih/vim-go'
+augroup filetype_go
+    autocmd!
+    autocmd FileType go nnoremap <buffer> K :GoDoc<CR>
+    autocmd FileType go nnoremap <buffer> <Space>g :GoDef<CR>
 augroup end
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
