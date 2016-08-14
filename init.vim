@@ -133,6 +133,7 @@ nnoremap <silent> [z zk
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
+nnoremap <silent> <Space>v :redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
 nnoremap <Space>t :tabe<CR>
@@ -143,11 +144,7 @@ nnoremap <Space>V :!open %:p:h<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 " Markdown preview
-let g:instant_markdown_autostart = 0
-augroup filetype_markdown
-    autocmd!
-    autocmd FileType markdown nnoremap <Space>v :InstantMarkdownPreview<CR>
-augroup end
+let g:instant_markdown_autostart = 1
 
 " Plugins {{{2
 " Undotree
