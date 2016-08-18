@@ -155,6 +155,7 @@ nnoremap <silent> [z zk
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
+nnoremap <silent> <Space>v :redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
 nnoremap <Space>t :tabe<Space>
@@ -165,11 +166,7 @@ nnoremap <Space>V :!open %:p:h<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 " Markdown preview
-let g:instant_markdown_autostart = 0
-augroup filetype_markdown
-    autocmd!
-    autocmd FileType markdown nnoremap <Space>v :InstantMarkdownPreview<CR>
-augroup end
+let g:instant_markdown_autostart = 1
 
 " Plugins {{{2
 " Undotree
@@ -617,8 +614,8 @@ vnoremap <Space>i :InlineEdit<CR>
 " Preview the substitution
 Plug 'osyo-manga/vim-over'
 let g:over_command_line_prompt = ">"
-nnoremap <Space><Leader> :OverCommandLine<CR>
-vnoremap <Space><Leader> :OverCommandLine<CR>
+nnoremap <Space><Space> :OverCommandLine<CR>
+vnoremap <Space><Space> :OverCommandLine<CR>
 " Semantic split and join
 Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
@@ -1087,13 +1084,13 @@ function! LatexI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-" Markdown code text object - (operator)iM/aM {{{1
+" Markdown code text object - (operator)iM/aM and (operator)iX/aX for hexo style {{{1
 call textobj#user#plugin('markcode', { '-': {
             \ 'select-a-function': 'MarkcodeA', 'select-a': 'aM',
             \ 'select-i-function': 'MarkcodeI', 'select-i': 'iM',
             \ }, })
 function! MarkcodeA()
-    call search('^```\w*$', 'bc')
+    call search('^```\s*\w*$', 'bc')
     normal! 0
     let head_pos = getpos('.')
     normal! j
@@ -1103,7 +1100,31 @@ function! MarkcodeA()
     return ['v', head_pos, tail_pos]
 endfunction
 function! MarkcodeI()
-    call search('^```\w*$', 'bc')
+    call search('^```\s*\w*$', 'bc')
+    normal! j0
+    let head_pos = getpos('.')
+    call search('^```$', 'c')
+    normal! k$
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+
+call textobj#user#plugin('hexocode', { '-': {
+            \ 'select-a-function': 'HexocodeA', 'select-a': 'aX',
+            \ 'select-i-function': 'HexocodeI', 'select-i': 'iX',
+            \ }, })
+function! HexocodeA()
+    call search('^```\s*\[.*\]$', 'bc')
+    normal! 0
+    let head_pos = getpos('.')
+    normal! j
+    call search('^```$', 'c')
+    normal! $
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+function! HexocodeI()
+    call search('^```\s*\[.*\]$', 'bc')
     normal! j0
     let head_pos = getpos('.')
     call search('^```$', 'c')
