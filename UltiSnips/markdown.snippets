@@ -72,11 +72,11 @@ snippet bold "bold"
 **$1**$0
 endsnippet
 
-snippet cod "backtick code"
+snippet cd "backtick code"
 \`$1\` $2
 endsnippet
 
-snippet cob "backtick code"
+snippet cb "backtick code"
 \`\`\` ${1:sh}
 $0
 \`\`\`
@@ -112,13 +112,13 @@ $0
 endsnippet
 
 snippet mi "pandoc inline math"
-\\\\( $1 \\\\)$0
+$ $1 $ $0
 endsnippet
 
 snippet ma "pandoc center math" b
-\\\\[
+$$
 	$1
-\\\\]
+$$
 $0
 endsnippet
 
@@ -662,14 +662,26 @@ $1
 $0
 endsnippet
 
-snippet hexc "hexo code block" b
+snippet hc "hexo code block" b
 \`\`\` [${1:language}] [${2:title}] ${3:[${4:url}]} ${5:[${6:link text}]}
 $0
 \`\`\`
 endsnippet
 
-snippet hexq "hexo quote" b
+snippet hq "hexo quote" b
 {% blockquote ${1:name/twitter handle${2:, book name}} ${3:link} %}
 $0
 {% endblockquote %}
 endsnippet
+
+snippet hi "hexo inline math"
+\\\\( $1 \\\\)$0
+endsnippet
+
+snippet ha "hexo center math" b
+\\\\[
+	$1
+\\\\]
+$0
+endsnippet
+

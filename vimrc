@@ -24,7 +24,6 @@ set scrolloff=3
 " Color the current line
 set nocursorline " Can be toggled with 'coc'
 " Show line numbers
-set number
 set relativenumber
 " Format options
 set formatoptions=tcqj
@@ -158,7 +157,7 @@ nnoremap <silent> <Space>w :update<CR>
 nnoremap <silent> <Space>v :redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
-nnoremap <Space>t :tabe<Space>
+nnoremap <Space>t :tabe<CR>
 " Alternate files
 nnoremap <Space><Tab> :b#<CR>
 " Open in Finder
@@ -298,65 +297,40 @@ let g:rooter_change_directory_for_non_project_files = 'current'
 let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
-nnoremap cu :Rooter<CR>
+nnoremap crd :Rooter<CR>
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
-command! -nargs=1 FzfSpotlight call fzf#run({
-            \ 'source': 'mdfind -onlyin ~ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Spotlight> "'
-            \ })
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> g/ :FzfAg<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>f :FzfGitFiles<CR>
-nnoremap <silent> <Space>F :FzfFiles %:p:h<CR>
+nnoremap <silent> <Space>s :FzfFiles ~<CR>
 nnoremap <silent> <Space>a :FzfBuffers<CR>
-nnoremap <silent> <Space>c :FzfBCommits<CR>
-nnoremap <silent> <Space>C :FzfCommits<CR>
+nnoremap <silent> <Space>c :FzfColors<CR>
+nnoremap <silent> <Space>d :FzfBLines<CR>
+nnoremap <silent> <Space>D :FzfLines<CR>
+nnoremap <silent> <Space>p :FzfBCommits<CR>
+nnoremap <silent> <Space>P :FzfCommits<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>, :FzfMaps<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>A :FzfWindows<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <Space>s :FzfSpotlight<Space>
-nnoremap <Space>S :FzfLocate!<Space>
 nnoremap <Space>j :FzfCommands<CR>
 nnoremap <Space>J :FzfHistory:<CR>
 vnoremap <Space>j :FzfCommands<CR>
 vnoremap <Space>J :FzfHistory:<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
 " Box related stuff
-command! -nargs=1 FzfBox call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Box\ Sync <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Box> "'
-            \ })
-nnoremap <Space>bs :FzfBox<Space>
-nnoremap <silent> <Space>bf :FzfFiles ~/Box\ Sync<Space>
-nnoremap <Space>bo :enew <bar> cd ~/Box\ Sync/<CR>
+nnoremap <silent> <Space>B :FzfFiles ~/Box\ Sync<CR>
+nnoremap dX :enew <bar> cd ~/Box\ Sync/<CR>
 " Dropbox related stuff
-command! -nargs=1 FzfDropbox call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Dropbox> "'
-            \ })
-nnoremap <Space>ds :FzfDropbox<Space>
-nnoremap <silent> <Space>df :FzfFiles ~/Dropbox<CR>
-nnoremap <Space>do :enew <bar> cd ~/Dropbox/<CR>
-" PhD related stuff
-command! -nargs=1 FzfPhD call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "PhD> "'
-            \ })
-nnoremap <Space>ps :FzfPhD<Space>
-nnoremap <Space>pf :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap <Space>po :enew <bar> cd ~/Dropbox/PhD<CR>
+nnoremap <silent> <Space>b :FzfFiles ~/Dropbox<CR>
+nnoremap dx :enew <bar> cd ~/Dropbox/<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -562,6 +536,11 @@ Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 " Better '.' command
 Plug 'tpope/vim-repeat'
+" Convert the line into a list and vice versa
+nmap <Plug>LineToList I- [ ] <Esc>2h:call repeat#set("\<Plug>LineToList", v:count)<CR>
+nmap <Space>- <Plug>LineToList
+nmap <Plug>ListToLine _df]x:call repeat#set("\<Plug>ListToLine", v:count)<CR>
+nmap <Space>= <Plug>ListToLine
 " Elementary splitting
 nmap <Plug>ElementarySplit Dop==k$:call repeat#set("\<Plug>ElementarySplit", v:count)<CR>
 nmap gz <Plug>ElementarySplit
@@ -583,6 +562,7 @@ let g:switch_custom_definitions =
             \     '\<\(\l\+\)\(-\l\+\)\+\>': "\\=substitute(submatch(0), '-\\(\\l\\)', '\\u\\1', 'g')",
             \   },
             \ ['TODO', 'DONE', 'WAITING', 'CANCELLED'],
+            \ ['[ ]', '[X]']
             \ ]
 autocmd FileType tex,plaintex let b:switch_custom_definitions =
             \ [
@@ -819,6 +799,9 @@ autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
 autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
+" User completion for tmux panes
+Plug 'wellle/tmux-complete.vim'
+let g:tmuxcomplete#trigger = 'completefunc'
 
 " Language helpers {{{1
 " Syntax and nicities for many languages {{{2
@@ -911,6 +894,7 @@ Plug 'rizzatti/dash.vim'
 nmap <silent> <leader>K <Plug>DashSearch
 
 " Syntax checking {{{1
+" Refer to filetypes in ~/.vim/after/ftplugin/
 
 " Searching {{{1
 " Set commands {{{2
@@ -982,10 +966,15 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-eunuch'
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
-nnoremap <Space>m :Dispatch!<Space>
-nnoremap <silent> <Space>p :Copen<CR>
-nnoremap <silent> <Space>P :cclose<CR>
+nnoremap <Space>mm :Make<CR>
+nnoremap <Space>mf :Make %<CR>
+nnoremap <Space>mb :Make -C build<CR>
+nnoremap <Space>md :Make -C build doc<CR>
+nnoremap <Space>ml :Make -C docs/latex<CR>
+nnoremap <silent> <Space>o :Copen<CR>
+nnoremap <silent> <Space>O :cclose<CR>
 " Commandline utilities
+nnoremap cu :Dispatch! ctags -R %:p:h<CR>
 nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
 nnoremap <silent> <Space>e :Spawn tig<CR>
@@ -995,20 +984,20 @@ nnoremap <silent> <Space>y :Spawn googler <cWORD><CR>
 " Dispatch based commands
 command! GitPush Dispatch! git push
 command! GitPull Dispatch! git pull
-command! GppMake Dispatch! make
-command! GppBuild Dispatch! make -C build
-command! GppDocs Dispatch! make -C build doc
-command! GppLatex Dispatch! make -C docs/latex
+command! GppMake Make
+command! GppBuild Make -C build
+command! GppDocs Make -C build doc
+command! GppLatex Make -C docs/latex
 command! GppSimple Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %
 command! GppSingle Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
 command! GppOpenmp Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
 command! GppMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
 command! GppHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
 command! GppArmadillo Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
-command! GccMake Dispatch! make
-command! GccBuild Dispatch! make -C build
-command! GccLatex Dispatch! make -C docs/latex
-command! GccDocs Dispatch! make -C build doc
+command! GccMake Make
+command! GccBuild Make -C build
+command! GccLatex Make -C docs/latex
+command! GccDocs Make -C build doc
 command! GccSimple Dispatch! cd %:p:h <bar> gcc -std=c++11 -Wall -g -o %:p:r.out %
 command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
 command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
