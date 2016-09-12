@@ -179,7 +179,7 @@ Plug 'mhinz/vim-startify'
 let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
 let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
 let g:startify_session_persistence = 1
-let g:startify_change_to_vcs_root = 1
+let g:startify_change_to_vcs_root = 0
 let g:startify_custom_header = ['', '   Vim/Neovim']
 let g:startify_custom_footer =
             \ ['', "   Vim is charityware. Please read ':help uganda'.",
@@ -293,7 +293,7 @@ nnoremap <silent> <Space>H :cclose<CR>
 " Plugins {{{2
 " Go to project root automatically - Rooter {{{3
 Plug 'airblade/vim-rooter'
-let g:rooter_change_directory_for_non_project_files = 'current'
+" let g:rooter_change_directory_for_non_project_files = 'current'
 let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
@@ -306,16 +306,13 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> g/ :FzfAg<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>f :FzfGitFiles<CR>
+nnoremap <silent> <Space>p :FzfGitFiles<CR>
 nnoremap <silent> <Space>s :FzfFiles ~<CR>
 nnoremap <silent> <Space>a :FzfBuffers<CR>
-nnoremap <silent> <Space>c :FzfColors<CR>
+nnoremap <silent> <Space>f :FzfFiles %:p:h<CR>
 nnoremap <silent> <Space>d :FzfBLines<CR>
-nnoremap <silent> <Space>D :FzfLines<CR>
-nnoremap <silent> <Space>p :FzfBCommits<CR>
-nnoremap <silent> <Space>P :FzfCommits<CR>
+nnoremap <silent> <Space>c :FzfCommits<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>, :FzfMaps<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>A :FzfWindows<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
@@ -325,6 +322,12 @@ nnoremap <Space>J :FzfHistory:<CR>
 vnoremap <Space>j :FzfCommands<CR>
 vnoremap <Space>J :FzfHistory:<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+nmap <Space>, <Plug>(fzf-maps-n)
+xmap <Space>, <Plug>(fzf-maps-x)
+omap <Space>, <Plug>(fzf-maps-o)
+imap <silent> <C-d> <Plug>(fzf-complete-word)
+imap <silent> <C-_> <Plug>(fzf-complete-path)
+imap <silent> <C-l> <Plug>(fzf-complete-line)
 " Box related stuff
 nnoremap <silent> <Space>B :FzfFiles ~/Box\ Sync<CR>
 nnoremap dX :enew <bar> cd ~/Box\ Sync/<CR>
@@ -537,13 +540,18 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 " Better '.' command
 Plug 'tpope/vim-repeat'
 " Convert the line into a list and vice versa
+function! FixLastSpellingError()
+  normal! mm[s1z=`m"
+endfunction
+inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>
 nmap <Plug>LineToList I- [ ] <Esc>2h:call repeat#set("\<Plug>LineToList", v:count)<CR>
 nmap <Space>- <Plug>LineToList
 nmap <Plug>ListToLine _df]x:call repeat#set("\<Plug>ListToLine", v:count)<CR>
 nmap <Space>= <Plug>ListToLine
-" Elementary splitting
+" Elementary splitting and joining
 nmap <Plug>ElementarySplit Dop==k$:call repeat#set("\<Plug>ElementarySplit", v:count)<CR>
-nmap gz <Plug>ElementarySplit
+nmap gS <Plug>ElementarySplit
+nnoremap gJ J
 " Blank the current line
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
@@ -596,8 +604,6 @@ Plug 'osyo-manga/vim-over'
 let g:over_command_line_prompt = ">"
 nnoremap <Space><Space> :OverCommandLine<CR>
 vnoremap <Space><Space> :OverCommandLine<CR>
-" Semantic split and join
-Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 nnoremap gl :Tabularize /
@@ -833,7 +839,7 @@ command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
 augroup filetype_cpp
     autocmd!
-    autocmd FileType c,cpp nnoremap <buffer> <Space>g :call rtags#JumpTo(g:SAME_WINDOW)<CR>
+    autocmd FileType c,cpp nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
     autocmd FileType c,cpp nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
 augroup end
 " Python {{{2
@@ -854,7 +860,7 @@ command! PyRename call jedi#rename()
 command! PyRenameVisual call jedi#rename_visual()
 augroup filetype_python
     autocmd!
-    autocmd FileType python nnoremap <buffer> <Space>g :call jedi#goto()<CR>
+    autocmd FileType python nnoremap <buffer> J :call jedi#goto()<CR>
 augroup end
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
@@ -871,7 +877,7 @@ Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
 augroup filetype_javascript
     autocmd!
     autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
-    autocmd FileType js,javascript nnoremap <buffer> <Space>g :TernDef<CR>
+    autocmd FileType js,javascript nnoremap <buffer> J :TernDef<CR>
 augroup end
 " Go {{{2
 " Autocompletion and navigation
@@ -879,7 +885,7 @@ Plug 'fatih/vim-go'
 augroup filetype_go
     autocmd!
     autocmd FileType go nnoremap <buffer> K :GoDoc<CR>
-    autocmd FileType go nnoremap <buffer> <Space>g :GoDef<CR>
+    autocmd FileType go nnoremap <buffer> J :GoDef<CR>
 augroup end
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
