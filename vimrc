@@ -154,7 +154,7 @@ nnoremap <silent> [z zk
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
-nnoremap <silent> <Space>v :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>
+nnoremap <silent> <Space>v :redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
 nnoremap <Space>t :tabe<CR>
@@ -796,6 +796,7 @@ omap ih <Plug>(signify-motion-inner-pending)
 xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
+nnoremap <silent> <Space>v :SignifyRefresh<CR>:redraw!<CR>
 " Git Wrapper
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
