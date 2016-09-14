@@ -154,7 +154,7 @@ nnoremap <silent> [z zk
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
-nnoremap <silent> <Space>v :redraw!<CR>
+nnoremap <silent> <Space>v :diffupdate! <bar> redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
 nnoremap <Space>t :tabe<CR>
