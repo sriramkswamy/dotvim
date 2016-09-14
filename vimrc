@@ -216,10 +216,14 @@ set showmatch
 
 " Maps without leader {{{2
 " Unimpaired inspired mappings
+nnoremap [g :cold<CR>
+nnoremap ]g :cnew<CR>
 nnoremap [q :cprevious<CR>
 nnoremap ]q :cnext<CR>
 nnoremap [Q :cfirst<CR>
 nnoremap ]Q :clast<CR>
+nnoremap [G :lold<CR>
+nnoremap ]G :lnew<CR>
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
 nnoremap [L :lfirst<CR>
@@ -263,6 +267,7 @@ function! GrepQuickFix(pat)
     call setqflist(qfl)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
+nnoremap gG :QFilter<Space>
 
 " Filter from location list
 function! GrepLocList(pat)
@@ -275,6 +280,7 @@ function! GrepLocList(pat)
     call setloclist(0,ll)
 endfunction
 command! -nargs=* LFilter call GrepLocList(<q-args>)
+nnoremap gL :LFilter<Space>
 
 " Common directory changes
 command! CD cd %:p:h
@@ -297,30 +303,31 @@ Plug 'airblade/vim-rooter'
 let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
-nnoremap crd :Rooter<CR>
+nnoremap dc :Rooter<CR>
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
-nnoremap <silent> g/ :FzfAg<CR>
+nnoremap <silent> J :FzfAg <C-R><C-W><CR>
+nnoremap <C-]> :FzfTags <C-R><C-W><CR>
+nnoremap <silent> g/ :FzfHistory/<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>p :FzfGitFiles<CR>
-nnoremap <silent> <Space>s :FzfFiles ~<CR>
 nnoremap <silent> <Space>a :FzfBuffers<CR>
+nnoremap <silent> <Space>c :FzfBCommits<CR>
+nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles %:p:h<CR>
-nnoremap <silent> <Space>d :FzfBLines<CR>
-nnoremap <silent> <Space>c :FzfCommits<CR>
+nnoremap <silent> <Space>b :FzfFiles ~<CR>
+nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>s :FzfAg<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>A :FzfWindows<CR>
-nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <Space>j :FzfCommands<CR>
-nnoremap <Space>J :FzfHistory:<CR>
-vnoremap <Space>j :FzfCommands<CR>
-vnoremap <Space>J :FzfHistory:<CR>
+nnoremap <silent> <Space>/ :FzfBLines<CR>
+nnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>j :FzfCommands<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
@@ -328,12 +335,16 @@ omap <Space>, <Plug>(fzf-maps-o)
 imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-_> <Plug>(fzf-complete-path)
 imap <silent> <C-l> <Plug>(fzf-complete-line)
-" Box related stuff
-nnoremap <silent> <Space>B :FzfFiles ~/Box\ Sync<CR>
-nnoremap dX :enew <bar> cd ~/Box\ Sync/<CR>
-" Dropbox related stuff
-nnoremap <silent> <Space>b :FzfFiles ~/Dropbox<CR>
-nnoremap dx :enew <bar> cd ~/Dropbox/<CR>
+" PhD related stuff
+nnoremap <silent> <Space>p :FzfFiles ~/Dropbox/PhD<CR>
+nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
+" Fzf based bibliography completion - TODO
+command! FzfBib call fzf#run({
+            \ 'source': 'cat ~/Dropbox/PhD/articles/tensors/tensors.bib',
+            \ 'sink' : 'e ~/Dropbox/PhD/notes/articles/tensors/',
+            \ 'options': '-m --prompt "Bib> "'
+            \ })
+
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -608,8 +619,6 @@ vnoremap <Space><Space> :OverCommandLine<CR>
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 nnoremap gl :Tabularize /
 vnoremap gl :Tabularize /
-nnoremap gL :Tabularize<CR>
-vnoremap gL :Tabularize<CR>
 nnoremap g<Tab> :Tabularize /\s\+<CR>
 vnoremap g<Tab> :Tabularize /\s\+<CR>
 nnoremap g= :Tabularize /=<CR>
@@ -790,6 +799,7 @@ xmap ah <Plug>(signify-motion-outer-visual)
 " Git Wrapper
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
+nnoremap <silent> <Space>g :Gstatus<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
@@ -816,6 +826,10 @@ Plug 'sheerun/vim-polyglot'
 let g:LatexBox_Folding = 1
 " Vim script {{{2
 Plug 'tpope/vim-scriptease'
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim nnoremap <buffer> J :helpgrep <C-R><C-W><CR>
+augroup end
 " C/C++ {{{2
 " Autocompletion
 Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
@@ -914,6 +928,12 @@ set incsearch
 set grepprg=grep\ -nH\ $*
 " Populate location list with previous search pattern; ugly hack
 nnoremap <C-n> :lvim // %<CR>
+" and automatically open the windows when they are populated
+augroup quick_loc_window
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* nested cwindow | setlocal nowrap | redraw!
+    autocmd QuickFixCmdPost l* nested lwindow | setlocal nowrap | redraw!
+augroup END
 
 " Maps without leader {{{2
 " Auto-center
@@ -933,7 +953,7 @@ Plug 'mhinz/vim-grepper'
 " Mimic :grep and make ag the default tool.
 let g:grepper = {
             \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
-            \ 'open':  0,
+            \ 'open':  1,
             \ 'jump':  0,
             \ 'next_tool': ']g'
             \ }
@@ -1026,11 +1046,12 @@ let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
 let g:tmuxify_run = {
             \ 'sh': 'bash %',
             \ 'go': 'go build %',
+            \ 'tex': 'latexmk -pdf -pvc %',
+            \ 'python': 'ipython',
             \ 'R': 'R',
             \ 'matlab': 'matlab',
-            \ 'scheme': 'racket',
-            \ 'python': 'ipython',
             \ 'julia': 'julia',
+            \ 'scheme': 'racket',
             \ 'racket': 'racket',
             \ 'sml': 'sml',
             \}
