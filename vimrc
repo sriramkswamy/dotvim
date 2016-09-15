@@ -338,13 +338,6 @@ imap <silent> <C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap <silent> <Space>p :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
-" Fzf based bibliography completion - TODO
-command! FzfBib call fzf#run({
-            \ 'source': 'cat ~/Dropbox/PhD/articles/tensors/tensors.bib',
-            \ 'sink' : 'e ~/Dropbox/PhD/notes/articles/tensors/',
-            \ 'options': '-m --prompt "Bib> "'
-            \ })
-
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -904,7 +897,8 @@ augroup filetype_go
 augroup end
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
-let g:sparkupNextMapping = '<C-Y>'
+let g:sparkupExecuteMapping = '<C-y>'
+let g:sparkupNextMapping = '<C-n>'
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -993,6 +987,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-eunuch'
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
+nnoremap g! :Dispatch<Space>
 nnoremap <Space>mm :Make<CR>
 nnoremap <Space>mf :Make %<CR>
 nnoremap <Space>mb :Make -C build<CR>
@@ -1001,44 +996,52 @@ nnoremap <Space>ml :Make -C docs/latex<CR>
 nnoremap <silent> <Space>o :Copen<CR>
 nnoremap <silent> <Space>O :cclose<CR>
 " Commandline utilities
-nnoremap cu :Dispatch! ctags -R %:p:h<CR>
-nnoremap gp :Dispatch! gist % -cd ""<Left>
-nnoremap gP :Dispatch! gist -Pcd ""<Left>
+nnoremap cu :Dispatch ctags -R %:p:h<CR>
+nnoremap gp :Dispatch gist % -cd ""<Left>
+nnoremap gP :Dispatch gist -Pcd ""<Left>
 nnoremap <silent> <Space>e :Spawn tig<CR>
 nnoremap <silent> <Space>n :Spawn ranger<CR>
 nnoremap <Space>Y :Spawn googler<Space>
-nnoremap <silent> <Space>y :Spawn googler <cWORD><CR>
+nnoremap <silent> <Space>y :execute 'Spawn googler <cWORD> ' . &filetype<CR>
 " Dispatch based commands
-command! GitPush Dispatch! git push
-command! GitPull Dispatch! git pull
+command! GitPush Dispatch git push
+command! GitPull Dispatch git pull
 command! GppMake Make
 command! GppBuild Make -C build
 command! GppDocs Make -C build doc
 command! GppLatex Make -C docs/latex
-command! GppSimple Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %
-command! GppSingle Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GppOpenmp Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GppMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GppHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GppArmadillo Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
+command! GppSimple Dispatch cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %
+command! GppSingle Dispatch cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GppOpenmp Dispatch cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GppMpi Dispatch cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GppHybrid Dispatch cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GppArmadillo Dispatch cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
 command! GccMake Make
 command! GccBuild Make -C build
 command! GccLatex Make -C docs/latex
 command! GccDocs Make -C build doc
-command! GccSimple Dispatch! cd %:p:h <bar> gcc -std=c++11 -Wall -g -o %:p:r.out %
-command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GccHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GccArmadillo Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
-command! TexCount Dispatch! texcount %
-command! ConvertToPDF Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf
-command! ConvertToOrg Dispatch! pandoc % -o %:r.org
-command! ConvertToRst Dispatch! pandoc % -o %:r.rst
-command! ConvertToLatex Dispatch! pandoc % -o %:r.tex
-command! ConvertToEpub3 Dispatch! pandoc % -o %:r.epub
-command! ConvertToHTML5 Dispatch! pandoc % -o %:r.html
-command! ConvertToOPML Dispatch! multimarkdown -t opml % > %:r.opml
+command! GccSimple Dispatch cd %:p:h <bar> gcc -std=c++11 -Wall -g -o %:p:r.out %
+command! GccSingle Dispatch cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GccOpenmp Dispatch cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GccMpi Dispatch cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
+command! GccHybrid Dispatch cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
+command! GccArmadillo Dispatch cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
+command! TexCount Dispatch texcount %
+command! ConvertToPDF Dispatch pandoc % -V geometry:margin=2cm -o %:r.pdf
+command! ConvertToOrg Dispatch pandoc % -o %:r.org
+command! ConvertToRst Dispatch pandoc % -o %:r.rst
+command! ConvertToLatex Dispatch pandoc % -o %:r.tex
+command! ConvertToEpub3 Dispatch pandoc % -o %:r.epub
+command! ConvertToHTML5 Dispatch pandoc % -o %:r.html
+command! ConvertToOPML Dispatch multimarkdown -t opml % > %:r.opml
+" start rtags when in c or cpp files
+autocmd FileType c,cpp :Dispatch! rdm &<CR>
+" matlab support - sort of
+augroup filetype_matlab
+    autocmd!
+    autocmd FileType matlab nnoremap <buffer> J :find <C-R><C-W><CR>
+    autocmd FileType matlab nnoremap <buffer> K :Dispatch /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>
+augroup end
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
