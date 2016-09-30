@@ -314,20 +314,21 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g/ :FzfHistory/<CR>
+nnoremap <silent> g/ :FzfLines<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>a :FzfBuffers<CR>
+nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles %:p:h<CR>
 nnoremap <silent> <Space>b :FzfFiles ~<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>s :FzfAg<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>/ :FzfBLines<CR>
+nnoremap <silent> <Space>/ :FzfAg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
+nnoremap <silent> <Space>J :FzfHistory:<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>J :FzfHistory:<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
@@ -338,6 +339,13 @@ imap <silent> <C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap <silent> <Space>p :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
+" Search spotlight
+command! -nargs=1 FzfSpotlight call fzf#run({
+            \ 'source': 'mdfind -onlyin ~ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Spotlight> "'
+            \ })
+nnoremap <Space>s :FzfSpotlight<Space>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -955,6 +963,10 @@ let g:grepper = {
 nnoremap gss :Grepper -tool ag -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
+
+" Search and replace across project - trial {{{2
+Plug 'thinca/vim-qfreplace'
+nnoremap gQ :Qfreplace<CR>
 
 " REPL and Tmux {{{1
 " let commands and maps without leader {{{2

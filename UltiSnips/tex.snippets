@@ -32,6 +32,10 @@ snippet p "preamble" b
 \usepackage{esint}
 \usepackage{subcaption}
 \usepackage{titlesec}
+\usepackage{epstopdf}
+\usepackage{empheq}
+
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
 
 \definecolor{dark-red}{rgb}{0.4,0.15,0.15}
 \definecolor{dark-blue}{rgb}{0.15,0.15,0.4}
@@ -58,9 +62,8 @@ $0
 \end{document}
 endsnippet
 
-snippet usep "usepackage" b
-\usepackage{$1}
-$0
+snippet use "usepackage" b
+\usepackage${2:[$0]}{$1}
 endsnippet
 
 snippet grappath "graphics path" b
@@ -371,11 +374,11 @@ snippet tauu "tau" i
 \tau
 endsnippet
 
-snippet Thetaa "Theta" i
+snippet Tha "Theta" i
 \Theta
 endsnippet
 
-snippet thetaa "theta" i
+snippet tha "theta" i
 \theta
 endsnippet
 
@@ -443,7 +446,7 @@ snippet xs "times" i
 \times $0
 endsnippet
 
-snippet infinity "infinity" i
+snippet inf "infinity" i
 \infty
 endsnippet
 
@@ -558,7 +561,7 @@ snippet - "dash"
 --- $0
 endsnippet
 
-snippet abs "abs" i
+snippet ab "abs" i
 \left| $1 \right| $0
 endsnippet
 
@@ -658,6 +661,18 @@ snippet tan "tangent" i
 \tan{$1}
 endsnippet
 
+snippet cosh "hyperbolic cosine" i
+\cosh{$1}
+endsnippet
+
+snippet sinh "hyperbolic sine" i
+\sinh{$1}
+endsnippet
+
+snippet tanh "hyperbolic tangent" i
+\tanh{$1}
+endsnippet
+
 snippet pii "pi" i
 \pi
 endsnippet
@@ -680,6 +695,18 @@ endsnippet
 
 snippet tani "tan inverse" i
 \tan^{-1}{$1}
+endsnippet
+
+snippet sinih "hyperbolic sin inverse" i
+\sinh^{-1}{$1}
+endsnippet
+
+snippet cosih "hyperbolic cos inverse" i
+\cosh^{-1}{$1}
+endsnippet
+
+snippet tanih "hyperbolic tan inverse" i
+\tanh^{-1}{$1}
 endsnippet
 
 snippet newl "newline" i
@@ -723,11 +750,11 @@ snippet pwise "piecewise function definition" b
 \[
 $1 =
 \begin{cases}
-\hfill $2 \hfill & \text{$3} \\\\
-		\hfill $4 \hfill & \text{$5} \\\\
-		\end{cases}
-		\]
-		$0
+	\hfill $2 \hfill & \text{, \hspace{0.25cm} $3} \\\\
+	\hfill $4 \hfill & \text{, \hspace{0.25cm} $5} \\\\
+\end{cases}
+\]
+$0
 endsnippet
 
 snippet exam "example" b
@@ -749,6 +776,18 @@ snippet tan2 "tan square" i
 \tan^2{$1}
 endsnippet
 
+snippet cosh2 "hyperbolic cos square" i
+\cosh^2{$1}
+endsnippet
+
+snippet sinh2 "hyperbolic sin square" i
+\sinh^2{$1}
+endsnippet
+
+snippet tanh2 "hyperbolic tan square" i
+\tanh^2{$1}
+endsnippet
+
 snippet ff "Friction factor"
 \frac{4 f l^*_{$1}}{D_H}
 endsnippet
@@ -768,6 +807,18 @@ snippet cccost "Chance constrained cost function" b
 \end{aligned}
 \end{equation*}
 $0
+endsnippet
+
+snippet ali "aligned equation" b
+\begin{equation*}
+\begin{aligned}
+${1:LHS} & = ${2:RHS} \\\\$0
+\end{aligned}
+\end{equation*}
+endsnippet
+
+snippet nal "new alighned line" b
+& = ${1:RHS} \\\\$0
 endsnippet
 
 snippet prob "probability"
@@ -903,7 +954,7 @@ snippet bb "mathbb" i
 \mathbb{$1}$0
 endsnippet
 
-snippet bs "boldsymbol" i
+snippet bo "boldsymbol" i
 \boldsymbol{$1}$0
 endsnippet
 
