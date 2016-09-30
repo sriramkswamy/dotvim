@@ -199,10 +199,6 @@ let g:startify_list_order = [
             \ ['   Bookmarks:'],
             \ 'bookmarks',
             \ ]
-let g:startify_session_dir = '~/.vimsessions'
-nnoremap sq :SClose<CR>
-nnoremap sp :SSave<Space>
-nnoremap sy :SLoad<Space>
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -319,7 +315,7 @@ nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
-nnoremap <silent> <Space>f :FzfFiles %:p:h<CR>
+nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>b :FzfFiles ~<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
@@ -806,6 +802,14 @@ nnoremap <silent> <Space>g :Gstatus<CR>
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
+
+" Project/Other sessions {{{1
+Plug 'tpope/vim-obsession'
+nnoremap sr :Obsess ~/.vim/session/
+nnoremap sp :Obsess<CR>
+nnoremap so :source ~/.vim/session/
+nnoremap sd :Obsess!<CR>
+set statusline+=\ %{ObsessionStatus()} " vim session status
 
 " Autocompletion {{{1
 " vim-omnicomplete activation {{{2
