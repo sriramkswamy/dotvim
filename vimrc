@@ -310,17 +310,18 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g/ :FzfLines<CR>
+nnoremap <silent> g/ :FzfHistory/<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>/ :FzfLines<CR>
 nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
-nnoremap <silent> <Space>b :FzfFiles ~<CR>
+nnoremap <silent> <Space>F :FzfFiles ~<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>/ :FzfAg<CR>
+nnoremap <silent> <Space>p :FzfAg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
 nnoremap <silent> <Space>J :FzfHistory:<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
@@ -333,7 +334,7 @@ imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-_> <Plug>(fzf-complete-path)
 imap <silent> <C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
-nnoremap <silent> <Space>p :FzfFiles ~/Dropbox/PhD<CR>
+nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
 " Search spotlight
 command! -nargs=1 FzfSpotlight call fzf#run({
