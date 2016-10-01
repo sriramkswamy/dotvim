@@ -310,9 +310,10 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g/ :FzfLines<CR>
+nnoremap <silent> g/ :FzfHistory/<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>/ :FzfLines<CR>
 nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
@@ -737,12 +738,12 @@ function! s:vim_sexp_mappings()
     nmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
     xmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
     omap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
-    nmap <silent><buffer> W          <Plug>(sexp_move_to_next_element_head)
-    xmap <silent><buffer> W          <Plug>(sexp_move_to_next_element_head)
-    omap <silent><buffer> W          <Plug>(sexp_move_to_next_element_head)
-    nmap <silent><buffer> gE         <Plug>(sexp_move_to_prev_element_tail)
-    xmap <silent><buffer> gE         <Plug>(sexp_move_to_prev_element_tail)
-    omap <silent><buffer> gE         <Plug>(sexp_move_to_prev_element_tail)
+    nmap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
+    xmap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
+    omap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
+    nmap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
+    xmap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
+    omap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
     nmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
     xmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
     omap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
@@ -791,14 +792,14 @@ function! s:vim_sexp_mappings()
     xmap <silent><buffer> crd        <Plug>(sexp_raise_list)
     nmap <silent><buffer> cry        <Plug>(sexp_raise_element)
     xmap <silent><buffer> cry        <Plug>(sexp_raise_element)
-    nmap <silent><buffer> [d         <Plug>(sexp_swap_list_backward)
-    xmap <silent><buffer> [d         <Plug>(sexp_swap_list_backward)
-    nmap <silent><buffer> ]d         <Plug>(sexp_swap_list_forward)
-    xmap <silent><buffer> ]d         <Plug>(sexp_swap_list_forward)
-    nmap <silent><buffer> [y         <Plug>(sexp_swap_element_backward)
-    xmap <silent><buffer> [y         <Plug>(sexp_swap_element_backward)
-    nmap <silent><buffer> ]y         <Plug>(sexp_swap_element_forward)
-    xmap <silent><buffer> ]y         <Plug>(sexp_swap_element_forward)
+    nmap <silent><buffer> <d         <Plug>(sexp_swap_list_backward)
+    xmap <silent><buffer> <d         <Plug>(sexp_swap_list_backward)
+    nmap <silent><buffer> >d         <Plug>(sexp_swap_list_forward)
+    xmap <silent><buffer> >d         <Plug>(sexp_swap_list_forward)
+    nmap <silent><buffer> <y         <Plug>(sexp_swap_element_backward)
+    xmap <silent><buffer> <y         <Plug>(sexp_swap_element_backward)
+    nmap <silent><buffer> >y         <Plug>(sexp_swap_element_forward)
+    xmap <silent><buffer> >y         <Plug>(sexp_swap_element_forward)
     nmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
     xmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
     nmap <silent><buffer> >)         <Plug>(sexp_emit_tail_element)
@@ -1085,7 +1086,7 @@ xmap gs <plug>(GrepperOperator)
 
 " Search and replace across project - trial {{{2
 Plug 'thinca/vim-qfreplace'
-nnoremap gG :Qfreplace<CR>
+nnoremap gE :Qfreplace<CR>
 
 " REPL and Tmux {{{1
 " let commands and maps without leader {{{2
@@ -1132,7 +1133,7 @@ nnoremap gp :Dispatch gist % -cd ""<Left>
 nnoremap gP :Dispatch gist -Pcd ""<Left>
 nnoremap <silent> <Space>e :Spawn tig<CR>
 nnoremap <silent> <Space>n :Spawn ranger<CR>
-nnoremap <Space>/ :Spawn googler<Space>
+nnoremap gG :Spawn googler<Space>
 nnoremap <silent> gK :execute 'Spawn googler <cWORD> ' . &filetype<CR>
 " Dispatch based commands
 command! GitPush Dispatch git push
