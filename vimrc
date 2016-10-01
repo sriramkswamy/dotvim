@@ -263,7 +263,7 @@ function! GrepQuickFix(pat)
     call setqflist(qfl)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
-nnoremap gG :QFilter<Space>
+nnoremap gQ :QFilter<Space>
 
 " Filter from location list
 function! GrepLocList(pat)
@@ -310,10 +310,9 @@ nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g/ :FzfHistory/<CR>
+nnoremap <silent> g/ :FzfLines<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>/ :FzfLines<CR>
 nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
@@ -690,6 +689,7 @@ nnoremap cq :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:registe
 
 " Text object plugins {{{3
 " Adds some niceties
+" Textobj - i,/a,/i;/a;/ir/ar and [next(n), prev(N)] for all
 Plug 'wellle/targets.vim'
 let g:targets_nlNL = 'nN  '
 let g:targets_argTrigger = 'r'
@@ -697,15 +697,129 @@ let g:targets_argOpening = '[({[]'
 let g:targets_argClosing = '[]})]'
 let g:targets_argSeparator = '[,;]'
 " Create text objects
+" Operate on indents - (operator)ii/ai/iI/aI - doesn't depend on kana's plugin
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 " Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av
 Plug 'Julian/vim-textobj-variable-segment'
 " Operate on functions - (operator)if/af
 Plug 'sriramkswamy/vim-textobj-function'
-" Operate on comments - (operator)ic/ac
+" Operate on comments - (operator)ic/ac/aC
 Plug 'sriramkswamy/vim-textobj-comment'
-" Operate on indents - (operator)ii/ai/aI
-Plug 'kana/vim-textobj-indent'
+" Niceties for Lisp editing
+" Textobjects -
+Plug 'guns/vim-sexp'
+" Disable mapping hooks
+let g:sexp_filetypes = ''
+function! s:vim_sexp_mappings()
+    xmap <silent><buffer> ad         <Plug>(sexp_outer_list)
+    omap <silent><buffer> ad         <Plug>(sexp_outer_list)
+    xmap <silent><buffer> id         <Plug>(sexp_inner_list)
+    omap <silent><buffer> id         <Plug>(sexp_inner_list)
+    xmap <silent><buffer> at         <Plug>(sexp_outer_top_list)
+    omap <silent><buffer> at         <Plug>(sexp_outer_top_list)
+    xmap <silent><buffer> it         <Plug>(sexp_inner_top_list)
+    omap <silent><buffer> it         <Plug>(sexp_inner_top_list)
+    xmap <silent><buffer> ag         <Plug>(sexp_outer_string)
+    omap <silent><buffer> ag         <Plug>(sexp_outer_string)
+    xmap <silent><buffer> ig         <Plug>(sexp_inner_string)
+    omap <silent><buffer> ig         <Plug>(sexp_inner_string)
+    xmap <silent><buffer> ay         <Plug>(sexp_outer_element)
+    omap <silent><buffer> ay         <Plug>(sexp_outer_element)
+    xmap <silent><buffer> iy         <Plug>(sexp_inner_element)
+    omap <silent><buffer> iy         <Plug>(sexp_inner_element)
+    nmap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
+    xmap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
+    omap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
+    nmap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
+    xmap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
+    omap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
+    nmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
+    xmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
+    omap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
+    nmap <silent><buffer> W          <Plug>(sexp_move_to_next_element_head)
+    xmap <silent><buffer> W          <Plug>(sexp_move_to_next_element_head)
+    omap <silent><buffer> W          <Plug>(sexp_move_to_next_element_head)
+    nmap <silent><buffer> gE         <Plug>(sexp_move_to_prev_element_tail)
+    xmap <silent><buffer> gE         <Plug>(sexp_move_to_prev_element_tail)
+    omap <silent><buffer> gE         <Plug>(sexp_move_to_prev_element_tail)
+    nmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
+    xmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
+    omap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
+    nmap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
+    xmap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
+    omap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
+    nmap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
+    xmap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
+    omap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
+    nmap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
+    xmap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
+    omap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
+    nmap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
+    xmap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
+    omap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
+    nmap <silent><buffer> ==         <Plug>(sexp_indent)
+    nmap <silent><buffer> =-         <Plug>(sexp_indent_top)
+    nmap <silent><buffer> csd(       <Plug>(sexp_round_head_wrap_list)
+    xmap <silent><buffer> csd(       <Plug>(sexp_round_head_wrap_list)
+    nmap <silent><buffer> csd)       <Plug>(sexp_round_tail_wrap_list)
+    xmap <silent><buffer> csd)       <Plug>(sexp_round_tail_wrap_list)
+    nmap <silent><buffer> csd[       <Plug>(sexp_square_head_wrap_list)
+    xmap <silent><buffer> csd[       <Plug>(sexp_square_head_wrap_list)
+    nmap <silent><buffer> csd]       <Plug>(sexp_square_tail_wrap_list)
+    xmap <silent><buffer> csd]       <Plug>(sexp_square_tail_wrap_list)
+    nmap <silent><buffer> csd{       <Plug>(sexp_curly_head_wrap_list)
+    xmap <silent><buffer> csd{       <Plug>(sexp_curly_head_wrap_list)
+    nmap <silent><buffer> csd}       <Plug>(sexp_curly_tail_wrap_list)
+    xmap <silent><buffer> csd}       <Plug>(sexp_curly_tail_wrap_list)
+    nmap <silent><buffer> csy(       <Plug>(sexp_round_head_wrap_element)
+    xmap <silent><buffer> csy(       <Plug>(sexp_round_head_wrap_element)
+    nmap <silent><buffer> csy)       <Plug>(sexp_round_tail_wrap_element)
+    xmap <silent><buffer> csy)       <Plug>(sexp_round_tail_wrap_element)
+    nmap <silent><buffer> csy[       <Plug>(sexp_square_head_wrap_element)
+    xmap <silent><buffer> csy[       <Plug>(sexp_square_head_wrap_element)
+    nmap <silent><buffer> csy]       <Plug>(sexp_square_tail_wrap_element)
+    xmap <silent><buffer> csy]       <Plug>(sexp_square_tail_wrap_element)
+    nmap <silent><buffer> csy{       <Plug>(sexp_curly_head_wrap_element)
+    xmap <silent><buffer> csy{       <Plug>(sexp_curly_head_wrap_element)
+    nmap <silent><buffer> csy}       <Plug>(sexp_curly_tail_wrap_element)
+    xmap <silent><buffer> csy}       <Plug>(sexp_curly_tail_wrap_element)
+    nmap <silent><buffer> gI         <Plug>(sexp_insert_at_list_head)
+    nmap <silent><buffer> gA         <Plug>(sexp_insert_at_list_tail)
+    nmap <silent><buffer> dsd        <Plug>(sexp_splice_list)
+    nmap <silent><buffer> crd        <Plug>(sexp_raise_list)
+    xmap <silent><buffer> crd        <Plug>(sexp_raise_list)
+    nmap <silent><buffer> cry        <Plug>(sexp_raise_element)
+    xmap <silent><buffer> cry        <Plug>(sexp_raise_element)
+    nmap <silent><buffer> [d         <Plug>(sexp_swap_list_backward)
+    xmap <silent><buffer> [d         <Plug>(sexp_swap_list_backward)
+    nmap <silent><buffer> ]d         <Plug>(sexp_swap_list_forward)
+    xmap <silent><buffer> ]d         <Plug>(sexp_swap_list_forward)
+    nmap <silent><buffer> [y         <Plug>(sexp_swap_element_backward)
+    xmap <silent><buffer> [y         <Plug>(sexp_swap_element_backward)
+    nmap <silent><buffer> ]y         <Plug>(sexp_swap_element_forward)
+    xmap <silent><buffer> ]y         <Plug>(sexp_swap_element_forward)
+    nmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
+    xmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
+    nmap <silent><buffer> >)         <Plug>(sexp_emit_tail_element)
+    xmap <silent><buffer> >)         <Plug>(sexp_emit_tail_element)
+    nmap <silent><buffer> >(         <Plug>(sexp_capture_prev_element)
+    xmap <silent><buffer> >(         <Plug>(sexp_capture_prev_element)
+    nmap <silent><buffer> <)         <Plug>(sexp_capture_next_element)
+    xmap <silent><buffer> <)         <Plug>(sexp_capture_next_element)
+    imap <silent><buffer> <BS>       <Plug>(sexp_insert_backspace)
+    imap <silent><buffer> "          <Plug>(sexp_insert_double_quote)
+    imap <silent><buffer> (          <Plug>(sexp_insert_opening_round)
+    imap <silent><buffer> )          <Plug>(sexp_insert_closing_round)
+    imap <silent><buffer> [          <Plug>(sexp_insert_opening_square)
+    imap <silent><buffer> ]          <Plug>(sexp_insert_closing_square)
+    imap <silent><buffer> {          <Plug>(sexp_insert_opening_curly)
+    imap <silent><buffer> }          <Plug>(sexp_insert_closing_curly)
+endfunction
+augroup VIM_SEXP_MAPPING
+    autocmd!
+    autocmd FileType clojure,scheme,lisp,racket call s:vim_sexp_mappings()
+augroup END
 
 " Operators {{{2
 " Functions {{{3
@@ -919,7 +1033,7 @@ let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
-nmap <silent> <leader>K <Plug>DashSearch
+nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{1
 " Refer to filetypes in ~/.vim/after/ftplugin/
@@ -971,7 +1085,7 @@ xmap gs <plug>(GrepperOperator)
 
 " Search and replace across project - trial {{{2
 Plug 'thinca/vim-qfreplace'
-nnoremap gQ :Qfreplace<CR>
+nnoremap gG :Qfreplace<CR>
 
 " REPL and Tmux {{{1
 " let commands and maps without leader {{{2
@@ -1018,8 +1132,8 @@ nnoremap gp :Dispatch gist % -cd ""<Left>
 nnoremap gP :Dispatch gist -Pcd ""<Left>
 nnoremap <silent> <Space>e :Spawn tig<CR>
 nnoremap <silent> <Space>n :Spawn ranger<CR>
-nnoremap <Space>Y :Spawn googler<Space>
-nnoremap <silent> <Space>y :execute 'Spawn googler <cWORD> ' . &filetype<CR>
+nnoremap <Space>/ :Spawn googler<Space>
+nnoremap <silent> gK :execute 'Spawn googler <cWORD> ' . &filetype<CR>
 " Dispatch based commands
 command! GitPush Dispatch git push
 command! GitPull Dispatch git pull
