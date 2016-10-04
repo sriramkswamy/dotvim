@@ -161,7 +161,9 @@ nnoremap <Space>t :tabe<CR>
 " Alternate files
 nnoremap <Space><Tab> :b#<CR>
 " Open in Finder
-nnoremap <Space>V :!open %:p:h<CR>
+nnoremap gF :!open %:p:h<CR>
+" Open in Safari
+nnoremap gB :!open -a Safari %<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 " Markdown preview
@@ -299,7 +301,7 @@ Plug 'airblade/vim-rooter'
 let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
-nnoremap dc :Rooter<CR>
+nnoremap cu :Rooter<CR>
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -307,15 +309,16 @@ let g:fzf_command_prefix='Fzf'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
 nnoremap <silent> g/ :FzfHistory/<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space>/ :FzfLines<CR>
 nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
+nnoremap <silent> <Space>C :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>F :FzfFiles ~<CR>
@@ -1002,6 +1005,8 @@ augroup end
 Plug 'tweekmonster/braceless.vim'
 command! BracelessOn BracelessEnable +indent +fold +highlight
 command! BracelessOff BracelessEnable -indent -fold -highlight
+nnoremap g> :BracelessOn<CR>
+nnoremap g< :BracelessOff<CR>
 autocmd FileType python BracelessOn
 let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
@@ -1080,6 +1085,7 @@ let g:grepper = {
             \ 'jump':  0,
             \ 'next_tool': ']g'
             \ }
+nnoremap ge :Grepper -tool ag -cword -noprompt<cr>
 nnoremap gss :Grepper -tool ag -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
@@ -1104,19 +1110,35 @@ endif
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Space>z :call system("tmux resize-pane -Z")<CR>
+    nnoremap <silent> <C-\> :call system("tmux copy-mode")<CR>
     nmap <silent> <Plug>SwapTmuxUp :call system("tmux swap-pane -U")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxUp", v:count)<CR>
-    nmap ]R <Plug>SwapTmuxUp
+    nmap ]U <Plug>SwapTmuxUp
     nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
-    nmap [R <Plug>SwapTmuxDown
+    nmap [U <Plug>SwapTmuxDown
+    nmap <silent> <Plug>SwapNextLayout :call system("tmux next-layout")<CR>
+                \ :call repeat#set("\<Plug>SwapNextLayout", v:count)<CR>
+    nmap ]R <Plug>SwapNextLayout
+    nmap <silent> <Plug>SwapPrevLayout :call system("tmux previous-layout")<CR>
+                \ :call repeat#set("\<Plug>SwapPrevLayout", v:count)<CR>
+    nmap [R <Plug>SwapPrevLayout
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 
 " Plugins {{{2
 " Common *nix commands
 Plug 'tpope/vim-eunuch'
+nnoremap gK :Remove<Space>
+nnoremap gR :Rename<Space>
+command! CopyFileName let @+ = expand('%:p')
+nnoremap gY :CopyFileName<CR>
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
 nnoremap g! :Dispatch<Space>
@@ -1128,13 +1150,17 @@ nnoremap <Space>ml :Make -C docs/latex<CR>
 nnoremap <silent> <Space>o :Copen<CR>
 nnoremap <silent> <Space>O :cclose<CR>
 " Commandline utilities
-nnoremap cu :Dispatch ctags -R %:p:h<CR>
+nnoremap T :Dispatch! ctags -R %:p:h<CR>
 nnoremap gp :Dispatch gist % -cd ""<Left>
 nnoremap gP :Dispatch gist -Pcd ""<Left>
 nnoremap <silent> <Space>e :Spawn tig<CR>
 nnoremap <silent> <Space>n :Spawn ranger<CR>
-nnoremap gG :Spawn googler<Space>
-nnoremap <silent> gK :execute 'Spawn googler <cWORD> ' . &filetype<CR>
+nnoremap <silent> gG :Spawn googler<Space>
+nnoremap <silent> g{ :execute 'Spawn googler <cWORD> ' . &filetype<CR>
+nnoremap <silent> g} :execute 'Spawn googler <cword> ' . &filetype<CR>
+vnoremap <silent> gG :Spawn googler<Space>
+vnoremap <silent> g{ :execute 'Spawn googler <cWORD> ' . &filetype<CR>
+vnoremap <silent> g} :execute 'Spawn googler <cword> ' . &filetype<CR>
 " Dispatch based commands
 command! GitPush Dispatch git push
 command! GitPull Dispatch git pull
