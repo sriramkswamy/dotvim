@@ -268,6 +268,12 @@ Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
+" Actions
+let g:fzf_action = {
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit',
+            \ 'ctrl-o': '!open'}
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
@@ -301,17 +307,9 @@ nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
 " Search spotlight
 command! -nargs=1 FzfSpotlight call fzf#run({
-            \ 'source': 'mdfind -onlyin ~ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Spotlight> "'
-            \ })
-nnoremap <Space>s :FzfSpotlight<Space>
-nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
-" open externally
-command! FzfOpen call fzf#run({
-            \ 'source': 'mdfind -onlyin ~ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Spotlight> "'
+            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
+            \ 'sink'    : 'e',
+            \ 'options' : '-m --prompt "Spotlight> "'
             \ })
 nnoremap <Space>s :FzfSpotlight<Space>
 nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
@@ -1095,6 +1093,7 @@ let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
+nnoremap g\ :vsplit <bar> terminal<CR>
 nnoremap <silent> <Space>n :terminal ranger<CR>
 nnoremap <silent> <Space>e :terminal tig<CR>
 nnoremap gG :vsp <bar> terminal googler<Space>
