@@ -559,6 +559,8 @@ nnoremap crn :StripNewLine<CR>
 " For collaborative work
 Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+" '.' command in visual mode
+Plug 'vim-scripts/visualrepeat'
 " Better '.' command
 Plug 'tpope/vim-repeat'
 " Convert the line into a list and vice versa
@@ -826,6 +828,9 @@ augroup VIM_SEXP_MAPPING
 augroup END
 
 " Operators {{{2
+" Better A and I in visual mode
+vnoremap A <C-v>$A
+vnoremap I <C-v>0I
 " Functions {{{3
 " Nice for quick vimscript testing.
 function! SourceVimscript(type)
@@ -894,9 +899,6 @@ nmap <silent> <Plug>ExchangeArgNext cxIrf,lcxIr :call repeat#set("\<Plug>Exchang
 nmap ]r <Plug>ExchangeArgNext
 nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [r <Plug>ExchangeArgPrev
-
-" Better A and I in visual block
-Plug 'kana/vim-niceblock'
 
 " Snippets {{{1
 if has('python') || has('python3')
