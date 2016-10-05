@@ -48,7 +48,11 @@ set novisualbell
 set nobackup
 set noswapfile
 set nowb
+" Session management
 let g:session_autosave = 'no'
+set sessionoptions+=tabpages
+set sessionoptions+=winpos
+set sessionoptions+=winsize
 " Fold options
 set foldmethod=indent
 set foldnestmax=4
@@ -80,6 +84,8 @@ set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
 " Splits
+nnoremap <silent> w <C-w><C-w>
+nnoremap <silent> W <C-w>=
 nnoremap <silent> vs <C-w>f
 nnoremap <silent> gw <C-w>v
 nnoremap <silent> gW <C-w>s
@@ -155,10 +161,10 @@ nnoremap <silent> [z zk
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
-nnoremap <silent> <Space>v :redraw!<CR>
+nnoremap <silent> dr :redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
-nnoremap <Space>t :tabe<CR>
+nnoremap <Space>v :tabe<CR>
 " Alternate files
 nnoremap <Space><Tab> :b#<CR>
 " Open in Finder
@@ -167,8 +173,6 @@ nnoremap gF :!open %:p:h<CR>
 nnoremap gB :!open -a Safari %<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
-" Markdown preview
-let g:instant_markdown_autostart = 1
 
 " Plugins {{{2
 " Undotree
@@ -300,6 +304,7 @@ nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>F :FzfFiles ~<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>t :FzfWindows<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfAg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
@@ -643,15 +648,6 @@ nmap [x <Plug>DeleteLineUp
 nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
 nmap ]x <Plug>DeleteLineDown
 
-" Motions {{{2
-Plug 'justinmk/vim-sneak'
-nmap w <Plug>Sneak_s
-xmap w <Plug>Sneak_s
-omap w <Plug>Sneak_s
-nmap W <Plug>Sneak_S
-xmap W <Plug>Sneak_S
-omap W <Plug>Sneak_S
-
 " Text objects {{{2
 " Onoremap based {{{3
 " Operate on entire file
@@ -892,7 +888,7 @@ omap ih <Plug>(signify-motion-inner-pending)
 xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
-nnoremap <silent> <Space>v :SignifyRefresh<CR>:redraw!<CR>
+nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
 " Git Wrapper
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this

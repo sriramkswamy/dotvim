@@ -143,8 +143,6 @@ nnoremap <Space><Tab> :b#<CR>
 nnoremap <Space>V :!open %:p:h<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
-" Markdown preview
-let g:instant_markdown_autostart = 1
 
 " Plugins {{{2
 " Undotree
