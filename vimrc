@@ -80,6 +80,7 @@ set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
 " Splits
+nnoremap <silent> vs <C-w>f
 nnoremap <silent> gw <C-w>v
 nnoremap <silent> gW <C-w>s
 nnoremap <silent> Z :only<CR>
@@ -176,31 +177,8 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers - fancy
 Plug 'junegunn/vim-peekaboo'
-" Start screen - fancy {{{3
-Plug 'mhinz/vim-startify'
-let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
-let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
-let g:startify_session_persistence = 1
-let g:startify_change_to_vcs_root = 0
-let g:startify_custom_header = ['', '   Vim/Neovim']
-let g:startify_custom_footer =
-            \ ['', "   Vim is charityware. Please read ':help uganda'.",
-            \  "   Neovim is a Vim fork. Please read ':help nvim' if in Neovim."]
-let g:startify_skiplist = [
-            \ 'COMMIT_EDITMSG',
-            \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
-            \ 'plugged/.*/doc',
-            \ ]
-let g:startify_list_order = [
-            \ ['   Recent files in the current directory:'],
-            \ 'dir',
-            \ ['   Recent files:'],
-            \ 'files',
-            \ ['   Sessions:'],
-            \ 'sessions',
-            \ ['   Bookmarks:'],
-            \ 'bookmarks',
-            \ ]
+" Better 'ga' command
+Plug 'tpope/vim-characterize'
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -284,6 +262,7 @@ nnoremap gL :LFilter<Space>
 command! CD cd %:p:h
 command! LCD lcd %:p:h
 nnoremap cd :LCD<CR>
+nnoremap dc :CD<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
 
@@ -346,6 +325,7 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ 'options': '-m --prompt "Spotlight> "'
             \ })
 nnoremap <Space>s :FzfSpotlight<Space>
+nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -567,8 +547,6 @@ nnoremap gJ J
 " Blank the current line
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
-" Auto correction - iabbrev collection
-Plug 'sriramkswamy/vim-fat-finger'
 " Switch
 Plug 'AndrewRadev/switch.vim'
 let g:switch_mapping = "-"
@@ -695,6 +673,7 @@ nnoremap cq :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:registe
 " Adds some niceties
 " Textobj - i,/a,/i;/a;/ir/ar and [next(n), prev(N)] for all
 Plug 'wellle/targets.vim'
+let g:targets_aiAI = 'ai  '
 let g:targets_nlNL = 'nN  '
 let g:targets_argTrigger = 'r'
 let g:targets_argOpening = '[({[]'
@@ -894,6 +873,9 @@ nmap ]r <Plug>ExchangeArgNext
 nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [r <Plug>ExchangeArgPrev
 
+" Better A and I in visual block
+Plug 'kana/vim-niceblock'
+
 " Snippets {{{1
 if has('python') || has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
@@ -940,21 +922,21 @@ autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
 autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
-" User completion for tmux panes
-Plug 'wellle/tmux-complete.vim'
-let g:tmuxcomplete#trigger = 'completefunc'
 
 " Language helpers {{{1
+
 " Syntax and nicities for many languages {{{2
 Plug 'sheerun/vim-polyglot'
 " LaTeX already included in polyglot
 let g:LatexBox_Folding = 1
+
 " Vim script {{{2
 Plug 'tpope/vim-scriptease'
 augroup filetype_vim
     autocmd!
     autocmd FileType vim nnoremap <buffer> J :helpgrep <C-R><C-W><CR>
 augroup end
+
 " C/C++ {{{2
 " Autocompletion
 Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
@@ -962,6 +944,7 @@ let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
 let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
+
 " Indexer (for cmake projects)
 Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
 autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
@@ -981,6 +964,7 @@ augroup filetype_cpp
     autocmd FileType c,cpp nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
     autocmd FileType c,cpp nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
 augroup end
+
 " Python {{{2
 " Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
@@ -1001,6 +985,7 @@ augroup filetype_python
     autocmd!
     autocmd FileType python nnoremap <buffer> J :call jedi#goto()<CR>
 augroup end
+
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
 command! BracelessOn BracelessEnable +indent +fold +highlight
@@ -1012,6 +997,7 @@ let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
 let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
+
 " JavaScript {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
@@ -1020,6 +1006,7 @@ augroup filetype_javascript
     autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
     autocmd FileType js,javascript nnoremap <buffer> J :TernDef<CR>
 augroup end
+
 " Go {{{2
 " Autocompletion and navigation
 Plug 'fatih/vim-go'
@@ -1028,15 +1015,24 @@ augroup filetype_go
     autocmd FileType go nnoremap <buffer> K :GoDoc<CR>
     autocmd FileType go nnoremap <buffer> J :GoDef<CR>
 augroup end
+
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
 let g:sparkupExecuteMapping = '<C-y>'
 let g:sparkupNextMapping = '<C-n>'
+
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
 let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
+
+" Ruby on Rails {{{2
+Plug 'tpope/vim-rails'
+
+" DB {{{2
+Plug 'vim-scripts/dbext.vim'
+
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
 nmap <silent> gD <Plug>DashSearch
@@ -1137,11 +1133,19 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 Plug 'tpope/vim-eunuch'
 nnoremap gK :Remove<Space>
 nnoremap gR :Rename<Space>
+nnoremap gM :Move<Space>
+nnoremap dm :Mkdir<Space>
 command! CopyFileName let @+ = expand('%:p')
 nnoremap gY :CopyFileName<CR>
+command! CopyFilePath let @+ = expand('%:p:h')
+nnoremap ym :CopyFilePath<CR>
+
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
-nnoremap g! :Dispatch<Space>
+nnoremap gh :Dispatch<Space>
+nnoremap gH :Spawn<Space>
+nnoremap cm :Make<Space>
+nnoremap sm :Start<Space>
 nnoremap <Space>mm :Make<CR>
 nnoremap <Space>mf :Make %<CR>
 nnoremap <Space>mb :Make -C build<CR>
@@ -1153,8 +1157,8 @@ nnoremap <silent> <Space>O :cclose<CR>
 nnoremap T :Dispatch! ctags -R %:p:h<CR>
 nnoremap gp :Dispatch gist % -cd ""<Left>
 nnoremap gP :Dispatch gist -Pcd ""<Left>
-nnoremap <silent> <Space>e :Spawn tig<CR>
-nnoremap <silent> <Space>n :Spawn ranger<CR>
+nnoremap <silent> <Space>e :Start tig<CR>
+nnoremap <silent> <Space>n :Start ranger<CR>
 nnoremap <silent> gG :Spawn googler<Space>
 nnoremap <silent> g{ :execute 'Spawn googler <cWORD> ' . &filetype<CR>
 nnoremap <silent> g} :execute 'Spawn googler <cword> ' . &filetype<CR>
@@ -1221,7 +1225,7 @@ let g:tmuxify_run = {
 " Stop plugin installation {{{1
 call plug#end()
 
-" Sections text object - (operator)im/am for markdown and (operator)ix/ax for latex {{{1
+" Sections text object - (operator)im/am for markdown and (operator)io/ao for markdown code {{{1
 call textobj#user#plugin('markdown', { '-': {
             \ 'select-a-function': 'MarkdownA', 'select-a': 'am',
             \ 'select-i-function': 'MarkdownI', 'select-i': 'im',
@@ -1242,6 +1246,31 @@ function! MarkdownI()
     return ['v', head_pos, tail_pos]
 endfunction
 
+call textobj#user#plugin('markdown', { '-': {
+            \ 'select-a-function': 'MarkdownCodeA', 'select-a': 'ao',
+            \ 'select-i-function': 'MarkdownCodeI', 'select-i': 'io',
+            \ }, })
+function! MarkdownCodeA()
+    call search('^```\s*\w*$', 'bc')
+    normal! 0
+    let head_pos = getpos('.')
+    normal! j
+    call search('^```$', 'c')
+    normal! $
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+function! MarkdownCodeI()
+    call search('^```\s*\w*$', 'bc')
+    normal! j0
+    let head_pos = getpos('.')
+    call search('^```$', 'c')
+    normal! k$
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+
+" Sections text object - (operator)ix/ax for latex section {{{1
 call textobj#user#plugin('latex', { '-': {
             \ 'select-a-function': 'LatexA', 'select-a': 'ax',
             \ 'select-i-function': 'LatexI', 'select-i': 'ix',
@@ -1262,34 +1291,10 @@ function! LatexI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-" Markdown code text object - (operator)iM/aM and (operator)iX/aX for hexo style {{{1
-call textobj#user#plugin('markcode', { '-': {
-            \ 'select-a-function': 'MarkcodeA', 'select-a': 'aM',
-            \ 'select-i-function': 'MarkcodeI', 'select-i': 'iM',
-            \ }, })
-function! MarkcodeA()
-    call search('^```\s*\w*$', 'bc')
-    normal! 0
-    let head_pos = getpos('.')
-    normal! j
-    call search('^```$', 'c')
-    normal! $
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunction
-function! MarkcodeI()
-    call search('^```\s*\w*$', 'bc')
-    normal! j0
-    let head_pos = getpos('.')
-    call search('^```$', 'c')
-    normal! k$
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunction
-
+" Hexo code text object - (operator)ik/ak {{{1
 call textobj#user#plugin('hexocode', { '-': {
-            \ 'select-a-function': 'HexocodeA', 'select-a': 'aX',
-            \ 'select-i-function': 'HexocodeI', 'select-i': 'iX',
+            \ 'select-a-function': 'HexocodeA', 'select-a': 'ak',
+            \ 'select-i-function': 'HexocodeI', 'select-i': 'ik',
             \ }, })
 function! HexocodeA()
     call search('^```\s*\[.*\]$', 'bc')
