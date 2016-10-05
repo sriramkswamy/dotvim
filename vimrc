@@ -177,8 +177,6 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers - fancy
 Plug 'junegunn/vim-peekaboo'
-" Better 'ga' command
-Plug 'tpope/vim-characterize'
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -929,6 +927,12 @@ autocmd CompleteDone * pclose
 Plug 'sheerun/vim-polyglot'
 " LaTeX already included in polyglot
 let g:LatexBox_Folding = 1
+" Vim-ruby included with polyglot
+let g:rubycomplete_buffer_loading = 1
+let g:rubycomplete_classes_in_global = 1
+let g:rubycomplete_rails = 1
+let g:rubycomplete_load_gemfile = 1
+" let g:rubycomplete_use_bundler = 1
 
 " Vim script {{{2
 Plug 'tpope/vim-scriptease'
@@ -1027,8 +1031,17 @@ let g:EclimShowLoclistSigns = 0
 let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
 
-" Ruby on Rails {{{2
+" Ruby (on Rails) {{{2
 Plug 'tpope/vim-rails'
+Plug 'danchoi/ri.vim'
+let g:ri_no_mappings=1
+augroup filetype_go
+    autocmd!
+    autocmd FileType ruby nnoremap <buffer> K :call ri#LookupNameUnderCursor()<CR>
+augroup end
+
+" R integration {{{2
+Plug 'jalvesaq/Nvim-R'
 
 " DB {{{2
 Plug 'vim-scripts/dbext.vim'
@@ -1131,7 +1144,7 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 " Plugins {{{2
 " Common *nix commands
 Plug 'tpope/vim-eunuch'
-nnoremap gK :Remove<Space>
+nnoremap gK :Remove
 nnoremap gR :Rename<Space>
 nnoremap gM :Move<Space>
 nnoremap dm :Mkdir<Space>
@@ -1225,10 +1238,10 @@ let g:tmuxify_run = {
 " Stop plugin installation {{{1
 call plug#end()
 
-" Sections text object - (operator)im/am for markdown and (operator)io/ao for markdown code {{{1
+" Sections text object - (operator)ij/aj for markdown and (operator)io/ao for markdown code {{{1
 call textobj#user#plugin('markdown', { '-': {
-            \ 'select-a-function': 'MarkdownA', 'select-a': 'am',
-            \ 'select-i-function': 'MarkdownI', 'select-i': 'im',
+            \ 'select-a-function': 'MarkdownA', 'select-a': 'aj',
+            \ 'select-i-function': 'MarkdownI', 'select-i': 'ij',
             \ }, })
 function! MarkdownA()
     call search('^#\+.*$', 'bc')
