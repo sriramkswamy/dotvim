@@ -304,6 +304,56 @@ command! -nargs=1 FzfSpotlight call fzf#run({
 nnoremap <Space>s :FzfSpotlight<Space>
 nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
 
+" Searching {{{1
+" Set commands {{{2
+" Ignore case sensitivity
+set ignorecase " Can be toggled with unimpaired's 'coi'
+set smartcase
+" Highlight search incrementally
+set hlsearch " Can be toggled with unimpaired's 'coh'
+set incsearch
+" Grep
+set grepprg=grep\ -nH\ $*
+" Populate location list with previous search pattern; ugly hack
+nnoremap <C-n> :lvim // %<CR>
+" and automatically open the windows when they are populated
+augroup quick_loc_window
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* nested cwindow | setlocal nowrap | redraw!
+    autocmd QuickFixCmdPost l* nested lwindow | setlocal nowrap | redraw!
+augroup END
+
+" Maps without leader {{{2
+" Auto-center
+nnoremap <silent> n nzz
+nnoremap <silent> g* g*zz
+nnoremap <silent> g# g#zz
+" Make '*' act a little better
+nnoremap <silent> * *``
+nnoremap <silent> # #``
+
+" Search for word under visual selection
+vnoremap * y/<C-R>"<CR>
+vnoremap # y?<C-R>"<CR>
+
+" Vim grepper plugin {{{2
+Plug 'mhinz/vim-grepper'
+" Mimic :grep and make ag the default tool.
+let g:grepper = {
+            \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
+            \ 'open':  0,
+            \ 'jump':  0,
+            \ 'next_tool': ']g'
+            \ }
+nnoremap ge :Grepper -tool ag -cword -noprompt<cr>
+nnoremap gss :Grepper -tool ag -noswitch<CR>
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
+
+" Search and replace across project - trial {{{2
+Plug 'thinca/vim-qfreplace'
+nnoremap gE :Qfreplace<CR>
+
 " Statusline - from scrooloose {{{1
 " Basic setup
 set statusline =%#identifier#
@@ -1019,56 +1069,6 @@ nmap <silent> gD <Plug>DashSearch
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
 autocmd! BufWritePost * Neomake
-
-" Searching {{{1
-" Set commands {{{2
-" Ignore case sensitivity
-set ignorecase " Can be toggled with unimpaired's 'coi'
-set smartcase
-" Highlight search incrementally
-set hlsearch " Can be toggled with unimpaired's 'coh'
-set incsearch
-" Grep
-set grepprg=grep\ -nH\ $*
-" Populate location list with previous search pattern; ugly hack
-nnoremap <C-n> :lvim // %<CR>
-" and automatically open the windows when they are populated
-augroup quick_loc_window
-    autocmd!
-    autocmd QuickFixCmdPost [^l]* nested cwindow | setlocal nowrap | redraw!
-    autocmd QuickFixCmdPost l* nested lwindow | setlocal nowrap | redraw!
-augroup END
-
-" Maps without leader {{{2
-" Auto-center
-nnoremap <silent> n nzz
-nnoremap <silent> g* g*zz
-nnoremap <silent> g# g#zz
-" Make '*' act a little better
-nnoremap <silent> * *``
-nnoremap <silent> # #``
-
-" Search for word under visual selection
-vnoremap * y/<C-R>"<CR>
-vnoremap # y?<C-R>"<CR>
-
-" Vim grepper plugin {{{2
-Plug 'mhinz/vim-grepper'
-" Mimic :grep and make ag the default tool.
-let g:grepper = {
-            \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
-            \ 'open':  0,
-            \ 'jump':  0,
-            \ 'next_tool': ']g'
-            \ }
-nnoremap ge :Grepper -tool ag -cword -noprompt<cr>
-nnoremap gss :Grepper -tool ag -noswitch<CR>
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
-
-" Search and replace across project - trial {{{2
-Plug 'thinca/vim-qfreplace'
-nnoremap gE :Qfreplace<CR>
 
 " REPL and Tmux {{{1
 " let commands and maps without leader {{{2

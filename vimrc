@@ -232,6 +232,8 @@ nnoremap <C-p> <C-i>
 nnoremap <silent> <C-i> za
 " Vimrc
 nnoremap cv :vsp $MYVIMRC<CR>
+" search history
+nnoremap <silent> g/ :q/<CR>
 
 " Functions and commands {{{2
 " Filter from quickfix list - someone's vimrc
@@ -274,6 +276,28 @@ nnoremap <silent> <Space>l :lopen<CR>
 nnoremap <silent> <Space>L :lclose<CR>
 nnoremap <silent> <Space>h :copen<CR>
 nnoremap <silent> <Space>H :cclose<CR>
+" Check bindings
+nnoremap <Space>, :verbose nmap<Space>
+xnoremap <Space>, :verbose xmap<Space>
+onoremap <Space>, :verbose omap<Space>
+" colorscheme
+nnoremap <Space>. :colorscheme<Space>
+" Navigation
+nnoremap t :g/.*/#<Left><Left>
+nnoremap <Space>/ :g//#<Left><Left>
+nnoremap <Space>d :find **
+nnoremap <Space>f :e<Space>
+nnoremap <Space>F :e ~/<Space>
+nnoremap <Space>r :ls<CR>buffer<Space>
+nnoremap <Space>t :tabs<CR>
+nnoremap <Space>x :help<Space>
+nnoremap <Space>j :
+nnoremap <Space>J q:
+vnoremap <Space>j :
+vnoremap <Space>J q:
+" PhD related stuff
+nnoremap <Space>b :find ~/Dropbox/PhD/**
+nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
 
 " Plugins {{{2
 " Go to project root automatically - Rooter {{{3
@@ -284,51 +308,58 @@ let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
 
-" FZF {{{3
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-let g:fzf_command_prefix='Fzf'
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
-nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfAg <C-R><C-W><CR>
-nnoremap <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g/ :FzfHistory/<CR>
-nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space>/ :FzfLines<CR>
-nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
-nnoremap <silent> <Space>c :FzfBCommits<CR>
-nnoremap <silent> <Space>C :FzfCommits<CR>
-nnoremap <silent> <Space>d :FzfGFiles<CR>
-nnoremap <silent> <Space>f :FzfFiles<CR>
-nnoremap <silent> <Space>F :FzfFiles ~<CR>
-nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>t :FzfWindows<CR>
-nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>p :FzfAg<CR>
-nnoremap <silent> <Space>j :FzfCommands<CR>
-nnoremap <silent> <Space>J :FzfHistory:<CR>
-vnoremap <silent> <Space>j :FzfCommands<CR>
-vnoremap <silent> <Space>J :FzfHistory:<CR>
-inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
-nmap <Space>, <Plug>(fzf-maps-n)
-xmap <Space>, <Plug>(fzf-maps-x)
-omap <Space>, <Plug>(fzf-maps-o)
-imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-l> <Plug>(fzf-complete-line)
-" PhD related stuff
-nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
-" Search spotlight
-command! -nargs=1 FzfSpotlight call fzf#run({
-            \ 'source': 'mdfind -onlyin ~ <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Spotlight> "'
-            \ })
-nnoremap <Space>s :FzfSpotlight<Space>
-nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
+" Searching {{{1
+" Set commands {{{2
+" Ignore case sensitivity
+set ignorecase " Can be toggled with unimpaired's 'coi'
+set smartcase
+" Highlight search incrementally
+set hlsearch " Can be toggled with unimpaired's 'coh'
+set incsearch
+" Grep
+set grepprg=grep\ -nH\ $*
+" Populate location list with previous search pattern; ugly hack
+nnoremap <C-n> :lvim // %<CR>
+" and automatically open the windows when they are populated
+augroup quick_loc_window
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* nested cwindow | setlocal nowrap | redraw!
+    autocmd QuickFixCmdPost l* nested lwindow | setlocal nowrap | redraw!
+augroup END
+
+" Maps without leader {{{2
+" Auto-center
+nnoremap <silent> n nzz
+nnoremap <silent> g* g*zz
+nnoremap <silent> g# g#zz
+" Make '*' act a little better
+nnoremap <silent> * *``
+nnoremap <silent> # #``
+
+" Search for word under visual selection
+vnoremap * y/<C-R>"<CR>
+vnoremap # y?<C-R>"<CR>
+
+" Vim grepper plugin {{{2
+Plug 'mhinz/vim-grepper'
+" Mimic :grep and make ag the default tool.
+let g:grepper = {
+            \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
+            \ 'open':  1,
+            \ 'jump':  0,
+            \ 'next_tool': ']g'
+            \ }
+nnoremap <silent> J :Grepper -tool ag -cword -noprompt<cr>
+nnoremap ge :Grepper -tool ag -cword -noprompt<cr>
+nnoremap <silent> <Space>a :Grepper -tool ag -cword -noprompt<cr>
+nnoremap gss :Grepper -tool ag -noswitch<CR>
+nnoremap <silent> <Space> :Grepper -tool ag -noswitch<CR>
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
+
+" Search and replace across project - trial {{{2
+Plug 'thinca/vim-qfreplace'
+nnoremap gE :Qfreplace<CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -877,6 +908,7 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
+    let g:UltiSnipsListSnippets="<C-j>"
 endif
 
 " Version control {{{1
@@ -893,6 +925,8 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
+nnoremap <silent> <Space>c :Glog<CR>
+nnoremap <Space>C :Glog --
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
@@ -1049,56 +1083,6 @@ nmap <silent> gD <Plug>DashSearch
 " Syntax checking {{{1
 " Refer to filetypes in ~/.vim/after/ftplugin/
 
-" Searching {{{1
-" Set commands {{{2
-" Ignore case sensitivity
-set ignorecase " Can be toggled with unimpaired's 'coi'
-set smartcase
-" Highlight search incrementally
-set hlsearch " Can be toggled with unimpaired's 'coh'
-set incsearch
-" Grep
-set grepprg=grep\ -nH\ $*
-" Populate location list with previous search pattern; ugly hack
-nnoremap <C-n> :lvim // %<CR>
-" and automatically open the windows when they are populated
-augroup quick_loc_window
-    autocmd!
-    autocmd QuickFixCmdPost [^l]* nested cwindow | setlocal nowrap | redraw!
-    autocmd QuickFixCmdPost l* nested lwindow | setlocal nowrap | redraw!
-augroup END
-
-" Maps without leader {{{2
-" Auto-center
-nnoremap <silent> n nzz
-nnoremap <silent> g* g*zz
-nnoremap <silent> g# g#zz
-" Make '*' act a little better
-nnoremap <silent> * *``
-nnoremap <silent> # #``
-
-" Search for word under visual selection
-vnoremap * y/<C-R>"<CR>
-vnoremap # y?<C-R>"<CR>
-
-" Vim grepper plugin {{{2
-Plug 'mhinz/vim-grepper'
-" Mimic :grep and make ag the default tool.
-let g:grepper = {
-            \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
-            \ 'open':  1,
-            \ 'jump':  0,
-            \ 'next_tool': ']g'
-            \ }
-nnoremap ge :Grepper -tool ag -cword -noprompt<cr>
-nnoremap gss :Grepper -tool ag -noswitch<CR>
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
-
-" Search and replace across project - trial {{{2
-Plug 'thinca/vim-qfreplace'
-nnoremap gE :Qfreplace<CR>
-
 " REPL and Tmux {{{1
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
@@ -1166,6 +1150,8 @@ nnoremap <silent> <Space>O :cclose<CR>
 nnoremap T :Dispatch! ctags -R %:p:h<CR>
 nnoremap gp :Dispatch gist % -cd ""<Left>
 nnoremap gP :Dispatch gist -Pcd ""<Left>
+nnoremap <Space>s :Dispatch! mdfind -onlyin ~<Space>
+nnoremap <Space>S :Dispatch! mdfind -onlyin ~ <C-R><C-W><CR>
 nnoremap <silent> <Space>e :Start tig<CR>
 nnoremap <silent> <Space>n :Start ranger<CR>
 nnoremap <silent> gG :Spawn googler<Space>
