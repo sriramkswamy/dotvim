@@ -269,7 +269,6 @@ nnoremap gL :LFilter<Space>
 command! CD cd %:p:h
 command! LCD lcd %:p:h
 nnoremap cd :LCD<CR>
-nnoremap dc :CD<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
 
@@ -310,6 +309,17 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
+
+" Tab/Win manipulation
+Plug 'yssl/twcmd.vim'
+nnoremap <silent> Tb :TWcmd tmv h<CR>
+nnoremap <silent> Te :TWcmd tmv l<CR>
+nnoremap <silent> Tj :TWcmd wmv j<CR>
+nnoremap <silent> Th :TWcmd wmv h<CR>
+nnoremap <silent> Tj :TWcmd wmv j<CR>
+nnoremap <silent> Tk :TWcmd wmv k<CR>
+nnoremap <silent> Tl :TWcmd wmv l<CR>
+nnoremap <silent> Z :TWcmd wcm m<CR>
 
 " Searching {{{1
 " Set commands {{{2
@@ -1084,9 +1094,6 @@ augroup end
 " R integration {{{2
 Plug 'jalvesaq/Nvim-R'
 
-" DB {{{2
-Plug 'vim-scripts/dbext.vim'
-
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
 nmap <silent> gD <Plug>DashSearch
@@ -1143,6 +1150,8 @@ command! CopyFileName let @+ = expand('%:p')
 nnoremap gY :CopyFileName<CR>
 command! CopyFilePath let @+ = expand('%:p:h')
 nnoremap ym :CopyFilePath<CR>
+nnoremap su :SudoEdit<CR>
+nnoremap sU :SudoWrite<CR>
 
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
@@ -1158,7 +1167,7 @@ nnoremap <Space>ml :Make -C docs/latex<CR>
 nnoremap <silent> <Space>o :Copen<CR>
 nnoremap <silent> <Space>O :cclose<CR>
 " Commandline utilities
-nnoremap T :Dispatch! ctags -R %:p:h<CR>
+nnoremap dc :Dispatch! ctags -R %:p:h<CR>
 nnoremap gp :Dispatch gist % -cd ""<Left>
 nnoremap gP :Dispatch gist -Pcd ""<Left>
 nnoremap <Space>s :Dispatch! mdfind -onlyin ~<Space>
