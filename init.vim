@@ -83,6 +83,8 @@ nnoremap + m
 nnoremap Q @@
 " Remove the highlights
 nnoremap <Esc> :nohl<CR>
+" set compiler
+nnoremap gC :compiler<Space>
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
@@ -124,6 +126,7 @@ cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-n> <Down>
 cnoremap <C-p> <Up>
+
 " Change guifont
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
 command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1', '')
@@ -1038,6 +1041,7 @@ augroup end
 Plug 'fatih/vim-go'
 augroup filetype_go
     autocmd!
+    autocmd FileType go nnoremap <buffer> gC :compiler! go<CR>
     autocmd FileType go nnoremap <buffer> K :GoDoc<CR>
     autocmd FileType go nnoremap <buffer> J :GoDef<CR>
 augroup end
@@ -1046,6 +1050,10 @@ augroup end
 Plug 'rstacruz/sparkup'
 let g:sparkupExecuteMapping = '<C-y>'
 let g:sparkupNextMapping = '<C-n>'
+augroup filetype_html
+    autocmd!
+    autocmd FileType html nnoremap <buffer> gC :compiler! tidy<CR>
+augroup end
 
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
@@ -1062,6 +1070,7 @@ Plug 'danchoi/ri.vim'
 let g:ri_no_mappings=1
 augroup filetype_go
     autocmd!
+    autocmd FileType ruby nnoremap <buffer> gC :compiler! rake<CR>
     autocmd FileType ruby nnoremap <buffer> K :call ri#LookupNameUnderCursor()<CR>
 augroup end
 
