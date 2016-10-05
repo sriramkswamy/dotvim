@@ -131,6 +131,7 @@ command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1'
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 " Leader and maps {{{2
+let maplocalleader="\\"
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
@@ -297,6 +298,14 @@ nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
 " Search spotlight
 command! -nargs=1 FzfSpotlight call fzf#run({
+            \ 'source': 'mdfind -onlyin ~ <q-args>',
+            \ 'sink' : 'e',
+            \ 'options': '-m --prompt "Spotlight> "'
+            \ })
+nnoremap <Space>s :FzfSpotlight<Space>
+nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
+" open externally
+command! FzfOpen call fzf#run({
             \ 'source': 'mdfind -onlyin ~ <q-args>',
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "Spotlight> "'
