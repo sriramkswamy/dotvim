@@ -68,6 +68,9 @@ set splitbelow
 
 " Maps without leader {{{2
 " Splits
+nnoremap <silent> w <C-w><C-w>
+nnoremap <silent> W <C-w>=
+nnoremap <silent> vs <C-w>f
 nnoremap <silent> gw <C-w>v
 nnoremap <silent> gW <C-w>s
 nnoremap <silent> Z :only<CR>
@@ -110,6 +113,7 @@ nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
 nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
+nnoremap cot :set ft=
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
@@ -133,14 +137,16 @@ nnoremap <silent> [z zk
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
-nnoremap <silent> <Space>v :redraw!<CR>
+nnoremap <silent> dr :redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
-nnoremap <Space>t :tabe<CR>
+nnoremap <Space>v :tabe<CR>
 " Alternate files
 nnoremap <Space><Tab> :b#<CR>
 " Open in Finder
-nnoremap <Space>V :!open %:p:h<CR>
+nnoremap gF :!open %:p:h<CR>
+" Open in Safari
+nnoremap gB :!open -a Safari %<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -151,35 +157,6 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers - fancy
 Plug 'junegunn/vim-peekaboo'
-" Start screen - fancy {{{3
-Plug 'mhinz/vim-startify'
-let g:startify_list_order = ['dir', 'files', 'sessions', 'bookmarks']
-let g:startify_bookmarks  = [ '~/.vim/vimrc', '~/.zshrc', '~/.zshenv' ]
-let g:startify_session_persistence = 1
-let g:startify_change_to_vcs_root = 1
-let g:startify_custom_header = ['', '   Vim/Neovim']
-let g:startify_custom_footer =
-            \ ['', "   Vim is charityware. Please read ':help uganda'.",
-            \  "   Neovim is a Vim fork. Please read ':help nvim' if in Neovim."]
-let g:startify_skiplist = [
-            \ 'COMMIT_EDITMSG',
-            \ escape(fnamemodify(resolve($VIMRUNTIME), ':p'), '\') .'doc',
-            \ 'plugged/.*/doc',
-            \ ]
-let g:startify_list_order = [
-            \ ['   Recent files in the current directory:'],
-            \ 'dir',
-            \ ['   Recent files:'],
-            \ 'files',
-            \ ['   Sessions:'],
-            \ 'sessions',
-            \ ['   Bookmarks:'],
-            \ 'bookmarks',
-            \ ]
-let g:startify_session_dir = '~/.vimsessions'
-nnoremap sq :SClose<CR>
-nnoremap sp :SSave<Space>
-nnoremap sy :SLoad<Space>
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -191,10 +168,14 @@ set showmatch
 
 " Maps without leader {{{2
 " Unimpaired inspired mappings
+nnoremap [g :cold<CR>
+nnoremap ]g :cnew<CR>
 nnoremap [q :cprevious<CR>
 nnoremap ]q :cnext<CR>
 nnoremap [Q :cfirst<CR>
 nnoremap ]Q :clast<CR>
+nnoremap [G :lold<CR>
+nnoremap ]G :lnew<CR>
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
 nnoremap [L :lfirst<CR>
@@ -238,6 +219,7 @@ function! GrepQuickFix(pat)
     call setqflist(qfl)
 endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
+nnoremap gQ :QFilter<Space>
 
 " Filter from location list
 function! GrepLocList(pat)
@@ -250,11 +232,13 @@ function! GrepLocList(pat)
     call setloclist(0,ll)
 endfunction
 command! -nargs=* LFilter call GrepLocList(<q-args>)
+nnoremap gL :LFilter<Space>
 
 " Common directory changes
 command! CD cd %:p:h
 command! LCD lcd %:p:h
 nnoremap cd :LCD<CR>
+nnoremap dc :CD<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
 
@@ -273,64 +257,52 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
+
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> J :FzfAg <C-R><C-W><CR>
+nnoremap <C-]> :FzfTags <C-R><C-W><CR>
+nnoremap <silent> g/ :FzfHistory/<CR>
+nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>. :FzfColors<CR>
+nnoremap <silent> <Space>/ :FzfLines<CR>
+nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
+nnoremap <silent> <Space>c :FzfBCommits<CR>
+nnoremap <silent> <Space>C :FzfCommits<CR>
+nnoremap <silent> <Space>d :FzfGFiles<CR>
+nnoremap <silent> <Space>f :FzfFiles<CR>
+nnoremap <silent> <Space>F :FzfFiles ~<CR>
+nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>t :FzfWindows<CR>
+nnoremap <silent> <Space>x :FzfHelptags<CR>
+nnoremap <silent> <Space>p :FzfAg<CR>
+nnoremap <silent> <Space>j :FzfCommands<CR>
+nnoremap <silent> <Space>J :FzfHistory:<CR>
+vnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>J :FzfHistory:<CR>
+inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+nmap <Space>, <Plug>(fzf-maps-n)
+xmap <Space>, <Plug>(fzf-maps-x)
+omap <Space>, <Plug>(fzf-maps-o)
+imap <silent> <C-d> <Plug>(fzf-complete-word)
+imap <silent> <C-l> <Plug>(fzf-complete-line)
+" PhD related stuff
+nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
+nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
+" Search spotlight
 command! -nargs=1 FzfSpotlight call fzf#run({
             \ 'source': 'mdfind -onlyin ~ <q-args>',
             \ 'sink' : 'e',
             \ 'options': '-m --prompt "Spotlight> "'
             \ })
-nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> T :FzfTags<CR>
-nnoremap <silent> g/ :FzfAg<CR>
-nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>F :FzfFiles %:p:h<CR>
-nnoremap <silent> <Space>f :FzfGitFiles<CR>
-nnoremap <silent> <Space>a :FzfBuffers<CR>
-nnoremap <silent> <Space>c :FzfBCommits<CR>
-nnoremap <silent> <Space>C :FzfCommits<CR>
-nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>, :FzfMaps<CR>
-nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>A :FzfWindows<CR>
-nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>/ :FzfHistory/<CR>
 nnoremap <Space>s :FzfSpotlight<Space>
-nnoremap <Space>S :FzfLocate!<Space>
-nnoremap <Space>j :FzfCommands<CR>
-nnoremap <Space>J :FzfHistory:<CR>
-vnoremap <Space>j :FzfCommands<CR>
-vnoremap <Space>J :FzfHistory:<CR>
-inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
-" Box related stuff
-command! -nargs=1 FzfBox call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Box\ Sync <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Box> "'
-            \ })
-nnoremap <Space>bs :FzfBox<Space>
-nnoremap <silent> <Space>bf :FzfFiles ~/Box\ Sync<Space>
-nnoremap <Space>bo :enew <bar> cd ~/Box\ Sync/<CR>
-" Dropbox related stuff
-command! -nargs=1 FzfDropbox call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "Dropbox> "'
-            \ })
-nnoremap <Space>ds :FzfDropbox<Space>
-nnoremap <silent> <Space>df :FzfFiles ~/Dropbox<CR>
-nnoremap <Space>do :enew <bar> cd ~/Dropbox/<CR>
-" PhD related stuff
-command! -nargs=1 FzfPhD call fzf#run({
-            \ 'source': 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
-            \ 'sink' : 'e',
-            \ 'options': '-m --prompt "PhD> "'
-            \ })
-nnoremap <Space>ps :FzfPhD<Space>
-nnoremap <Space>pf :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap <Space>po :enew <bar> cd ~/Dropbox/PhD<CR>
+nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -529,14 +501,22 @@ Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 " Better '.' command
 Plug 'tpope/vim-repeat'
-" Elementary splitting
+" Convert the line into a list and vice versa
+function! FixLastSpellingError()
+  normal! mm[s1z=`m"
+endfunction
+inoremap <C-z> <Esc>:<C-u>call FixLastSpellingError()<cr>
+nmap <Plug>LineToList I- [ ] <Esc>2h:call repeat#set("\<Plug>LineToList", v:count)<CR>
+nmap <Space>- <Plug>LineToList
+nmap <Plug>ListToLine _df]x:call repeat#set("\<Plug>ListToLine", v:count)<CR>
+nmap <Space>= <Plug>ListToLine
+" Elementary splitting and joining
 nmap <Plug>ElementarySplit Dop==k$:call repeat#set("\<Plug>ElementarySplit", v:count)<CR>
-nmap gz <Plug>ElementarySplit
+nmap gS <Plug>ElementarySplit
+nnoremap gJ J
 " Blank the current line
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
-" Auto correction - iabbrev collection
-Plug 'sriramkswamy/vim-fat-finger'
 " Switch
 Plug 'AndrewRadev/switch.vim'
 let g:switch_mapping = "-"
@@ -550,7 +530,7 @@ let g:switch_custom_definitions =
             \     '\<\(\l\+\)\(-\l\+\)\+\>': "\\=substitute(submatch(0), '-\\(\\l\\)', '\\u\\1', 'g')",
             \   },
             \ ['TODO', 'DONE', 'WAITING', 'CANCELLED'],
-            \ ['[ ]', '[X]'],
+            \ ['[ ]', '[X]']
             \ ]
 autocmd FileType tex,plaintex let b:switch_custom_definitions =
             \ [
@@ -584,14 +564,10 @@ Plug 'osyo-manga/vim-over'
 let g:over_command_line_prompt = ">"
 nnoremap <Space><Space> :OverCommandLine<CR>
 vnoremap <Space><Space> :OverCommandLine<CR>
-" Semantic split and join
-Plug 'AndrewRadev/splitjoin.vim'
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 nnoremap gl :Tabularize /
 vnoremap gl :Tabularize /
-nnoremap gL :Tabularize<CR>
-vnoremap gL :Tabularize<CR>
 nnoremap g<Tab> :Tabularize /\s\+<CR>
 vnoremap g<Tab> :Tabularize /\s\+<CR>
 nnoremap g= :Tabularize /=<CR>
@@ -639,15 +615,6 @@ nmap [x <Plug>DeleteLineUp
 nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
 nmap ]x <Plug>DeleteLineDown
 
-" Motions {{{2
-Plug 'justinmk/vim-sneak'
-nmap w <Plug>Sneak_s
-xmap w <Plug>Sneak_s
-omap w <Plug>Sneak_s
-nmap W <Plug>Sneak_S
-xmap W <Plug>Sneak_S
-omap W <Plug>Sneak_S
-
 " Text objects {{{2
 " Onoremap based {{{3
 " Operate on entire file
@@ -665,22 +632,138 @@ nnoremap cq :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:registe
 
 " Text object plugins {{{3
 " Adds some niceties
+" Textobj - i,/a,/i;/a;/ir/ar and [next(n), prev(N)] for all
 Plug 'wellle/targets.vim'
+let g:targets_aiAI = 'ai  '
 let g:targets_nlNL = 'nN  '
 let g:targets_argTrigger = 'r'
 let g:targets_argOpening = '[({[]'
 let g:targets_argClosing = '[]})]'
 let g:targets_argSeparator = '[,;]'
 " Create text objects
+" Operate on indents - (operator)ii/ai/iI/aI - doesn't depend on kana's plugin
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 " Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av
 Plug 'Julian/vim-textobj-variable-segment'
 " Operate on functions - (operator)if/af
 Plug 'sriramkswamy/vim-textobj-function'
-" Operate on comments - (operator)ic/ac
+" Operate on comments - (operator)ic/ac/aC
 Plug 'sriramkswamy/vim-textobj-comment'
-" Operate on indents - (operator)ii/ai/aI
-Plug 'kana/vim-textobj-indent'
+" Niceties for Lisp editing
+" Textobjects -
+Plug 'guns/vim-sexp'
+" Disable mapping hooks
+let g:sexp_filetypes = ''
+function! s:vim_sexp_mappings()
+    xmap <silent><buffer> ad         <Plug>(sexp_outer_list)
+    omap <silent><buffer> ad         <Plug>(sexp_outer_list)
+    xmap <silent><buffer> id         <Plug>(sexp_inner_list)
+    omap <silent><buffer> id         <Plug>(sexp_inner_list)
+    xmap <silent><buffer> at         <Plug>(sexp_outer_top_list)
+    omap <silent><buffer> at         <Plug>(sexp_outer_top_list)
+    xmap <silent><buffer> it         <Plug>(sexp_inner_top_list)
+    omap <silent><buffer> it         <Plug>(sexp_inner_top_list)
+    xmap <silent><buffer> ag         <Plug>(sexp_outer_string)
+    omap <silent><buffer> ag         <Plug>(sexp_outer_string)
+    xmap <silent><buffer> ig         <Plug>(sexp_inner_string)
+    omap <silent><buffer> ig         <Plug>(sexp_inner_string)
+    xmap <silent><buffer> ay         <Plug>(sexp_outer_element)
+    omap <silent><buffer> ay         <Plug>(sexp_outer_element)
+    xmap <silent><buffer> iy         <Plug>(sexp_inner_element)
+    omap <silent><buffer> iy         <Plug>(sexp_inner_element)
+    nmap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
+    xmap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
+    omap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
+    nmap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
+    xmap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
+    omap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
+    nmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
+    xmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
+    omap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
+    nmap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
+    xmap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
+    omap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
+    nmap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
+    xmap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
+    omap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
+    nmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
+    xmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
+    omap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
+    nmap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
+    xmap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
+    omap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
+    nmap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
+    xmap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
+    omap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
+    nmap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
+    xmap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
+    omap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
+    nmap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
+    xmap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
+    omap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
+    nmap <silent><buffer> ==         <Plug>(sexp_indent)
+    nmap <silent><buffer> =-         <Plug>(sexp_indent_top)
+    nmap <silent><buffer> csd(       <Plug>(sexp_round_head_wrap_list)
+    xmap <silent><buffer> csd(       <Plug>(sexp_round_head_wrap_list)
+    nmap <silent><buffer> csd)       <Plug>(sexp_round_tail_wrap_list)
+    xmap <silent><buffer> csd)       <Plug>(sexp_round_tail_wrap_list)
+    nmap <silent><buffer> csd[       <Plug>(sexp_square_head_wrap_list)
+    xmap <silent><buffer> csd[       <Plug>(sexp_square_head_wrap_list)
+    nmap <silent><buffer> csd]       <Plug>(sexp_square_tail_wrap_list)
+    xmap <silent><buffer> csd]       <Plug>(sexp_square_tail_wrap_list)
+    nmap <silent><buffer> csd{       <Plug>(sexp_curly_head_wrap_list)
+    xmap <silent><buffer> csd{       <Plug>(sexp_curly_head_wrap_list)
+    nmap <silent><buffer> csd}       <Plug>(sexp_curly_tail_wrap_list)
+    xmap <silent><buffer> csd}       <Plug>(sexp_curly_tail_wrap_list)
+    nmap <silent><buffer> csy(       <Plug>(sexp_round_head_wrap_element)
+    xmap <silent><buffer> csy(       <Plug>(sexp_round_head_wrap_element)
+    nmap <silent><buffer> csy)       <Plug>(sexp_round_tail_wrap_element)
+    xmap <silent><buffer> csy)       <Plug>(sexp_round_tail_wrap_element)
+    nmap <silent><buffer> csy[       <Plug>(sexp_square_head_wrap_element)
+    xmap <silent><buffer> csy[       <Plug>(sexp_square_head_wrap_element)
+    nmap <silent><buffer> csy]       <Plug>(sexp_square_tail_wrap_element)
+    xmap <silent><buffer> csy]       <Plug>(sexp_square_tail_wrap_element)
+    nmap <silent><buffer> csy{       <Plug>(sexp_curly_head_wrap_element)
+    xmap <silent><buffer> csy{       <Plug>(sexp_curly_head_wrap_element)
+    nmap <silent><buffer> csy}       <Plug>(sexp_curly_tail_wrap_element)
+    xmap <silent><buffer> csy}       <Plug>(sexp_curly_tail_wrap_element)
+    nmap <silent><buffer> gI         <Plug>(sexp_insert_at_list_head)
+    nmap <silent><buffer> gA         <Plug>(sexp_insert_at_list_tail)
+    nmap <silent><buffer> dsd        <Plug>(sexp_splice_list)
+    nmap <silent><buffer> crd        <Plug>(sexp_raise_list)
+    xmap <silent><buffer> crd        <Plug>(sexp_raise_list)
+    nmap <silent><buffer> cry        <Plug>(sexp_raise_element)
+    xmap <silent><buffer> cry        <Plug>(sexp_raise_element)
+    nmap <silent><buffer> <d         <Plug>(sexp_swap_list_backward)
+    xmap <silent><buffer> <d         <Plug>(sexp_swap_list_backward)
+    nmap <silent><buffer> >d         <Plug>(sexp_swap_list_forward)
+    xmap <silent><buffer> >d         <Plug>(sexp_swap_list_forward)
+    nmap <silent><buffer> <y         <Plug>(sexp_swap_element_backward)
+    xmap <silent><buffer> <y         <Plug>(sexp_swap_element_backward)
+    nmap <silent><buffer> >y         <Plug>(sexp_swap_element_forward)
+    xmap <silent><buffer> >y         <Plug>(sexp_swap_element_forward)
+    nmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
+    xmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
+    nmap <silent><buffer> >)         <Plug>(sexp_emit_tail_element)
+    xmap <silent><buffer> >)         <Plug>(sexp_emit_tail_element)
+    nmap <silent><buffer> >(         <Plug>(sexp_capture_prev_element)
+    xmap <silent><buffer> >(         <Plug>(sexp_capture_prev_element)
+    nmap <silent><buffer> <)         <Plug>(sexp_capture_next_element)
+    xmap <silent><buffer> <)         <Plug>(sexp_capture_next_element)
+    imap <silent><buffer> <BS>       <Plug>(sexp_insert_backspace)
+    imap <silent><buffer> "          <Plug>(sexp_insert_double_quote)
+    imap <silent><buffer> (          <Plug>(sexp_insert_opening_round)
+    imap <silent><buffer> )          <Plug>(sexp_insert_closing_round)
+    imap <silent><buffer> [          <Plug>(sexp_insert_opening_square)
+    imap <silent><buffer> ]          <Plug>(sexp_insert_closing_square)
+    imap <silent><buffer> {          <Plug>(sexp_insert_opening_curly)
+    imap <silent><buffer> }          <Plug>(sexp_insert_closing_curly)
+endfunction
+augroup VIM_SEXP_MAPPING
+    autocmd!
+    autocmd FileType clojure,scheme,lisp,racket call s:vim_sexp_mappings()
+augroup END
 
 " Operators {{{2
 " Functions {{{3
@@ -751,6 +834,9 @@ nmap ]r <Plug>ExchangeArgNext
 nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [r <Plug>ExchangeArgPrev
 
+" Better A and I in visual block
+Plug 'kana/vim-niceblock'
+
 " Snippets {{{1
 if has('python') || has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
@@ -769,13 +855,23 @@ omap ih <Plug>(signify-motion-inner-pending)
 xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
+nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
 " Git Wrapper
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
+nnoremap <silent> <Space>g :Gstatus<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
+
+" Project/Other sessions {{{1
+Plug 'tpope/vim-obsession'
+nnoremap sr :Obsess ~/.vim/session/
+nnoremap sp :Obsess<CR>
+nnoremap so :source ~/.vim/session/
+nnoremap sd :Obsess!<CR>
+set statusline+=\ %{ObsessionStatus()} " vim session status
 
 " Autocompletion {{{1
 " vim-omnicomplete activation {{{2
@@ -789,12 +885,25 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 autocmd CompleteDone * pclose
 
 " Language helpers {{{1
+
 " Syntax and nicities for many languages {{{2
 Plug 'sheerun/vim-polyglot'
 " LaTeX already included in polyglot
 let g:LatexBox_Folding = 1
+" Vim-ruby included with polyglot
+let g:rubycomplete_buffer_loading = 1
+let g:rubycomplete_classes_in_global = 1
+let g:rubycomplete_rails = 1
+let g:rubycomplete_load_gemfile = 1
+" let g:rubycomplete_use_bundler = 1
+
 " Vim script {{{2
 Plug 'tpope/vim-scriptease'
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim nnoremap <buffer> J :helpgrep <C-R><C-W><CR>
+augroup end
+
 " C/C++ {{{2
 " Autocompletion
 Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
@@ -802,6 +911,7 @@ let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
 let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
 let g:clang_diagsopt = ''   " disable diagnostics
+
 " Indexer (for cmake projects)
 Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
 autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
@@ -818,9 +928,10 @@ command! CppRename call rtags#RenameSymbolUnderCursor()
 command! CppProjects call rtags#ProjectList()
 augroup filetype_cpp
     autocmd!
-    autocmd FileType c,cpp nnoremap <buffer> <Space>g :call rtags#JumpTo(g:SAME_WINDOW)<CR>
+    autocmd FileType c,cpp nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
     autocmd FileType c,cpp nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
 augroup end
+
 " Python {{{2
 " Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
@@ -839,36 +950,44 @@ command! PyRename call jedi#rename()
 command! PyRenameVisual call jedi#rename_visual()
 augroup filetype_python
     autocmd!
-    autocmd FileType python nnoremap <buffer> <Space>g :call jedi#goto()<CR>
+    autocmd FileType python nnoremap <buffer> J :call jedi#goto()<CR>
 augroup end
+
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
 command! BracelessOn BracelessEnable +indent +fold +highlight
 command! BracelessOff BracelessEnable -indent -fold -highlight
+nnoremap g> :BracelessOn<CR>
+nnoremap g< :BracelessOff<CR>
 autocmd FileType python BracelessOn
 let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
 let g:braceless_block_key = 'b'
 let g:braceless_easymotion_segment_key = ''
+
 " JavaScript {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
 augroup filetype_javascript
     autocmd!
     autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
-    autocmd FileType js,javascript nnoremap <buffer> <Space>g :TernDef<CR>
+    autocmd FileType js,javascript nnoremap <buffer> J :TernDef<CR>
 augroup end
+
 " Go {{{2
 " Autocompletion and navigation
 Plug 'fatih/vim-go'
 augroup filetype_go
     autocmd!
     autocmd FileType go nnoremap <buffer> K :GoDoc<CR>
-    autocmd FileType go nnoremap <buffer> <Space>g :GoDef<CR>
+    autocmd FileType go nnoremap <buffer> J :GoDef<CR>
 augroup end
+
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
-let g:sparkupNextMapping = '<C-Y>'
+let g:sparkupExecuteMapping = '<C-y>'
+let g:sparkupNextMapping = '<C-n>'
+
 " Eclim - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
@@ -877,6 +996,25 @@ let g:EclimShowCurrentErrorBalloon = 0
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
 nmap <silent> <leader>K <Plug>DashSearch
+
+" Ruby (on Rails) {{{2
+Plug 'tpope/vim-rails'
+Plug 'danchoi/ri.vim'
+let g:ri_no_mappings=1
+augroup filetype_go
+    autocmd!
+    autocmd FileType ruby nnoremap <buffer> K :call ri#LookupNameUnderCursor()<CR>
+augroup end
+
+" R integration {{{2
+Plug 'jalvesaq/Nvim-R'
+
+" DB {{{2
+Plug 'vim-scripts/dbext.vim'
+
+" Documentation browser {{{2
+Plug 'rizzatti/dash.vim'
+nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{1
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
@@ -894,6 +1032,12 @@ set incsearch
 set grepprg=grep\ -nH\ $*
 " Populate location list with previous search pattern; ugly hack
 nnoremap <C-n> :lvim // %<CR>
+" and automatically open the windows when they are populated
+augroup quick_loc_window
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* nested cwindow | setlocal nowrap | redraw!
+    autocmd QuickFixCmdPost l* nested lwindow | setlocal nowrap | redraw!
+augroup END
 
 " Maps without leader {{{2
 " Auto-center
@@ -917,9 +1061,14 @@ let g:grepper = {
             \ 'jump':  0,
             \ 'next_tool': ']g'
             \ }
+nnoremap ge :Grepper -tool ag -cword -noprompt<cr>
 nnoremap gss :Grepper -tool ag -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
+
+" Search and replace across project - trial {{{2
+Plug 'thinca/vim-qfreplace'
+nnoremap gE :Qfreplace<CR>
 
 " REPL and Tmux {{{1
 " let commands and maps without leader {{{2
@@ -930,8 +1079,12 @@ let g:C_UseTool_doxygen = 'yes'
 tnoremap <C-g> <C-\><C-n>
 nnoremap <silent> <Space>n :terminal ranger<CR>
 nnoremap <silent> <Space>e :terminal tig<CR>
-nnoremap <Space>Y :vsp <bar> terminal googler<Space>
-nnoremap <silent> <Space>y :vsp <bar> terminal googler <cWORD><CR>
+nnoremap gG :vsp <bar> terminal googler<Space>
+nnoremap <silent> g{ :vsp <bar> terminal googler <cWORD><CR>
+nnoremap <silent> g} :vsp <bar> terminal googler <cword><CR>
+vnoremap gG :vsp <bar> terminal googler<Space>
+vnoremap <silent> g{ :vsp <bar> terminal googler <cWORD><CR>
+vnoremap <silent> g} :vsp <bar> terminal googler <cword><CR>
 
 if exists('$TMUX')
     nnoremap <silent> <Space>u :call system("tmux split-window -h")<CR>
@@ -944,23 +1097,52 @@ endif
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Space>z :call system("tmux resize-pane -Z")<CR>
+    nnoremap <silent> <C-\> :call system("tmux copy-mode")<CR>
     nmap <silent> <Plug>SwapTmuxUp :call system("tmux swap-pane -U")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxUp", v:count)<CR>
-    nmap ]R <Plug>SwapTmuxUp
+    nmap ]U <Plug>SwapTmuxUp
     nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
                 \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
-    nmap [R <Plug>SwapTmuxDown
+    nmap [U <Plug>SwapTmuxDown
+    nmap <silent> <Plug>SwapNextLayout :call system("tmux next-layout")<CR>
+                \ :call repeat#set("\<Plug>SwapNextLayout", v:count)<CR>
+    nmap ]R <Plug>SwapNextLayout
+    nmap <silent> <Plug>SwapPrevLayout :call system("tmux previous-layout")<CR>
+                \ :call repeat#set("\<Plug>SwapPrevLayout", v:count)<CR>
+    nmap [R <Plug>SwapPrevLayout
 endif
 " Navigate between Tmux and Vim - I wish there was another way...
 Plug 'christoomey/vim-tmux-navigator'
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 nmap <silent> <BS> :TmuxNavigateLeft<CR>
 
 " Plugins {{{2
 " Common *nix commands
 Plug 'tpope/vim-eunuch'
+nnoremap gK :Remove
+nnoremap gR :Rename<Space>
+nnoremap gM :Move<Space>
+nnoremap dm :Mkdir<Space>
+command! CopyFileName let @+ = expand('%:p')
+nnoremap gY :CopyFileName<CR>
+command! CopyFilePath let @+ = expand('%:p:h')
+nnoremap ym :CopyFilePath<CR>
+
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
-nnoremap <Space>m :Dispatch!<Space>
+nnoremap gh :Dispatch<Space>
+nnoremap gH :Spawn<Space>
+nnoremap cm :Make<Space>
+nnoremap sm :Start<Space>
+nnoremap <Space>mm :Make<CR>
+nnoremap <Space>mf :Make %<CR>
+nnoremap <Space>mb :Make -C build<CR>
+nnoremap <Space>md :Make -C build doc<CR>
+nnoremap <Space>ml :Make -C docs/latex<CR>
 nnoremap <silent> <Space>o :Copen<CR>
 nnoremap <silent> <Space>O :cclose<CR>
 " Commandline utilities
@@ -997,6 +1179,14 @@ command! ConvertToLatex Dispatch! pandoc % -o %:r.tex
 command! ConvertToEpub3 Dispatch! pandoc % -o %:r.epub
 command! ConvertToHTML5 Dispatch! pandoc % -o %:r.html
 command! ConvertToOPML Dispatch! multimarkdown -t opml % > %:r.opml
+" start rtags when in c or cpp files
+autocmd FileType c,cpp :Dispatch! rdm &<CR>
+" matlab support - sort of
+augroup filetype_matlab
+    autocmd!
+    autocmd FileType matlab nnoremap <buffer> J :find <C-R><C-W><CR>
+    autocmd FileType matlab nnoremap <buffer> K :Dispatch /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>
+augroup end
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
@@ -1005,11 +1195,12 @@ let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
 let g:tmuxify_run = {
             \ 'sh': 'bash %',
             \ 'go': 'go build %',
+            \ 'tex': 'latexmk -pdf -pvc %',
+            \ 'python': 'ipython',
             \ 'R': 'R',
             \ 'matlab': 'matlab',
-            \ 'scheme': 'racket',
-            \ 'python': 'ipython',
             \ 'julia': 'julia',
+            \ 'scheme': 'racket',
             \ 'racket': 'racket',
             \ 'sml': 'sml',
             \}
@@ -1017,10 +1208,10 @@ let g:tmuxify_run = {
 " Stop plugin installation {{{1
 call plug#end()
 
-" Sections text object - (operator)im/am for markdown and (operator)ix/ax for latex {{{1
+" Sections text object - (operator)ij/aj for markdown and (operator)io/ao for markdown code {{{1
 call textobj#user#plugin('markdown', { '-': {
-            \ 'select-a-function': 'MarkdownA', 'select-a': 'am',
-            \ 'select-i-function': 'MarkdownI', 'select-i': 'im',
+            \ 'select-a-function': 'MarkdownA', 'select-a': 'aj',
+            \ 'select-i-function': 'MarkdownI', 'select-i': 'ij',
             \ }, })
 function! MarkdownA()
     call search('^#\+.*$', 'bc')
@@ -1038,6 +1229,31 @@ function! MarkdownI()
     return ['v', head_pos, tail_pos]
 endfunction
 
+call textobj#user#plugin('markdown', { '-': {
+            \ 'select-a-function': 'MarkdownCodeA', 'select-a': 'ao',
+            \ 'select-i-function': 'MarkdownCodeI', 'select-i': 'io',
+            \ }, })
+function! MarkdownCodeA()
+    call search('^```\s*\w*$', 'bc')
+    normal! 0
+    let head_pos = getpos('.')
+    normal! j
+    call search('^```$', 'c')
+    normal! $
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+function! MarkdownCodeI()
+    call search('^```\s*\w*$', 'bc')
+    normal! j0
+    let head_pos = getpos('.')
+    call search('^```$', 'c')
+    normal! k$
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+
+" Sections text object - (operator)ix/ax for latex section {{{1
 call textobj#user#plugin('latex', { '-': {
             \ 'select-a-function': 'LatexA', 'select-a': 'ax',
             \ 'select-i-function': 'LatexI', 'select-i': 'ix',
@@ -1058,13 +1274,13 @@ function! LatexI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-" Markdown code text object - (operator)iM/aM {{{1
-call textobj#user#plugin('markcode', { '-': {
-            \ 'select-a-function': 'MarkcodeA', 'select-a': 'aM',
-            \ 'select-i-function': 'MarkcodeI', 'select-i': 'iM',
+" Hexo code text object - (operator)ik/ak {{{1
+call textobj#user#plugin('hexocode', { '-': {
+            \ 'select-a-function': 'HexocodeA', 'select-a': 'ak',
+            \ 'select-i-function': 'HexocodeI', 'select-i': 'ik',
             \ }, })
-function! MarkcodeA()
-    call search('^```\w*$', 'bc')
+function! HexocodeA()
+    call search('^```\s*\[.*\]$', 'bc')
     normal! 0
     let head_pos = getpos('.')
     normal! j
@@ -1073,8 +1289,8 @@ function! MarkcodeA()
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
-function! MarkcodeI()
-    call search('^```\w*$', 'bc')
+function! HexocodeI()
+    call search('^```\s*\[.*\]$', 'bc')
     normal! j0
     let head_pos = getpos('.')
     call search('^```$', 'c')

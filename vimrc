@@ -98,7 +98,7 @@ nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
 " Remove the highlights
-nnoremap <silent> <BS> :nohl<CR>
+nnoremap <BS> :nohl<CR>
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
@@ -283,6 +283,7 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
+
 " FZF {{{3
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -316,7 +317,6 @@ nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
 imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-_> <Plug>(fzf-complete-path)
 imap <silent> <C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
@@ -538,7 +538,7 @@ Plug 'tpope/vim-repeat'
 function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
-inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>
+inoremap <C-z> <Esc>:<C-u>call FixLastSpellingError()<cr>
 nmap <Plug>LineToList I- [ ] <Esc>2h:call repeat#set("\<Plug>LineToList", v:count)<CR>
 nmap <Space>- <Plug>LineToList
 nmap <Plug>ListToLine _df]x:call repeat#set("\<Plug>ListToLine", v:count)<CR>
