@@ -1,2 +1,3 @@
-set makeprg=pylint\ --reports=n\ --output-format=parseable
-set errorformat=%f:%l:\ %m
+" Syntax checking
+setlocal errorformat=%f:%l:\ %m
+setlocal makeprg=pylint\ --reports=n\ --output-format=parseable
