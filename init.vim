@@ -866,6 +866,7 @@ xmap s   <Plug>VSurround
 xmap S  <Plug>VgSurround
 " Easy commenting - gc(motion/textobject)
 Plug 'tpope/vim-commentary'
+inoremap <C-\> i<Esc>:normal gcc$x<CR>A
 autocmd FileType matlab setlocal commentstring=%\ %s
 autocmd FileType sml setlocal commentstring=(*%s*)
 " Replace the object with content in register - ["x]gr(motion/textobject)
