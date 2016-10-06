@@ -526,8 +526,8 @@ snippet ref "reference" i
 ~\ref{$1}$0
 endsnippet
 
-snippet href "hyperlink"
-\href{\url{$2}}{$1}$0
+snippet hl "hyperlink"
+\href{$2}{$1}$0
 endsnippet
 
 snippet frabox "framebox" b
@@ -980,4 +980,12 @@ endsnippet
 
 snippet tx "text" i
 \text{$1}$0
+endsnippet
+
+snippet cc "circle" i
+\circ
+endsnippet
+
+snippet la "label"
+\label{${1:eq:fig:tab:sec:ssec:cha:}}$0
 endsnippet

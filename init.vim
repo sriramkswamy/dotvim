@@ -84,7 +84,7 @@ nnoremap Q @@
 " Remove the highlights
 nnoremap <Esc> :nohl<CR>
 " set compiler
-nnoremap gC :compiler<Space>
+nnoremap gC :compiler!<Space>
 " Navigate in insert mode
 inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
@@ -838,7 +838,9 @@ augroup VIM_SEXP_MAPPING
 augroup END
 
 " Operators {{{2
-" Better A and I in visual mode
+" Better a,A and i,I in visual mode
+vnoremap a A
+vnoremap i I
 vnoremap A <C-v>$A
 vnoremap I <C-v>0I
 " Functions {{{3
@@ -1087,6 +1089,8 @@ augroup end
 
 " R integration {{{2
 Plug 'jalvesaq/Nvim-R'
+let R_vsplit = 1
+nmap mR <Plug>RStart
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1167,11 +1171,11 @@ nnoremap gh :Dispatch<Space>
 nnoremap gH :Spawn<Space>
 nnoremap cm :Make<Space>
 nnoremap sm :Start<Space>
-nnoremap <Space>mm :Make<CR>
-nnoremap <Space>mf :Make %<CR>
-nnoremap <Space>mb :Make -C build<CR>
-nnoremap <Space>md :Make -C build doc<CR>
-nnoremap <Space>ml :Make -C docs/latex<CR>
+nnoremap <Space>mm :Make!<CR>
+nnoremap <Space>mf :Make! %<CR>
+nnoremap <Space>mb :Make! -C build<CR>
+nnoremap <Space>md :Make! -C build doc<CR>
+nnoremap <Space>ml :Make! -C docs/latex<CR>
 nnoremap <silent> <Space>o :Copen<CR>
 nnoremap <silent> <Space>O :cclose<CR>
 " Commandline utilities
@@ -1227,7 +1231,7 @@ let g:tmuxify_run = {
             \ 'go': 'go build %',
             \ 'tex': 'latexmk -pdf -pvc %',
             \ 'python': 'ipython',
-            \ 'R': 'R',
+            \ 'R': 'R --no-save --quiet',
             \ 'matlab': 'matlab',
             \ 'julia': 'julia',
             \ 'scheme': 'racket',
