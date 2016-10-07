@@ -169,11 +169,14 @@ nmap ga <Plug>(UnicodeGA)
 nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
-DigraphNew gl 03BB
-DigraphNew gp 03C0
-DigraphNew mi 222B
-DigraphNew my 221E
-DigraphNew sr 2192
+augroup digraphs_init
+    autocmd!
+    autocmd BufRead,BufNewFile * :DigraphNew gl 03BB
+    autocmd BufRead,BufNewFile * :DigraphNew gp 03C0
+    autocmd BufRead,BufNewFile * :DigraphNew mi 222B
+    autocmd BufRead,BufNewFile * :DigraphNew my 221E
+    autocmd BufRead,BufNewFile * :DigraphNew sr 2192
+augroup end
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -1318,6 +1321,8 @@ nnoremap <silent> m; va'"my:TxSend(@m)<CR>
 nnoremap <silent> m` vi`"my:TxSend(@m)<CR>
 nnoremap <silent> m0 v0"my:TxSend(@m)<CR>
 nnoremap <silent> m$ v$"my:TxSend(@m)<CR>
+" depends on targets.vim textobjects
+nnoremap <silent> m@ vir"my:TxSend(@m)<CR>
 " depends on vim-indent-object textobject
 nnoremap <silent> m= vii"my:TxSend(@m)<CR>
 nnoremap <silent> m> vai"my:TxSend(@m)<CR>
@@ -1325,6 +1330,9 @@ nnoremap <silent> m< vaI"my:TxSend(@m)<CR>
 " depends on vim-text-object-function textobject
 nnoremap <silent> m/ vaf"my:TxSend(@m)<CR>
 nnoremap <silent> m? vif"my:TxSend(@m)<CR>
+" depends on braceless.vim textobject
+nnoremap <silent> m* vib"my:TxSend(@m)<CR>
+nnoremap <silent> m# vab"my:TxSend(@m)<CR>
 " depends on vim-signify hunk textobject
 nnoremap <silent> m+ vih"my:TxSend(@m)<CR>
 " depends on vim-sexp textobjects

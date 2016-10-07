@@ -1297,6 +1297,8 @@ nnoremap <silent> m; va'"my:TxSend(@m)<CR>
 nnoremap <silent> m` vi`"my:TxSend(@m)<CR>
 nnoremap <silent> m0 v0"my:TxSend(@m)<CR>
 nnoremap <silent> m$ v$"my:TxSend(@m)<CR>
+" depends on targets.vim textobjects
+nnoremap <silent> m@ vir"my:TxSend(@m)<CR>
 " depends on vim-indent-object textobject
 nnoremap <silent> m= vii"my:TxSend(@m)<CR>
 nnoremap <silent> m> vai"my:TxSend(@m)<CR>
@@ -1304,6 +1306,9 @@ nnoremap <silent> m< vaI"my:TxSend(@m)<CR>
 " depends on vim-text-object-function textobject
 nnoremap <silent> m/ vaf"my:TxSend(@m)<CR>
 nnoremap <silent> m? vif"my:TxSend(@m)<CR>
+" depends on braceless.vim textobject
+nnoremap <silent> m* vib"my:TxSend(@m)<CR>
+nnoremap <silent> m# vab"my:TxSend(@m)<CR>
 " depends on vim-signify hunk textobject
 nnoremap <silent> m+ vih"my:TxSend(@m)<CR>
 " depends on vim-sexp textobjects
