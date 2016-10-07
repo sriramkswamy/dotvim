@@ -96,8 +96,8 @@ inoremap <silent> <C-o> <C-x><C-o>
 inoremap <silent> <C-]> <C-x><C-u>
 " Dictionary - <C-w> achieves the same thing
 inoremap <silent> <C-d> <C-x><C-k>
-" File complete - You can use this by typing <C-/>
-inoremap <silent> <C-_> <C-x><C-f>
+" File complete - <C-c> in insert mode doesn't exit properly anyway
+inoremap <silent> <C-c> <C-x><C-f>
 " Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
 inoremap <silent> <C-l> <C-x><C-l>
 " Toggle few options - inspired by unimpaired
@@ -877,10 +877,7 @@ nmap SS <Plug>YSsurround
 xmap s   <Plug>VSurround
 xmap S  <Plug>VgSurround
 " Easy commenting - gc(motion/textobject)
-Plug 'tpope/vim-commentary'
-inoremap <C-\> i<Esc>:normal gcc$x<CR>A
-autocmd FileType matlab setlocal commentstring=%\ %s
-autocmd FileType sml setlocal commentstring=(*%s*)
+Plug 'tomtom/tcomment_vim'
 " Replace the object with content in register - ["x]gr(motion/textobject)
 Plug 'vim-scripts/ReplaceWithRegister'
 " Exchange stuff - cx(motion/textobject) and repeat it at the new point
@@ -1027,8 +1024,8 @@ augroup end
 Plug 'tweekmonster/braceless.vim'
 command! BracelessOn BracelessEnable +indent +fold +highlight
 command! BracelessOff BracelessEnable -indent -fold -highlight
-nnoremap g> :BracelessOn<CR>
-nnoremap g< :BracelessOff<CR>
+nnoremap g. :BracelessOn<CR>
+nnoremap g_ :BracelessOff<CR>
 autocmd FileType python BracelessOn
 let g:braceless_generate_scripts = 1
 let g:braceless_enable_easymotion = 0
@@ -1098,9 +1095,45 @@ augroup end
 " :packadd vimball
 " :so %
 Plug 'jalvesaq/Nvim-R'
-" let R_vsplit = 1
-" let R_in_buffer = 0
-" nmap mR <Plug>RStart
+let R_vsplit = 1
+let R_args = ['--no-save', '--quiet']
+augroup filetype_r
+    autocmd!
+    autocmd FileType R source ~/.config/nvim/plugged/Nvim-R/ftplugin/r_nvimr.vim
+    autocmd FileType R nnoremap <buffer> K :call RAction("help")<CR>
+augroup end
+" Complete the arguments
+inoremap <C-\> <C-x><C-a>
+" Normal maps apart from '\' based maps
+nmap mR <Plug>RStart
+nmap mQ <Plug>RClose
+nmap mv <Plug>RUpdateObjBrowser
+nmap m= <Plug>ROpenLists
+nmap m- <Plug>RCloseLists
+nmap mX <Plug>RClearAll
+nmap mx <Plug>RClearConsole
+nmap mh <Plug>RListSpace
+nmap mu <Plug>RShowArgs
+nmap me <Plug>RShowEx
+nmap mo <Plug>RShowRout
+nmap mw <Plug>RObjectPr
+nmap mi <Plug>RObjectStr
+nmap mI <Plug>RObjectNames
+nmap md <Plug>RViewDF
+nmap mD <Plug>RSetwd
+nmap ma <Plug>RSummary
+nmap mj <Plug>RSPlot
+nmap mz <Plug>RToggleComment
+nmap m; <Plug>RRightComment
+nmap mL <Plug>REDSendMBlock
+nmap mC <Plug>REDSendChunk
+nmap mf <Plug>RSendFile
+nmap mm <Plug>RDSendFunction
+nmap mg <Plug>REDSendParagraph
+nmap ml <Plug>RDSendLine
+nmap my <Plug>RDSendLineAndInsertOutput
+vmap ml <Plug>REDSendSelection
+vmap my <Plug>RSendSelAndInsertOutput
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
