@@ -161,6 +161,19 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers - fancy
 Plug 'junegunn/vim-peekaboo'
+" Insert unicode better
+Plug 'chrisbra/unicode.vim'
+let g:Unicode_ShowPreviewWindow = 1
+inoremap <silent> <C-q> <C-x><C-g>
+nmap ga <Plug>(UnicodeGA)
+nmap gz <Plug>(MakeDigraph)
+nnoremap gN :Digraphs<Space>
+nnoremap gV :UnicodeSearch<Space>
+DigraphNew gl 03BB
+DigraphNew gp 03C0
+DigraphNew mi 222B
+DigraphNew my 221E
+DigraphNew sr 2192
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
@@ -638,6 +651,7 @@ nnoremap <Space><Space> :OverCommandLine<CR>
 vnoremap <Space><Space> :OverCommandLine<CR>
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
+nnoremap gA :Tabularize<CR>
 nnoremap gl :Tabularize /
 vnoremap gl :Tabularize /
 nnoremap g<Tab> :Tabularize /\s\+<CR>
@@ -927,6 +941,8 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
+" Browse remote (works only with github for now)
+nnoremap <silent> gI :Gbrowse<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
@@ -1100,6 +1116,11 @@ let R_args = ['--no-save', '--quiet']
 augroup filetype_r
     autocmd!
     autocmd FileType R source ~/.config/nvim/plugged/Nvim-R/ftplugin/r_nvimr.vim
+    autocmd FileType Rhelp source ~/.config/nvim/plugged/Nvim-R/ftplugin/rhelp_nvimr.vim
+    autocmd FileType Rrst source ~/.config/nvim/plugged/Nvim-R/ftplugin/rrst_nvimr.vim
+    autocmd FileType Rmd source ~/.config/nvim/plugged/Nvim-R/ftplugin/rmd_nvimr.vim
+    autocmd FileType Rdoc source ~/.config/nvim/plugged/Nvim-R/ftplugin/rdoc_nvimr.vim
+    autocmd FileType Rnoweb source ~/.config/nvim/plugged/Nvim-R/ftplugin/rnoweb_nvimr.vim
     autocmd FileType R nnoremap <buffer> K :call RAction("help")<CR>
 augroup end
 " Complete the arguments

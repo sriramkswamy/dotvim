@@ -184,6 +184,19 @@ let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
 " Registers - fancy
 Plug 'junegunn/vim-peekaboo'
+" Insert unicode better
+Plug 'chrisbra/unicode.vim'
+let g:Unicode_ShowPreviewWindow = 1
+inoremap <silent> <C-q> <C-x><C-g>
+nmap ga <Plug>(UnicodeGA)
+nmap gz <Plug>(MakeDigraph)
+nnoremap gN :Digraphs<Space>
+nnoremap gV :UnicodeSearch<Space>
+DigraphNew gl 03BB
+DigraphNew gp 03C0
+DigraphNew mi 222B
+DigraphNew my 221E
+DigraphNew sr 2192
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
