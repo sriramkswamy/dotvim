@@ -1122,7 +1122,7 @@ nmap mI <Plug>RObjectNames
 nmap md <Plug>RViewDF
 nmap mD <Plug>RSetwd
 nmap ma <Plug>RSummary
-nmap mj <Plug>RSPlot
+nmap mj <Plug>RPlot
 nmap mz <Plug>RToggleComment
 nmap m; <Plug>RRightComment
 nmap mL <Plug>REDSendMBlock
