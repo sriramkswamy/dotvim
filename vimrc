@@ -192,11 +192,14 @@ nmap ga <Plug>(UnicodeGA)
 nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
-DigraphNew gl 03BB
-DigraphNew gp 03C0
-DigraphNew mi 222B
-DigraphNew my 221E
-DigraphNew sr 2192
+augroup digraphs_init
+    autocmd!
+    autocmd BufRead,BufNewFile * :DigraphNew gl 03BB
+    autocmd BufRead,BufNewFile * :DigraphNew gp 03C0
+    autocmd BufRead,BufNewFile * :DigraphNew mi 222B
+    autocmd BufRead,BufNewFile * :DigraphNew my 221E
+    autocmd BufRead,BufNewFile * :DigraphNew sr 2192
+augroup end
 
 " File/Buffer navigation {{{1
 " Set commands {{{2
