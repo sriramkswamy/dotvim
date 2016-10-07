@@ -845,11 +845,6 @@ augroup VIM_SEXP_MAPPING
 augroup END
 
 " Operators {{{2
-" Better a,A and i,I in visual mode
-vnoremap a A
-vnoremap i I
-vnoremap A <C-v>$A
-vnoremap I <C-v>0I
 " Functions {{{3
 " Nice for quick vimscript testing.
 function! SourceVimscript(type)

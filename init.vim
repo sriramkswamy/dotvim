@@ -838,11 +838,6 @@ augroup VIM_SEXP_MAPPING
 augroup END
 
 " Operators {{{2
-" Better a,A and i,I in visual mode
-vnoremap a A
-vnoremap i I
-vnoremap A <C-v>$A
-vnoremap I <C-v>0I
 " Functions {{{3
 " Nice for quick vimscript testing.
 function! SourceVimscript(type)
@@ -1088,9 +1083,24 @@ augroup filetype_go
 augroup end
 
 " R integration {{{2
+" Alternative installing 1 for Nvim-R do the following -
+" Download it from https://github.com/jalvesaq/Nvim-R/releases
+" mkdir -p ~/.local/share/nvim/site/pack/R
+" cd ~/.local/share/nvim/site/pack/R
+" If you downloaded it to <dir>, the do
+" unzip <dir>/Nvim-R_0.9.7.zip
+" Install the helptags from Neovim
+" :helptags ~/.local/share/nvim/site/pack/R/start/Nvim-R/doc
+" Alternative installing 1 for Nvim-R do the following -
+" Download vimball from http://www.vim.org/scripts/script.php?script_id=2628
+" Open it
+" Use these two following commands
+" :packadd vimball
+" :so %
 Plug 'jalvesaq/Nvim-R'
-let R_vsplit = 1
-nmap mR <Plug>RStart
+" let R_vsplit = 1
+" let R_in_buffer = 0
+" nmap mR <Plug>RStart
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
