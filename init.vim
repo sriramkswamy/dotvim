@@ -651,7 +651,6 @@ nnoremap <Space><Space> :OverCommandLine<CR>
 vnoremap <Space><Space> :OverCommandLine<CR>
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
-nnoremap gA :Tabularize<CR>
 nnoremap gl :Tabularize /
 vnoremap gl :Tabularize /
 nnoremap g<Tab> :Tabularize /\s\+<CR>
@@ -746,10 +745,10 @@ function! s:vim_sexp_mappings()
     omap <silent><buffer> ad         <Plug>(sexp_outer_list)
     xmap <silent><buffer> id         <Plug>(sexp_inner_list)
     omap <silent><buffer> id         <Plug>(sexp_inner_list)
-    xmap <silent><buffer> at         <Plug>(sexp_outer_top_list)
-    omap <silent><buffer> at         <Plug>(sexp_outer_top_list)
-    xmap <silent><buffer> it         <Plug>(sexp_inner_top_list)
-    omap <silent><buffer> it         <Plug>(sexp_inner_top_list)
+    xmap <silent><buffer> aD         <Plug>(sexp_outer_top_list)
+    omap <silent><buffer> aD         <Plug>(sexp_outer_top_list)
+    xmap <silent><buffer> iD         <Plug>(sexp_inner_top_list)
+    omap <silent><buffer> iD         <Plug>(sexp_inner_top_list)
     xmap <silent><buffer> ag         <Plug>(sexp_outer_string)
     omap <silent><buffer> ag         <Plug>(sexp_outer_string)
     xmap <silent><buffer> ig         <Plug>(sexp_inner_string)
@@ -941,8 +940,6 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
-" Browse remote (works only with github for now)
-nnoremap <silent> gI :Gbrowse<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
@@ -1148,8 +1145,8 @@ nmap mz <Plug>RToggleComment
 nmap m; <Plug>RRightComment
 nmap mL <Plug>REDSendMBlock
 nmap mC <Plug>REDSendChunk
-nmap mf <Plug>RSendFile
-nmap mm <Plug>RDSendFunction
+nmap mf <Plug>RDSendFunction
+nmap mF <Plug>RSendFile
 nmap mg <Plug>REDSendParagraph
 nmap ml <Plug>RDSendLine
 nmap my <Plug>RDSendLineAndInsertOutput
@@ -1302,6 +1299,42 @@ let g:tmuxify_run = {
             \ 'racket': 'racket',
             \ 'sml': 'sml',
             \}
+" send using defaults visual selections
+nnoremap <silent> mm viw"my:TxSend(@m)<CR>
+nnoremap <silent> mM viW"my:TxSend(@m)<CR>
+nnoremap <silent> m, V"my:TxSend(@m)<CR>
+nnoremap <silent> m. vip"my:TxSend(@m)<CR>
+nnoremap <silent> m% ggVG"my:TxSend(@m)<CR>
+nnoremap <silent> m{ va{"my:TxSend(@m)<CR>
+nnoremap <silent> m} vi}"my:TxSend(@m)<CR>
+nnoremap <silent> m( va("my:TxSend(@m)<CR>
+nnoremap <silent> m) vi)"my:TxSend(@m)<CR>
+nnoremap <silent> m[ va["my:TxSend(@m)<CR>
+nnoremap <silent> m] vi]"my:TxSend(@m)<CR>
+nnoremap <silent> m" vi""my:TxSend(@m)<CR>
+nnoremap <silent> m: va""my:TxSend(@m)<CR>
+nnoremap <silent> m' vi'"my:TxSend(@m)<CR>
+nnoremap <silent> m; va'"my:TxSend(@m)<CR>
+nnoremap <silent> m` vi`"my:TxSend(@m)<CR>
+nnoremap <silent> m0 v0"my:TxSend(@m)<CR>
+nnoremap <silent> m$ v$"my:TxSend(@m)<CR>
+" depends on vim-indent-object textobject
+nnoremap <silent> m= vii"my:TxSend(@m)<CR>
+nnoremap <silent> m> vai"my:TxSend(@m)<CR>
+nnoremap <silent> m< vaI"my:TxSend(@m)<CR>
+" depends on vim-text-object-function textobject
+nnoremap <silent> m/ vaf"my:TxSend(@m)<CR>
+nnoremap <silent> m? vif"my:TxSend(@m)<CR>
+" depends on vim-signify hunk textobject
+nnoremap <silent> m+ vih"my:TxSend(@m)<CR>
+" depends on vim-sexp textobjects
+nnoremap <silent> m\ viy"my:TxSend(@m)<CR>
+nnoremap <silent> m<bar> viD"my:TxSend(@m)<CR>
+" depends on latexbox latex environment textobject
+nnoremap <silent> m~ vie"my:TxSend(@m)<CR>
+" depends on markdown/hexo textobject
+nnoremap <silent> m- vio"my:TxSend(@m)<CR>
+nnoremap <silent> m_ vik"my:TxSend(@m)<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
