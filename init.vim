@@ -1134,31 +1134,31 @@ augroup end
 " Complete the arguments
 inoremap <C-\> <C-x><C-a>
 " Normal maps apart from '\' based maps
-nmap <buffer> mR <Plug>RStart
-nmap <buffer> mQ <Plug>RClose
-nmap <buffer> mv <Plug>RUpdateObjBrowser
-nmap <buffer> m- <Plug>ROpenLists
-nmap <buffer> m_ <Plug>RCloseLists
-nmap <buffer> mX <Plug>RClearAll
-nmap <buffer> mx <Plug>RClearConsole
-nmap <buffer> m/ <Plug>RListSpace
-nmap <buffer> m\ <Plug>RShowArgs
-nmap <buffer> me <Plug>RShowEx
-nmap <buffer> mo <Plug>RShowRout
-nmap <buffer> mi <Plug>RObjectPr
-nmap <buffer> mI <Plug>RObjectStr
-nmap <buffer> m? <Plug>RObjectNames
-nmap <buffer> mj <Plug>RViewDF
-nmap <buffer> mP <Plug>RSetwd
-nmap <buffer> mu <Plug>RSummary
-nmap <buffer> mg <Plug>RPlot
-nmap <buffer> my <Plug>RDSendFunction
-nmap <buffer> mA <Plug>RSendFile
-nmap <buffer> mM <Plug>REDSendParagraph
-nmap <buffer> mz <Plug>RDSendLine
-nmap <buffer> mZ <Plug>RDSendLineAndInsertOutput
-vmap <buffer> mz <Plug>REDSendSelection
-vmap <buffer> mZ <Plug>RSendSelAndInsertOutput
+nmap mR <Plug>RStart
+nmap mQ <Plug>RClose
+nmap m? <Plug>RUpdateObjBrowser
+nmap m- <Plug>ROpenLists
+nmap m_ <Plug>RCloseLists
+nmap mX <Plug>RClearAll
+nmap mx <Plug>RClearConsole
+nmap m/ <Plug>RListSpace
+nmap m\ <Plug>RShowArgs
+nmap mK <Plug>RShowEx
+nmap mo <Plug>RShowRout
+nmap mi <Plug>RObjectPr
+nmap mv <Plug>RObjectStr
+nmap m<bar> <Plug>RObjectNames
+nmap mj <Plug>RViewDF
+nmap m~ <Plug>RSetwd
+nmap mu <Plug>RSummary
+nmap mg <Plug>RPlot
+nmap my <Plug>RDSendFunction
+nmap mA <Plug>RSendFile
+nmap mM <Plug>REDSendParagraph
+nmap mz <Plug>RDSendLine
+nmap mZ <Plug>RDSendLineAndInsertOutput
+vmap mz <Plug>REDSendSelection
+vmap mZ <Plug>RSendSelAndInsertOutput
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1349,7 +1349,7 @@ nnoremap <silent> md vab"my:TxSend(@m)<CR>
 nnoremap <silent> mh vih"my:TxSend(@m)<CR>
 " depends on vim-sexp textobjects
 nnoremap <silent> my viy"my:TxSend(@m)<CR>
-nnoremap <silent> mz vaD"my:TxSend(@m)<CR>
+nnoremap <silent> mD vaD"my:TxSend(@m)<CR>
 " depends on latexbox latex environment textobject
 nnoremap <silent> me vie"my:TxSend(@m)<CR>
 " depends on markdown/hexo textobject
