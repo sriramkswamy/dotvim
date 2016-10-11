@@ -119,6 +119,10 @@ nnoremap cot :set ft=
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
+nnoremap cpp "*pp
+nnoremap cyy "*yy
+nnoremap cP "*p$
+nnoremap cY "*y$
 vnoremap <C-p> "*p
 vnoremap <C-y> "*y
 " Readline-ish bindings in Command-line mode
@@ -594,10 +598,14 @@ function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
 inoremap <C-z> <Esc>:<C-u>call FixLastSpellingError()<cr>
-nmap <Plug>LineToList I- [ ] <Esc>2h:call repeat#set("\<Plug>LineToList", v:count)<CR>
+nmap <Plug>LineToCheckbox I- [ ] <Esc>2h:call repeat#set("\<Plug>LineToCheckbox", v:count)<CR>
+nmap <Space>= <Plug>LineToCheckbox
+nmap <Plug>CheckboxToLine _df]x:call repeat#set("\<Plug>CheckboxToLine", v:count)<CR>
+nmap <Space>+ <Plug>CheckboxToLine
+nmap <Plug>LineToList I- <Esc>:call repeat#set("\<Plug>LineToList", v:count)<CR>
 nmap <Space>- <Plug>LineToList
-nmap <Plug>ListToLine _df]x:call repeat#set("\<Plug>ListToLine", v:count)<CR>
-nmap <Space>= <Plug>ListToLine
+nmap <Plug>ListToLine _daW:call repeat#set("\<Plug>ListToLine", v:count)<CR>
+nmap <Space>_ <Plug>ListToLine
 " Elementary splitting and joining
 nmap <Plug>ElementarySplit Dop==k$:call repeat#set("\<Plug>ElementarySplit", v:count)<CR>
 nmap gS <Plug>ElementarySplit
@@ -1126,35 +1134,31 @@ augroup end
 " Complete the arguments
 inoremap <C-\> <C-x><C-a>
 " Normal maps apart from '\' based maps
-nmap mR <Plug>RStart
-nmap mQ <Plug>RClose
-nmap mv <Plug>RUpdateObjBrowser
-nmap m= <Plug>ROpenLists
-nmap m- <Plug>RCloseLists
-nmap mX <Plug>RClearAll
-nmap mx <Plug>RClearConsole
-nmap mh <Plug>RListSpace
-nmap mu <Plug>RShowArgs
-nmap me <Plug>RShowEx
-nmap mo <Plug>RShowRout
-nmap mw <Plug>RObjectPr
-nmap mi <Plug>RObjectStr
-nmap mI <Plug>RObjectNames
-nmap md <Plug>RViewDF
-nmap mD <Plug>RSetwd
-nmap ma <Plug>RSummary
-nmap mj <Plug>RPlot
-nmap mz <Plug>RToggleComment
-nmap m; <Plug>RRightComment
-nmap mL <Plug>REDSendMBlock
-nmap mC <Plug>REDSendChunk
-nmap mf <Plug>RDSendFunction
-nmap mF <Plug>RSendFile
-nmap mg <Plug>REDSendParagraph
-nmap ml <Plug>RDSendLine
-nmap my <Plug>RDSendLineAndInsertOutput
-vmap ml <Plug>REDSendSelection
-vmap my <Plug>RSendSelAndInsertOutput
+nmap <buffer> mR <Plug>RStart
+nmap <buffer> mQ <Plug>RClose
+nmap <buffer> mv <Plug>RUpdateObjBrowser
+nmap <buffer> m- <Plug>ROpenLists
+nmap <buffer> m_ <Plug>RCloseLists
+nmap <buffer> mX <Plug>RClearAll
+nmap <buffer> mx <Plug>RClearConsole
+nmap <buffer> m/ <Plug>RListSpace
+nmap <buffer> m\ <Plug>RShowArgs
+nmap <buffer> me <Plug>RShowEx
+nmap <buffer> mo <Plug>RShowRout
+nmap <buffer> mi <Plug>RObjectPr
+nmap <buffer> mI <Plug>RObjectStr
+nmap <buffer> m? <Plug>RObjectNames
+nmap <buffer> mj <Plug>RViewDF
+nmap <buffer> mP <Plug>RSetwd
+nmap <buffer> mu <Plug>RSummary
+nmap <buffer> mg <Plug>RPlot
+nmap <buffer> my <Plug>RDSendFunction
+nmap <buffer> mA <Plug>RSendFile
+nmap <buffer> mM <Plug>REDSendParagraph
+nmap <buffer> mz <Plug>RDSendLine
+nmap <buffer> mZ <Plug>RDSendLineAndInsertOutput
+vmap <buffer> mz <Plug>REDSendSelection
+vmap <buffer> mZ <Plug>RSendSelAndInsertOutput
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1303,11 +1307,21 @@ let g:tmuxify_run = {
             \ 'sml': 'sml',
             \}
 " send using defaults visual selections
-nnoremap <silent> mm viw"my:TxSend(@m)<CR>
-nnoremap <silent> mM viW"my:TxSend(@m)<CR>
-nnoremap <silent> m, V"my:TxSend(@m)<CR>
-nnoremap <silent> m. vip"my:TxSend(@m)<CR>
-nnoremap <silent> m% ggVG"my:TxSend(@m)<CR>
+" default maps
+" ms - TxSend
+" mb - TxSigInt
+" mc - TxClear
+" mr - TxRun
+" mt - TxSetRunCmd
+" mp - TxSetPane
+" mk - TxSendKey
+" mn - TxCreate
+" mq - TxKill
+nnoremap <silent> ma ggVG"my:TxSend(@m)<CR>
+nnoremap <silent> mw viw"my:TxSend(@m)<CR>
+nnoremap <silent> mW viW"my:TxSend(@m)<CR>
+nnoremap <silent> ml V"my:TxSend(@m)<CR>
+nnoremap <silent> mm vip"my:TxSend(@m)<CR>
 nnoremap <silent> m{ va{"my:TxSend(@m)<CR>
 nnoremap <silent> m} vi}"my:TxSend(@m)<CR>
 nnoremap <silent> m( va("my:TxSend(@m)<CR>
@@ -1322,27 +1336,25 @@ nnoremap <silent> m` vi`"my:TxSend(@m)<CR>
 nnoremap <silent> m0 v0"my:TxSend(@m)<CR>
 nnoremap <silent> m$ v$"my:TxSend(@m)<CR>
 " depends on targets.vim textobjects
-nnoremap <silent> m@ vir"my:TxSend(@m)<CR>
+nnoremap <silent> m, vir"my:TxSend(@m)<CR>
 " depends on vim-indent-object textobject
 nnoremap <silent> m= vii"my:TxSend(@m)<CR>
 nnoremap <silent> m> vai"my:TxSend(@m)<CR>
 nnoremap <silent> m< vaI"my:TxSend(@m)<CR>
 " depends on vim-text-object-function textobject
-nnoremap <silent> m/ vaf"my:TxSend(@m)<CR>
-nnoremap <silent> m? vif"my:TxSend(@m)<CR>
+nnoremap <silent> mf vaf"my:TxSend(@m)<CR>
 " depends on braceless.vim textobject
-nnoremap <silent> m* vib"my:TxSend(@m)<CR>
-nnoremap <silent> m# vab"my:TxSend(@m)<CR>
+nnoremap <silent> md vab"my:TxSend(@m)<CR>
 " depends on vim-signify hunk textobject
-nnoremap <silent> m+ vih"my:TxSend(@m)<CR>
+nnoremap <silent> mh vih"my:TxSend(@m)<CR>
 " depends on vim-sexp textobjects
-nnoremap <silent> m\ viy"my:TxSend(@m)<CR>
-nnoremap <silent> m<bar> viD"my:TxSend(@m)<CR>
+nnoremap <silent> my viy"my:TxSend(@m)<CR>
+nnoremap <silent> mz vaD"my:TxSend(@m)<CR>
 " depends on latexbox latex environment textobject
-nnoremap <silent> m~ vie"my:TxSend(@m)<CR>
+nnoremap <silent> me vie"my:TxSend(@m)<CR>
 " depends on markdown/hexo textobject
-nnoremap <silent> m- vio"my:TxSend(@m)<CR>
-nnoremap <silent> m_ vik"my:TxSend(@m)<CR>
+nnoremap <silent> m# vio"my:TxSend(@m)<CR>
+nnoremap <silent> m* vik"my:TxSend(@m)<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
