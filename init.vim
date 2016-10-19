@@ -68,11 +68,9 @@ set splitbelow
 
 " Maps without leader {{{2
 " Splits
-nnoremap <silent> w <C-w><C-w>
-nnoremap <silent> W <C-w>=
+nnoremap <silent> w <C-w>
+nnoremap <silent> ww <C-w><C-w>
 nnoremap <silent> vs <C-w>f
-nnoremap <silent> gw <C-w>v
-nnoremap <silent> gW <C-w>s
 nnoremap <silent> Z :only<CR>
 " Keep me in visual mode
 vnoremap <silent> > >gv
@@ -112,6 +110,7 @@ nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
 nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
+nnoremap coz :set foldmethod=manual<CR>:set foldmethod?<CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap coF :FoldToggle<CR>
 nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
@@ -149,8 +148,6 @@ nnoremap <silent> dr :redraw!<CR>
 nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
 nnoremap <Space>v :tabe<CR>
-" Alternate files
-nnoremap <Space><Tab> :b#<CR>
 " Open in Finder
 nnoremap gF :!open %:p:h<CR>
 " Open in Safari
@@ -280,17 +277,6 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
-
-" Tab/Win manipulation
-Plug 'yssl/twcmd.vim'
-nnoremap <silent> Tb :TWcmd tmv h<CR>
-nnoremap <silent> Te :TWcmd tmv l<CR>
-nnoremap <silent> Tj :TWcmd wmv j<CR>
-nnoremap <silent> Th :TWcmd wmv h<CR>
-nnoremap <silent> Tj :TWcmd wmv j<CR>
-nnoremap <silent> Tk :TWcmd wmv k<CR>
-nnoremap <silent> Tl :TWcmd wmv l<CR>
-nnoremap <silent> Z :TWcmd wcm m<CR>
 
 " Searching {{{1
 " Set commands {{{2
@@ -553,15 +539,19 @@ xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
 " Functions and commands {{{2
 " Strip trailing whitespace
-function! StripWhitespace()
+function! StripAllWhitespace()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
     :%s/\s\+$//e
     call setpos('.', save_cursor)
     call setreg('/', old_query)
 endfunction
-command! StripWhiteSpace :call StripWhitespace()
-nnoremap crw :StripWhiteSpace<CR>
+command! StripAllWhiteSpace :call StripAllWhitespace()
+nnoremap crs :StripAllWhiteSpace<CR>
+
+" Strip trailing whitespace
+nnoremap crw :s/\s\+$//e<CR>
+vnoremap <C-@> :s/\s\+$//e<CR>
 
 " Convert tabs to whitespace
 function! TabsToWhitespace()
@@ -613,6 +603,25 @@ nnoremap gJ J
 " Blank the current line
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
+" Alternate files
+nmap <Plug>TT :b#<CR>:call repeat#set("\<Plug>TT", v:count)<CR>
+nmap TT <Plug>TT
+nmap <Plug>TL :vsp <bar> b#<CR>:call repeat#set("\<Plug>TL", v:count)<CR>
+nmap TL <Plug>TL
+nmap <Plug>TH :vsp <bar> b#<CR>:call repeat#set("\<Plug>TH", v:count)<CR>
+nmap TH <Plug>TH
+nmap <Plug>TJ :sp <bar> b#<CR>:call repeat#set("\<Plug>TJ", v:count)<CR>
+nmap TJ <Plug>TJ
+nmap <Plug>TK :sp <bar> b#<CR>:call repeat#set("\<Plug>TK", v:count)<CR>
+nmap TK <Plug>TK
+nmap <Plug>Tl :vsp <bar> b#<CR>:call repeat#set("\<Plug>Tl", v:count)<CR>
+nmap Tl <Plug>Tl
+nmap <Plug>Th :vsp <bar> b#<CR>:call repeat#set("\<Plug>Th", v:count)<CR>
+nmap Th <Plug>Th
+nmap <Plug>Tj :sp <bar> b#<CR>:call repeat#set("\<Plug>Tj", v:count)<CR>
+nmap Tj <Plug>Tj
+nmap <Plug>Tk :sp <bar> b#<CR>:call repeat#set("\<Plug>Tk", v:count)<CR>
+nmap Tk <Plug>Tk
 " Switch
 Plug 'AndrewRadev/switch.vim'
 let g:switch_mapping = "-"
@@ -687,6 +696,16 @@ function! s:baralign()
         call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
     endif
 endfunction
+
+" Multiple cursors - because why not?
+Plug 'terryma/vim-multiple-cursors'
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-e>'
+let g:multi_cursor_prev_key='<C-k>'
+let g:multi_cursor_skip_key='<C-j>'
+let g:multi_cursor_quit_key='<C-g>'
+nnoremap <C-y> :MultipleCursorsFind<Space>
+vnoremap <C-y> :MultipleCursorsFind<Space>
 
 " Text objects, operators and motions {{{1
 " Move line and add blanks {{{2
@@ -928,6 +947,16 @@ nmap ]r <Plug>ExchangeArgNext
 nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [r <Plug>ExchangeArgPrev
 
+" Motions {{{2
+" Move similar to a mouse click
+Plug 'easymotion/vim-easymotion'
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+nmap W <Plug>(easymotion-overwin-line)
+nmap gw <Plug>(easymotion-E)
+nmap gW <Plug>(easymotion-B)
+
 " Snippets {{{1
 if has('python') || has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
@@ -962,6 +991,7 @@ nnoremap sr :Obsess ~/.vim/session/
 nnoremap sp :Obsess<CR>
 nnoremap so :source ~/.vim/session/
 nnoremap sd :Obsess!<CR>
+nnoremap sq :qall<CR>
 set statusline+=\ %{ObsessionStatus()} " vim session status
 
 " Autocompletion {{{1
@@ -976,17 +1006,6 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 autocmd CompleteDone * pclose
 
 " Language helpers {{{1
-
-" Syntax and nicities for many languages {{{2
-Plug 'sheerun/vim-polyglot'
-" LaTeX already included in polyglot
-let g:LatexBox_Folding = 1
-" Vim-ruby included with polyglot
-let g:rubycomplete_buffer_loading = 1
-let g:rubycomplete_classes_in_global = 1
-let g:rubycomplete_rails = 1
-let g:rubycomplete_load_gemfile = 1
-" let g:rubycomplete_use_bundler = 1
 
 " Vim script {{{2
 Plug 'tpope/vim-scriptease'
@@ -1094,7 +1113,15 @@ Plug 'rizzatti/dash.vim'
 nmap <silent> <leader>K <Plug>DashSearch
 
 " Ruby (on Rails) {{{2
+Plug 'vim-ruby/vim-ruby'
+" Vim-ruby
+let g:rubycomplete_buffer_loading = 1
+let g:rubycomplete_classes_in_global = 1
+let g:rubycomplete_rails = 1
+let g:rubycomplete_load_gemfile = 1
+" let g:rubycomplete_use_bundler = 1
 Plug 'tpope/vim-rails'
+nnoremap <Space><Tab> :A<CR>
 Plug 'danchoi/ri.vim'
 let g:ri_no_mappings=1
 augroup filetype_go
@@ -1154,7 +1181,7 @@ nmap mu <Plug>RSummary
 nmap mg <Plug>RPlot
 nmap my <Plug>RDSendFunction
 nmap mA <Plug>RSendFile
-nmap mM <Plug>REDSendParagraph
+nmap me <Plug>REDSendParagraph
 nmap mz <Plug>RDSendLine
 nmap mZ <Plug>RDSendLineAndInsertOutput
 vmap mz <Plug>REDSendSelection
@@ -1290,6 +1317,11 @@ augroup filetype_matlab
     autocmd FileType matlab nnoremap <buffer> K :Dispatch /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>
 augroup end
 
+" Piping to eval {{{3
+Plug 'zweifisch/pipe2eval'
+vnoremap <buffer> m<Space> ':!~/.config/nvim/plugged/pipe2eval/plugin/pipe2eval.sh text<CR><CR>'
+let g:pipe2eval_map_key = 'm<Space>'
+
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = 'm'
@@ -1350,8 +1382,6 @@ nnoremap <silent> mh vih"my:TxSend(@m)<CR>
 " depends on vim-sexp textobjects
 nnoremap <silent> my viy"my:TxSend(@m)<CR>
 nnoremap <silent> mD vaD"my:TxSend(@m)<CR>
-" depends on latexbox latex environment textobject
-nnoremap <silent> me vie"my:TxSend(@m)<CR>
 " depends on markdown/hexo textobject
 nnoremap <silent> m# vio"my:TxSend(@m)<CR>
 nnoremap <silent> m* vik"my:TxSend(@m)<CR>
