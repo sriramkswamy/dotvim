@@ -67,11 +67,12 @@ set splitright
 set splitbelow
 
 " Maps without leader {{{2
-" Splits
+" Window management
 nnoremap <silent> w <C-w>
 nnoremap <silent> ww <C-w><C-w>
-nnoremap <silent> vs <C-w>f
-nnoremap <silent> Z :only<CR>
+" Alternate files
+nnoremap # :b#<CR>
+nnoremap wa :vsp <bar> b#<CR>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
@@ -110,9 +111,9 @@ nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
 nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
-nnoremap coz :set foldmethod=manual<CR>:set foldmethod?<CR>
+nnoremap coz :set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
-nnoremap coF :FoldToggle<CR>
+nnoremap cog :set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
 nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
 nnoremap cot :set ft=
 " Clipboard
@@ -277,6 +278,23 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
+
+" Better window/tab navigation {{{3
+Plug 'yssl/TWcmd.vim'
+nnoremap TL :TWcmd tmv l<CR>
+nnoremap TH :TWcmd tmv h<CR>
+nnoremap Th :TWcmd tcm t<CR>
+nnoremap Tl :TWcmd tcm b<CR>
+nnoremap Tj :TWcmd twh l<CR>
+nnoremap Tk :TWcmd twh h<CR>
+nnoremap To :TWcmd tcm o<CR>
+nnoremap WH :TWcmd wmvt h<CR>
+nnoremap WL :TWcmd wmvt l<CR>
+nnoremap Wh :TWcmd wmv h<CR>
+nnoremap Wl :TWcmd wmv l<CR>
+nnoremap Wj :TWcmd wmv j<CR>
+nnoremap Wk :TWcmd wmv k<CR>
+nnoremap Z :TWcmd wcm m<CR>
 
 " Searching {{{1
 " Set commands {{{2
@@ -603,25 +621,6 @@ nnoremap gJ J
 " Blank the current line
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
-" Alternate files
-nmap <Plug>TT :b#<CR>:call repeat#set("\<Plug>TT", v:count)<CR>
-nmap TT <Plug>TT
-nmap <Plug>TL :vsp <bar> b#<CR>:call repeat#set("\<Plug>TL", v:count)<CR>
-nmap TL <Plug>TL
-nmap <Plug>TH :vsp <bar> b#<CR>:call repeat#set("\<Plug>TH", v:count)<CR>
-nmap TH <Plug>TH
-nmap <Plug>TJ :sp <bar> b#<CR>:call repeat#set("\<Plug>TJ", v:count)<CR>
-nmap TJ <Plug>TJ
-nmap <Plug>TK :sp <bar> b#<CR>:call repeat#set("\<Plug>TK", v:count)<CR>
-nmap TK <Plug>TK
-nmap <Plug>Tl :vsp <bar> b#<CR>:call repeat#set("\<Plug>Tl", v:count)<CR>
-nmap Tl <Plug>Tl
-nmap <Plug>Th :vsp <bar> b#<CR>:call repeat#set("\<Plug>Th", v:count)<CR>
-nmap Th <Plug>Th
-nmap <Plug>Tj :sp <bar> b#<CR>:call repeat#set("\<Plug>Tj", v:count)<CR>
-nmap Tj <Plug>Tj
-nmap <Plug>Tk :sp <bar> b#<CR>:call repeat#set("\<Plug>Tk", v:count)<CR>
-nmap Tk <Plug>Tk
 " Switch
 Plug 'AndrewRadev/switch.vim'
 let g:switch_mapping = "-"
@@ -953,9 +952,9 @@ Plug 'easymotion/vim-easymotion'
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 " Turn on case insensitive feature
 let g:EasyMotion_smartcase = 1
-nmap W <Plug>(easymotion-overwin-line)
 nmap gw <Plug>(easymotion-E)
 nmap gW <Plug>(easymotion-B)
+nmap we <Plug>(easymotion-overwin-line)
 
 " Snippets {{{1
 if has('python') || has('python3')
@@ -1108,9 +1107,6 @@ let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
 let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
-" Documentation browser {{{2
-Plug 'rizzatti/dash.vim'
-nmap <silent> <leader>K <Plug>DashSearch
 
 " Ruby (on Rails) {{{2
 Plug 'vim-ruby/vim-ruby'
@@ -1146,6 +1142,7 @@ augroup end
 " :packadd vimball
 " :so %
 Plug 'jalvesaq/Nvim-R'
+Plug 'chrisbra/csv.vim'
 let R_vsplit = 1
 let R_args = ['--no-save', '--quiet']
 augroup filetype_r
@@ -1451,6 +1448,29 @@ function! LatexI()
     normal! j
     let head_pos = getpos('.')
     call search('\%$\|\(\n\ze\\\%[sub]section\)', 'c')
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+
+" Environment text object - (operator)ie/ae for latex environment {{{1
+call textobj#user#plugin('latex', { '-': {
+            \ 'select-a-function': 'LatexEnvA', 'select-a': 'ae',
+            \ 'select-i-function': 'LatexEnvI', 'select-i': 'ie',
+            \ }, })
+function! LatexEnvA()
+    call search('^\\begin{.*}', 'bc')
+    let head_pos = getpos('.')
+    call search('\\end{.*}', 'c')
+    normal! $
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+function! LatexEnvI()
+    call search('^\\begin{.*}', 'bc')
+    normal! j
+    let head_pos = getpos('.')
+    call search('\\end{.*}', 'c')
+    normal! 0h
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction

@@ -7,8 +7,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
-" Start plugin installation {{{1
-call plug#begin('~/.vim/plugged')
+" Start plugin installation {{{1 call plug#begin('~/.vim/plugged')
 
 " Buffer behaviour {{{1
 " Set options {{{2
@@ -84,11 +83,9 @@ set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
 " Splits
-nnoremap <silent> w <C-w><C-w>
-nnoremap <silent> W <C-w>=
+nnoremap <silent> w <C-w>
+nnoremap <silent> ww <C-w><C-w>
 nnoremap <silent> vs <C-w>f
-nnoremap <silent> gw <C-w>v
-nnoremap <silent> gW <C-w>s
 nnoremap <silent> Z :only<CR>
 " Keep me in visual mode
 vnoremap <silent> > >gv
