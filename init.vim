@@ -71,7 +71,7 @@ set splitbelow
 nnoremap <silent> w <C-w>
 nnoremap <silent> ww <C-w><C-w>
 " Alternate files
-nnoremap # :b#<CR>
+nnoremap <Space><BS> :b#<CR>
 nnoremap wa :vsp <bar> b#<CR>
 " Keep me in visual mode
 vnoremap <silent> > >gv
@@ -89,6 +89,10 @@ inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
+" Make literal character insertion like Emacs
+inoremap <C-q> <C-v>
+" Unicode in insert mode - C-k is too important
+inoremap <C-v> <C-k>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-]> (but...why?)
@@ -142,11 +146,12 @@ let maplocalleader="\\"
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
+nnoremap <silent> <Space>h zf
+vnoremap <silent> <Space>h zf
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
 nnoremap <silent> dr :redraw!<CR>
-nnoremap <silent> <Space>q :q<CR>
 " Open a new tab
 nnoremap <Space>v :tabe<CR>
 " Open in Finder
@@ -166,7 +171,6 @@ Plug 'junegunn/vim-peekaboo'
 " Insert unicode better
 Plug 'chrisbra/unicode.vim'
 let g:Unicode_ShowPreviewWindow = 1
-inoremap <silent> <C-q> <C-x><C-g>
 nmap ga <Plug>(UnicodeGA)
 nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
@@ -267,8 +271,8 @@ command! TCD :tabdo cd %:p:h<CR>
 " Quickfix and Location list maps
 nnoremap <silent> <Space>l :lopen<CR>
 nnoremap <silent> <Space>L :lclose<CR>
-nnoremap <silent> <Space>h :copen<CR>
-nnoremap <silent> <Space>H :cclose<CR>
+nnoremap <silent> <Space>q :copen<CR>
+nnoremap <silent> <Space>Q :cclose<CR>
 
 " Plugins {{{2
 " Go to project root automatically - Rooter {{{3
@@ -278,6 +282,10 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
+
+" View directory structure - useful sometimes {{{3
+Plug 'scrooloose/nerdtree', {'on' : 'NERDTreeToggle'}
+nnoremap <silent> <Space>n :NERDTreeToggle<CR>
 
 " Better window/tab navigation {{{3
 Plug 'yssl/TWcmd.vim'
@@ -295,6 +303,17 @@ nnoremap Wl :TWcmd wmv l<CR>
 nnoremap Wj :TWcmd wmv j<CR>
 nnoremap Wk :TWcmd wmv k<CR>
 nnoremap Z :TWcmd wcm m<CR>
+
+" Undo windows closed by mistake {{{3
+Plug 'AndrewRadev/undoquit.vim'
+let g:undoquit_mapping = 'wu'
+nnoremap <silent> <C-w>u :Undoquit<CR>
+nnoremap wc :call undoquit#SaveWindowQuitHistory()<CR><C-w>c
+nnoremap wo :call undoquit#SaveWindowQuitHistory()<CR><C-w>o
+nnoremap wq :call undoquit#SaveWindowQuitHistory()<CR><C-w>q
+nnoremap <C-w>c :call undoquit#SaveWindowQuitHistory()<CR><C-w>c
+nnoremap <C-w>o :call undoquit#SaveWindowQuitHistory()<CR><C-w>o
+nnoremap <C-w>q :call undoquit#SaveWindowQuitHistory()<CR><C-w>q
 
 " Searching {{{1
 " Set commands {{{2
@@ -1004,6 +1023,13 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
+" Plugin to aggregate completion options {{{2
+Plug 'ajh17/VimCompletesMe'
+let g:vcm_default_maps = 0
+imap <C-k> <plug>vim_completes_me_forward
+" Plug 'lifepillar/vim-mucomplete'
+" let g:mucomplete#enable_auto_at_startup = 1
+
 " Language helpers {{{1
 
 " Vim script {{{2
@@ -1102,7 +1128,7 @@ augroup filetype_html
     autocmd FileType html nnoremap <buffer> gC :compiler! tidy<CR>
 augroup end
 
-" Eclim - Eclipse plus Vim {{{2
+" Java (Eclim) - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
 let g:EclimShowCurrentError = 1
@@ -1110,7 +1136,7 @@ let g:EclimShowCurrentErrorBalloon = 0
 
 " Ruby (on Rails) {{{2
 Plug 'vim-ruby/vim-ruby'
-" Vim-ruby
+" Vim-ruby - also adds im/am text object
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
@@ -1120,13 +1146,13 @@ Plug 'tpope/vim-rails'
 nnoremap <Space><Tab> :A<CR>
 Plug 'danchoi/ri.vim'
 let g:ri_no_mappings=1
-augroup filetype_go
+augroup filetype_ruby
     autocmd!
     autocmd FileType ruby nnoremap <buffer> gC :compiler! rake<CR>
     autocmd FileType ruby nnoremap <buffer> K :call ri#LookupNameUnderCursor()<CR>
 augroup end
 
-" R integration {{{2
+" R {{{2
 " Alternative installing 1 for Nvim-R do the following -
 " Download it from https://github.com/jalvesaq/Nvim-R/releases
 " mkdir -p ~/.local/share/nvim/site/pack/R
@@ -1178,7 +1204,7 @@ nmap mu <Plug>RSummary
 nmap mg <Plug>RPlot
 nmap my <Plug>RDSendFunction
 nmap mA <Plug>RSendFile
-nmap me <Plug>REDSendParagraph
+nmap mE <Plug>REDSendParagraph
 nmap mz <Plug>RDSendLine
 nmap mZ <Plug>RDSendLineAndInsertOutput
 vmap mz <Plug>REDSendSelection
@@ -1200,7 +1226,6 @@ let g:C_UseTool_doxygen = 'yes'
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
 nnoremap g\ :vsplit <bar> terminal<CR>
-nnoremap <silent> <Space>n :terminal ranger<CR>
 nnoremap <silent> <Space>e :terminal tig<CR>
 nnoremap gG :vsp <bar> terminal googler<Space>
 nnoremap <silent> g{ :vsp <bar> terminal googler <cWORD><CR>
@@ -1350,7 +1375,7 @@ nnoremap <silent> ma ggVG"my:TxSend(@m)<CR>
 nnoremap <silent> mw viw"my:TxSend(@m)<CR>
 nnoremap <silent> mW viW"my:TxSend(@m)<CR>
 nnoremap <silent> ml V"my:TxSend(@m)<CR>
-nnoremap <silent> mm vip"my:TxSend(@m)<CR>
+nnoremap <silent> me vip"my:TxSend(@m)<CR>
 nnoremap <silent> m{ va{"my:TxSend(@m)<CR>
 nnoremap <silent> m} vi}"my:TxSend(@m)<CR>
 nnoremap <silent> m( va("my:TxSend(@m)<CR>
@@ -1382,14 +1407,44 @@ nnoremap <silent> mD vaD"my:TxSend(@m)<CR>
 " depends on markdown/hexo textobject
 nnoremap <silent> m# vio"my:TxSend(@m)<CR>
 nnoremap <silent> m* vik"my:TxSend(@m)<CR>
+" pane changes
+nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
+nnoremap <silent> m13 :TxSetPane 0:1.3<CR>
+nnoremap <silent> m22 :TxSetPane 0:2.2<CR>
+nnoremap <silent> m23 :TxSetPane 0:2.3<CR>
+nnoremap <silent> m32 :TxSetPane 0:3.2<CR>
+nnoremap <silent> m33 :TxSetPane 0:3.3<CR>
+nnoremap <silent> mm12 :TxSetPane 1:1.2<CR>
+nnoremap <silent> mm13 :TxSetPane 1:1.3<CR>
+nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
+nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
+nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
+nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
+" filetype specific awesome maps
+augroup tmux_matlab
+    autocmd!
+    autocmd FileType matlab nnoremap <buffer> mmb :let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mma :let @m = "dbclear all"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmu :let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmw :let @m = "workspace"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmx :let @m = "clc"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmX :let @m = "exit"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmr :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmv :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mms :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mmq :let @m = "dbquit"<CR>:TxSend(@m)<CR>
+augroup end
 
 " Stop plugin installation {{{1
 call plug#end()
 
-" Sections text object - (operator)ij/aj for markdown and (operator)io/ao for markdown code {{{1
+" Sections text object - (operator)id/ad for markdown and (operator)io/ao for markdown code {{{1
 call textobj#user#plugin('markdown', { '-': {
-            \ 'select-a-function': 'MarkdownA', 'select-a': 'aj',
-            \ 'select-i-function': 'MarkdownI', 'select-i': 'ij',
+            \ 'select-a-function': 'MarkdownA', 'select-a': 'ad',
+            \ 'select-i-function': 'MarkdownI', 'select-i': 'id',
             \ }, })
 function! MarkdownA()
     call search('^#\+.*$', 'bc')
@@ -1407,7 +1462,7 @@ function! MarkdownI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-call textobj#user#plugin('markdown', { '-': {
+call textobj#user#plugin('markdowncode', { '-': {
             \ 'select-a-function': 'MarkdownCodeA', 'select-a': 'ao',
             \ 'select-i-function': 'MarkdownCodeI', 'select-i': 'io',
             \ }, })
@@ -1453,7 +1508,7 @@ function! LatexI()
 endfunction
 
 " Environment text object - (operator)ie/ae for latex environment {{{1
-call textobj#user#plugin('latex', { '-': {
+call textobj#user#plugin('latexenv', { '-': {
             \ 'select-a-function': 'LatexEnvA', 'select-a': 'ae',
             \ 'select-i-function': 'LatexEnvI', 'select-i': 'ie',
             \ }, })
