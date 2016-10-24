@@ -11,7 +11,9 @@ endif
 call plug#begin('~/.config/nvim/plugged')
 
 " Buffer behaviour {{{1
+
 " Set options {{{2
+
 set title
 " Automatically read and write buffers
 set autowrite
@@ -67,6 +69,7 @@ set splitright
 set splitbelow
 
 " Maps without leader {{{2
+
 " Window management
 nnoremap <silent> w <C-w>
 nnoremap <silent> ww <C-w><C-w>
@@ -142,6 +145,7 @@ command! Smaller :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)-1'
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 " Leader and maps {{{2
+
 let maplocalleader="\\"
 " Folding
 nnoremap <silent> ]z zj
@@ -162,13 +166,16 @@ nnoremap gB :!open -a Safari %<CR>
 let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
-" Undotree
+
+" Undotree {{{3
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
 let g:undotree_WindowLayout = 2
 nnoremap <silent> U :UndotreeToggle<CR>
-" Registers - fancy
+
+" Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
-" Insert unicode better
+
+" Insert unicode better {{{3
 Plug 'chrisbra/unicode.vim'
 let g:Unicode_ShowPreviewWindow = 1
 nmap ga <Plug>(UnicodeGA)
@@ -185,6 +192,7 @@ augroup digraphs_init
 augroup end
 
 " File/Buffer navigation {{{1
+
 " Set commands {{{2
 " Path for the builtin 'find' command
 set path=.,**
@@ -193,7 +201,8 @@ runtime macros/matchit.vim
 set showmatch
 
 " Maps without leader {{{2
-" Unimpaired inspired mappings
+
+" Unimpaired inspired mappings {{{3
 nnoremap [g :cold<CR>
 nnoremap ]g :cnew<CR>
 nnoremap [q :cprevious<CR>
@@ -220,6 +229,8 @@ nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
 nnoremap [n ?^<\+\s*HEAD$<CR>
 nnoremap ]n /^<\+\s*HEAD$<CR>
+
+" Other useful maps {{{3
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
@@ -234,7 +245,8 @@ nnoremap <silent> <C-i> za
 nnoremap cv :vsp $MYVIMRC<CR>
 
 " Functions and commands {{{2
-" Filter from quickfix list - someone's vimrc
+
+" Filter from quickfix list - someone's vimrc {{{3
 function! GrepQuickFix(pat)
     let qfl = getqflist()
     for d in qfl
@@ -247,7 +259,7 @@ endfunction
 command! -nargs=* QFilter call GrepQuickFix(<q-args>)
 nnoremap gQ :QFilter<Space>
 
-" Filter from location list
+" Filter from location list {{{3
 function! GrepLocList(pat)
     let ll = getloclist(0)
     for d in ll
@@ -260,7 +272,7 @@ endfunction
 command! -nargs=* LFilter call GrepLocList(<q-args>)
 nnoremap gL :LFilter<Space>
 
-" Common directory changes
+" Common directory changes {{{3
 command! CD cd %:p:h
 command! LCD lcd %:p:h
 nnoremap cd :LCD<CR>
@@ -268,13 +280,15 @@ command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
 
 " Leader maps {{{2
-" Quickfix and Location list maps
+
+" Quickfix and Location list maps {{{3
 nnoremap <silent> <Space>l :lopen<CR>
 nnoremap <silent> <Space>L :lclose<CR>
 nnoremap <silent> <Space>q :copen<CR>
 nnoremap <silent> <Space>Q :cclose<CR>
 
 " Plugins {{{2
+
 " Go to project root automatically - Rooter {{{3
 Plug 'airblade/vim-rooter'
 let g:rooter_change_directory_for_non_project_files = 'current'
@@ -316,6 +330,7 @@ nnoremap <C-w>o :call undoquit#SaveWindowQuitHistory()<CR><C-w>o
 nnoremap <C-w>q :call undoquit#SaveWindowQuitHistory()<CR><C-w>q
 
 " Searching {{{1
+
 " Set commands {{{2
 " Ignore case sensitivity
 set ignorecase " Can be toggled with unimpaired's 'coi'
@@ -361,11 +376,11 @@ nnoremap gss :Grepper -tool ag -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
-" Search and replace across project - trial {{{2
+" Search and replace across project {{{2
 Plug 'thinca/vim-qfreplace'
 nnoremap gE :Qfreplace<CR>
 
-" FZF {{{3
+" FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
@@ -408,7 +423,8 @@ imap <silent> <C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
-" Search spotlight
+
+" Search spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run({
             \ 'source'  : 'mdfind -onlyin ~ <q-args>',
             \ 'sink'    : 'e',
@@ -486,7 +502,9 @@ set statusline+=%{StatuslineTrailingSpaceWarning()}
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " FileTypes {{{1
+
 " Set commands {{{2
+
 " Ignore list
 set wildignore=/tmp/*,*.swp,*.bak,*.pyc,*.class,*.tmp,*.aux,*.mp4,*.pdf,*.cache,*.synctex.gz
 set wildignore+=*.gradle,*.plist,*.avi,*.mp3,*.flv,*.mkv,*.sparseimage,*.db,*.tbz,*.zip,*.so,*.crash
@@ -528,7 +546,9 @@ let g:vim_markdown_disabled = 1
 let g:vim_markdown_math = 1
 
 " Text editing {{{1
+
 " Set commands {{{2
+
 " Don't wrap the lines - Can be toggled with unimpaired's 'cow'
 set nowrap
 set linebreak
@@ -542,6 +562,7 @@ set shiftround
 set textwidth=80
 
 " Maps without leader {{{2
+
 " Make 'Y' work like 'C' and 'D'
 nnoremap <silent> Y y$
 " '&' remembers the flags of the last substitute
@@ -575,7 +596,8 @@ endfunction
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
 " Functions and commands {{{2
-" Strip trailing whitespace
+
+" Strip all trailing whitespace {{{3
 function! StripAllWhitespace()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
@@ -586,11 +608,11 @@ endfunction
 command! StripAllWhiteSpace :call StripAllWhitespace()
 nnoremap crs :StripAllWhiteSpace<CR>
 
-" Strip trailing whitespace
+" Strip trailing whitespace {{{3
 nnoremap crw :s/\s\+$//e<CR>
 vnoremap <C-@> :s/\s\+$//e<CR>
 
-" Convert tabs to whitespace
+" Convert tabs to whitespace {{{3
 function! TabsToWhitespace()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
@@ -601,7 +623,7 @@ endfunction
 command! TabsToWhitespace :call TabsToWhitespace()
 nnoremap crt :TabsToWhitespace<CR>
 
-" strip ^M character at end of lines
+" strip ^M character at end of lines {{{3
 function! StripNewLine()
     let save_cursor = getpos(".")
     let old_query = getreg('/')
@@ -612,19 +634,25 @@ endfunction
 command! StripNewLine :call StripNewLine()
 nnoremap crn :StripNewLine<CR>
 
-" Plugins {{{2
-" For collaborative work
-Plug 'editorconfig/editorconfig-vim'
-let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
-" '.' command in visual mode
-Plug 'vim-scripts/visualrepeat'
-" Better '.' command
-Plug 'tpope/vim-repeat'
-" Convert the line into a list and vice versa
+" Fix last spelling error {{{3
 function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
 inoremap <C-z> <Esc>:<C-u>call FixLastSpellingError()<cr>
+
+" Plugins {{{2
+
+" Indentation settings for collaborative work {{{3
+Plug 'editorconfig/editorconfig-vim'
+let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
+" '.' command in visual mode {{{3
+Plug 'vim-scripts/visualrepeat'
+
+" Better '.' command {{{3
+Plug 'tpope/vim-repeat'
+
+" Convert the line into a list and vice versa {{{4
 nmap <Plug>LineToCheckbox I- [ ] <Esc>2h:call repeat#set("\<Plug>LineToCheckbox", v:count)<CR>
 nmap <Space>= <Plug>LineToCheckbox
 nmap <Plug>CheckboxToLine _df]x:call repeat#set("\<Plug>CheckboxToLine", v:count)<CR>
@@ -633,14 +661,17 @@ nmap <Plug>LineToList I- <Esc>:call repeat#set("\<Plug>LineToList", v:count)<CR>
 nmap <Space>- <Plug>LineToList
 nmap <Plug>ListToLine _daW:call repeat#set("\<Plug>ListToLine", v:count)<CR>
 nmap <Space>_ <Plug>ListToLine
-" Elementary splitting and joining
+
+" Elementary splitting and joining {{{4
 nmap <Plug>ElementarySplit Dop==k$:call repeat#set("\<Plug>ElementarySplit", v:count)<CR>
 nmap gS <Plug>ElementarySplit
 nnoremap gJ J
-" Blank the current line
+
+" Blank the current line {{{4
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
-" Switch
+
+" Switch {{{3
 Plug 'AndrewRadev/switch.vim'
 let g:switch_mapping = "-"
 let g:switch_custom_definitions =
@@ -678,15 +709,17 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \ [
             \   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
             \ ]
-" Org mode like embedded code editing
+" Org mode like embedded code editing {{{3
 Plug 'AndrewRadev/inline_edit.vim'
 nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
-" Preview the substitution
+
+" Preview the substitution {{{3
 Plug 'osyo-manga/vim-over'
 let g:over_command_line_prompt = ">"
 nnoremap <Space><Space> :OverCommandLine<CR>
 vnoremap <Space><Space> :OverCommandLine<CR>
+
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 nnoremap gl :Tabularize /
@@ -702,7 +735,7 @@ vnoremap g<Bar> :Tabularize /<bar><CR>
 nnoremap g: :Tabularize /:<CR>
 vnoremap g: :Tabularize /:<CR>
 
-" Auto-align when typing |
+" Auto-align when typing | {{{4
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>baralign()<CR>a
 function! s:baralign()
     let p = '^\s*|\s.*\s|\s*$'
@@ -715,7 +748,7 @@ function! s:baralign()
     endif
 endfunction
 
-" Multiple cursors - because why not?
+" Multiple cursors - because why not? {{{3
 Plug 'terryma/vim-multiple-cursors'
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-e>'
@@ -726,45 +759,55 @@ nnoremap <C-y> :MultipleCursorsFind<Space>
 vnoremap <C-y> :MultipleCursorsFind<Space>
 
 " Text objects, operators and motions {{{1
-" Move line and add blanks {{{2
-" Move the current line
+
+" pair based maps {{{2
+
+" Move the current line {{{3
 nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
 nmap [e <Plug>MoveLineUp
 nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repeat#set("\<Plug>MoveLineDown", v:count)<CR>
 nmap ]e <Plug>MoveLineDown
-" Blank line
+
+" Blank line {{{3
 nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
 nmap [o <Plug>BlankLineUp
 nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
 nmap ]o <Plug>BlankLineDown
-" Blank character before/after current word
+
+" Blank character before/after current word {{{3
 nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v:count)<CR>
 nmap [<Space> <Plug>BlankCharLeft
 nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
 nmap ]<Space> <Plug>BlankCharRight
-" Delete adjacent lines
+
+" Delete adjacent lines {{{3
 nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
 nmap [x <Plug>DeleteLineUp
 nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
 nmap ]x <Plug>DeleteLineDown
 
 " Text objects {{{2
+
 " Onoremap based {{{3
-" Operate on entire file
+
+" Operate on entire file {{{4
 onoremap ia :<C-u>normal! gg^vGg_<CR>
 xnoremap ia :<C-u>normal! gg^vGg_<CR>
 onoremap aa :<C-u>normal! ggvG$<CR>
 xnoremap aa :<C-u>normal! ggvG$<CR>
-" Operate on entire line
+
+" Operate on entire line {{{4
 onoremap il :<C-u>normal! ^vg_<CR>
 xnoremap il :<C-u>normal! ^vg_<CR>
 onoremap al :<C-u>normal! 0v$<CR>
 xnoremap al :<C-u>normal! 0v$<CR>
-" Edit a macro
+
+" Edit a macro {{{4
 nnoremap cq :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
 " Text object plugins {{{3
-" Adds some niceties
+
+" Adds more textobjects {{{4
 " Textobj - i,/a,/i;/a;/ir/ar and [next(n), prev(N)] for all
 Plug 'wellle/targets.vim'
 let g:targets_aiAI = 'ai  '
@@ -773,17 +816,23 @@ let g:targets_argTrigger = 'r'
 let g:targets_argOpening = '[({[]'
 let g:targets_argClosing = '[]})]'
 let g:targets_argSeparator = '[,;]'
-" Create text objects
-" Operate on indents - (operator)ii/ai/iI/aI - doesn't depend on kana's plugin
+
+" Operate on indents - (operator)ii/ai/iI/aI {{{4
 Plug 'michaeljsmith/vim-indent-object'
+
+" Create your own text object {{{4
 Plug 'kana/vim-textobj-user'
-" Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av
-Plug 'Julian/vim-textobj-variable-segment'
-" Operate on functions - (operator)if/af
-Plug 'sriramkswamy/vim-textobj-function'
-" Operate on comments - (operator)ic/ac/aC
-Plug 'sriramkswamy/vim-textobj-comment'
-" Niceties for Lisp editing
+
+" Operate on variable segments (camelCase, snake_case and MixedCase) - (operator)iv/av {{{4
+Plug 'kana/vim-textobj-user' | Plug 'Julian/vim-textobj-variable-segment'
+
+" Operate on functions - (operator)if/af {{{4
+Plug 'kana/vim-textobj-user' | Plug 'sriramkswamy/vim-textobj-function'
+
+" Operate on comments - (operator)ic/ac/aC {{{4
+Plug 'kana/vim-textobj-user' | Plug 'sriramkswamy/vim-textobj-comment'
+
+" Niceties for Lisp editing {{{4
 " Textobjects -
 Plug 'guns/vim-sexp'
 " Disable mapping hooks
@@ -899,7 +948,9 @@ augroup VIM_SEXP_MAPPING
 augroup END
 
 " Operators {{{2
+
 " Functions {{{3
+
 " Nice for quick vimscript testing.
 function! SourceVimscript(type)
     let sel_save = &selection
@@ -925,7 +976,8 @@ vnoremap <silent> go :<c-U>call SourceVimscript("visual")<cr>
 nnoremap <silent> goo :call SourceVimscript("currentline")<cr>
 
 " Plugins {{{3
-" Better surround - cs/ds/ys(to add surrounding)
+
+" Better surround - cs/ds/ys(to add surrounding) {{{4
 Plug 'tpope/vim-surround'
 let g:surround_no_mappings = 1
 nmap ds  <Plug>Dsurround
@@ -937,11 +989,14 @@ nmap Ss <Plug>YSsurround
 nmap SS <Plug>YSsurround
 xmap s   <Plug>VSurround
 xmap S  <Plug>VgSurround
-" Easy commenting - gc(motion/textobject)
+
+" Easy commenting - gc(motion/textobject) {{{4
 Plug 'tomtom/tcomment_vim'
-" Replace the object with content in register - ["x]gr(motion/textobject)
+
+" Replace the object with content in register - ["x]gr(motion/textobject) {{{4
 Plug 'vim-scripts/ReplaceWithRegister'
-" Exchange stuff - cx(motion/textobject) and repeat it at the new point
+
+" Exchange stuff - cx(motion/textobject) and repeat it at the new point {{{4
 Plug 'tommcdo/vim-exchange'
 nmap <silent> <Plug>ExchangeWordRight cxiweecxiw :call repeat#set("\<Plug>ExchangeWordRight", v:count)<CR>
 nmap ]w <Plug>ExchangeWordRight
@@ -966,7 +1021,8 @@ nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>Exchang
 nmap [r <Plug>ExchangeArgPrev
 
 " Motions {{{2
-" Move similar to a mouse click
+
+" Move similar to a mouse click {{{3
 Plug 'easymotion/vim-easymotion'
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 " Turn on case insensitive feature
@@ -976,6 +1032,8 @@ nmap gW <Plug>(easymotion-B)
 nmap we <Plug>(easymotion-overwin-line)
 
 " Snippets {{{1
+
+" Snippet plugin and snippet collection {{{2
 if has('python') || has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
     let g:UltiSnipsExpandTrigger="<tab>"
@@ -985,6 +1043,8 @@ if has('python') || has('python3')
 endif
 
 " Version control {{{1
+
+" view changes {{{2
 " Also adds text objects ah/ih for changeset but normal vim-diff changeset motions hold - ]([)c
 Plug 'mhinz/vim-signify'
 let g:signify_sign_change = '~'
@@ -994,7 +1054,8 @@ xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
 nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
-" Git Wrapper
+
+" Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
@@ -1003,7 +1064,7 @@ nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
 
-" Project/Other sessions {{{1
+" Project/Session management {{{1
 Plug 'tpope/vim-obsession'
 nnoremap sr :Obsess ~/.vim/session/
 nnoremap sp :Obsess<CR>
@@ -1013,6 +1074,7 @@ nnoremap sq :qall<CR>
 set statusline+=\ %{ObsessionStatus()} " vim session status
 
 " Autocompletion {{{1
+
 " vim-omnicomplete activation {{{2
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
@@ -1214,11 +1276,12 @@ vmap mZ <Plug>RSendSelAndInsertOutput
 Plug 'rizzatti/dash.vim'
 nmap <silent> gD <Plug>DashSearch
 
-" Syntax checking {{{1
+" Syntax checking {{{2
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
 autocmd! BufWritePost * Neomake
 
 " REPL and Tmux {{{1
+
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
@@ -1234,6 +1297,7 @@ vnoremap gG :vsp <bar> terminal googler<Space>
 vnoremap <silent> g{ :vsp <bar> terminal googler <cWORD><CR>
 vnoremap <silent> g} :vsp <bar> terminal googler <cword><CR>
 
+" basic tmux integration leader maps {{{2
 if exists('$TMUX')
     nnoremap <silent> <Space>u :call system("tmux split-window -h")<CR>
     nnoremap <silent> <Space>U :call system("tmux split-window -v")<CR>
@@ -1259,17 +1323,20 @@ if exists('$TMUX')
                 \ :call repeat#set("\<Plug>SwapPrevLayout", v:count)<CR>
     nmap [R <Plug>SwapPrevLayout
 endif
-" Navigate between Tmux and Vim - I wish there was another way...
+
+" Plugins {{{2
+
+" Navigate between Tmux and Vim {{{3
 Plug 'christoomey/vim-tmux-navigator'
 let g:tmux_navigator_no_mappings = 1
 nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+" hack for neovim
 nmap <silent> <BS> :TmuxNavigateLeft<CR>
 
-" Plugins {{{2
-" Common *nix commands
+" Common *nix commands {{{3
 Plug 'tpope/vim-eunuch'
 nnoremap gK :Remove
 nnoremap gR :Rename<Space>
@@ -1420,6 +1487,7 @@ nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
 nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
 nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
 nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
+
 " filetype specific awesome maps
 augroup tmux_matlab
     autocmd!
@@ -1441,7 +1509,7 @@ augroup end
 " Stop plugin installation {{{1
 call plug#end()
 
-" Sections text object - (operator)id/ad for markdown and (operator)io/ao for markdown code {{{1
+" Markdown section text object - (operator)id/ad for markdown section {{{1
 call textobj#user#plugin('markdown', { '-': {
             \ 'select-a-function': 'MarkdownA', 'select-a': 'ad',
             \ 'select-i-function': 'MarkdownI', 'select-i': 'id',
@@ -1462,6 +1530,7 @@ function! MarkdownI()
     return ['v', head_pos, tail_pos]
 endfunction
 
+" Markdown code text object - (operator)io/ao for markdown code {{{1
 call textobj#user#plugin('markdowncode', { '-': {
             \ 'select-a-function': 'MarkdownCodeA', 'select-a': 'ao',
             \ 'select-i-function': 'MarkdownCodeI', 'select-i': 'io',
@@ -1486,7 +1555,7 @@ function! MarkdownCodeI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-" Sections text object - (operator)ix/ax for latex section {{{1
+" LaTeX sections text object - (operator)ix/ax for latex section {{{1
 call textobj#user#plugin('latex', { '-': {
             \ 'select-a-function': 'LatexA', 'select-a': 'ax',
             \ 'select-i-function': 'LatexI', 'select-i': 'ix',
@@ -1507,7 +1576,7 @@ function! LatexI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-" Environment text object - (operator)ie/ae for latex environment {{{1
+" LaTeX environment text object - (operator)ie/ae for latex environment {{{1
 call textobj#user#plugin('latexenv', { '-': {
             \ 'select-a-function': 'LatexEnvA', 'select-a': 'ae',
             \ 'select-i-function': 'LatexEnvI', 'select-i': 'ie',
