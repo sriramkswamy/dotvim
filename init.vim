@@ -74,7 +74,7 @@ set splitbelow
 nnoremap <silent> w <C-w>
 nnoremap <silent> ww <C-w><C-w>
 " Alternate files
-nnoremap <Space><BS> :b#<CR>
+nnoremap <BS> :b#<CR>
 nnoremap wa :vsp <bar> b#<CR>
 " Keep me in visual mode
 vnoremap <silent> > >gv
@@ -156,8 +156,11 @@ vnoremap <silent> <Space>h zf
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
 nnoremap <silent> dr :redraw!<CR>
-" Open a new tab
-nnoremap <Space>v :tabe<CR>
+" Tabs
+nnoremap <Space><Tab> gt
+nnoremap <Space><BS> gT
+nnoremap gt :tabe<CR>
+nnoremap gT :tabc<CR>
 " Open in Finder
 nnoremap gF :!open %:p:h<CR>
 " Open in Safari
@@ -341,7 +344,7 @@ set incsearch
 " Grep
 set grepprg=grep\ -nH\ $*
 " Populate location list with previous search pattern; ugly hack
-nnoremap <C-n> :lvim // %<CR>
+nnoremap g/ :lvim // %<CR>
 " and automatically open the windows when they are populated
 augroup quick_loc_window
     autocmd!
@@ -355,8 +358,8 @@ nnoremap <silent> n nzz
 nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
 " Make '*' act a little better
-nnoremap <silent> * *``
-nnoremap <silent> # #``
+nnoremap <silent> * *N
+nnoremap <silent> # *N:lvim // %<CR><C-o>
 
 " Search for word under visual selection
 vnoremap * y/<C-R>"<CR>
@@ -395,11 +398,10 @@ let g:fzf_action = {
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g/ :FzfHistory/<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space>/ :FzfLines<CR>
+nnoremap <silent> <Space>/ :FzfHistory/<CR>
 nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>C :FzfCommits<CR>
@@ -411,9 +413,9 @@ nnoremap <silent> <Space>t :FzfWindows<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfAg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
-nnoremap <silent> <Space>J :FzfHistory:<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
-vnoremap <silent> <Space>J :FzfHistory:<CR>
+nnoremap <silent> <Space>: :FzfHistory:<CR>
+vnoremap <silent> <Space>: :FzfHistory:<CR>
 inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
@@ -751,12 +753,12 @@ endfunction
 " Multiple cursors - because why not? {{{3
 Plug 'terryma/vim-multiple-cursors'
 let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-e>'
+let g:multi_cursor_next_key='<C-j>'
 let g:multi_cursor_prev_key='<C-k>'
-let g:multi_cursor_skip_key='<C-j>'
+let g:multi_cursor_skip_key='<C-l>'
 let g:multi_cursor_quit_key='<C-g>'
-nnoremap <C-y> :MultipleCursorsFind<Space>
-vnoremap <C-y> :MultipleCursorsFind<Space>
+nnoremap <C-n> :MultipleCursorsFind<Space>
+vnoremap <C-n> :MultipleCursorsFind<Space>
 
 " Text objects, operators and motions {{{1
 
@@ -1015,9 +1017,9 @@ nmap ]N <Plug>ExchangeSearchNext
 nmap <silent> <Plug>ExchangeSearchPrev cxiwcxgN :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [N <Plug>ExchangeSearchPrev
 " Needs targets.vim
-nmap <silent> <Plug>ExchangeArgNext cxIrf,lcxIr :call repeat#set("\<Plug>ExchangeSearchNext", v:count)<CR>
+nmap <silent> <Plug>ExchangeArgNext cxirf,lcxir :call repeat#set("\<Plug>ExchangeSearchNext", v:count)<CR>
 nmap ]r <Plug>ExchangeArgNext
-nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
+nmap <silent> <Plug>ExchangeArgPrev cxirF,hcxir :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [r <Plug>ExchangeArgPrev
 
 " Motions {{{2
@@ -1205,7 +1207,7 @@ let g:rubycomplete_rails = 1
 let g:rubycomplete_load_gemfile = 1
 " let g:rubycomplete_use_bundler = 1
 Plug 'tpope/vim-rails'
-nnoremap <Space><Tab> :A<CR>
+nnoremap <Space>v :A<CR>
 Plug 'danchoi/ri.vim'
 let g:ri_no_mappings=1
 augroup filetype_ruby
@@ -1325,16 +1327,6 @@ if exists('$TMUX')
 endif
 
 " Plugins {{{2
-
-" Navigate between Tmux and Vim {{{3
-Plug 'christoomey/vim-tmux-navigator'
-let g:tmux_navigator_no_mappings = 1
-nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
-" hack for neovim
-nmap <silent> <BS> :TmuxNavigateLeft<CR>
 
 " Common *nix commands {{{3
 Plug 'tpope/vim-eunuch'
