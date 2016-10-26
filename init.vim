@@ -1454,8 +1454,6 @@ nnoremap <silent> m; va'"my:TxSend(@m)<CR>
 nnoremap <silent> m` vi`"my:TxSend(@m)<CR>
 nnoremap <silent> m0 v0"my:TxSend(@m)<CR>
 nnoremap <silent> m$ v$"my:TxSend(@m)<CR>
-" depends on targets.vim textobjects
-nnoremap <silent> m, vir"my:TxSend(@m)<CR>
 " depends on vim-indent-object textobject
 nnoremap <silent> m= vii"my:TxSend(@m)<CR>
 nnoremap <silent> m> vai"my:TxSend(@m)<CR>
@@ -1485,7 +1483,11 @@ nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
 nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
 nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
 nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
+" put me in an easy editing modes
+nnoremap m, :TxSend<CR><C-R><C-W>
+nnoremap m. :TxSend<CR><C-R><C-W><C-f>
 " check out after/ftplugin/matlab.vim for matlab specific maps
+let g:mlint_path_to_mlint="/Applications/MATLAB_R2016a.app/bin/maci64/mlint"
 
 " Stop plugin installation {{{1
 call plug#end()

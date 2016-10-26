@@ -5,6 +5,29 @@
 " tpope/vim-dispatch
 " jebaum/vim-tmuxify
 
+" error checking
+if exists("current_compiler")
+  finish
+endif
+let current_compiler = "/Applications/MATLAB_R2016a.app/bin/maci64/mlint"
+
+if exists(":CompilerSet") != 2		" older Vim always used :setlocal
+  command -nargs=* CompilerSet setlocal <args>
+endif
+
+CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %< 
+
+CompilerSet errorformat=
+      \%-P==========\ %f\ ==========,
+      \%-G%>==========\ %s\ ==========,
+      \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
+      \L\ %l\ (C\ %c):\ %m,
+      \L\ %l\ (C\ %c-%*[0-9]):\ %m,
+      \%-Q
+
+" automatically show me the errors
+autocmd BufWritePost *.m Make!
+
 " matlab support - sort of
 nnoremap <buffer> J :find <C-R><C-W><CR>
 nnoremap <buffer> K :Dispatch /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>
@@ -36,6 +59,7 @@ nnoremap <buffer> mmw :let @m = "workspace"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mmj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
 " type of the variable
 nnoremap <buffer> mmt :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
+
 " metadata on variables
 " size of the variable at point
 nnoremap <buffer> mms :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
@@ -43,6 +67,8 @@ nnoremap <buffer> mms :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)
 nnoremap <buffer> mml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " number of elements in the variable at point
 nnoremap <buffer> mme :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+" fieldnames of the variable at point
+nnoremap <buffer> mmf :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " mean of the variable at point
 nnoremap <buffer> mmm :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " sum of the variable at point
@@ -55,8 +81,6 @@ nnoremap <buffer> mmv :let @m = "whos"<CR>:TxSend(@m)<CR>
 " simple plotting
 " plot the vector
 nnoremap <buffer> mmp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
-" plot the matrix as a surface plot
-nnoremap <buffer> mmf :let @m = "surf(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " plot the matrix as a mesh plot
 nnoremap <buffer> mmg :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 
