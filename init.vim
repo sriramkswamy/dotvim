@@ -1061,6 +1061,7 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
+nnoremap du :Gdiff<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
@@ -1207,7 +1208,7 @@ let g:rubycomplete_rails = 1
 let g:rubycomplete_load_gemfile = 1
 " let g:rubycomplete_use_bundler = 1
 Plug 'tpope/vim-rails'
-nnoremap <Space>v :A<CR>
+nnoremap <Space>v :A
 Plug 'danchoi/ri.vim'
 let g:ri_no_mappings=1
 augroup filetype_ruby
@@ -1340,6 +1341,7 @@ command! CopyFilePath let @+ = expand('%:p:h')
 nnoremap ym :CopyFilePath<CR>
 nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
+nnoremap <Space>W :Wall<CR>
 
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
