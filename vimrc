@@ -1232,7 +1232,7 @@ let g:rubycomplete_rails = 1
 let g:rubycomplete_load_gemfile = 1
 " let g:rubycomplete_use_bundler = 1
 Plug 'tpope/vim-rails'
-nnoremap <Space>v :A
+nnoremap vx :A
 Plug 'danchoi/ri.vim'
 let g:ri_no_mappings=1
 augroup filetype_go
@@ -1358,15 +1358,15 @@ nnoremap sU :SudoWrite<CR>
 
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
-nnoremap gh :Dispatch<Space>
-nnoremap gH :Spawn<Space>
-nnoremap cm :Make<Space>
-nnoremap sm :Start<Space>
-nnoremap <Space>mm :Make!<CR>
-nnoremap <Space>mf :Make! %<CR>
-nnoremap <Space>mb :Make! -C build<CR>
-nnoremap <Space>md :Make! -C build doc<CR>
-nnoremap <Space>ml :Make! -C docs/latex<CR>
+nnoremap gh :Spawn<Space>
+nnoremap gH :Start<Space>
+nnoremap cm :Make!<CR>
+nnoremap sm :Make! %<CR>
+nnoremap vm :Make -C build<CR>
+nnoremap vo :Make -C build doc<CR>
+nnoremap vr :Make -C docs/latex<CR>
+nnoremap <Space>m :Make!<Space>
+nnoremap <Space>v :Dispatch!<Space>
 nnoremap <silent> <Space>o :Copen<CR>
 
 " Dispatch based commands {{{4
