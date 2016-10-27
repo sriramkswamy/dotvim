@@ -309,8 +309,36 @@ command! TCD :tabdo cd %:p:h<CR>
 " Leader maps {{{2
 
 " Quickfix and Location list maps {{{3
-nnoremap <silent> <Space>l :copen<CR>
-nnoremap <silent> <Space>q :cclose<CR>
+let g:lt_height = get( g:, 'lt_height', 10 )
+
+function! s:BufferCount()
+    return len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+endfunction
+
+function! s:LListToggle()
+    let buffer_count_before = s:BufferCount()
+    " Location list can't be closed if there's cursor in it, so we need
+    " to call lclose twice to move cursor to the main pane
+    silent! lclose
+    silent! lclose
+
+    if s:BufferCount() == buffer_count_before
+        execute "silent! lopen " . g:lt_height
+    endif
+endfunction
+command!  LToggle call s:LListToggle()
+nnoremap <silent> <Space>l :LToggle<CR>
+
+function! s:QListToggle()
+    let buffer_count_before = s:BufferCount()
+    silent! cclose
+
+    if s:BufferCount() == buffer_count_before
+        execute "silent! botright copen " . g:lt_height
+    endif
+endfunction
+command!  QToggle call s:QListToggle()
+nnoremap <silent> <Space>q :QToggle<CR>
 
 " Plugins {{{2
 
@@ -384,8 +412,8 @@ nnoremap <silent> * *N
 nnoremap <silent> # *N:vimgrep // %<CR>
 
 " Search for word under visual selection
-vnoremap * y/<C-R>"<CR>
-vnoremap # y?<C-R>"<CR>
+vnoremap * y/<C-R>"<CR>N
+vnoremap # y?<C-R>"<CR>N
 
 " Vim grepper plugin {{{2
 Plug 'mhinz/vim-grepper'
