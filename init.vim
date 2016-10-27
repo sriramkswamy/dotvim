@@ -13,7 +13,6 @@ call plug#begin('~/.config/nvim/plugged')
 " Buffer behaviour {{{1
 
 " Set options {{{2
-
 set title
 " Automatically read and write buffers
 set autowrite
@@ -43,7 +42,11 @@ set novisualbell
 set nobackup
 set noswapfile
 set nowb
+" Session management
 let g:session_autosave = 'no'
+set sessionoptions+=tabpages
+set sessionoptions+=winpos
+set sessionoptions+=winsize
 " Fold options
 set foldmethod=indent
 set foldnestmax=4
@@ -84,7 +87,7 @@ nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
 " Remove the highlights
-nnoremap <Esc> :nohl<CR>
+nnoremap <Space>h :nohl<CR>
 " set compiler
 nnoremap gC :compiler!<Space>
 " Navigate in insert mode
@@ -147,11 +150,10 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 " Leader and maps {{{2
 
 let maplocalleader="\\"
+
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
-nnoremap <silent> <Space>h zf
-vnoremap <silent> <Space>h zf
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
@@ -285,10 +287,8 @@ command! TCD :tabdo cd %:p:h<CR>
 " Leader maps {{{2
 
 " Quickfix and Location list maps {{{3
-nnoremap <silent> <Space>l :lopen<CR>
-nnoremap <silent> <Space>L :lclose<CR>
-nnoremap <silent> <Space>q :copen<CR>
-nnoremap <silent> <Space>Q :cclose<CR>
+nnoremap <silent> <Space>l :copen<CR>
+nnoremap <silent> <Space>q :cclose<CR>
 
 " Plugins {{{2
 
@@ -359,7 +359,7 @@ nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
 " Make '*' act a little better
 nnoremap <silent> * *N
-nnoremap <silent> # *N:lvim // %<CR><C-o>
+nnoremap <silent> # *N:vimgrep // %<CR>
 
 " Search for word under visual selection
 vnoremap * y/<C-R>"<CR>
@@ -506,7 +506,6 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 " FileTypes {{{1
 
 " Set commands {{{2
-
 " Ignore list
 set wildignore=/tmp/*,*.swp,*.bak,*.pyc,*.class,*.tmp,*.aux,*.mp4,*.pdf,*.cache,*.synctex.gz
 set wildignore+=*.gradle,*.plist,*.avi,*.mp3,*.flv,*.mkv,*.sparseimage,*.db,*.tbz,*.zip,*.so,*.crash
@@ -550,7 +549,6 @@ let g:vim_markdown_math = 1
 " Text editing {{{1
 
 " Set commands {{{2
-
 " Don't wrap the lines - Can be toggled with unimpaired's 'cow'
 set nowrap
 set linebreak
@@ -564,7 +562,6 @@ set shiftround
 set textwidth=80
 
 " Maps without leader {{{2
-
 " Make 'Y' work like 'C' and 'D'
 nnoremap <silent> Y y$
 " '&' remembers the flags of the last substitute
@@ -673,6 +670,30 @@ nnoremap gJ J
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
 
+" Move the current line {{{4
+nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
+nmap [e <Plug>MoveLineUp
+nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repeat#set("\<Plug>MoveLineDown", v:count)<CR>
+nmap ]e <Plug>MoveLineDown
+
+" Blank line {{{4
+nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
+nmap [o <Plug>BlankLineUp
+nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
+nmap ]o <Plug>BlankLineDown
+
+" Blank character before/after current word {{{4
+nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v:count)<CR>
+nmap [<Space> <Plug>BlankCharLeft
+nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
+nmap ]<Space> <Plug>BlankCharRight
+
+" Delete adjacent lines {{{4
+nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
+nmap [x <Plug>DeleteLineUp
+nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
+nmap ]x <Plug>DeleteLineDown
+
 " Switch {{{3
 Plug 'AndrewRadev/switch.vim'
 let g:switch_mapping = "-"
@@ -711,6 +732,7 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \ [
             \   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
             \ ]
+
 " Org mode like embedded code editing {{{3
 Plug 'AndrewRadev/inline_edit.vim'
 nnoremap <Space>i :InlineEdit<CR>
@@ -761,32 +783,6 @@ nnoremap <C-n> :MultipleCursorsFind<Space>
 vnoremap <C-n> :MultipleCursorsFind<Space>
 
 " Text objects, operators and motions {{{1
-
-" pair based maps {{{2
-
-" Move the current line {{{3
-nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
-nmap [e <Plug>MoveLineUp
-nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repeat#set("\<Plug>MoveLineDown", v:count)<CR>
-nmap ]e <Plug>MoveLineDown
-
-" Blank line {{{3
-nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
-nmap [o <Plug>BlankLineUp
-nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
-nmap ]o <Plug>BlankLineDown
-
-" Blank character before/after current word {{{3
-nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v:count)<CR>
-nmap [<Space> <Plug>BlankCharLeft
-nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
-nmap ]<Space> <Plug>BlankCharRight
-
-" Delete adjacent lines {{{3
-nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
-nmap [x <Plug>DeleteLineUp
-nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
-nmap ]x <Plug>DeleteLineDown
 
 " Text objects {{{2
 
@@ -1034,7 +1030,6 @@ nmap gW <Plug>(easymotion-B)
 nmap we <Plug>(easymotion-overwin-line)
 
 " Snippets {{{1
-
 " Snippet plugin and snippet collection {{{2
 if has('python') || has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
@@ -1281,7 +1276,7 @@ nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{2
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-autocmd! BufWritePost * Neomake
+autocmd! BufWritePost * Neomake!
 
 " REPL and Tmux {{{1
 
