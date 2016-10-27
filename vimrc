@@ -1136,30 +1136,6 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
-" Plugin to aggregate completion options {{{2
-" Plug 'lifepillar/vim-mucomplete'
-" let g:mucomplete#no_mappings = 0
-" let g:mucomplete#auto_select = 0
-" let g:mucomplete#enable_auto_at_startup = 1
-" let g:mucomplete#exit_ctrlx_keys = \"\<c-b>\<bs>"
-" let g:mucomplete#chains = {}
-" let g:mucomplete#chains.default = ['file', 'c-p']
-" let g:mucomplete#chains.markdown = ['keyn', 'spel', 'dict']
-" let g:mucomplete#chains.tex = ['omni', 'c-p', 'spel', 'dict']
-" let g:mucomplete#chains.vim = ['omni', 'cmd', 'file', 'c-p']
-" let g:mucomplete#chains.c = ['omni', 'tags', 'file', 'c-p']
-" let g:mucomplete#chains.cpp = ['omni', 'tags', 'file', 'c-p']
-" let g:mucomplete#chains.py = ['omni', 'tags', 'file', 'c-p']
-" let g:mucomplete#chains.java = ['omni', 'user', 'tags', 'file', 'c-p']
-" let g:mucomplete#chains.r = ['omni', 'tags', 'file', 'c-p']
-" let g:mucomplete#chains.ruby = ['omni', 'tags', 'file', 'c-p']
-" let g:mucomplete#chains.matlab = ['omni', 'file', 'c-p']
-" let g:mucomplete#exit_ctrlx_keys = \"\<c-c>\<bs>"
-" nnoremap coa :MUcompleteAutoOn<CR>
-" nnoremap coo :MUcompleteAutoOff<CR>
-" imap <C-j> <Plug>(MUcompleteFwd)
-" imap <C-k> <Plug>(MUcompleteBwd)
-
 " Language helpers {{{1
 
 " Vim script {{{2

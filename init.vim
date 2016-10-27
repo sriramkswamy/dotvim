@@ -1107,10 +1107,6 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
-" Plugin to aggregate completion options {{{2
-Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
-let g:deoplete#enable_at_startup = 1
-
 " Language helpers {{{1
 
 " Vim script {{{2
