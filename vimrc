@@ -14,6 +14,8 @@ call plug#begin('~/.vim/plugged')
 
 " Set options {{{2
 set title
+" short strings for changes - don't give ins-completion messages
+set shortmess+=c
 " Automatically read and write buffers
 set autoread " neovim default
 set autowrite
@@ -108,10 +110,6 @@ inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
-" Make literal character insertion like Emacs
-inoremap <C-q> <C-v>
-" Unicode in insert mode - C-k is too important
-inoremap <C-v> <C-k>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-]> (but...why?)
@@ -120,11 +118,8 @@ inoremap <silent> <C-]> <C-x><C-u>
 inoremap <silent> <C-d> <C-x><C-k>
 " File complete - <C-c> in insert mode doesn't exit properly anyway
 inoremap <silent> <C-c> <C-x><C-f>
-" Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
-inoremap <silent> <C-l> <C-x><C-l>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
-nnoremap coo <C-w><C-w>:<C-u>setlocal number!<CR>:set number?<CR><C-w><C-w>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
 nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
@@ -134,8 +129,9 @@ nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
 nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
+nnoremap coz :set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
 nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
-nnoremap coF :FoldToggle<CR>
+nnoremap cog :set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
 nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
 nnoremap cot :set ft=
 " Clipboard
@@ -466,12 +462,12 @@ nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
 nnoremap <silent> <Space>: :FzfHistory:<CR>
 vnoremap <silent> <Space>: :FzfHistory:<CR>
-inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+nnoremap <silent> <C-j> <C-o>:FzfSnippets<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
 imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-l> <Plug>(fzf-complete-line)
+imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
@@ -482,8 +478,8 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ 'sink'    : 'e',
             \ 'options' : '-m --prompt "Spotlight> "'
             \ })
-nnoremap <Space>s :FzfSpotlight<Space>
-nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
+nnoremap <Space>d :FzfSpotlight<Space>
+nnoremap <Space>D :FzfSpotlight <C-R><C-W><CR>
 
 " Statusline - from scrooloose {{{1
 " Basic setup
@@ -1093,7 +1089,7 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
-    let g:UltiSnipsListSnippets="<C-j>"
+    let g:UltiSnipsListSnippets="<C-l>"
 endif
 
 " Version control {{{1
@@ -1141,11 +1137,28 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 autocmd CompleteDone * pclose
 
 " Plugin to aggregate completion options {{{2
-" Plug 'ajh17/VimCompletesMe'
-" let g:vcm_default_maps = 0
-" imap <C-k> <plug>vim_completes_me_forward
 " Plug 'lifepillar/vim-mucomplete'
+" let g:mucomplete#no_mappings = 0
+" let g:mucomplete#auto_select = 0
 " let g:mucomplete#enable_auto_at_startup = 1
+" let g:mucomplete#exit_ctrlx_keys = \"\<c-b>\<bs>"
+" let g:mucomplete#chains = {}
+" let g:mucomplete#chains.default = ['file', 'c-p']
+" let g:mucomplete#chains.markdown = ['keyn', 'spel', 'dict']
+" let g:mucomplete#chains.tex = ['omni', 'c-p', 'spel', 'dict']
+" let g:mucomplete#chains.vim = ['omni', 'cmd', 'file', 'c-p']
+" let g:mucomplete#chains.c = ['omni', 'tags', 'file', 'c-p']
+" let g:mucomplete#chains.cpp = ['omni', 'tags', 'file', 'c-p']
+" let g:mucomplete#chains.py = ['omni', 'tags', 'file', 'c-p']
+" let g:mucomplete#chains.java = ['omni', 'user', 'tags', 'file', 'c-p']
+" let g:mucomplete#chains.r = ['omni', 'tags', 'file', 'c-p']
+" let g:mucomplete#chains.ruby = ['omni', 'tags', 'file', 'c-p']
+" let g:mucomplete#chains.matlab = ['omni', 'file', 'c-p']
+" let g:mucomplete#exit_ctrlx_keys = \"\<c-c>\<bs>"
+" nnoremap coa :MUcompleteAutoOn<CR>
+" nnoremap coo :MUcompleteAutoOff<CR>
+" imap <C-j> <Plug>(MUcompleteFwd)
+" imap <C-k> <Plug>(MUcompleteBwd)
 
 " Language helpers {{{1
 
@@ -1188,6 +1201,7 @@ augroup end
 " Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python setl omnifunc=jedi#completions
+let g:jedi#popup_on_dot = 0
 let g:jedi#goto_command = ""
 let g:jedi#goto_assignments_command = ""
 let g:jedi#goto_definitions_command = ""
@@ -1344,29 +1358,15 @@ vnoremap <silent> g} :!googler <cword><CR>
 " basic tmux integration leader maps {{{2
 if exists('$TMUX')
     nnoremap <silent> <Space>u :call system("tmux split-window -h")<CR>
-    nnoremap <silent> <Space>U :call system("tmux split-window -v")<CR>
 else
     " dispatch.vim required
     nnoremap <silent> <Space>u :Spawn<CR>
-    nnoremap <silent> <Space>U :Spawn<CR>
 endif
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Space>z :call system("tmux resize-pane -Z")<CR>
     nnoremap <silent> <C-\> :call system("tmux copy-mode")<CR>
-    nmap <silent> <Plug>SwapTmuxUp :call system("tmux swap-pane -U")<CR>
-                \ :call repeat#set("\<Plug>SwapTmuxUp", v:count)<CR>
-    nmap ]U <Plug>SwapTmuxUp
-    nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
-                \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
-    nmap [U <Plug>SwapTmuxDown
-    nmap <silent> <Plug>SwapNextLayout :call system("tmux next-layout")<CR>
-                \ :call repeat#set("\<Plug>SwapNextLayout", v:count)<CR>
-    nmap ]R <Plug>SwapNextLayout
-    nmap <silent> <Plug>SwapPrevLayout :call system("tmux previous-layout")<CR>
-                \ :call repeat#set("\<Plug>SwapPrevLayout", v:count)<CR>
-    nmap [R <Plug>SwapPrevLayout
 endif
 
 " Plugins {{{2
@@ -1383,6 +1383,7 @@ command! CopyFilePath let @+ = expand('%:p:h')
 nnoremap ym :CopyFilePath<CR>
 nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
+nnoremap <Space>W :Wall<CR>
 
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
@@ -1526,7 +1527,6 @@ nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
 nnoremap m, :TxSend<CR><C-R><C-W>
 nnoremap m. :TxSend<CR><C-R><C-W><C-f>
 " check out after/ftplugin/matlab.vim for matlab specific maps
-let g:mlint_path_to_mlint="/Applications/MATLAB_R2016a.app/bin/maci64/mlint"
 
 " Stop plugin installation {{{1
 call plug#end()

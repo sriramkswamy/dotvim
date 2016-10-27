@@ -13,8 +13,9 @@ call plug#begin('~/.config/nvim/plugged')
 " Buffer behaviour {{{1
 
 " Set options {{{2
-
 set title
+" short strings for changes - don't give ins-completion messages
+set shortmess+=c
 " Automatically read and write buffers
 set autowrite
 " Hide unloaded buffers
@@ -92,10 +93,6 @@ inoremap <silent> <C-f> <right>
 inoremap <silent> <C-b> <left>
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
-" Make literal character insertion like Emacs
-inoremap <C-q> <C-v>
-" Unicode in insert mode - C-k is too important
-inoremap <C-v> <C-k>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-]> (but...why?)
@@ -104,11 +101,8 @@ inoremap <silent> <C-]> <C-x><C-u>
 inoremap <silent> <C-d> <C-x><C-k>
 " File complete - <C-c> in insert mode doesn't exit properly anyway
 inoremap <silent> <C-c> <C-x><C-f>
-" Line complete - don't use this if you need <C-l> (I don't quite get <C-l>)
-inoremap <silent> <C-l> <C-x><C-l>
 " Toggle few options - inspired by unimpaired
 nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
-nnoremap coo <C-w><C-w>:<C-u>setlocal number!<CR>:set number?<CR><C-w><C-w>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
 nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
@@ -147,11 +141,10 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 " Leader and maps {{{2
 
 let maplocalleader="\\"
+
 " Folding
 nnoremap <silent> ]z zj
 nnoremap <silent> [z zk
-nnoremap <silent> <Space>h zf
-vnoremap <silent> <Space>h zf
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
@@ -285,10 +278,36 @@ command! TCD :tabdo cd %:p:h<CR>
 " Leader maps {{{2
 
 " Quickfix and Location list maps {{{3
-nnoremap <silent> <Space>l :lopen<CR>
-nnoremap <silent> <Space>L :lclose<CR>
-nnoremap <silent> <Space>q :copen<CR>
-nnoremap <silent> <Space>Q :cclose<CR>
+let g:lt_height = get( g:, 'lt_height', 10 )
+
+function! s:BufferCount()
+    return len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+endfunction
+
+function! s:LListToggle()
+    let buffer_count_before = s:BufferCount()
+    " Location list can't be closed if there's cursor in it, so we need
+    " to call lclose twice to move cursor to the main pane
+    silent! lclose
+    silent! lclose
+
+    if s:BufferCount() == buffer_count_before
+        execute "silent! lopen " . g:lt_height
+    endif
+endfunction
+command!  LToggle call s:LListToggle()
+nnoremap <silent> <Space>l :LToggle<CR>
+
+function! s:QListToggle()
+    let buffer_count_before = s:BufferCount()
+    silent! cclose
+
+    if s:BufferCount() == buffer_count_before
+        execute "silent! botright copen " . g:lt_height
+    endif
+endfunction
+command!  QToggle call s:QListToggle()
+nnoremap <silent> <Space>q :QToggle<CR>
 
 " Plugins {{{2
 
@@ -416,12 +435,12 @@ nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
 nnoremap <silent> <Space>: :FzfHistory:<CR>
 vnoremap <silent> <Space>: :FzfHistory:<CR>
-inoremap <silent> <C-j> <Esc>:FzfSnippets<CR>
+inoremap <silent> <C-j> <C-o>:FzfSnippets<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
 imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-l> <Plug>(fzf-complete-line)
+imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
@@ -550,7 +569,6 @@ let g:vim_markdown_math = 1
 " Text editing {{{1
 
 " Set commands {{{2
-
 " Don't wrap the lines - Can be toggled with unimpaired's 'cow'
 set nowrap
 set linebreak
@@ -564,7 +582,6 @@ set shiftround
 set textwidth=80
 
 " Maps without leader {{{2
-
 " Make 'Y' work like 'C' and 'D'
 nnoremap <silent> Y y$
 " '&' remembers the flags of the last substitute
@@ -673,6 +690,30 @@ nnoremap gJ J
 nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
 nmap crb <Plug>BlankCurrentLine
 
+" Move the current line {{{4
+nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
+nmap [e <Plug>MoveLineUp
+nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repeat#set("\<Plug>MoveLineDown", v:count)<CR>
+nmap ]e <Plug>MoveLineDown
+
+" Blank line {{{4
+nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
+nmap [o <Plug>BlankLineUp
+nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
+nmap ]o <Plug>BlankLineDown
+
+" Blank character before/after current word {{{4
+nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v:count)<CR>
+nmap [<Space> <Plug>BlankCharLeft
+nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
+nmap ]<Space> <Plug>BlankCharRight
+
+" Delete adjacent lines {{{4
+nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
+nmap [x <Plug>DeleteLineUp
+nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
+nmap ]x <Plug>DeleteLineDown
+
 " Switch {{{3
 Plug 'AndrewRadev/switch.vim'
 let g:switch_mapping = "-"
@@ -711,6 +752,7 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \ [
             \   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
             \ ]
+
 " Org mode like embedded code editing {{{3
 Plug 'AndrewRadev/inline_edit.vim'
 nnoremap <Space>i :InlineEdit<CR>
@@ -761,32 +803,6 @@ nnoremap <C-n> :MultipleCursorsFind<Space>
 vnoremap <C-n> :MultipleCursorsFind<Space>
 
 " Text objects, operators and motions {{{1
-
-" pair based maps {{{2
-
-" Move the current line {{{3
-nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
-nmap [e <Plug>MoveLineUp
-nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repeat#set("\<Plug>MoveLineDown", v:count)<CR>
-nmap ]e <Plug>MoveLineDown
-
-" Blank line {{{3
-nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
-nmap [o <Plug>BlankLineUp
-nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
-nmap ]o <Plug>BlankLineDown
-
-" Blank character before/after current word {{{3
-nmap <silent> <Plug>BlankCharLeft i l:call repeat#set("\<Plug>BlankCharLeft", v:count)<CR>
-nmap [<Space> <Plug>BlankCharLeft
-nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
-nmap ]<Space> <Plug>BlankCharRight
-
-" Delete adjacent lines {{{3
-nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
-nmap [x <Plug>DeleteLineUp
-nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
-nmap ]x <Plug>DeleteLineDown
 
 " Text objects {{{2
 
@@ -1034,7 +1050,6 @@ nmap gW <Plug>(easymotion-B)
 nmap we <Plug>(easymotion-overwin-line)
 
 " Snippets {{{1
-
 " Snippet plugin and snippet collection {{{2
 if has('python') || has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
@@ -1042,6 +1057,7 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
+    let g:UltiSnipsListSnippets="<C-l>"
 endif
 
 " Version control {{{1
@@ -1089,11 +1105,8 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 autocmd CompleteDone * pclose
 
 " Plugin to aggregate completion options {{{2
-Plug 'ajh17/VimCompletesMe'
-let g:vcm_default_maps = 0
-imap <C-k> <plug>vim_completes_me_forward
-" Plug 'lifepillar/vim-mucomplete'
-" let g:mucomplete#enable_auto_at_startup = 1
+Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
+let g:deoplete#enable_at_startup = 1
 
 " Language helpers {{{1
 
@@ -1136,6 +1149,7 @@ augroup end
 " Autocompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python setl omnifunc=jedi#completions
+let g:jedi#popup_on_dot = 0
 let g:jedi#goto_command = ""
 let g:jedi#goto_assignments_command = ""
 let g:jedi#goto_definitions_command = ""
@@ -1303,28 +1317,14 @@ vnoremap <silent> g} :vsp <bar> terminal googler <cword><CR>
 " basic tmux integration leader maps {{{2
 if exists('$TMUX')
     nnoremap <silent> <Space>u :call system("tmux split-window -h")<CR>
-    nnoremap <silent> <Space>U :call system("tmux split-window -v")<CR>
 else
     nnoremap <silent> <Space>u :vsp <bar> terminal<CR>
-    nnoremap <silent> <Space>U :sp <bar> terminal<CR>
 endif
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Space>z :call system("tmux resize-pane -Z")<CR>
     nnoremap <silent> <C-\> :call system("tmux copy-mode")<CR>
-    nmap <silent> <Plug>SwapTmuxUp :call system("tmux swap-pane -U")<CR>
-                \ :call repeat#set("\<Plug>SwapTmuxUp", v:count)<CR>
-    nmap ]U <Plug>SwapTmuxUp
-    nmap <silent> <Plug>SwapTmuxDown :call system("tmux swap-pane -D")<CR>
-                \ :call repeat#set("\<Plug>SwapTmuxDown", v:count)<CR>
-    nmap [U <Plug>SwapTmuxDown
-    nmap <silent> <Plug>SwapNextLayout :call system("tmux next-layout")<CR>
-                \ :call repeat#set("\<Plug>SwapNextLayout", v:count)<CR>
-    nmap ]R <Plug>SwapNextLayout
-    nmap <silent> <Plug>SwapPrevLayout :call system("tmux previous-layout")<CR>
-                \ :call repeat#set("\<Plug>SwapPrevLayout", v:count)<CR>
-    nmap [R <Plug>SwapPrevLayout
 endif
 
 " Plugins {{{2
@@ -1345,18 +1345,16 @@ nnoremap <Space>W :Wall<CR>
 
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch'
-nnoremap gh :Dispatch<Space>
-nnoremap gH :Spawn<Space>
-nnoremap cm :Make<Space>
-nnoremap sm :Start<Space>
-nnoremap <Space>mm :Make!<CR>
-nnoremap <Space>mf :Make! %<CR>
-nnoremap <Space>mb :Make! -C build<CR>
-nnoremap <Space>md :Make! -C build doc<CR>
-nnoremap <Space>ml :Make! -C docs/latex<CR>
+nnoremap gh :Spawn<Space>
+nnoremap gH :Start<Space>
+nnoremap cm :Make!<CR>
+nnoremap sm :Make! %<CR>
+nnoremap vm :Make -C build<CR>
+nnoremap vo :Make -C build doc<CR>
+nnoremap vr :Make -C docs/latex<CR>
+nnoremap <Space>m :Make!<Space>
+nnoremap <Space>v :Dispatch!<Space>
 nnoremap <silent> <Space>o :Copen<CR>
-nnoremap <silent> <Space>O :cclose<CR>
-" checkout after/plugin/dispatch.vim for more cool stuff
 
 " Dispatch based commands {{{4
 
@@ -1487,7 +1485,6 @@ nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
 nnoremap m, :TxSend<CR><C-R><C-W>
 nnoremap m. :TxSend<CR><C-R><C-W><C-f>
 " check out after/ftplugin/matlab.vim for matlab specific maps
-let g:mlint_path_to_mlint="/Applications/MATLAB_R2016a.app/bin/maci64/mlint"
 
 " Stop plugin installation {{{1
 call plug#end()
