@@ -1337,7 +1337,36 @@ nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{2
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
+" neomake maker for matlab
+let g:neomake_matlab_mlint_maker = {
+            \ 'args': ['-id'],
+            \ 'errorformat': 
+            \ '\%-P==========\ %f\ ==========,' .
+            \ '\%-G%>==========\ %s\ ==========,' .
+            \ '\%-G%>L\ %l\ (C\ %c):\ MDOTM%m,' .
+            \ '\L\ %l\ (C\ %c):\ %m,' .
+            \ '\L\ %l\ (C\ %c-%*[0-9]):\ %m,' .
+            \ '\%-Q',
+            \ }
+let g:neomake_matlab_enabled_makers = ['mlint']
+" evoke neomake for every save
 autocmd! BufWritePost * Neomake
+" set compiler for others
+if exists(":CompilerSet") != 2		" older Vim always used :setlocal
+    command -nargs=* CompilerSet setlocal <args>
+endif
+" syntax checking for matlab
+augroup syntax_matlab
+    autocmd!
+    autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %< 
+    autocmd FileType matlab CompilerSet errorformat=
+                \%-P==========\ %f\ ==========,
+                \%-G%>==========\ %s\ ==========,
+                \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
+                \L\ %l\ (C\ %c):\ %m,
+                \L\ %l\ (C\ %c-%*[0-9]):\ %m,
+                \%-Q
+augroup end
 
 " REPL and Tmux {{{1
 
@@ -1526,7 +1555,75 @@ nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
 " put me in an easy editing modes
 nnoremap m, :TxSend<CR><C-R><C-W>
 nnoremap m. :TxSend<CR><C-R><C-W><C-f>
-" check out after/ftplugin/matlab.vim for matlab specific maps
+
+" matlab specific maps {{{4
+" why isn't ftplugin/matlab.vim working?
+augroup tmuxify_matlab
+    autocmd!
+    " matlab support - sort of
+    autocmd FileType matlab nnoremap <buffer> J :find <C-R><C-W><CR>
+    autocmd FileType matlab nnoremap <buffer> K :Dispatch /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>
+    " debug helpers
+    " set breakpoint at the current line
+    autocmd FileType matlab nnoremap <buffer> mmb :let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+    " step next
+    autocmd FileType matlab nnoremap <buffer> mmn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
+    " step in
+    autocmd FileType matlab nnoremap <buffer> mmi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
+    " step out
+    autocmd FileType matlab nnoremap <buffer> mmo :let @m = "dbstep out"<CR>:TxSend(@m)<CR>
+    " unset breakpoint at the current line
+    autocmd FileType matlab nnoremap <buffer> mmu :let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+    " delete all breakpoints
+    autocmd FileType matlab nnoremap <buffer> mma :let @m = "dbclear all"<CR>:TxSend(@m)<CR>
+    " continue until next breakpoint or end of program
+    autocmd FileType matlab nnoremap <buffer> mmc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
+    " put me in debug mode if there is an error
+    autocmd FileType matlab nnoremap <buffer> mmk :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
+    " quit debugging mode
+    autocmd FileType matlab nnoremap <buffer> mmq :let @m = "dbquit"<CR>:TxSend(@m)<CR>
+    " variable viewing
+    " show the GUI workspace
+    autocmd FileType matlab nnoremap <buffer> mmw :let @m = "workspace"<CR>:TxSend(@m)<CR>
+    " open the current variable in the GUI variable viewer
+    autocmd FileType matlab nnoremap <buffer> mmj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
+    " type of the variable
+    autocmd FileType matlab nnoremap <buffer> mmt :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    " metadata on variables
+    " size of the variable at point
+    autocmd FileType matlab nnoremap <buffer> mms :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " length of the variable at point
+    autocmd FileType matlab nnoremap <buffer> mml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " number of elements in the variable at point
+    autocmd FileType matlab nnoremap <buffer> mme :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " fieldnames of the variable at point
+    autocmd FileType matlab nnoremap <buffer> mmf :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " mean of the variable at point
+    autocmd FileType matlab nnoremap <buffer> mmm :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " sum of the variable at point
+    autocmd FileType matlab nnoremap <buffer> mm= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " cumulative sum of the variable at point
+    autocmd FileType matlab nnoremap <buffer> mm+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " list all variables in the current working space
+    autocmd FileType matlab nnoremap <buffer> mmv :let @m = "whos"<CR>:TxSend(@m)<CR>
+    " simple plotting
+    " plot the vector
+    autocmd FileType matlab nnoremap <buffer> mmp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " plot the matrix as a mesh plot
+    autocmd FileType matlab nnoremap <buffer> mmg :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " help
+    " show brief help on the function at point
+    autocmd FileType matlab nnoremap <buffer> mmh :let @m = "help " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    " open the complete GUI documentation of the function at point
+    autocmd FileType matlab nnoremap <buffer> mmd :let @m = "doc " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    " other useful commands
+    " clear screen
+    autocmd FileType matlab nnoremap <buffer> mmx :let @m = "clc"<CR>:TxSend(@m)<CR>
+    " exit matlab
+    autocmd FileType matlab nnoremap <buffer> mmX :let @m = "exit"<CR>:TxSend(@m)<CR>
+    " run the current file
+    autocmd FileType matlab nnoremap <buffer> mmr :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+augroup end
 
 " Stop plugin installation {{{1
 call plug#end()
