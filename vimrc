@@ -200,21 +200,21 @@ nnoremap <silent> U :UndotreeToggle<CR>
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
 
-" " Insert unicode better {{{3
-" Plug 'chrisbra/unicode.vim'
-" let g:Unicode_ShowPreviewWindow = 1
-" nmap ga <Plug>(UnicodeGA)
-" nmap gz <Plug>(MakeDigraph)
-" nnoremap gN :Digraphs<Space>
-" nnoremap gV :UnicodeSearch<Space>
-" augroup digraphs_init
-"     autocmd!
-"     autocmd BufRead,BufNewFile * :DigraphNew gl 03BB
-"     autocmd BufRead,BufNewFile * :DigraphNew gp 03C0
-"     autocmd BufRead,BufNewFile * :DigraphNew mi 222B
-"     autocmd BufRead,BufNewFile * :DigraphNew my 221E
-"     autocmd BufRead,BufNewFile * :DigraphNew sr 2192
-" augroup end
+" Insert unicode better {{{3
+Plug 'chrisbra/unicode.vim'
+let g:Unicode_ShowPreviewWindow = 1
+nmap ga <Plug>(UnicodeGA)
+nmap gz <Plug>(MakeDigraph)
+nnoremap gN :Digraphs<Space>
+nnoremap gV :UnicodeSearch<Space>
+augroup digraphs_init
+    autocmd!
+    autocmd BufRead,BufNewFile * :DigraphNew gl 03BB
+    autocmd BufRead,BufNewFile * :DigraphNew gp 03C0
+    autocmd BufRead,BufNewFile * :DigraphNew mi 222B
+    autocmd BufRead,BufNewFile * :DigraphNew my 221E
+    autocmd BufRead,BufNewFile * :DigraphNew sr 2192
+augroup end
 
 " File/Buffer navigation {{{1
 
@@ -1116,8 +1116,8 @@ autocmd CompleteDone * pclose
 " Plug 'ajh17/VimCompletesMe'
 " let g:vcm_default_maps = 0
 " imap <C-k> <plug>vim_completes_me_forward
-Plug 'lifepillar/vim-mucomplete'
-let g:mucomplete#enable_auto_at_startup = 1
+" Plug 'lifepillar/vim-mucomplete'
+" let g:mucomplete#enable_auto_at_startup = 1
 
 " Language helpers {{{1
 
@@ -1295,7 +1295,7 @@ nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{2
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-autocmd! BufWritePost * Neomake!
+autocmd! BufWritePost * Neomake
 
 " REPL and Tmux {{{1
 
@@ -1368,8 +1368,6 @@ nnoremap <Space>mb :Make! -C build<CR>
 nnoremap <Space>md :Make! -C build doc<CR>
 nnoremap <Space>ml :Make! -C docs/latex<CR>
 nnoremap <silent> <Space>o :Copen<CR>
-nnoremap <silent> <Space>O :cclose<CR>
-" checkout after/plugin/dispatch.vim for more cool stuff
 
 " Dispatch based commands {{{4
 
