@@ -106,10 +106,13 @@ nnoremap <Space>h :nohl<CR>
 " set compiler
 nnoremap gC :compiler<Space>
 " Navigate in insert mode
-inoremap <silent> <C-f> <right>
-inoremap <silent> <C-b> <left>
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
+" Insert mode navigation similar to <C-g>j and <C-g>k
+inoremap <silent> <C-g>l <right>
+inoremap <silent> <C-g>h <left>
+inoremap <silent> <C-g><C-l> <right>
+inoremap <silent> <C-g><C-h> <left>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-]> (but...why?)
@@ -183,6 +186,8 @@ nnoremap gT :tabc<CR>
 nnoremap gF :!open %:p:h<CR>
 " Open in Safari
 nnoremap gB :!open -a Safari %<CR>
+" Open in general
+nnoremap <Space>vv :!open %<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -1089,7 +1094,7 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
-    let g:UltiSnipsListSnippets="<C-l>"
+    let g:UltiSnipsListSnippets="<C-j>"
 endif
 
 " Version control {{{1
@@ -1229,7 +1234,7 @@ augroup end
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
 let g:sparkupExecuteMapping = '<C-y>'
-let g:sparkupNextMapping = '<C-n>'
+let g:sparkupNextMapping = '<C-l>'
 augroup filetype_html
     autocmd!
     autocmd FileType html nnoremap <buffer> gC :compiler! tidy<CR>
@@ -1316,7 +1321,7 @@ Plug 'benekastah/neomake' , {'on' : 'Neomake'}
 " neomake maker for matlab
 let g:neomake_matlab_mlint_maker = {
             \ 'args': ['-id'],
-            \ 'errorformat': 
+            \ 'errorformat':
             \ '\%-P==========\ %f\ ==========,' .
             \ '\%-G%>==========\ %s\ ==========,' .
             \ '\%-G%>L\ %l\ (C\ %c):\ MDOTM%m,' .
@@ -1334,7 +1339,7 @@ endif
 " syntax checking for matlab
 augroup syntax_matlab
     autocmd!
-    autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %< 
+    autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
     autocmd FileType matlab CompilerSet errorformat=
                 \%-P==========\ %f\ ==========,
                 \%-G%>==========\ %s\ ==========,
@@ -1399,8 +1404,14 @@ nnoremap sm :Make! %<CR>
 nnoremap vm :Make -C build<CR>
 nnoremap vo :Make -C build doc<CR>
 nnoremap vr :Make -C docs/latex<CR>
-nnoremap <Space>m :Make!<Space>
-nnoremap <Space>v :Dispatch!<Space>
+nnoremap <Space>m :Dispatch!<Space>
+nnoremap <Space>va :Dispatch! open -a /Applications/
+nnoremap <Space>vo :Dispatch! open<Space>
+nnoremap <Space>vl :Dispatch! open -a /Applications/LaTeXiT.app<CR>
+nnoremap <Space>vz :Dispatch! open -a /Applications/EazyDraw.app<CR>
+nnoremap <Space>vs :Dispatch! open -a /Applications/Safari.app<CR>
+nnoremap <Space>vw :Dispatch! open -a /Applications/Google\ Chrome.app<CR>
+nnoremap <Space>vd :Dispatch! open -a /Applications/Dash.app<CR>
 nnoremap <silent> <Space>o :Copen<CR>
 
 " Dispatch based commands {{{4
@@ -1599,6 +1610,33 @@ augroup tmuxify_matlab
     autocmd FileType matlab nnoremap <buffer> mmX :let @m = "exit"<CR>:TxSend(@m)<CR>
     " run the current file
     autocmd FileType matlab nnoremap <buffer> mmr :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+augroup end
+
+" markdown specific maps {{{4
+augroup tmuxify_markdown
+    autocmd!
+    " convert to html
+    autocmd FileType markdown nnoremap <buffer> mmh :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
+    " convert to html with toc
+    autocmd FileType markdown nnoremap <buffer> mmw :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
+    " convert to pdf
+    autocmd FileType markdown nnoremap <buffer> mmp :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+    " convert to pdf with toc
+    autocmd FileType markdown nnoremap <buffer> mmd :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm --toc -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+    " convert to latex
+    autocmd FileType markdown nnoremap <buffer> mmt :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
+    " convert to latex with toc
+    autocmd FileType markdown nnoremap <buffer> mmx :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
+    " convert to rst
+    autocmd FileType markdown nnoremap <buffer> mmr :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
+    " convert to rst with toc
+    autocmd FileType markdown nnoremap <buffer> mms :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
+    " convert to org
+    autocmd FileType markdown nnoremap <buffer> mmo :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
+    " convert to org with toc
+    autocmd FileType markdown nnoremap <buffer> mmg :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
+    " open with markoff
+    autocmd FileType markdown nnoremap <buffer> mmo :let @m = "open -a /Applications/Markoff.app " . expand('%')<CR>:TxSend(@m)<CR>
 augroup end
 
 " Stop plugin installation {{{1
