@@ -1254,6 +1254,7 @@ augroup end
 Plug 'jalvesaq/Nvim-R'
 Plug 'chrisbra/csv.vim'
 let R_vsplit = 1
+let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
 augroup filetype_r
     autocmd!
