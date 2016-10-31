@@ -108,6 +108,7 @@ nnoremap gC :compiler<Space>
 " Navigate in insert mode
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
+inoremap <silent> <C-f> <right>
 " Insert mode navigation similar to <C-g>j and <C-g>k
 inoremap <silent> <C-g>l <right>
 inoremap <silent> <C-g>h <left>
@@ -1527,16 +1528,22 @@ nnoremap <silent> mD vaD"my:TxSend(@m)<CR>
 nnoremap <silent> m# vio"my:TxSend(@m)<CR>
 nnoremap <silent> m* vik"my:TxSend(@m)<CR>
 " pane changes
+nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
 nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
 nnoremap <silent> m13 :TxSetPane 0:1.3<CR>
+nnoremap <silent> m21 :TxSetPane 0:2.1<CR>
 nnoremap <silent> m22 :TxSetPane 0:2.2<CR>
 nnoremap <silent> m23 :TxSetPane 0:2.3<CR>
+nnoremap <silent> m31 :TxSetPane 0:3.1<CR>
 nnoremap <silent> m32 :TxSetPane 0:3.2<CR>
 nnoremap <silent> m33 :TxSetPane 0:3.3<CR>
+nnoremap <silent> mm11 :TxSetPane 1:1.1<CR>
 nnoremap <silent> mm12 :TxSetPane 1:1.2<CR>
 nnoremap <silent> mm13 :TxSetPane 1:1.3<CR>
+nnoremap <silent> mm21 :TxSetPane 1:2.1<CR>
 nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
 nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
+nnoremap <silent> mm31 :TxSetPane 1:3.1<CR>
 nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
 nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
 " put me in an easy editing modes
@@ -1637,6 +1644,15 @@ augroup tmuxify_markdown
     autocmd FileType markdown nnoremap <buffer> mmg :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
     " open with markoff
     autocmd FileType markdown nnoremap <buffer> mmo :let @m = "open -a /Applications/Markoff.app " . expand('%')<CR>:TxSend(@m)<CR>
+augroup end
+
+" python specific maps {{{4
+augroup tmuxify_python
+    autocmd!
+    " run the current file
+    autocmd FileType python nnoremap <buffer> mmr :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+    " clear the variables
+    autocmd FileType python nnoremap <buffer> mmx :let @m = "%reset"<CR>:TxSend(@m)<CR>
 augroup end
 
 " Stop plugin installation {{{1
