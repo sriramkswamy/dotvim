@@ -447,6 +447,10 @@ snippet xs "times" i
 endsnippet
 
 snippet inf "infinity" i
+_{\infty}
+endsnippet
+
+snippet infy "infinity" i
 \infty
 endsnippet
 
@@ -502,19 +506,19 @@ snippet lim "limit" i
 \lim_{{$1} \to {$2}} {$3} $0
 endsnippet
 
-snippet int "integral"
+snippet int "integral" i
 \int_{$1}^{$2} \! {$3} \, \mathrm{d}{$4} $0
 endsnippet
 
-snippet doin "double integral"
+snippet doin "double integral" i
 \iint\limits_{$1} \! {$2} \, \mathrm{d}{$3} $0
 endsnippet
 
-snippet triin "triple integral"
+snippet triin "triple integral" i
 \iiint\limits_{$1} \! {$2} \, \mathrm{d}{$3} $0
 endsnippet
 
-snippet cycin "cyclic integral"
+snippet cycin "cyclic integral" i
 \oint_{$1} \! {$2} \, \mathrm{d} {$3} $0
 endsnippet
 
@@ -683,6 +687,10 @@ endsnippet
 
 snippet pri "prime" i
 \prime
+endsnippet
+
+snippet pr "prime power" i
+^{\prime}
 endsnippet
 
 snippet sini "sin inverse" i
@@ -988,4 +996,40 @@ endsnippet
 
 snippet la "label"
 \label{${1:eq:fig:tab:sec:ssec:cha:}}$0
+endsnippet
+
+snippet * "star power" i
+^{*}
+endsnippet
+
+snippet exp "exponential" i
+\exp{$1}$0
+endsnippet
+
+snippet Pr "Prandtl number" i
+\Pr $0
+endsnippet
+
+snippet max "maximum" i
+\max
+endsnippet
+
+snippet sms "small size"
+\small
+endsnippet
+
+snippet hus "huge size"
+\huge
+endsnippet
+
+snippet las "large size"
+\large
+endsnippet
+
+snippet fns "footnote size"
+\footnotesize
+endsnippet
+
+snippet scs "script size"
+\scriptsize
 endsnippet

@@ -103,8 +103,10 @@ inoremap <silent> <C-g><C-l> <right>
 inoremap <silent> <C-g><C-h> <left>
 " Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
 inoremap <silent> <C-o> <C-x><C-o>
-" Usercomplete - don't use this if you need <C-]> (but...why?)
-inoremap <silent> <C-]> <C-x><C-u>
+" Usercomplete - don't use this if you need <C-u> (also useful...I prefer <Esc>cc)
+inoremap <silent> <C-u> <C-x><C-u>
+" Tag complete - don't use this if you need <C-]> (but...why?)
+inoremap <silent> <C-]> <C-x><C-]>
 " Dictionary - <C-w> achieves the same thing
 inoremap <silent> <C-d> <C-x><C-k>
 " File complete - <C-c> in insert mode doesn't exit properly anyway
@@ -445,7 +447,7 @@ nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
 nnoremap <silent> <Space>: :FzfHistory:<CR>
 vnoremap <silent> <Space>: :FzfHistory:<CR>
-inoremap <silent> <C-j> <C-o>:FzfSnippets<CR>
+nnoremap <silent> <C-l> :FzfSnippets<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
@@ -1066,7 +1068,7 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
-    let g:UltiSnipsListSnippets="<C-j>"
+    let g:UltiSnipsListSnippets="<C-l>"
 endif
 
 " Version control {{{1
@@ -1112,6 +1114,10 @@ autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
 autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
+
+" Aggregate completions {{{2
+Plug 'maxboisvert/vim-simple-complete'
+let g:vsc_tab_complete = 0
 
 " Language helpers {{{1
 
@@ -1205,8 +1211,8 @@ augroup end
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup'
-let g:sparkupExecuteMapping = '<C-y>'
-let g:sparkupNextMapping = '<C-l>'
+let g:sparkupExecuteMapping = '<C-b>'
+let g:sparkupNextMapping = '<C-j>'
 augroup filetype_html
     autocmd!
     autocmd FileType html nnoremap <buffer> gC :compiler! tidy<CR>
@@ -1264,36 +1270,49 @@ augroup filetype_r
     autocmd FileType Rmd source ~/.config/nvim/plugged/Nvim-R/ftplugin/rmd_nvimr.vim
     autocmd FileType Rdoc source ~/.config/nvim/plugged/Nvim-R/ftplugin/rdoc_nvimr.vim
     autocmd FileType Rnoweb source ~/.config/nvim/plugged/Nvim-R/ftplugin/rnoweb_nvimr.vim
+    " maps
     autocmd FileType R nnoremap <buffer> K :call RAction("help")<CR>
+    " variable viewing
+    " what's the object
+    autocmd FileType R nmap <buffer> mmw <Plug>RObjectPr
+    " open the current variable in csv format
+    autocmd FileType R nmap <buffer> mmj <Plug>RViewDF
+    " summary of the variable
+    autocmd FileType R nmap <buffer> mmt <Plug>RSummary
+    " list all variables in the current working space
+    autocmd FileType R nmap <buffer> mmv <Plug>RListSpace
+    " simple plotting
+    " plot the vector
+    autocmd FileType R nmap <buffer> mmp <Plug>RPlot
+    " help
+    " show brief help on the function at point
+    autocmd FileType R nmap <buffer> mmh <Plug>RObjectNames
+    " change the working directory
+    autocmd FileType R nmap <buffer> mmd <Plug>RSetwd
+    " other useful commands
+    " clear screen
+    autocmd FileType R nmap <buffer> mmx <Plug>RClearConsole
+    " exit R
+    autocmd FileType R nmap <buffer> mmX <Plug>RClearAll
+    " run the current file
+    autocmd FileType R nmap <buffer> mmr <Plug>RSendFile
 augroup end
 " Complete the arguments
 inoremap <C-\> <C-x><C-a>
 " Normal maps apart from '\' based maps
-nmap mR <Plug>RStart
-nmap mQ <Plug>RClose
-nmap m? <Plug>RUpdateObjBrowser
-nmap m- <Plug>ROpenLists
-nmap m_ <Plug>RCloseLists
-nmap mX <Plug>RClearAll
-nmap mx <Plug>RClearConsole
-nmap m/ <Plug>RListSpace
-nmap m\ <Plug>RShowArgs
-nmap mK <Plug>RShowEx
+nmap mz <Plug>RStart
+nmap mZ <Plug>RClose
+nmap mu <Plug>RUpdateObjBrowser
+nmap mx <Plug>ROpenLists
+nmap mX <Plug>RCloseLists
 nmap mo <Plug>RShowRout
-nmap mi <Plug>RObjectPr
 nmap mv <Plug>RObjectStr
-nmap m<bar> <Plug>RObjectNames
-nmap mj <Plug>RViewDF
-nmap m~ <Plug>RSetwd
-nmap mu <Plug>RSummary
-nmap mg <Plug>RPlot
-nmap my <Plug>RDSendFunction
-nmap mA <Plug>RSendFile
-nmap mE <Plug>REDSendParagraph
-nmap mz <Plug>RDSendLine
-nmap mZ <Plug>RDSendLineAndInsertOutput
-vmap mz <Plug>REDSendSelection
-vmap mZ <Plug>RSendSelAndInsertOutput
+nmap mi <Plug>RDSendFunction
+nmap mg <Plug>REDSendParagraph
+nmap mj <Plug>RDSendLine
+nmap my <Plug>RDSendLineAndInsertOutput
+vmap mj <Plug>REDSendSelection
+vmap my <Plug>RSendSelAndInsertOutput
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1419,7 +1438,7 @@ command! GppHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c
 command! GppArmadillo Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
 
 " Single file C compilation with different flags
-command! GccSimple Dispatch! cd %:p:h <bar> gcc -std=c++11 -Wall -g -o %:p:r.out %
+command! GccSimple Dispatch! cd %:p:h <bar> gcc -Wall -g -o %:p:r.out %
 command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
 command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
 command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
@@ -1529,8 +1548,8 @@ nnoremap <silent> mm31 :TxSetPane 1:3.1<CR>
 nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
 nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
 " put me in an easy editing modes
-nnoremap m, :TxSend<CR><C-R><C-W>
-nnoremap m. :TxSend<CR><C-R><C-W><C-f>
+nnoremap m, :TxSend<CR><C-P><C-F>
+nnoremap m. :TxSend<CR><C-R><C-W><C-F>
 
 " matlab specific maps {{{4
 " why isn't ftplugin/matlab.vim working?
@@ -1635,6 +1654,49 @@ augroup tmuxify_python
     autocmd FileType python nnoremap <buffer> mmr :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
     " clear the variables
     autocmd FileType python nnoremap <buffer> mmx :let @m = "%reset"<CR>:TxSend(@m)<CR>
+    " send yes
+    autocmd FileType python nnoremap <buffer> mmy :let @m = "y"<CR>:TxSend(@m)<CR>
+augroup end
+
+" r specific maps {{{4
+augroup tmuxify_R
+    autocmd!
+    " debug helpers
+    " set breakpoint at the current line
+    autocmd FileType R nnoremap <buffer> mmb :let @m = "browser()"<CR>:TxSend(@m)<CR>
+    " step next
+    autocmd FileType R nnoremap <buffer> mmn :let @m = "n"<CR>:TxSend(@m)<CR>
+    " step in
+    autocmd FileType R nnoremap <buffer> mmi :let @m = "s"<CR>:TxSend(@m)<CR>
+    " step out
+    autocmd FileType R nnoremap <buffer> mmo :let @m = "f"<CR>:TxSend(@m)<CR>
+    " unset breakpoint at the current line
+    autocmd FileType R nnoremap <buffer> mmu :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " delete all breakpoints
+    autocmd FileType R nnoremap <buffer> mma :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " continue until next breakpoint or end of program
+    autocmd FileType R nnoremap <buffer> mmc :let @m = "c"<CR>:TxSend(@m)<CR>
+    " rerun with debug
+    autocmd FileType R nnoremap <buffer> mmk :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mmK :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
+    " get the traceback
+    autocmd FileType R nnoremap <buffer> mmy :let @m = "where"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mmz :let @m = "traceback()"<CR>:TxSend(@m)<CR>
+    " quit debugging mode
+    autocmd FileType R nnoremap <buffer> mmq :let @m = "Q"<CR>:TxSend(@m)<CR>
+    " metadata on variables
+    " size of the variable at point
+    autocmd FileType R nnoremap <buffer> mms :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " length of the variable at point
+    autocmd FileType R nnoremap <buffer> mml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " mean of the variable at point
+    autocmd FileType R nnoremap <buffer> mmm :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " sum of the variable at point
+    autocmd FileType R nnoremap <buffer> mm= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " cumulative sum of the variable at point
+    autocmd FileType R nnoremap <buffer> mm+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " plot the matrix as a ggplot
+    autocmd FileType R nmap <buffer> mmg <Plug>RPlot
 augroup end
 
 " Stop plugin installation {{{1
