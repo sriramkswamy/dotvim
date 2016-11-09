@@ -96,6 +96,7 @@ nnoremap gC :compiler!<Space>
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
 inoremap <silent> <C-f> <right>
+inoremap <silent> <C-z> <Esc>zza
 " Insert mode navigation similar to <C-g>j and <C-g>k
 inoremap <silent> <C-g>l <right>
 inoremap <silent> <C-g>h <left>
@@ -668,7 +669,8 @@ nnoremap crn :StripNewLine<CR>
 function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
-inoremap <C-z> <Esc>:<C-u>call FixLastSpellingError()<cr>
+inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>
+nnoremap <C-s> :<C-u>call FixLastSpellingError()<cr>
 
 " Plugins {{{2
 
