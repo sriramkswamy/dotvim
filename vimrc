@@ -1235,7 +1235,7 @@ augroup end
 
 " Go {{{2
 " Autocompletion and navigation
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
 augroup filetype_go
     autocmd!
     autocmd FileType go nnoremap <buffer> gC :compiler! go<CR>
