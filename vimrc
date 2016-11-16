@@ -629,7 +629,7 @@ cnoremap %% <c-r>=expand('%')<cr>
 cnoremap :: <c-r>=expand('%:p:h')<cr>/
 " repeat in visual mode
 vnoremap . :normal .<CR>
-vnoremap <C-k> :normal<Space>
+vnoremap <C-o> :normal<Space>
 " Easier pairs when required
 inoremap {<Tab> {}<Esc>i
 inoremap {<CR> {<CR>}<Esc>O
