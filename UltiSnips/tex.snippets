@@ -53,6 +53,13 @@ snippet p "preamble" b
 {\normalfont\huge\bfseries}{\thechapter.}{1em}{\Huge}
 \titlespacing*{\chapter}{0pt}{-19pt}{0pt}
 
+\newcommand{\mychapter}[2]
+{\setcounter{chapter}{#1}
+ \setcounter{section}{0}
+ \chapter*{#2}
+ \addcontentsline{toc}{chapter}{#2}
+}
+
 \pagenumbering{${3:gobble}}
 
 \begin{document}
@@ -1039,4 +1046,20 @@ snippet empheq "emphasize equation" b
   $2
 \end{empheq}
 $0
+endsnippet
+
+snippet ln "natural log" i
+\ln{$1}$0
+endsnippet
+
+snippet myc "my chapter" b
+\mychapter{${1:number}}{${2:name}}
+endsnippet
+
+snippet bib "bibliography" b
+\bibliography{$0}
+endsnippet
+
+snippet bibs "bibliography style" b
+\bibliographystyle{$0}
 endsnippet

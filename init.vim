@@ -169,12 +169,13 @@ nnoremap gT :tabc<CR>
 nnoremap gF :!open %:p:h<CR>
 " Open in Safari
 nnoremap gB :!open -a Safari %<CR>
-" Open in general
-nnoremap <Space>vv :!open %<CR>
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
+
+" Colorschemes {{{3
+Plug 'flazz/vim-colorschemes'
 
 " Undotree {{{3
 Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
@@ -375,23 +376,15 @@ set hlsearch " Can be toggled with unimpaired's 'coh'
 set incsearch
 " Grep
 set grepprg=grep\ -nH\ $*
-" Populate location list with previous search pattern; ugly hack
-nnoremap g/ :lvim // %<CR>
-" and automatically open the windows when they are populated
-augroup quick_loc_window
-    autocmd!
-    autocmd QuickFixCmdPost [^l]* nested cwindow | setlocal nowrap | redraw!
-    autocmd QuickFixCmdPost l* nested lwindow | setlocal nowrap | redraw!
-augroup END
 
 " Maps without leader {{{2
 " Auto-center
 nnoremap <silent> n nzz
 nnoremap <silent> g* g*zz
-nnoremap <silent> g# g#zz
+nnoremap <silent> g# :lvim //%<CR>
 " Make '*' act a little better
 nnoremap <silent> * *N
-nnoremap <silent> # *N:vimgrep // %<CR>
+nnoremap <silent> # *N:lvimgrep // %<CR>
 
 " Search for word under visual selection
 vnoremap * y/<C-R>"<CR>
@@ -430,6 +423,8 @@ let g:fzf_action = {
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <C-]> :FzfTags <C-R><C-W><CR>
+nnoremap <silent> g/ :FzfBLines<CR>
+nnoremap <silent> g? :FzfLines<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
@@ -602,6 +597,9 @@ nnoremap & g&
 " :: for current buffer file path
 cnoremap %% <c-r>=expand('%')<cr>
 cnoremap :: <c-r>=expand('%:p:h')<cr>/
+" repeat in visual mode
+vnoremap . :normal .<CR>
+vnoremap <C-k> :normal<Space>
 " Easier pairs when required
 inoremap {<Tab> {}<Esc>i
 inoremap {<CR> {<CR>}<Esc>O
@@ -625,6 +623,11 @@ function! ExecuteMacroOverVisualRange()
     execute ":'<,'>normal @".nr2char(getchar())
 endfunction
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+
+" Preview the substitution - amazing feature {{{2
+set inccommand=split
+nnoremap <Space><Space> :s//<Left>
+vnoremap <Space><Space> :s//<Left>
 
 " Functions and commands {{{2
 
@@ -678,8 +681,9 @@ nnoremap <C-s> :<C-u>call FixLastSpellingError()<cr>
 Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 
-" '.' command in visual mode {{{3
-Plug 'vim-scripts/visualrepeat'
+" yank/delete history {{{3
+Plug 'vim-scripts/YankRing.vim'
+nnoremap <silent> <Space>y :YRShow<CR>
 
 " Better '.' command {{{3
 Plug 'tpope/vim-repeat'
@@ -770,12 +774,6 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
 Plug 'AndrewRadev/inline_edit.vim'
 nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
-
-" Preview the substitution {{{3
-Plug 'osyo-manga/vim-over'
-let g:over_command_line_prompt = ">"
-nnoremap <Space><Space> :OverCommandLine<CR>
-vnoremap <Space><Space> :OverCommandLine<CR>
 
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
@@ -1409,13 +1407,6 @@ nnoremap vm :Make -C build<CR>
 nnoremap vo :Make -C build doc<CR>
 nnoremap vr :Make -C docs/latex<CR>
 nnoremap <Space>m :Dispatch!<Space>
-nnoremap <Space>va :Dispatch! open -a /Applications/
-nnoremap <Space>vo :Dispatch! open<Space>
-nnoremap <Space>vl :Dispatch! open -a /Applications/LaTeXiT.app<CR>
-nnoremap <Space>vz :Dispatch! open -a /Applications/EazyDraw.app<CR>
-nnoremap <Space>vs :Dispatch! open -a /Applications/Safari.app<CR>
-nnoremap <Space>vw :Dispatch! open -a /Applications/Google\ Chrome.app<CR>
-nnoremap <Space>vd :Dispatch! open -a /Applications/Dash.app<CR>
 nnoremap <silent> <Space>o :Copen<CR>
 
 " Dispatch based commands {{{4
@@ -1647,6 +1638,10 @@ augroup tmuxify_markdown
     autocmd FileType markdown nnoremap <buffer> mmg :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
     " open with markoff
     autocmd FileType markdown nnoremap <buffer> mmo :let @m = "open -a /Applications/Markoff.app " . expand('%')<CR>:TxSend(@m)<CR>
+    " view the resulting pdf document
+    autocmd FileType markdown nnoremap <buffer> mmv :let @m = "open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+    " browse the resulting html document
+    autocmd FileType markdown nnoremap <buffer> mmb :let @m = "open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
 augroup end
 
 " python specific maps {{{4
