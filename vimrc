@@ -126,21 +126,22 @@ inoremap <silent> <C-d> <C-x><C-k>
 " File complete - <C-c> in insert mode doesn't exit properly anyway
 inoremap <silent> <C-c> <C-x><C-f>
 " Toggle few options - inspired by unimpaired
-nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
-nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
-nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
+nnoremap cob :<C-u>set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
-nnoremap col :<C-u>setlocal list!<CR>:set list?<CR>
-nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
+nnoremap cod :<C-u>set scrollbind!<CR>:set scrollbind?<CR>
+nnoremap cof :<C-u>set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
+nnoremap cog :<C-u>set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
+nnoremap coh :<C-u>setlocal hlsearch!<CR>:set hlsearch?<CR>
 nnoremap coi :<C-u>setlocal ignorecase!<CR>:set ignorecase?<CR>
+nnoremap col :<C-u>setlocal list!<CR>:set list?<CR>
+nnoremap com :<C-u>set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
+nnoremap con :<C-u>setlocal number!<CR>:set number?<CR>
 nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
-nnoremap cob :set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
-nnoremap com :set colorcolumn=<C-R>=&colorcolumn == '80,100' ? '' : '80,100'<CR><CR>
-nnoremap coz :set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
-nnoremap cof :set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
-nnoremap cog :set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
-nnoremap coh :setlocal hlsearch!<CR>:set hlsearch?<CR>
-nnoremap cot :set ft=
+nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
+nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
+nnoremap cot :<C-u>set ft=
+nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
+nnoremap coz :<C-u>set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
 " Clipboard
 nnoremap cp "*p
 nnoremap cy "*y
@@ -445,9 +446,9 @@ let g:fzf_action = {
             \ 'ctrl-o': '!open'}
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
+nnoremap g<C-]> :FzfTags <C-R><C-W><CR>
 nnoremap <silent> g/ :FzfBLines<CR>
 nnoremap <silent> g? :FzfLines<CR>
-nnoremap <C-]> :FzfTags <C-R><C-W><CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
@@ -697,7 +698,7 @@ nnoremap crn :StripNewLine<CR>
 function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
-inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>
+inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>a
 nnoremap <C-s> :<C-u>call FixLastSpellingError()<cr>
 
 " Plugins {{{2
@@ -808,6 +809,7 @@ vnoremap <Space><Space> :OverCommandLine<CR>
 
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
+nnoremap gA :Tabularize<CR>
 nnoremap gl :Tabularize /
 vnoremap gl :Tabularize /
 nnoremap g<Tab> :Tabularize /\s\+<CR>
@@ -1092,6 +1094,7 @@ nmap gW <Plug>(easymotion-B)
 nmap we <Plug>(easymotion-overwin-line)
 
 " Snippets {{{1
+" Snippet plugin and snippet collection {{{2
 if has('python') || has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
     let g:UltiSnipsExpandTrigger="<tab>"
@@ -1263,10 +1266,10 @@ let g:rubycomplete_rails = 1
 let g:rubycomplete_load_gemfile = 1
 " let g:rubycomplete_use_bundler = 1
 Plug 'tpope/vim-rails'
-nnoremap vx :A
+nnoremap <Space>v :A
 Plug 'danchoi/ri.vim'
 let g:ri_no_mappings=1
-augroup filetype_go
+augroup filetype_ruby
     autocmd!
     autocmd FileType ruby nnoremap <buffer> gC :compiler! rake<CR>
     autocmd FileType ruby nnoremap <buffer> K :call ri#LookupNameUnderCursor()<CR>
