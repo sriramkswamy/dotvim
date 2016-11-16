@@ -358,8 +358,9 @@ let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
 
 " View directory structure - useful sometimes {{{3
-Plug 'scrooloose/nerdtree', {'on' : 'NERDTreeToggle'}
+Plug 'scrooloose/nerdtree', {'on' :['NERDTreeToggle', 'NERDTree']}
 nnoremap <silent> <Space>n :NERDTreeToggle<CR>
+nnoremap vx :NERDTree ~/Dropbox/PhD<CR>
 
 " Better window/tab navigation {{{3
 Plug 'yssl/TWcmd.vim'
