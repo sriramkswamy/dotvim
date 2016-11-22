@@ -1601,11 +1601,11 @@ augroup tmuxify_python
     " get the length of the object
     autocmd FileType python nnoremap <buffer> ml :let @m = "len(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the sum of the matrix/object
-    autocmd FileType python nnoremap <buffer> m= :let @m = expand('<cword>') . ".sum"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> m= :let @m = expand('<cword>') . ".sum()"<CR>:TxSend(@m)<CR>
     " get the cumulative sum of the matrix/object
-    autocmd FileType python nnoremap <buffer> m+ :let @m = expand('<cword>') . ".cumsum"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> m+ :let @m = expand('<cword>') . ".cumsum()"<CR>:TxSend(@m)<CR>
     " get the mean of the matrix/object
-    autocmd FileType python nnoremap <buffer> me :let @m = expand('<cword>') . ".mean"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> me :let @m = expand('<cword>') . ".mean()"<CR>:TxSend(@m)<CR>
 augroup end
 
 " r specific maps {{{4
