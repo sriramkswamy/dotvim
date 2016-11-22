@@ -1083,6 +1083,9 @@ nmap ]r <Plug>ExchangeArgNext
 nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [r <Plug>ExchangeArgPrev
 
+" Create your own operators {{{4
+Plug 'kana/vim-operator-user'
+
 " Motions {{{2
 
 " Move similar to a mouse click {{{3
@@ -1306,7 +1309,7 @@ augroup filetype_r
     " open the current variable in csv format
     autocmd FileType R nmap <buffer> mmj <Plug>RViewDF
     " summary of the variable
-    autocmd FileType R nmap <buffer> mmt <Plug>RSummary
+    autocmd FileType R nmap <buffer> mmy <Plug>RSummary
     " list all variables in the current working space
     autocmd FileType R nmap <buffer> mmv <Plug>RListSpace
     " simple plotting
@@ -1319,28 +1322,29 @@ augroup filetype_r
     autocmd FileType R nmap <buffer> mmd <Plug>RSetwd
     " other useful commands
     " clear screen
-    autocmd FileType R nmap <buffer> mmx <Plug>RClearConsole
+    autocmd FileType R nmap <buffer> mmc <Plug>RClearConsole
     " exit R
-    autocmd FileType R nmap <buffer> mmX <Plug>RClearAll
+    autocmd FileType R nmap <buffer> mmx <Plug>RClearAll
     " run the current file
     autocmd FileType R nmap <buffer> mmr <Plug>RSendFile
 augroup end
 " Complete the arguments
 inoremap <C-\> <C-x><C-a>
 " Normal maps apart from '\' based maps
-nmap mz <Plug>RStart
-nmap mZ <Plug>RClose
-nmap mu <Plug>RUpdateObjBrowser
-nmap mx <Plug>ROpenLists
-nmap mX <Plug>RCloseLists
-nmap mo <Plug>RShowRout
-nmap mv <Plug>RObjectStr
-nmap mi <Plug>RDSendFunction
-nmap mg <Plug>REDSendParagraph
-nmap mj <Plug>RDSendLine
-nmap my <Plug>RDSendLineAndInsertOutput
-vmap mj <Plug>REDSendSelection
-vmap my <Plug>RSendSelAndInsertOutput
+nmap mvr <Plug>RStart
+nmap mvq <Plug>RClose
+nmap mvu <Plug>RUpdateObjBrowser
+nmap mv[ <Plug>ROpenLists
+nmap mv] <Plug>RCloseLists
+nmap mvo <Plug>RShowRout
+nmap mvw <Plug>RObjectStr
+nmap mvb <Plug>RDSendFunction
+nmap mvp <Plug>REDSendParagraph
+nmap mvf <Plug>RPlot
+nmap mvv <Plug>RDSendLine
+nmap mvc <Plug>RDSendLineAndInsertOutput
+vmap mvv <Plug>REDSendSelection
+vmap mvc <Plug>RSendSelAndInsertOutput
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1488,7 +1492,7 @@ let g:pipe2eval_map_key = 'm<Space>'
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
-let g:tmuxify_map_prefix = 'm'
+let g:tmuxify_map_prefix = ''
 let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
 let g:tmuxify_run = {
             \ 'sh': 'bash %',
@@ -1504,73 +1508,16 @@ let g:tmuxify_run = {
             \}
 
 " Mappings for any tmux session {{{4
-" send using defaults visual selections
-" default maps
-" ms - TxSend
-" mb - TxSigInt
-" mc - TxClear
-" mr - TxRun
-" mt - TxSetRunCmd
-" mp - TxSetPane
-" mk - TxSendKey
-" mn - TxCreate
-" mq - TxKill
-nnoremap <silent> ma ggVG"my:TxSend(@m)<CR>
-nnoremap <silent> mw viw"my:TxSend(@m)<CR>
-nnoremap <silent> mW viW"my:TxSend(@m)<CR>
-nnoremap <silent> ml V"my:TxSend(@m)<CR>
-nnoremap <silent> me vip"my:TxSend(@m)<CR>
-nnoremap <silent> m{ va{"my:TxSend(@m)<CR>
-nnoremap <silent> m} vi}"my:TxSend(@m)<CR>
-nnoremap <silent> m( va("my:TxSend(@m)<CR>
-nnoremap <silent> m) vi)"my:TxSend(@m)<CR>
-nnoremap <silent> m[ va["my:TxSend(@m)<CR>
-nnoremap <silent> m] vi]"my:TxSend(@m)<CR>
-nnoremap <silent> m" vi""my:TxSend(@m)<CR>
-nnoremap <silent> m: va""my:TxSend(@m)<CR>
-nnoremap <silent> m' vi'"my:TxSend(@m)<CR>
-nnoremap <silent> m; va'"my:TxSend(@m)<CR>
-nnoremap <silent> m` vi`"my:TxSend(@m)<CR>
-nnoremap <silent> m0 v0"my:TxSend(@m)<CR>
-nnoremap <silent> m$ v$"my:TxSend(@m)<CR>
-" depends on vim-indent-object textobject
-nnoremap <silent> m= vii"my:TxSend(@m)<CR>
-nnoremap <silent> m> vai"my:TxSend(@m)<CR>
-nnoremap <silent> m< vaI"my:TxSend(@m)<CR>
-" depends on vim-text-object-function textobject
-nnoremap <silent> mf vaf"my:TxSend(@m)<CR>
-" depends on braceless.vim textobject
-nnoremap <silent> md vab"my:TxSend(@m)<CR>
-" depends on vim-signify hunk textobject
-nnoremap <silent> mh vih"my:TxSend(@m)<CR>
-" depends on vim-sexp textobjects
-nnoremap <silent> my viy"my:TxSend(@m)<CR>
-nnoremap <silent> mD vaD"my:TxSend(@m)<CR>
-" depends on markdown/hexo textobject
-nnoremap <silent> m# vio"my:TxSend(@m)<CR>
-nnoremap <silent> m* vik"my:TxSend(@m)<CR>
-" pane changes
-nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
-nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
-nnoremap <silent> m13 :TxSetPane 0:1.3<CR>
-nnoremap <silent> m21 :TxSetPane 0:2.1<CR>
-nnoremap <silent> m22 :TxSetPane 0:2.2<CR>
-nnoremap <silent> m23 :TxSetPane 0:2.3<CR>
-nnoremap <silent> m31 :TxSetPane 0:3.1<CR>
-nnoremap <silent> m32 :TxSetPane 0:3.2<CR>
-nnoremap <silent> m33 :TxSetPane 0:3.3<CR>
-nnoremap <silent> mm11 :TxSetPane 1:1.1<CR>
-nnoremap <silent> mm12 :TxSetPane 1:1.2<CR>
-nnoremap <silent> mm13 :TxSetPane 1:1.3<CR>
-nnoremap <silent> mm21 :TxSetPane 1:2.1<CR>
-nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
-nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
-nnoremap <silent> mm31 :TxSetPane 1:3.1<CR>
-nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
-nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
-" put me in an easy editing modes
-nnoremap m, :TxSend<CR><C-P><C-F>
-nnoremap m. :TxSend<CR><C-R><C-W><C-F>
+nnoremap <silent> mc :TxClear<CR>
+nnoremap <silent> mx :TxSigInt<CR>
+nnoremap <silent> mo :TxCreate<CR>
+nnoremap <silent> mp :TxSetPane<CR>
+nnoremap <silent> mq :TxKill<CR>
+nnoremap <silent> mr :TxRun<CR>
+nnoremap <silent> md :TxSetRunCmd<CR>
+nnoremap <silent> mss :TxSend<CR>
+vnoremap <silent> mss "my:TxSend(@m)<CR>
+" also check out the operator defined at the end of the file
 
 " matlab specific maps {{{4
 " why isn't ftplugin/matlab.vim working?
@@ -1595,92 +1542,95 @@ augroup tmuxify_matlab
     " continue until next breakpoint or end of program
     autocmd FileType matlab nnoremap <buffer> mmc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
     " put me in debug mode if there is an error
-    autocmd FileType matlab nnoremap <buffer> mmk :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mme :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
     " quit debugging mode
     autocmd FileType matlab nnoremap <buffer> mmq :let @m = "dbquit"<CR>:TxSend(@m)<CR>
     " variable viewing
     " show the GUI workspace
-    autocmd FileType matlab nnoremap <buffer> mmw :let @m = "workspace"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>
     " open the current variable in the GUI variable viewer
-    autocmd FileType matlab nnoremap <buffer> mmj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
     " type of the variable
-    autocmd FileType matlab nnoremap <buffer> mmt :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mw :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
     " metadata on variables
     " size of the variable at point
-    autocmd FileType matlab nnoremap <buffer> mms :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mz :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " length of the variable at point
-    autocmd FileType matlab nnoremap <buffer> mml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " number of elements in the variable at point
-    autocmd FileType matlab nnoremap <buffer> mme :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mn :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " fieldnames of the variable at point
-    autocmd FileType matlab nnoremap <buffer> mmf :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> m? :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " mean of the variable at point
-    autocmd FileType matlab nnoremap <buffer> mmm :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " sum of the variable at point
-    autocmd FileType matlab nnoremap <buffer> mm= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " cumulative sum of the variable at point
-    autocmd FileType matlab nnoremap <buffer> mm+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " list all variables in the current working space
-    autocmd FileType matlab nnoremap <buffer> mmv :let @m = "whos"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> ma :let @m = "whos"<CR>:TxSend(@m)<CR>
     " simple plotting
     " plot the vector
-    autocmd FileType matlab nnoremap <buffer> mmp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mfp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " plot the matrix as a mesh plot
-    autocmd FileType matlab nnoremap <buffer> mmg :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mfm :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " help
     " show brief help on the function at point
-    autocmd FileType matlab nnoremap <buffer> mmh :let @m = "help " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mh :let @m = "help " . expand('<cword>')<CR>:TxSend(@m)<CR>
     " open the complete GUI documentation of the function at point
-    autocmd FileType matlab nnoremap <buffer> mmd :let @m = "doc " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mi :let @m = "doc " . expand('<cword>')<CR>:TxSend(@m)<CR>
     " other useful commands
     " clear screen
-    autocmd FileType matlab nnoremap <buffer> mmx :let @m = "clc"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mt :let @m = "clc"<CR>:TxSend(@m)<CR>
     " exit matlab
-    autocmd FileType matlab nnoremap <buffer> mmX :let @m = "exit"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mk :let @m = "exit"<CR>:TxSend(@m)<CR>
     " run the current file
-    autocmd FileType matlab nnoremap <buffer> mmr :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mg :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
 augroup end
 
 " markdown specific maps {{{4
 augroup tmuxify_markdown
     autocmd!
     " convert to html
-    autocmd FileType markdown nnoremap <buffer> mmh :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
-    " convert to html with toc
-    autocmd FileType markdown nnoremap <buffer> mmw :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
-    " convert to pdf
-    autocmd FileType markdown nnoremap <buffer> mmp :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mh :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
     " convert to pdf with toc
-    autocmd FileType markdown nnoremap <buffer> mmd :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm --toc -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
-    " convert to latex
-    autocmd FileType markdown nnoremap <buffer> mmt :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mf :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm --toc -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
     " convert to latex with toc
-    autocmd FileType markdown nnoremap <buffer> mmx :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
-    " convert to rst
-    autocmd FileType markdown nnoremap <buffer> mmr :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mt :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
     " convert to rst with toc
-    autocmd FileType markdown nnoremap <buffer> mms :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
-    " convert to org
-    autocmd FileType markdown nnoremap <buffer> mmo :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> my :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
     " convert to org with toc
-    autocmd FileType markdown nnoremap <buffer> mmg :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mg :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
     " open with markoff
-    autocmd FileType markdown nnoremap <buffer> mmo :let @m = "open -a /Applications/Markoff.app " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mw :let @m = "open -a /Applications/Markoff.app " . expand('%')<CR>:TxSend(@m)<CR>
     " view the resulting pdf document
-    autocmd FileType markdown nnoremap <buffer> mmv :let @m = "open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mj :let @m = "open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
     " browse the resulting html document
-    autocmd FileType markdown nnoremap <buffer> mmb :let @m = "open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mb :let @m = "open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
 augroup end
 
 " python specific maps {{{4
 augroup tmuxify_python
     autocmd!
     " run the current file
-    autocmd FileType python nnoremap <buffer> mmr :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mg :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
     " clear the variables
-    autocmd FileType python nnoremap <buffer> mmx :let @m = "%reset"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> m- :let @m = "%reset"<CR>:TxSend(@m)<CR>
     " send yes
-    autocmd FileType python nnoremap <buffer> mmy :let @m = "y"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> my :let @m = "y"<CR>:TxSend(@m)<CR>
+    " metadata
+    " get the shape of the matrix/object
+    autocmd FileType python nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>
+    " get the size of object
+    autocmd FileType python nnoremap <buffer> mn :let @m = expand('<cword>') . ".size"<CR>:TxSend(@m)<CR>
+    " get the length of the object
+    autocmd FileType python nnoremap <buffer> ml :let @m = "len(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " get the sum of the matrix/object
+    autocmd FileType python nnoremap <buffer> m= :let @m = expand('<cword>') . ".sum"<CR>:TxSend(@m)<CR>
+    " get the cumulative sum of the matrix/object
+    autocmd FileType python nnoremap <buffer> m+ :let @m = expand('<cword>') . ".cumsum"<CR>:TxSend(@m)<CR>
+    " get the mean of the matrix/object
+    autocmd FileType python nnoremap <buffer> me :let @m = expand('<cword>') . ".mean"<CR>:TxSend(@m)<CR>
 augroup end
 
 " r specific maps {{{4
@@ -1688,40 +1638,38 @@ augroup tmuxify_R
     autocmd!
     " debug helpers
     " set breakpoint at the current line
-    autocmd FileType R nnoremap <buffer> mmb :let @m = "browser()"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mma :let @m = "browser()"<CR>:TxSend(@m)<CR>
     " step next
     autocmd FileType R nnoremap <buffer> mmn :let @m = "n"<CR>:TxSend(@m)<CR>
     " step in
     autocmd FileType R nnoremap <buffer> mmi :let @m = "s"<CR>:TxSend(@m)<CR>
     " step out
     autocmd FileType R nnoremap <buffer> mmo :let @m = "f"<CR>:TxSend(@m)<CR>
+    " continue until next breakpoint or end of program
+    autocmd FileType R nnoremap <buffer> mmc :let @m = "c"<CR>:TxSend(@m)<CR>
     " unset breakpoint at the current line
     autocmd FileType R nnoremap <buffer> mmu :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " delete all breakpoints
-    autocmd FileType R nnoremap <buffer> mma :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
-    " continue until next breakpoint or end of program
-    autocmd FileType R nnoremap <buffer> mmc :let @m = "c"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mmd :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " rerun with debug
-    autocmd FileType R nnoremap <buffer> mmk :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
-    autocmd FileType R nnoremap <buffer> mmK :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mmr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mmk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
     " get the traceback
-    autocmd FileType R nnoremap <buffer> mmy :let @m = "where"<CR>:TxSend(@m)<CR>
-    autocmd FileType R nnoremap <buffer> mmz :let @m = "traceback()"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mmw :let @m = "where"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mmt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
     " quit debugging mode
     autocmd FileType R nnoremap <buffer> mmq :let @m = "Q"<CR>:TxSend(@m)<CR>
     " metadata on variables
     " size of the variable at point
-    autocmd FileType R nnoremap <buffer> mms :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mz :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " length of the variable at point
-    autocmd FileType R nnoremap <buffer> mml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " mean of the variable at point
-    autocmd FileType R nnoremap <buffer> mmm :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " sum of the variable at point
-    autocmd FileType R nnoremap <buffer> mm= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " cumulative sum of the variable at point
-    autocmd FileType R nnoremap <buffer> mm+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
-    " plot the matrix as a ggplot
-    autocmd FileType R nmap <buffer> mmg <Plug>RPlot
+    autocmd FileType R nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 augroup end
 
 " Stop plugin installation {{{1
@@ -1840,6 +1788,15 @@ function! HexocodeI()
     normal! k$
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
+endfunction
+
+" create an object to send things to tmux {{{1
+map ms <Plug>(operator-tmuxify-send)
+call operator#user#define('tmuxify-send', 'OperatorTmuxifySend')
+function! OperatorTmuxifySend(motion_wise)
+    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
+    execute 'normal!' '`[' . v . '`]"my'
+    TxSend(@m)
 endfunction
 
 " Setup plugins, indents and syntax {{{1
