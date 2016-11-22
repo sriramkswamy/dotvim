@@ -1618,6 +1618,19 @@ augroup tmuxify_python
     autocmd FileType python nnoremap <buffer> mu :let @m = "%reset"<CR>:TxSend(@m)<CR>
     " send yes
     autocmd FileType python nnoremap <buffer> my :let @m = "y"<CR>:TxSend(@m)<CR>
+    " debugging
+    " next line
+    autocmd FileType python nnoremap <buffer> mmn :let @m = "n"<CR>:TxSend(@m)<CR>
+    " step in
+    autocmd FileType python nnoremap <buffer> mms :let @m = "s"<CR>:TxSend(@m)<CR>
+    " continue
+    autocmd FileType python nnoremap <buffer> mmc :let @m = "c"<CR>:TxSend(@m)<CR>
+    " run till end of subroutine
+    autocmd FileType python nnoremap <buffer> mmr :let @m = "r"<CR>:TxSend(@m)<CR>
+    " print the value
+    autocmd FileType python nnoremap <buffer> mmv :let @m = "p " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    " where am i
+    autocmd FileType python nnoremap <buffer> mmw :let @m = "l"<CR>:TxSend(@m)<CR>
     " metadata
     " get the shape of the matrix/object
     autocmd FileType python nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>
