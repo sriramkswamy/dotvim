@@ -1299,52 +1299,69 @@ Plug 'chrisbra/csv.vim'
 let R_vsplit = 1
 let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
+
+" Maps {{{3
+" Complete the arguments
+inoremap <C-\> <C-x><C-a>
+" Normal maps apart from '\' based maps
+nmap mR <Plug>RStart
+nmap mQ <Plug>RClose
 augroup filetype_r
     autocmd!
     " maps
     autocmd FileType R nnoremap <buffer> K :call RAction("help")<CR>
     " variable viewing
     " what's the object
-    autocmd FileType R nmap <buffer> mmw <Plug>RObjectPr
+    autocmd FileType R nmap <buffer> mw <Plug>RObjectPr
+    " show object
+    autocmd FileType R nmap <buffer> mmw <Plug>RObjectStr
+    " show output
+    autocmd FileType R nmap <buffer> mmo <Plug>RShowRout
+    " what's the object
+    autocmd FileType R nmap <buffer> mw <Plug>RObjectPr
     " open the current variable in csv format
-    autocmd FileType R nmap <buffer> mmj <Plug>RViewDF
+    autocmd FileType R nmap <buffer> mj <Plug>RViewDF
     " summary of the variable
-    autocmd FileType R nmap <buffer> mmy <Plug>RSummary
+    autocmd FileType R nmap <buffer> my <Plug>RSummary
     " list all variables in the current working space
-    autocmd FileType R nmap <buffer> mmv <Plug>RListSpace
+    autocmd FileType R nmap <buffer> mb <Plug>RListSpace
+    " update browser
+    autocmd FileType R nmap <buffer> mu <Plug>RUpdateObjBrowser
+    " open lists
+    autocmd FileType R nmap <buffer> m[ <Plug>ROpenLists
+    " close lists
+    autocmd FileType R nmap <buffer> m] <Plug>RCloseLists
+    " repl interaction
+    " run the current file
+    autocmd FileType R nmap <buffer> mg <Plug>RSendFile
+    " send the current para
+    autocmd FileType R nmap <buffer> msap <Plug>REDSendParagraph
+    " send the current function
+    autocmd FileType R nmap <buffer> msaf <Plug>RDSendFunction
+    " send the current function
+    autocmd FileType R nmap <buffer> msif <Plug>RDSendFunction
+    " send the current line
+    autocmd FileType R nmap <buffer> mss <Plug>RDSendLine
+    " send the current line and insert output
+    autocmd FileType R nmap <buffer> mv <Plug>RDSendLineAndInsertOutput
+    " send the current selection
+    autocmd FileType R vmap <buffer> ms <Plug>REDSendSelection
+    " send the current selection and insert output
+    autocmd FileType R vmap <buffer> mv <Plug>RSendSelAndInsertOutput
     " simple plotting
     " plot the vector
-    autocmd FileType R nmap <buffer> mmp <Plug>RPlot
+    autocmd FileType R nmap <buffer> mfp <Plug>RPlot
     " help
     " show brief help on the function at point
-    autocmd FileType R nmap <buffer> mmh <Plug>RObjectNames
+    autocmd FileType R nmap <buffer> mn <Plug>RObjectNames
     " change the working directory
-    autocmd FileType R nmap <buffer> mmd <Plug>RSetwd
+    autocmd FileType R nmap <buffer> m~ <Plug>RSetwd
     " other useful commands
     " clear screen
-    autocmd FileType R nmap <buffer> mmc <Plug>RClearConsole
+    autocmd FileType R nmap <buffer> mc <Plug>RClearConsole
     " exit R
     autocmd FileType R nmap <buffer> mmx <Plug>RClearAll
-    " run the current file
-    autocmd FileType R nmap <buffer> mmr <Plug>RSendFile
 augroup end
-" Complete the arguments
-inoremap <C-\> <C-x><C-a>
-" Normal maps apart from '\' based maps
-nmap mvr <Plug>RStart
-nmap mvq <Plug>RClose
-nmap mvu <Plug>RUpdateObjBrowser
-nmap mv[ <Plug>ROpenLists
-nmap mv] <Plug>RCloseLists
-nmap mvo <Plug>RShowRout
-nmap mvw <Plug>RObjectStr
-nmap mvb <Plug>RDSendFunction
-nmap mvp <Plug>REDSendParagraph
-nmap mvf <Plug>RPlot
-nmap mvv <Plug>RDSendLine
-nmap mvc <Plug>RDSendLineAndInsertOutput
-vmap mvv <Plug>REDSendSelection
-vmap mvc <Plug>RSendSelAndInsertOutput
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1508,15 +1525,40 @@ let g:tmuxify_run = {
             \}
 
 " Mappings for any tmux session {{{4
+" put me in an easy editing modes
+nnoremap <silent> m, :TxSend<CR><C-P>
+nnoremap <silent> m. :TxSend<CR><C-R><C-W>
+nnoremap <silent> m/ :TxSend<CR><C-P><C-F>
+nnoremap <silent> m<Space> :TxSend<CR><C-F><C-R><C-W>
+" pane changes
+nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
+nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
+nnoremap <silent> m13 :TxSetPane 0:1.3<CR>
+nnoremap <silent> m21 :TxSetPane 0:2.1<CR>
+nnoremap <silent> m22 :TxSetPane 0:2.2<CR>
+nnoremap <silent> m23 :TxSetPane 0:2.3<CR>
+nnoremap <silent> m31 :TxSetPane 0:3.1<CR>
+nnoremap <silent> m32 :TxSetPane 0:3.2<CR>
+nnoremap <silent> m33 :TxSetPane 0:3.3<CR>
+nnoremap <silent> mm11 :TxSetPane 1:1.1<CR>
+nnoremap <silent> mm12 :TxSetPane 1:1.2<CR>
+nnoremap <silent> mm13 :TxSetPane 1:1.3<CR>
+nnoremap <silent> mm21 :TxSetPane 1:2.1<CR>
+nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
+nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
+nnoremap <silent> mm31 :TxSetPane 1:3.1<CR>
+nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
+nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
+" interaction maps
 nnoremap <silent> mc :TxClear<CR>
 nnoremap <silent> mx :TxSigInt<CR>
-nnoremap <silent> mo :TxCreate<CR>
+nnoremap <silent> mn :TxCreate<CR>
 nnoremap <silent> mp :TxSetPane<CR>
 nnoremap <silent> mq :TxKill<CR>
 nnoremap <silent> mr :TxRun<CR>
 nnoremap <silent> md :TxSetRunCmd<CR>
-nnoremap <silent> mss :TxSend<CR>
-vnoremap <silent> mss "my:TxSend(@m)<CR>
+nnoremap <silent> mo :TxSend<CR>
+nnoremap <silent> mss V"my:TxSend(@m)<CR>
 " also check out the operator defined at the end of the file
 
 " matlab specific maps {{{4
@@ -1631,6 +1673,8 @@ augroup tmuxify_python
     autocmd FileType python nnoremap <buffer> mmv :let @m = "p " . expand('<cword>')<CR>:TxSend(@m)<CR>
     " where am i
     autocmd FileType python nnoremap <buffer> mmw :let @m = "l"<CR>:TxSend(@m)<CR>
+    " quit debugging
+    autocmd FileType python nnoremap <buffer> mmq :let @m = "q"<CR>:TxSend(@m)<CR>
     " metadata
     " get the shape of the matrix/object
     autocmd FileType python nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>

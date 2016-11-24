@@ -72,3 +72,30 @@ snippet ms "matlab sending stuff made easy" b
 % dbclear all
 % dbquit
 endsnippet
+
+snippet if "if block" b
+if $1
+	$0
+end
+endsnippet
+
+snippet ife "if else block" b
+if $1
+	$2
+else
+	$0
+end
+endsnippet
+
+snippet iff "if else if block" b
+if $1
+	$2
+elseif $3
+	$0
+end
+endsnippet
+
+snippet el "else" b
+else
+	$0
+endsnippet
