@@ -454,13 +454,14 @@ nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>a :FzfAg <C-R><C-W><CR>
+nnoremap <silent> <Space>y :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>C :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>F :FzfFiles ~<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>a :FzfBuffers<CR>
 nnoremap <silent> <Space>t :FzfWindows<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfAg<CR>
@@ -707,10 +708,6 @@ nnoremap <C-s> :<C-u>call FixLastSpellingError()<cr>
 " Indentation settings for collaborative work {{{3
 Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
-
-" yank/delete history {{{3
-Plug 'vim-scripts/YankRing.vim'
-nnoremap <silent> <Space>y :YRShow<CR>
 
 " Better '.' command {{{3
 Plug 'tpope/vim-repeat'
@@ -1314,9 +1311,9 @@ augroup filetype_r
     " what's the object
     autocmd FileType R nmap <buffer> mw <Plug>RObjectPr
     " show object
-    autocmd FileType R nmap <buffer> mmw <Plug>RObjectStr
+    autocmd FileType R nmap <buffer> mh <Plug>RObjectStr
     " show output
-    autocmd FileType R nmap <buffer> mmo <Plug>RShowRout
+    autocmd FileType R nmap <buffer> ma <Plug>RShowRout
     " what's the object
     autocmd FileType R nmap <buffer> mw <Plug>RObjectPr
     " open the current variable in csv format
@@ -1353,7 +1350,7 @@ augroup filetype_r
     autocmd FileType R nmap <buffer> mfp <Plug>RPlot
     " help
     " show brief help on the function at point
-    autocmd FileType R nmap <buffer> mn <Plug>RObjectNames
+    autocmd FileType R nmap <buffer> m? <Plug>RObjectNames
     " change the working directory
     autocmd FileType R nmap <buffer> m~ <Plug>RSetwd
     " other useful commands
@@ -1682,6 +1679,10 @@ augroup tmuxify_python
     autocmd FileType python nnoremap <buffer> mn :let @m = expand('<cword>') . ".size"<CR>:TxSend(@m)<CR>
     " get the length of the object
     autocmd FileType python nnoremap <buffer> ml :let @m = "len(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " get the type of the object
+    autocmd FileType python nnoremap <buffer> mt :let @m = "type(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " get the type of the object (from space to space)
+    autocmd FileType python nnoremap <buffer> mT :let @m = "type(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
     " get the sum of the matrix/object
     autocmd FileType python nnoremap <buffer> m= :let @m = expand('<cword>') . ".sum()"<CR>:TxSend(@m)<CR>
     " get the cumulative sum of the matrix/object
@@ -1723,6 +1724,10 @@ augroup tmuxify_R
     autocmd FileType R nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " mean of the variable at point
     autocmd FileType R nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " get the type of the object
+    autocmd FileType R nnoremap <buffer> mt :let @m = "typeof(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " get the type of the object (from space to space)
+    autocmd FileType R nnoremap <buffer> mT :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
     " sum of the variable at point
     autocmd FileType R nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " cumulative sum of the variable at point
