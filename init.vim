@@ -1311,11 +1311,11 @@ augroup filetype_r
     " send the current line
     autocmd FileType R nmap <buffer> mss <Plug>RDSendLine
     " send the current line and insert output
-    autocmd FileType R nmap <buffer> mv <Plug>RDSendLineAndInsertOutput
+    autocmd FileType R nmap <buffer> m<Space> <Plug>RDSendLineAndInsertOutput
     " send the current selection
     autocmd FileType R vmap <buffer> ms <Plug>REDSendSelection
     " send the current selection and insert output
-    autocmd FileType R vmap <buffer> mv <Plug>RSendSelAndInsertOutput
+    autocmd FileType R vmap <buffer> m<Space> <Plug>RSendSelAndInsertOutput
     " simple plotting
     " plot the vector
     autocmd FileType R nmap <buffer> mfp <Plug>RPlot
@@ -1520,10 +1520,10 @@ let g:tmuxify_run = {
 
 " Mappings for any tmux session {{{4
 " put me in an easy editing modes
-nnoremap <silent> m, :TxSend<CR><C-P>
-nnoremap <silent> m. :TxSend<CR><C-R><C-W>
-nnoremap <silent> m/ :TxSend<CR><C-P><C-F>
-nnoremap <silent> m<Space> :TxSend<CR><C-F><C-R><C-W>
+nnoremap m, :TxSend<CR><C-P>
+nnoremap m. :TxSend<CR><C-R><C-W>
+nnoremap m/ :TxSend<CR><C-F>
+nnoremap mv :TxSend<CR><C-F><C-R><C-W>
 " pane changes
 nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
 nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
