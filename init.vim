@@ -214,16 +214,12 @@ set showmatch
 " Maps without leader {{{2
 
 " Unimpaired inspired mappings {{{3
-nnoremap [g :cold<CR>
-nnoremap ]g :cnew<CR>
-nnoremap [q :cprevious<CR>
-nnoremap ]q :cnext<CR>
+nnoremap [q :cold<CR>
+nnoremap ]q :cnew<CR>
 nnoremap [Q :cfirst<CR>
 nnoremap ]Q :clast<CR>
-nnoremap [G :lold<CR>
-nnoremap ]G :lnew<CR>
-nnoremap [l :lprevious<CR>
-nnoremap ]l :lnext<CR>
+nnoremap [l :lold<CR>
+nnoremap ]l :lnew<CR>
 nnoremap [L :lfirst<CR>
 nnoremap ]L :llast<CR>
 nnoremap [b :bprevious<CR>
@@ -240,6 +236,12 @@ nnoremap [T :tfirst<CR>
 nnoremap ]T :tlast<CR>
 nnoremap [n ?^<\+\s*HEAD$<CR>
 nnoremap ]n /^<\+\s*HEAD$<CR>
+
+" arrow keys to navigate quickfix/location list
+nnoremap <silent> <up> :lprevious<CR>
+nnoremap <silent> <down> :lnext<CR>
+nnoremap <silent> <left> :cprevious<CR>
+nnoremap <silent> <right> :cnext<CR>
 
 " Other useful maps {{{3
 " Auto-center
@@ -1336,16 +1338,13 @@ nmap <silent> gD <Plug>DashSearch
 " Syntax checking {{{2
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
 
-" neomake maker for matlab {{3
+" neomake maker for matlab {{{3
 let g:neomake_matlab_mlint_maker = {
+            \ 'exe': '/Applications/MATLAB_R2016a.app/bin/maci64/mlint',
             \ 'args': ['-id'],
             \ 'errorformat':
-            \ '\%-P==========\ %f\ ==========,' .
-            \ '\%-G%>==========\ %s\ ==========,' .
-            \ '\%-G%>L\ %l\ (C\ %c):\ MDOTM%m,' .
-            \ '\L\ %l\ (C\ %c):\ %m,' .
-            \ '\L\ %l\ (C\ %c-%*[0-9]):\ %m,' .
-            \ '\%-Q',
+            \ '%EL %l (C %c): %*[a-zA-Z0-9]: %m,'.
+            \ '%WL %l (C %c-%*[0-9]): %*[a-zA-Z0-9]: %m,',
             \ }
 let g:neomake_matlab_enabled_makers = ['mlint']
 
@@ -1362,6 +1361,19 @@ let g:neomake_r_lintr_maker = {
             \ '%E%f:%l:%c: error: %m,',
             \ }
 let g:neomake_r_enabled_makers = ['lintr']
+
+let g:neomake_R_lintr_maker = {
+            \ 'exe': 'R',
+            \ 'args': ['--slave', '--no-restore', '--no-save',
+                     \ '-e', 'suppressPackageStartupMessages(library(lintr))',
+                     \ '-e', 'lint(cache = FALSE, commandArgs(TRUE), default_linters)',
+                     \ '--args'],
+            \ 'errorformat':
+            \ '%I%f:%l:%c: style: %m,' .
+            \ '%W%f:%l:%c: warning: %m,' .
+            \ '%E%f:%l:%c: error: %m,',
+            \ }
+let g:neomake_R_enabled_makers = ['lintr']
 
 " evoke neomake for every save
 autocmd! BufWritePost * Neomake
