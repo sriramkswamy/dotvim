@@ -1330,7 +1330,7 @@ augroup filetype_r
     autocmd FileType R nmap <buffer> m] <Plug>RCloseLists
     " repl interaction
     " run the current file
-    autocmd FileType R nmap <buffer> mg <Plug>RSendFile
+    autocmd FileType R nmap <buffer> mm <Plug>RSendFile
     " send the current para
     autocmd FileType R nmap <buffer> msap <Plug>REDSendParagraph
     " send the current function
@@ -1366,7 +1366,8 @@ nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{2
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
-" neomake maker for matlab
+
+" neomake maker for matlab {{{3
 let g:neomake_matlab_mlint_maker = {
             \ 'args': ['-id'],
             \ 'errorformat':
@@ -1378,6 +1379,21 @@ let g:neomake_matlab_mlint_maker = {
             \ '\%-Q',
             \ }
 let g:neomake_matlab_enabled_makers = ['mlint']
+
+" neomake maker for R {{{3
+let g:neomake_r_lintr_maker = {
+            \ 'exe': 'R',
+            \ 'args': ['--slave', '--no-restore', '--no-save',
+                     \ '-e', 'suppressPackageStartupMessages(library(lintr))',
+                     \ '-e', 'lint(cache = FALSE, commandArgs(TRUE), default_linters)',
+                     \ '--args'],
+            \ 'errorformat':
+            \ '%I%f:%l:%c: style: %m,' .
+            \ '%W%f:%l:%c: warning: %m,' .
+            \ '%E%f:%l:%c: error: %m,',
+            \ }
+let g:neomake_r_enabled_makers = ['lintr']
+
 " evoke neomake for every save
 autocmd! BufWritePost * Neomake
 " set compiler for others
@@ -1567,23 +1583,23 @@ augroup tmuxify_matlab
     autocmd FileType matlab nnoremap <buffer> K :Dispatch /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>
     " debug helpers
     " set breakpoint at the current line
-    autocmd FileType matlab nnoremap <buffer> mmb :let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mgs :let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
     " step next
-    autocmd FileType matlab nnoremap <buffer> mmn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mgn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
     " step in
-    autocmd FileType matlab nnoremap <buffer> mmi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mgi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
     " step out
-    autocmd FileType matlab nnoremap <buffer> mmo :let @m = "dbstep out"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mgo :let @m = "dbstep out"<CR>:TxSend(@m)<CR>
     " unset breakpoint at the current line
-    autocmd FileType matlab nnoremap <buffer> mmu :let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mgu :let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
     " delete all breakpoints
-    autocmd FileType matlab nnoremap <buffer> mma :let @m = "dbclear all"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mga :let @m = "dbclear all"<CR>:TxSend(@m)<CR>
     " continue until next breakpoint or end of program
-    autocmd FileType matlab nnoremap <buffer> mmc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mgc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
     " put me in debug mode if there is an error
-    autocmd FileType matlab nnoremap <buffer> mme :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
     " quit debugging mode
-    autocmd FileType matlab nnoremap <buffer> mmq :let @m = "dbquit"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mgq :let @m = "dbquit"<CR>:TxSend(@m)<CR>
     " variable viewing
     " show the GUI workspace
     autocmd FileType matlab nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>
@@ -1624,7 +1640,7 @@ augroup tmuxify_matlab
     " exit matlab
     autocmd FileType matlab nnoremap <buffer> mk :let @m = "exit"<CR>:TxSend(@m)<CR>
     " run the current file
-    autocmd FileType matlab nnoremap <buffer> mg :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
 augroup end
 
 " markdown specific maps {{{4
@@ -1652,26 +1668,26 @@ augroup end
 augroup tmuxify_python
     autocmd!
     " run the current file
-    autocmd FileType python nnoremap <buffer> mg :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
     " clear the variables
     autocmd FileType python nnoremap <buffer> mu :let @m = "%reset"<CR>:TxSend(@m)<CR>
     " send yes
     autocmd FileType python nnoremap <buffer> my :let @m = "y"<CR>:TxSend(@m)<CR>
     " debugging
     " next line
-    autocmd FileType python nnoremap <buffer> mmn :let @m = "n"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
     " step in
-    autocmd FileType python nnoremap <buffer> mms :let @m = "s"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgs :let @m = "s"<CR>:TxSend(@m)<CR>
     " continue
-    autocmd FileType python nnoremap <buffer> mmc :let @m = "c"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
     " run till end of subroutine
-    autocmd FileType python nnoremap <buffer> mmr :let @m = "r"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgr :let @m = "r"<CR>:TxSend(@m)<CR>
     " print the value
-    autocmd FileType python nnoremap <buffer> mmv :let @m = "p " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgv :let @m = "p " . expand('<cword>')<CR>:TxSend(@m)<CR>
     " where am i
-    autocmd FileType python nnoremap <buffer> mmw :let @m = "l"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgw :let @m = "l"<CR>:TxSend(@m)<CR>
     " quit debugging
-    autocmd FileType python nnoremap <buffer> mmq :let @m = "q"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgq :let @m = "q"<CR>:TxSend(@m)<CR>
     " metadata
     " get the shape of the matrix/object
     autocmd FileType python nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>
@@ -1696,27 +1712,27 @@ augroup tmuxify_R
     autocmd!
     " debug helpers
     " set breakpoint at the current line
-    autocmd FileType R nnoremap <buffer> mma :let @m = "browser()"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mga :let @m = "browser()"<CR>:TxSend(@m)<CR>
     " step next
-    autocmd FileType R nnoremap <buffer> mmn :let @m = "n"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
     " step in
-    autocmd FileType R nnoremap <buffer> mmi :let @m = "s"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgi :let @m = "s"<CR>:TxSend(@m)<CR>
     " step out
-    autocmd FileType R nnoremap <buffer> mmo :let @m = "f"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgo :let @m = "f"<CR>:TxSend(@m)<CR>
     " continue until next breakpoint or end of program
-    autocmd FileType R nnoremap <buffer> mmc :let @m = "c"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
     " unset breakpoint at the current line
-    autocmd FileType R nnoremap <buffer> mmu :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgu :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " delete all breakpoints
-    autocmd FileType R nnoremap <buffer> mmd :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgd :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " rerun with debug
-    autocmd FileType R nnoremap <buffer> mmr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
-    autocmd FileType R nnoremap <buffer> mmk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
     " get the traceback
-    autocmd FileType R nnoremap <buffer> mmw :let @m = "where"<CR>:TxSend(@m)<CR>
-    autocmd FileType R nnoremap <buffer> mmt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgw :let @m = "where"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
     " quit debugging mode
-    autocmd FileType R nnoremap <buffer> mmq :let @m = "Q"<CR>:TxSend(@m)<CR>
+    autocmd FileType R nnoremap <buffer> mgq :let @m = "Q"<CR>:TxSend(@m)<CR>
     " metadata on variables
     " size of the variable at point
     autocmd FileType R nnoremap <buffer> mz :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
