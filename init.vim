@@ -572,7 +572,7 @@ autocmd BufNewFile,BufReadPost *.clj set filetype=clojure
 autocmd BufNewFile,BufReadPost *.jl set filetype=julia
 autocmd BufNewFile,BufReadPost *.m set filetype=matlab
 autocmd BufNewFile,BufRead *.plt set filetype=gnuplot
-autocmd BufNewFile,BufRead *.r,*.R set filetype=R
+autocmd BufNewFile,BufRead *.r,*.R set filetype=r
 " TeX and Markdown support
 let g:tex_flavor='latex'
 let g:vim_markdown_disabled = 1
@@ -675,7 +675,7 @@ nnoremap crn :StripNewLine<CR>
 
 " Fix last spelling error {{{3
 function! FixLastSpellingError()
-  normal! mm[s1z=`m"
+    normal! mm[s1z=`m"
 endfunction
 inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>a
 nnoremap <C-s> :<C-u>call FixLastSpellingError()<cr>
@@ -1277,58 +1277,58 @@ nmap mQ <Plug>RClose
 augroup filetype_r
     autocmd!
     " maps
-    autocmd FileType R nnoremap <buffer> K :call RAction("help")<CR>
+    autocmd FileType r nnoremap <buffer> K :call RAction("help")<CR>
     " variable viewing
     " what's the object
-    autocmd FileType R nmap <buffer> mw <Plug>RObjectPr
+    autocmd FileType r nmap <buffer> mw <Plug>RObjectPr
     " show object
-    autocmd FileType R nmap <buffer> mh <Plug>RObjectStr
+    autocmd FileType r nmap <buffer> mh <Plug>RObjectStr
     " show output
-    autocmd FileType R nmap <buffer> ma <Plug>RShowRout
+    autocmd FileType r nmap <buffer> ma <Plug>RShowRout
     " what's the object
-    autocmd FileType R nmap <buffer> mw <Plug>RObjectPr
+    autocmd FileType r nmap <buffer> mw <Plug>RObjectPr
     " open the current variable in csv format
-    autocmd FileType R nmap <buffer> mj <Plug>RViewDF
+    autocmd FileType r nmap <buffer> mj <Plug>RViewDF
     " summary of the variable
-    autocmd FileType R nmap <buffer> my <Plug>RSummary
+    autocmd FileType r nmap <buffer> my <Plug>RSummary
     " list all variables in the current working space
-    autocmd FileType R nmap <buffer> mb <Plug>RListSpace
+    autocmd FileType r nmap <buffer> mb <Plug>RListSpace
     " update browser
-    autocmd FileType R nmap <buffer> mu <Plug>RUpdateObjBrowser
+    autocmd FileType r nmap <buffer> mu <Plug>RUpdateObjBrowser
     " open lists
-    autocmd FileType R nmap <buffer> m[ <Plug>ROpenLists
+    autocmd FileType r nmap <buffer> m[ <Plug>ROpenLists
     " close lists
-    autocmd FileType R nmap <buffer> m] <Plug>RCloseLists
+    autocmd FileType r nmap <buffer> m] <Plug>RCloseLists
     " repl interaction
     " run the current file
-    autocmd FileType R nmap <buffer> mm <Plug>RSendFile
+    autocmd FileType r nmap <buffer> mm <Plug>RSendFile
     " send the current para
-    autocmd FileType R nmap <buffer> msap <Plug>REDSendParagraph
+    autocmd FileType r nmap <buffer> msap <Plug>REDSendParagraph
     " send the current function
-    autocmd FileType R nmap <buffer> msaf <Plug>RDSendFunction
+    autocmd FileType r nmap <buffer> msaf <Plug>RDSendFunction
     " send the current function
-    autocmd FileType R nmap <buffer> msif <Plug>RDSendFunction
+    autocmd FileType r nmap <buffer> msif <Plug>RDSendFunction
     " send the current line
-    autocmd FileType R nmap <buffer> mss <Plug>RDSendLine
+    autocmd FileType r nmap <buffer> mss <Plug>RDSendLine
     " send the current line and insert output
-    autocmd FileType R nmap <buffer> m<Space> <Plug>RDSendLineAndInsertOutput
+    autocmd FileType r nmap <buffer> m<Space> <Plug>RDSendLineAndInsertOutput
     " send the current selection
-    autocmd FileType R vmap <buffer> ms <Plug>REDSendSelection
+    autocmd FileType r vmap <buffer> ms <Plug>REDSendSelection
     " send the current selection and insert output
-    autocmd FileType R vmap <buffer> m<Space> <Plug>RSendSelAndInsertOutput
+    autocmd FileType r vmap <buffer> m<Space> <Plug>RSendSelAndInsertOutput
     " simple plotting
     " plot the vector
-    autocmd FileType R nmap <buffer> mfp <Plug>RPlot
+    autocmd FileType r nmap <buffer> mfp <Plug>RPlot
     " help
     " show brief help on the function at point
-    autocmd FileType R nmap <buffer> m? <Plug>RObjectNames
+    autocmd FileType r nmap <buffer> m? <Plug>RObjectNames
     " change the working directory
-    autocmd FileType R nmap <buffer> m~ <Plug>RSetwd
+    autocmd FileType r nmap <buffer> m~ <Plug>RSetwd
     " other useful commands
     " clear screen
-    autocmd FileType R nmap <buffer> mc <Plug>RClearConsole
+    autocmd FileType r nmap <buffer> mc <Plug>RClearConsole
     " exit R
-    autocmd FileType R nmap <buffer> mmx <Plug>RClearAll
+    autocmd FileType r nmap <buffer> mmx <Plug>RClearAll
 augroup end
 
 " Documentation browser {{{2
@@ -1348,26 +1348,12 @@ let g:neomake_matlab_mlint_maker = {
             \ }
 let g:neomake_matlab_enabled_makers = ['mlint']
 
-" neomake maker for R {{{3
-let g:neomake_r_lintr_maker = {
-            \ 'exe': 'R',
-            \ 'args': ['--slave', '--no-restore', '--no-save',
-                     \ '-e', 'suppressPackageStartupMessages(library(lintr))',
-                     \ '-e', 'lint(cache = FALSE, commandArgs(TRUE), default_linters)',
-                     \ '--args'],
-            \ 'errorformat':
-            \ '%I%f:%l:%c: style: %m,' .
-            \ '%W%f:%l:%c: warning: %m,' .
-            \ '%E%f:%l:%c: error: %m,',
-            \ }
-let g:neomake_r_enabled_makers = ['lintr']
-
 let g:neomake_R_lintr_maker = {
             \ 'exe': 'R',
             \ 'args': ['--slave', '--no-restore', '--no-save',
-                     \ '-e', 'suppressPackageStartupMessages(library(lintr))',
-                     \ '-e', 'lint(cache = FALSE, commandArgs(TRUE), default_linters)',
-                     \ '--args'],
+            \ '-e', 'suppressPackageStartupMessages(library(lintr))',
+            \ '-e', 'lint(cache = FALSE, commandArgs(TRUE), default_linters)',
+            \ '--args'],
             \ 'errorformat':
             \ '%I%f:%l:%c: style: %m,' .
             \ '%W%f:%l:%c: warning: %m,' .
@@ -1523,7 +1509,7 @@ let g:tmuxify_run = {
 nnoremap m, :TxSend<CR><C-P>
 nnoremap m. :TxSend<CR><C-R><C-W>
 nnoremap m/ :TxSend<CR><C-F>
-nnoremap mv :TxSend<CR><C-F><C-R><C-W>
+nnoremap m<Space> :TxSend<CR><C-F><C-R><C-W>
 " pane changes
 nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
 nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
@@ -1587,16 +1573,20 @@ augroup tmuxify_matlab
     " open the current variable in the GUI variable viewer
     autocmd FileType matlab nnoremap <buffer> mj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
     " type of the variable
-    autocmd FileType matlab nnoremap <buffer> mw :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mt :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    " type of the variable (big word)
+    autocmd FileType matlab nnoremap <buffer> mT :let @m = "whos " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
     " metadata on variables
     " size of the variable at point
     autocmd FileType matlab nnoremap <buffer> mz :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " length of the variable at point
     autocmd FileType matlab nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " number of elements in the variable at point
-    autocmd FileType matlab nnoremap <buffer> mn :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mv :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " fieldnames of the variable at point
-    autocmd FileType matlab nnoremap <buffer> m? :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mw :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    " dimensions of the variable at point
+    autocmd FileType matlab nnoremap <buffer> md :let @m = "ndim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " mean of the variable at point
     autocmd FileType matlab nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " sum of the variable at point
@@ -1617,7 +1607,7 @@ augroup tmuxify_matlab
     autocmd FileType matlab nnoremap <buffer> mi :let @m = "doc " . expand('<cword>')<CR>:TxSend(@m)<CR>
     " other useful commands
     " clear screen
-    autocmd FileType matlab nnoremap <buffer> mt :let @m = "clc"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mc :let @m = "clc"<CR>:TxSend(@m)<CR>
     " exit matlab
     autocmd FileType matlab nnoremap <buffer> mk :let @m = "exit"<CR>:TxSend(@m)<CR>
     " run the current file
@@ -1654,6 +1644,8 @@ augroup tmuxify_python
     autocmd FileType python nnoremap <buffer> mu :let @m = "%reset"<CR>:TxSend(@m)<CR>
     " send yes
     autocmd FileType python nnoremap <buffer> my :let @m = "y"<CR>:TxSend(@m)<CR>
+    " exit python
+    autocmd FileType python nnoremap <buffer> mk :let @m = "exit()"<CR>:TxSend(@m)<CR>
     " debugging
     " next line
     autocmd FileType python nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
@@ -1672,8 +1664,10 @@ augroup tmuxify_python
     " metadata
     " get the shape of the matrix/object
     autocmd FileType python nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>
+    " dimensions of the variable at point
+    autocmd FileType python nnoremap <buffer> md :let @m = expand('<cword>') . ".ndim"<CR>:TxSend(@m)<CR>
     " get the size of object
-    autocmd FileType python nnoremap <buffer> mn :let @m = expand('<cword>') . ".size"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mv :let @m = expand('<cword>') . ".size"<CR>:TxSend(@m)<CR>
     " get the length of the object
     autocmd FileType python nnoremap <buffer> ml :let @m = "len(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the type of the object
@@ -1686,6 +1680,14 @@ augroup tmuxify_python
     autocmd FileType python nnoremap <buffer> m+ :let @m = expand('<cword>') . ".cumsum()"<CR>:TxSend(@m)<CR>
     " get the mean of the matrix/object
     autocmd FileType python nnoremap <buffer> me :let @m = expand('<cword>') . ".mean()"<CR>:TxSend(@m)<CR>
+    " list all in interactive workspace
+    autocmd FileType python nnoremap <buffer> maa :let @m = "whos"<CR>:TxSend(@m)<CR>
+    " list all locals
+    autocmd FileType python nnoremap <buffer> mal :let @m = "locals()"<CR>:TxSend(@m)<CR>
+    " list all in scope
+    autocmd FileType python nnoremap <buffer> mag :let @m = "globals()"<CR>:TxSend(@m)<CR>
+    " list all globals
+    autocmd FileType python nnoremap <buffer> mas :let @m = "dir()"<CR>:TxSend(@m)<CR>
 augroup end
 
 " r specific maps {{{4
@@ -1693,42 +1695,44 @@ augroup tmuxify_R
     autocmd!
     " debug helpers
     " set breakpoint at the current line
-    autocmd FileType R nnoremap <buffer> mga :let @m = "browser()"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mga :let @m = "browser()"<CR>:TxSend(@m)<CR>
     " step next
-    autocmd FileType R nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
     " step in
-    autocmd FileType R nnoremap <buffer> mgi :let @m = "s"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgi :let @m = "s"<CR>:TxSend(@m)<CR>
     " step out
-    autocmd FileType R nnoremap <buffer> mgo :let @m = "f"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgo :let @m = "f"<CR>:TxSend(@m)<CR>
     " continue until next breakpoint or end of program
-    autocmd FileType R nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
     " unset breakpoint at the current line
-    autocmd FileType R nnoremap <buffer> mgu :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgu :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " delete all breakpoints
-    autocmd FileType R nnoremap <buffer> mgd :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgd :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " rerun with debug
-    autocmd FileType R nnoremap <buffer> mgr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
-    autocmd FileType R nnoremap <buffer> mgk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
     " get the traceback
-    autocmd FileType R nnoremap <buffer> mgw :let @m = "where"<CR>:TxSend(@m)<CR>
-    autocmd FileType R nnoremap <buffer> mgt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgw :let @m = "where"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
     " quit debugging mode
-    autocmd FileType R nnoremap <buffer> mgq :let @m = "Q"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgq :let @m = "Q"<CR>:TxSend(@m)<CR>
+    " quit r
+    autocmd FileType r nnoremap <buffer> mk :let @m = "q()"<CR>:TxSend(@m)<CR>
     " metadata on variables
     " size of the variable at point
-    autocmd FileType R nnoremap <buffer> mz :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mz :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " length of the variable at point
-    autocmd FileType R nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " mean of the variable at point
-    autocmd FileType R nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the type of the object
-    autocmd FileType R nnoremap <buffer> mt :let @m = "typeof(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mt :let @m = "typeof(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the type of the object (from space to space)
-    autocmd FileType R nnoremap <buffer> mT :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mT :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
     " sum of the variable at point
-    autocmd FileType R nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " cumulative sum of the variable at point
-    autocmd FileType R nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 augroup end
 
 " Stop plugin installation {{{1
