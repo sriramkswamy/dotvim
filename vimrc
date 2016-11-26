@@ -366,31 +366,20 @@ nnoremap vx :NERDTree ~/Dropbox/PhD<CR>
 
 " Better window/tab navigation {{{3
 Plug 'yssl/TWcmd.vim'
-nnoremap TL :TWcmd tmv l<CR>
-nnoremap TH :TWcmd tmv h<CR>
-nnoremap Th :TWcmd tcm t<CR>
-nnoremap Tl :TWcmd tcm b<CR>
-nnoremap Tj :TWcmd twh l<CR>
-nnoremap Tk :TWcmd twh h<CR>
-nnoremap To :TWcmd tcm o<CR>
-nnoremap WH :TWcmd wmvt h<CR>
-nnoremap WL :TWcmd wmvt l<CR>
-nnoremap Wh :TWcmd wmv h<CR>
-nnoremap Wl :TWcmd wmv l<CR>
-nnoremap Wj :TWcmd wmv j<CR>
-nnoremap Wk :TWcmd wmv k<CR>
+nnoremap WL :TWcmd tmv l<CR>
+nnoremap WH :TWcmd tmv h<CR>
+nnoremap Wh :TWcmd tcm t<CR>
+nnoremap Wl :TWcmd tcm b<CR>
+nnoremap Wj :TWcmd twh l<CR>
+nnoremap Wk :TWcmd twh h<CR>
+nnoremap Wo :TWcmd tcm o<CR>
+nnoremap wmH :TWcmd wmvt h<CR>
+nnoremap wmL :TWcmd wmvt l<CR>
+nnoremap wmh :TWcmd wmv h<CR>
+nnoremap wml :TWcmd wmv l<CR>
+nnoremap wmj :TWcmd wmv j<CR>
+nnoremap wmk :TWcmd wmv k<CR>
 nnoremap Z :TWcmd wcm m<CR>
-
-" Undo windows closed by mistake {{{3
-Plug 'AndrewRadev/undoquit.vim'
-let g:undoquit_mapping = 'wu'
-nnoremap <silent> <C-w>u :Undoquit<CR>
-nnoremap wc :call undoquit#SaveWindowQuitHistory()<CR><C-w>c
-nnoremap wo :call undoquit#SaveWindowQuitHistory()<CR><C-w>o
-nnoremap wq :call undoquit#SaveWindowQuitHistory()<CR><C-w>q
-nnoremap <C-w>c :call undoquit#SaveWindowQuitHistory()<CR><C-w>c
-nnoremap <C-w>o :call undoquit#SaveWindowQuitHistory()<CR><C-w>o
-nnoremap <C-w>q :call undoquit#SaveWindowQuitHistory()<CR><C-w>q
 
 " Searching {{{1
 
@@ -415,7 +404,7 @@ nnoremap <silent> # *N:lvimgrep // %<CR>
 
 " Search for word under visual selection
 vnoremap * y/<C-R>"<CR>N
-vnoremap # y?<C-R>"<CR>N
+vnoremap # y?<C-R>"<CR>N:lvimgrep // %<CR>
 
 " Vim grepper plugin {{{2
 Plug 'mhinz/vim-grepper'
@@ -449,7 +438,7 @@ let g:fzf_action = {
             \ 'ctrl-o': '!open'}
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
-nnoremap g<C-]> :FzfTags <C-R><C-W><CR>
+nnoremap <silent> T :FzfTags <C-R><C-W><CR>
 nnoremap <silent> g/ :FzfBLines<CR>
 nnoremap <silent> g? :FzfLines<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
@@ -797,12 +786,12 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \ ]
 
 " Org mode like embedded code editing {{{3
-Plug 'AndrewRadev/inline_edit.vim'
+Plug 'AndrewRadev/inline_edit.vim', {'on': 'InlineEdit'}
 nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
 
 " Preview the substitution {{{3
-Plug 'osyo-manga/vim-over'
+Plug 'osyo-manga/vim-over', {'on': 'OverCommandLine'}
 let g:over_command_line_prompt = ">"
 nnoremap <Space><Space> :OverCommandLine<CR>
 vnoremap <Space><Space> :OverCommandLine<CR>
@@ -1369,6 +1358,14 @@ nmap <silent> gD <Plug>DashSearch
 " Syntax checking {{{2
 Plug 'benekastah/neomake' , {'on' : 'Neomake'}
 
+" evoke neomake for every save
+autocmd! BufWritePost * Neomake
+
+" set compiler for others
+if exists(":CompilerSet") != 2		" older Vim always used :setlocal
+    command -nargs=* CompilerSet setlocal <args>
+endif
+
 " neomake maker for matlab {{{3
 let g:neomake_matlab_mlint_maker = {
             \ 'exe': '/Applications/MATLAB_R2016a.app/bin/maci64/mlint',
@@ -1378,6 +1375,19 @@ let g:neomake_matlab_mlint_maker = {
             \ '%WL %l (C %c-%*[0-9]): %*[a-zA-Z0-9]: %m,',
             \ }
 let g:neomake_matlab_enabled_makers = ['mlint']
+
+" syntax checking for matlab
+augroup syntax_matlab
+    autocmd!
+    autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
+    autocmd FileType matlab CompilerSet errorformat=
+                \%-P==========\ %f\ ==========,
+                \%-G%>==========\ %s\ ==========,
+                \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
+                \L\ %l\ (C\ %c):\ %m,
+                \L\ %l\ (C\ %c-%*[0-9]):\ %m,
+                \%-Q
+augroup end
 
 " neomake maker for R {{{3
 let g:neomake_r_lintr_maker = {
@@ -1392,25 +1402,6 @@ let g:neomake_r_lintr_maker = {
             \ '%E%f:%l:%c: error: %m,',
             \ }
 let g:neomake_r_enabled_makers = ['lintr']
-
-" evoke neomake for every save
-autocmd! BufWritePost * Neomake
-" set compiler for others
-if exists(":CompilerSet") != 2		" older Vim always used :setlocal
-    command -nargs=* CompilerSet setlocal <args>
-endif
-" syntax checking for matlab
-augroup syntax_matlab
-    autocmd!
-    autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
-    autocmd FileType matlab CompilerSet errorformat=
-                \%-P==========\ %f\ ==========,
-                \%-G%>==========\ %s\ ==========,
-                \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
-                \L\ %l\ (C\ %c):\ %m,
-                \L\ %l\ (C\ %c-%*[0-9]):\ %m,
-                \%-Q
-augroup end
 
 " REPL and Tmux {{{1
 
