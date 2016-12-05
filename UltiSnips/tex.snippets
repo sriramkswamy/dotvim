@@ -26,6 +26,7 @@ snippet p "preamble" b
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage[mathscr]{eucal}
 \usepackage{amssymb}
 \usepackage{siunitx}
 \usepackage{chemmacros}
@@ -529,8 +530,8 @@ snippet cycin "cyclic integral" i
 \oint_{$1} \! {$2} \, \mathrm{d} {$3} $0
 endsnippet
 
-snippet ci "cite"
-\cite{$1}$0
+snippet ci "cite" i
+~\cite{$1}$0
 endsnippet
 
 snippet ref "reference" i
@@ -1075,4 +1076,12 @@ endsnippet
 
 snippet wpmpk "Watt per meter per Kelvin" i
 \watt\per\metre\per\kelvin
+endsnippet
+
+snippet eul "euler script" i
+\mathscr{$1}$0
+endsnippet
+
+snippet stretch "arraystretch" b
+\renewcommand{\arraystretch}{${1:1.5}}$0
 endsnippet

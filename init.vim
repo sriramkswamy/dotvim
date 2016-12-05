@@ -179,9 +179,8 @@ let g:markdown_fold_style = 'nested'
 Plug 'flazz/vim-colorschemes'
 
 " Undotree {{{3
-Plug 'mbbill/undotree' , {'on': 'UndotreeToggle'}
-let g:undotree_WindowLayout = 2
-nnoremap <silent> U :UndotreeToggle<CR>
+Plug 'simnalamburt/vim-mundo', {'on': 'MundoToggle'}
+nnoremap <silent> U :MundoToggle<CR>
 
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
@@ -392,14 +391,20 @@ let g:grepper = {
             \ 'jump':  0,
             \ 'next_tool': ']g'
             \ }
-nnoremap ge :Grepper -tool ag -cword -noprompt<cr>
 nnoremap gss :Grepper -tool ag -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
-" Search and replace across project {{{2
-Plug 'thinca/vim-qfreplace'
-nnoremap gE :Qfreplace<CR>
+" Search and replace across project - trial {{{2
+Plug 'dyng/ctrlsf.vim'
+let g:ctrlsf_mapping = {
+    \ "next": "n",
+    \ "prev": "N",
+    \ }
+let g:ctrlsf_position = 'right'
+nnoremap <silent> gE :CtrlSFUpdate<CR>
+nnoremap <silent> ge :CtrlSF<CR>
+vmap ge <Plug>CtrlSFVwordExec
 
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -1269,13 +1274,11 @@ augroup filetype_r
     autocmd FileType r nnoremap <buffer> K :call RAction("help")<CR>
     " variable viewing
     " what's the object
-    autocmd FileType r nmap <buffer> mw <Plug>RObjectPr
+    autocmd FileType r nmap <buffer> mh <Plug>RObjectPr
     " show object
-    autocmd FileType r nmap <buffer> mh <Plug>RObjectStr
+    autocmd FileType r nmap <buffer> m? <Plug>RObjectStr
     " show output
     autocmd FileType r nmap <buffer> ma <Plug>RShowRout
-    " what's the object
-    autocmd FileType r nmap <buffer> mw <Plug>RObjectPr
     " open the current variable in csv format
     autocmd FileType r nmap <buffer> mj <Plug>RViewDF
     " summary of the variable
@@ -1319,6 +1322,7 @@ augroup filetype_r
     " exit R
     autocmd FileType r nmap <buffer> mmx <Plug>RClearAll
 augroup end
+
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1500,7 +1504,7 @@ let g:tmuxify_run = {
 nnoremap m, :TxSend<CR><C-P>
 nnoremap m. :TxSend<CR><C-R><C-W>
 nnoremap m/ :TxSend<CR><C-F>
-nnoremap m<Space> :TxSend<CR><C-F><C-R><C-W>
+nnoremap m<Space> :TxSend<CR><C-R><C-W><C-F>
 " pane changes
 nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
 nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
@@ -1564,9 +1568,9 @@ augroup tmuxify_matlab
     " open the current variable in the GUI variable viewer
     autocmd FileType matlab nnoremap <buffer> mj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
     " type of the variable
-    autocmd FileType matlab nnoremap <buffer> mt :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mw :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
     " type of the variable (big word)
-    autocmd FileType matlab nnoremap <buffer> mT :let @m = "whos " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> mW :let @m = "whos " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
     " metadata on variables
     " size of the variable at point
     autocmd FileType matlab nnoremap <buffer> mz :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
@@ -1575,7 +1579,7 @@ augroup tmuxify_matlab
     " number of elements in the variable at point
     autocmd FileType matlab nnoremap <buffer> mv :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " fieldnames of the variable at point
-    autocmd FileType matlab nnoremap <buffer> mw :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType matlab nnoremap <buffer> m? :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " dimensions of the variable at point
     autocmd FileType matlab nnoremap <buffer> md :let @m = "ndim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " mean of the variable at point
@@ -1611,11 +1615,11 @@ augroup tmuxify_markdown
     " convert to html
     autocmd FileType markdown nnoremap <buffer> mh :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
     " convert to pdf with toc
-    autocmd FileType markdown nnoremap <buffer> mf :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm --toc -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> mm :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm --toc -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
     " convert to latex with toc
     autocmd FileType markdown nnoremap <buffer> mt :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
     " convert to rst with toc
-    autocmd FileType markdown nnoremap <buffer> my :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
+    autocmd FileType markdown nnoremap <buffer> me :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
     " convert to org with toc
     autocmd FileType markdown nnoremap <buffer> mg :let @m = "pandoc " . expand('%') . " --toc -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
     " open with markoff
@@ -1632,7 +1636,7 @@ augroup tmuxify_python
     " run the current file
     autocmd FileType python nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
     " clear the variables
-    autocmd FileType python nnoremap <buffer> mu :let @m = "%reset"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mu :let @m = "%reset -f"<CR>:TxSend(@m)<CR>
     " send yes
     autocmd FileType python nnoremap <buffer> my :let @m = "y"<CR>:TxSend(@m)<CR>
     " exit python
@@ -1662,9 +1666,9 @@ augroup tmuxify_python
     " get the length of the object
     autocmd FileType python nnoremap <buffer> ml :let @m = "len(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the type of the object
-    autocmd FileType python nnoremap <buffer> mt :let @m = "type(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mw :let @m = "type(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the type of the object (from space to space)
-    autocmd FileType python nnoremap <buffer> mT :let @m = "type(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mW :let @m = "type(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
     " get the sum of the matrix/object
     autocmd FileType python nnoremap <buffer> m= :let @m = expand('<cword>') . ".sum()"<CR>:TxSend(@m)<CR>
     " get the cumulative sum of the matrix/object
@@ -1717,9 +1721,9 @@ augroup tmuxify_R
     " mean of the variable at point
     autocmd FileType r nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the type of the object
-    autocmd FileType r nnoremap <buffer> mt :let @m = "typeof(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mw :let @m = "typeof(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " get the type of the object (from space to space)
-    autocmd FileType r nnoremap <buffer> mT :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mW :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
     " sum of the variable at point
     autocmd FileType r nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " cumulative sum of the variable at point
