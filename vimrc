@@ -1671,18 +1671,24 @@ augroup tmuxify_python
     " exit python
     autocmd FileType python nnoremap <buffer> mk :let @m = "exit()"<CR>:TxSend(@m)<CR>
     " debugging
+    " set break point
+    autocmd FileType python nnoremap <buffer> mgs :normal! Oimport ipdb; ipdb.set_trace()<CR>j
+    " unset break point
+    autocmd FileType python nnoremap <buffer> mgu :normal! kdd<CR>
     " next line
     autocmd FileType python nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
     " step in
-    autocmd FileType python nnoremap <buffer> mgs :let @m = "s"<CR>:TxSend(@m)<CR>
+    autocmd FileType python nnoremap <buffer> mgi :let @m = "s"<CR>:TxSend(@m)<CR>
     " continue
     autocmd FileType python nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
     " run till end of subroutine
     autocmd FileType python nnoremap <buffer> mgr :let @m = "r"<CR>:TxSend(@m)<CR>
     " print the value
     autocmd FileType python nnoremap <buffer> mgv :let @m = "p " . expand('<cword>')<CR>:TxSend(@m)<CR>
-    " where am i
-    autocmd FileType python nnoremap <buffer> mgw :let @m = "l"<CR>:TxSend(@m)<CR>
+    " which class am i in
+    autocmd FileType python nnoremap <buffer> mgw :let @m = "p self"<CR>:TxSend(@m)<CR>
+    " list where i am
+    autocmd FileType python nnoremap <buffer> mgl :let @m = "l"<CR>:TxSend(@m)<CR>
     " quit debugging
     autocmd FileType python nnoremap <buffer> mgq :let @m = "q"<CR>:TxSend(@m)<CR>
     " metadata
@@ -1715,11 +1721,13 @@ augroup tmuxify_python
 augroup end
 
 " r specific maps {{{4
-augroup tmuxify_R
+augroup tmuxify_r
     autocmd!
     " debug helpers
     " set breakpoint at the current line
-    autocmd FileType r nnoremap <buffer> mga :let @m = "browser()"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mgs :normal! Obrowser()<CR>j
+    " unset breakpoint at the current line
+    autocmd FileType r nnoremap <buffer> mgu :normal! kdd<CR>
     " step next
     autocmd FileType r nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
     " step in
@@ -1729,7 +1737,7 @@ augroup tmuxify_R
     " continue until next breakpoint or end of program
     autocmd FileType r nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
     " unset breakpoint at the current line
-    autocmd FileType r nnoremap <buffer> mgu :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+    autocmd FileType r nnoremap <buffer> mga :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " delete all breakpoints
     autocmd FileType r nnoremap <buffer> mgd :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
     " rerun with debug
