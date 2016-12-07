@@ -144,8 +144,8 @@ cnoremap <C-e> <End>
 cnoremap <C-n> <Down>
 cnoremap <C-p> <Up>
 " same bindings for merging diffs as in normal mode
-xnoremap dp :diffput<cr>
-xnoremap do :diffget<cr>
+vnoremap <C-d> :diffput<cr>
+vnoremap <C-e> :diffget<cr>
 
 " Change guifont
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
@@ -513,74 +513,6 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ })
 nnoremap <Space>s :FzfSpotlight<Space>
 nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
-
-" Statusline - from scrooloose {{{1
-" Basic setup
-set statusline =%#identifier#
-set statusline+=[%f]    "tail of the filename
-set statusline+=%*
-"display a warning if fileformat isn't unix
-set statusline+=%#warningmsg#
-set statusline+=%{&ff!='unix'?'['.&ff.']':''}
-set statusline+=%*
-"display a warning if file encoding isn't utf-8
-set statusline+=%#warningmsg#
-set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
-set statusline+=%*
-set statusline+=%y      "filetype
-"read only flag
-set statusline+=%#identifier#
-set statusline+=%r
-set statusline+=%*
-"modified flag
-set statusline+=%#warningmsg#
-set statusline+=%m
-set statusline+=%*
-"display a warning if &spell is set
-set statusline+=%#error#
-set statusline+=%{&spell?'[spell]':''}
-set statusline+=%*
-"display a warning if &paste is set
-set statusline+=%#error#
-set statusline+=%{&paste?'[paste]':''}
-set statusline+=%*
-"display a warning if &ignorecase is set
-set statusline+=%#error#
-set statusline+=%{&ignorecase?'':'[case]'}
-set statusline+=%*
-"display a warning if &wrap is set
-set statusline+=%#error#
-set statusline+=%{&wrap?'[wrap]':''}
-set statusline+=%*
-"display a warning if &list is set
-set statusline+=%#error#
-set statusline+=%{&list?'[list]':''}
-set statusline+=%*
-
-set statusline+=%=      "left/right separator
-set statusline+=%c,     "cursor column
-set statusline+=%l      "cursor line/total lines
-set statusline+=\ %P    "percent through file
-
-"return '[\s]' if trailing white space is detected
-"return '' otherwise
-function! StatuslineTrailingSpaceWarning()
-    if !exists("b:statusline_trailing_space_warning")
-        if !&modifiable
-            let b:statusline_trailing_space_warning = ''
-            return b:statusline_trailing_space_warning
-        endif
-        if search('\s\+$', 'nw') != 0
-            let b:statusline_trailing_space_warning = ' [\s]'
-        else
-            let b:statusline_trailing_space_warning = ''
-        endif
-    endif
-    return b:statusline_trailing_space_warning
-endfunction
-set statusline+=%{StatuslineTrailingSpaceWarning()}
-"recalculate the trailing whitespace warning when idle, and after saving
-autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " FileTypes {{{1
 
@@ -1153,7 +1085,6 @@ nnoremap sp :Obsess<CR>
 nnoremap so :source ~/.vim/session/
 nnoremap sd :Obsess!<CR>
 nnoremap sq :qall<CR>
-set statusline+=\ %{ObsessionStatus()} " vim session status
 
 " Autocompletion {{{1
 
@@ -1382,27 +1313,17 @@ Plug 'rizzatti/dash.vim'
 nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{2
-Plug 'benekastah/neomake' , {'on' : 'Neomake'}
+Plug 'benekastah/neomake'
 
 " evoke neomake for every save
 autocmd! BufWritePost * Neomake
 
-" set compiler for others
+" set compiler for others {{{3
 if exists(":CompilerSet") != 2		" older Vim always used :setlocal
     command -nargs=* CompilerSet setlocal <args>
 endif
 
-" neomake maker for matlab {{{3
-let g:neomake_matlab_mlint_maker = {
-            \ 'exe': '/Applications/MATLAB_R2016a.app/bin/maci64/mlint',
-            \ 'args': ['-id'],
-            \ 'errorformat':
-            \ '%EL %l (C %c): %*[a-zA-Z0-9]: %m,'.
-            \ '%WL %l (C %c-%*[0-9]): %*[a-zA-Z0-9]: %m,',
-            \ }
-let g:neomake_matlab_enabled_makers = ['mlint']
-
-" syntax checking for matlab
+" syntax checking for matlab {{{3
 augroup syntax_matlab
     autocmd!
     autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
@@ -1414,6 +1335,16 @@ augroup syntax_matlab
                 \L\ %l\ (C\ %c-%*[0-9]):\ %m,
                 \%-Q
 augroup end
+
+" neomake maker for matlab {{{3
+let g:neomake_matlab_mlint_maker = {
+            \ 'exe': '/Applications/MATLAB_R2016a.app/bin/maci64/mlint',
+            \ 'args': ['-id'],
+            \ 'errorformat':
+            \ '%EL %l (C %c): %*[a-zA-Z0-9]: %m,'.
+            \ '%WL %l (C %c-%*[0-9]): %*[a-zA-Z0-9]: %m,',
+            \ }
+let g:neomake_matlab_enabled_makers = ['mlint']
 
 let g:neomake_r_lintr_maker = {
             \ 'exe': 'R',
@@ -1912,6 +1843,78 @@ endfunction
 " Setup plugins, indents and syntax {{{1
 filetype plugin indent on
 syntax on
+
+" Statusline - from scrooloose {{{1
+" Basic setup
+set statusline =%#identifier#
+set statusline+=[%f]    "tail of the filename
+set statusline+=%*
+"display a warning if fileformat isn't unix
+set statusline+=%#warningmsg#
+set statusline+=%{&ff!='unix'?'['.&ff.']':''}
+set statusline+=%*
+"display a warning if file encoding isn't utf-8
+set statusline+=%#warningmsg#
+set statusline+=%{(&fenc!='utf-8'&&&fenc!='')?'['.&fenc.']':''}
+set statusline+=%*
+set statusline+=%y      "filetype
+"read only flag
+set statusline+=%#identifier#
+set statusline+=%r
+set statusline+=%*
+"modified flag
+set statusline+=%#warningmsg#
+set statusline+=%m
+set statusline+=%*
+"display a warning if &spell is set
+set statusline+=%#error#
+set statusline+=%{&spell?'[spell]':''}
+set statusline+=%*
+"display a warning if &paste is set
+set statusline+=%#error#
+set statusline+=%{&paste?'[paste]':''}
+set statusline+=%*
+"display a warning if &ignorecase is set
+set statusline+=%#error#
+set statusline+=%{&ignorecase?'':'[case]'}
+set statusline+=%*
+"display a warning if &wrap is set
+set statusline+=%#error#
+set statusline+=%{&wrap?'[wrap]':''}
+set statusline+=%*
+"display a warning if &list is set
+set statusline+=%#error#
+set statusline+=%{&list?'[list]':''}
+set statusline+=%*
+set statusline+=\ %{fugitive#statusline()}
+
+set statusline+=%=      "left/right separator
+set statusline+=%c,     "cursor column
+set statusline+=%l      "cursor line/total lines
+set statusline+=\ %P    "percent through file
+set laststatus=2
+set statusline+=\ %{ObsessionStatus()} " vim session status
+set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus('Fix:\ ')}
+
+"return '[\s]' if trailing white space is detected
+"return '' otherwise
+function! StatuslineTrailingSpaceWarning()
+    if !exists("b:statusline_trailing_space_warning")
+        if !&modifiable
+            let b:statusline_trailing_space_warning = ''
+            return b:statusline_trailing_space_warning
+        endif
+        if search('\s\+$', 'nw') != 0
+            let b:statusline_trailing_space_warning = ' [\s]'
+        else
+            let b:statusline_trailing_space_warning = ''
+        endif
+    endif
+    return b:statusline_trailing_space_warning
+endfunction
+set statusline+=%{StatuslineTrailingSpaceWarning()}
+"recalculate the trailing whitespace warning when idle, and after saving
+autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
