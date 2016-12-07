@@ -143,6 +143,9 @@ cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-n> <Down>
 cnoremap <C-p> <Up>
+" same bindings for merging diffs as in normal mode
+xnoremap dp :diffput<cr>
+xnoremap do :diffget<cr>
 
 " Change guifont
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
@@ -1598,6 +1601,8 @@ augroup tmuxify_matlab
     autocmd FileType matlab nnoremap <buffer> mgs :let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
     " step next
     autocmd FileType matlab nnoremap <buffer> mgn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
+    " debugging status
+    autocmd FileType matlab nnoremap <buffer> mgl :let @m = "dbstatus"<CR>:TxSend(@m)<CR>
     " step in
     autocmd FileType matlab nnoremap <buffer> mgi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
     " step out

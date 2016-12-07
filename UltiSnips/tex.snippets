@@ -122,8 +122,9 @@ snippet tabl "table" b
 \begin{table}[$1]
 \centering
 \begin{tabular}{${2:L}{${3:4}cm}${4:L}{${5:4}cm}$6}
-\hline
+\toprule
 $9
+\bottomrule
 \end{tabular}
 \caption{$7}
 \label{tab:$8}
@@ -1084,4 +1085,19 @@ endsnippet
 
 snippet stretch "arraystretch" b
 \renewcommand{\arraystretch}{${1:1.5}}$0
+endsnippet
+
+snippet tr "toprule" b
+\toprule
+$0
+endsnippet
+
+snippet br "bottomrule" b
+\bottomrule
+$0
+endsnippet
+
+snippet mr "midrule" b
+\midrule
+$0
 endsnippet
