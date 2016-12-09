@@ -1053,10 +1053,14 @@ let g:vsc_tab_complete = 0
 
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
-augroup filetype_vim
-    autocmd!
-    autocmd FileType vim nnoremap <buffer> J :helpgrep <C-R><C-W><CR>
-augroup end
+
+" " LaTeX {{{2
+" Plug 'lervag/vimtex'
+" let g:vimtex_fold_enabled = 1
+" let g:vimtex_fold_manual = 1
+" let g:vimtex_text_obj_enabled = 0
+" let g:vimtex_imaps_enabled = 0
+" let g:vimtex_motion_enabled = 1
 
 " C/C++ {{{2
 " Autocompletion
@@ -1072,19 +1076,6 @@ autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
-command! CppJumpTo call rtags#JumpTo(g:SAME_WINDOW)
-command! CppJumpToParent call rtags#JumpToParent()
-command! CppReference call rtags#FindRefsOfWordUnderCursor()
-command! CppSymbol call rtags#FindSymbolsOfWordUnderCursor()
-command! CppVirtuals call rtags#FindVirtuals()
-command! CppReindex call rtags#ReindexFile()
-command! CppRename call rtags#RenameSymbolUnderCursor()
-command! CppProjects call rtags#ProjectList()
-augroup filetype_cpp
-    autocmd!
-    autocmd FileType c,cpp nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
-    autocmd FileType c,cpp nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
-augroup end
 
 " Python {{{2
 " Autocompletion and some jumping
@@ -1098,15 +1089,6 @@ let g:jedi#documentation_command = "K"
 let g:jedi#usages_command = ""
 let g:jedi#completions_command = ""
 let g:jedi#rename_command = ""
-command! PyGoTo call jedi#goto()
-command! PyGoToAssignment call jedi#goto_assignments()
-command! PyGoToDefinition call jedi#goto_definitions()
-command! PyRename call jedi#rename()
-command! PyRenameVisual call jedi#rename_visual()
-augroup filetype_python
-    autocmd!
-    autocmd FileType python nnoremap <buffer> J :call jedi#goto()<CR>
-augroup end
 
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
@@ -1123,30 +1105,15 @@ let g:braceless_easymotion_segment_key = ''
 " JavaScript {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install', 'for': 'javascript'}
-augroup filetype_javascript
-    autocmd!
-    autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
-    autocmd FileType js,javascript nnoremap <buffer> J :TernDef<CR>
-augroup end
 
-" Go {{{2
-" Autocompletion and navigation
-Plug 'fatih/vim-go', {'do': ':GoInstallBinaries', 'for': 'go'}
-augroup filetype_go
-    autocmd!
-    autocmd FileType go nnoremap <buffer> gC :compiler! go<CR>
-    autocmd FileType go nnoremap <buffer> K :GoDoc<CR>
-    autocmd FileType go nnoremap <buffer> J :GoDef<CR>
-augroup end
+" " Go {{{2
+" " Autocompletion and navigation
+" Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
 let g:sparkupExecuteMapping = '<C-b>'
 let g:sparkupNextMapping = '<C-j>'
-augroup filetype_html
-    autocmd!
-    autocmd FileType html nnoremap <buffer> gC :compiler! tidy<CR>
-augroup end
 
 " Java (Eclim) - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
@@ -1166,11 +1133,6 @@ Plug 'tpope/vim-rails', {'for': 'ruby'}
 nnoremap <Space>v :A
 Plug 'danchoi/ri.vim', {'for': 'ruby'}
 let g:ri_no_mappings=1
-augroup filetype_ruby
-    autocmd!
-    autocmd FileType ruby nnoremap <buffer> gC :compiler! rake<CR>
-    autocmd FileType ruby nnoremap <buffer> K :call ri#LookupNameUnderCursor()<CR>
-augroup end
 
 " R {{{2
 " Alternative installing 1 for Nvim-R do the following -
@@ -1188,7 +1150,7 @@ augroup end
 " :packadd vimball
 " :so %
 Plug 'jalvesaq/Nvim-R', {'for': 'r'}
-Plug 'chrisbra/csv.vim', {'for': 'csv'}
+Plug 'chrisbra/csv.vim'
 let R_vsplit = 1
 let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
@@ -1199,60 +1161,6 @@ inoremap <C-\> <C-x><C-a>
 " Normal maps apart from '\' based maps
 nmap mR <Plug>RStart
 nmap mQ <Plug>RClose
-augroup filetype_r
-    autocmd!
-    " maps
-    autocmd FileType r nnoremap <buffer> K :call RAction("help")<CR>
-    " variable viewing
-    " what's the object
-    autocmd FileType r nmap <buffer> mh <Plug>RObjectPr
-    " show object
-    autocmd FileType r nmap <buffer> m? <Plug>RObjectStr
-    " show output
-    autocmd FileType r nmap <buffer> ma <Plug>RShowRout
-    " open the current variable in csv format
-    autocmd FileType r nmap <buffer> mj <Plug>RViewDF
-    " summary of the variable
-    autocmd FileType r nmap <buffer> my <Plug>RSummary
-    " list all variables in the current working space
-    autocmd FileType r nmap <buffer> mb <Plug>RListSpace
-    " update browser
-    autocmd FileType r nmap <buffer> mu <Plug>RUpdateObjBrowser
-    " open lists
-    autocmd FileType r nmap <buffer> m[ <Plug>ROpenLists
-    " close lists
-    autocmd FileType r nmap <buffer> m] <Plug>RCloseLists
-    " repl interaction
-    " run the current file
-    autocmd FileType r nmap <buffer> mm <Plug>RSendFile
-    " send the current para
-    autocmd FileType r nmap <buffer> msap <Plug>REDSendParagraph
-    " send the current function
-    autocmd FileType r nmap <buffer> msaf <Plug>RDSendFunction
-    " send the current function
-    autocmd FileType r nmap <buffer> msif <Plug>RDSendFunction
-    " send the current line
-    autocmd FileType r nmap <buffer> mss <Plug>RDSendLine
-    " send the current line and insert output
-    autocmd FileType r nmap <buffer> m<Space> <Plug>RDSendLineAndInsertOutput
-    " send the current selection
-    autocmd FileType r vmap <buffer> ms <Plug>REDSendSelection
-    " send the current selection and insert output
-    autocmd FileType r vmap <buffer> m<Space> <Plug>RSendSelAndInsertOutput
-    " simple plotting
-    " plot the vector
-    autocmd FileType r nmap <buffer> mfp <Plug>RPlot
-    " help
-    " show brief help on the function at point
-    autocmd FileType r nmap <buffer> m? <Plug>RObjectNames
-    " change the working directory
-    autocmd FileType r nmap <buffer> m~ <Plug>RSetwd
-    " other useful commands
-    " clear screen
-    autocmd FileType r nmap <buffer> mc <Plug>RClearConsole
-    " exit R
-    autocmd FileType r nmap <buffer> mmx <Plug>RClearAll
-augroup end
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim', {'on': '<Plug>DashSearch'}
@@ -1268,19 +1176,6 @@ autocmd! BufWritePost * Neomake
 if exists(":CompilerSet") != 2		" older Vim always used :setlocal
     command -nargs=* CompilerSet setlocal <args>
 endif
-
-" syntax checking for matlab {{{3
-augroup syntax_matlab
-    autocmd!
-    autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
-    autocmd FileType matlab CompilerSet errorformat=
-                \%-P==========\ %f\ ==========,
-                \%-G%>==========\ %s\ ==========,
-                \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
-                \L\ %l\ (C\ %c):\ %m,
-                \L\ %l\ (C\ %c-%*[0-9]):\ %m,
-                \%-Q
-augroup end
 
 " neomake maker for matlab {{{3
 let g:neomake_matlab_mlint_maker = {
@@ -1420,24 +1315,15 @@ nnoremap m. :TxSend<CR><C-R><C-W>
 nnoremap m/ :TxSend<CR><C-F>
 nnoremap m<Space> :TxSend<CR><C-R><C-W><C-F>
 " pane changes
-nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
-nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
-nnoremap <silent> m13 :TxSetPane 0:1.3<CR>
-nnoremap <silent> m21 :TxSetPane 0:2.1<CR>
-nnoremap <silent> m22 :TxSetPane 0:2.2<CR>
-nnoremap <silent> m23 :TxSetPane 0:2.3<CR>
-nnoremap <silent> m31 :TxSetPane 0:3.1<CR>
-nnoremap <silent> m32 :TxSetPane 0:3.2<CR>
-nnoremap <silent> m33 :TxSetPane 0:3.3<CR>
-nnoremap <silent> mm11 :TxSetPane 1:1.1<CR>
-nnoremap <silent> mm12 :TxSetPane 1:1.2<CR>
-nnoremap <silent> mm13 :TxSetPane 1:1.3<CR>
-nnoremap <silent> mm21 :TxSetPane 1:2.1<CR>
-nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
-nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
-nnoremap <silent> mm31 :TxSetPane 1:3.1<CR>
-nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
-nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
+nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
+nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
+nnoremap m13 :TxSetPane 0:1.3<Left><Left><Left><Left>
+nnoremap m21 :TxSetPane 0:2.1<Left><Left><Left><Left>
+nnoremap m22 :TxSetPane 0:2.2<Left><Left><Left><Left>
+nnoremap m23 :TxSetPane 0:2.3<Left><Left><Left><Left>
+nnoremap m31 :TxSetPane 0:3.1<Left><Left><Left><Left>
+nnoremap m32 :TxSetPane 0:3.2<Left><Left><Left><Left>
+nnoremap m33 :TxSetPane 0:3.3<Left><Left><Left><Left>
 " interaction maps
 nnoremap <silent> mc :TxClear<CR>
 nnoremap <silent> mx :TxSigInt<CR>

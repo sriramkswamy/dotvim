@@ -1,3 +1,15 @@
+" jedi support
+" goto assignment
+nnoremap <buffer> <Space>ma call jedi#goto_assignments()
+" goto definition
+nnoremap <buffer> <Space>md call jedi#goto_definitions()
+" rename
+nnoremap <buffer> <Space>mn call jedi#rename()
+" visual rename
+nnoremap <buffer> <Space>mv call jedi#rename_visual()
+" jump
+nnoremap <buffer> J :call jedi#goto()<CR>
+
 " run the current file
 nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
 " clear the variables

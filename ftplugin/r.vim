@@ -1,3 +1,56 @@
+" nvim-r plugin
+" maps
+nnoremap <buffer> K :call RAction("help")<CR>
+" variable viewing
+" what's the object
+nmap <buffer> mh <Plug>RObjectPr
+" show object
+nmap <buffer> m? <Plug>RObjectStr
+" show output
+nmap <buffer> ma <Plug>RShowRout
+" open the current variable in csv format
+nmap <buffer> mj <Plug>RViewDF
+" summary of the variable
+nmap <buffer> my <Plug>RSummary
+" list all variables in the current working space
+nmap <buffer> mb <Plug>RListSpace
+" update browser
+nmap <buffer> mu <Plug>RUpdateObjBrowser
+" open lists
+nmap <buffer> m[ <Plug>ROpenLists
+" close lists
+nmap <buffer> m] <Plug>RCloseLists
+" repl interaction
+" run the current file
+nmap <buffer> mm <Plug>RSendFile
+" send the current para
+nmap <buffer> msap <Plug>REDSendParagraph
+" send the current function
+nmap <buffer> msaf <Plug>RDSendFunction
+" send the current function
+nmap <buffer> msif <Plug>RDSendFunction
+" send the current line
+nmap <buffer> mss <Plug>RDSendLine
+" send the current line and insert output
+nmap <buffer> m<Space> <Plug>RDSendLineAndInsertOutput
+" send the current selection
+vmap <buffer> ms <Plug>REDSendSelection
+" send the current selection and insert output
+vmap <buffer> m<Space> <Plug>RSendSelAndInsertOutput
+" simple plotting
+" plot the vector
+nmap <buffer> mfp <Plug>RPlot
+" help
+" show brief help on the function at point
+nmap <buffer> m? <Plug>RObjectNames
+" change the working directory
+nmap <buffer> m~ <Plug>RSetwd
+" other useful commands
+" clear screen
+nmap <buffer> mc <Plug>RClearConsole
+" exit R
+nmap <buffer> mmx <Plug>RClearAll
+
 " debug helpers
 " set breakpoint at the current line
 nnoremap <buffer> mgs :normal! Obrowser()<CR>j
