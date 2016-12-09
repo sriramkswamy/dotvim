@@ -210,20 +210,14 @@ nnoremap <silent> U :MundoToggle<CR>
 Plug 'junegunn/vim-peekaboo'
 
 " Insert unicode better {{{3
-Plug 'chrisbra/unicode.vim'
+Plug 'chrisbra/unicode.vim',
+            \ {'on': ['<Plug>(UnicodeGA)', '<Plug>(MakeDigraph)',
+            \ 'Digraphs', 'UnicodeSearch']}
 let g:Unicode_ShowPreviewWindow = 1
 nmap ga <Plug>(UnicodeGA)
 nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
-augroup digraphs_init
-    autocmd!
-    autocmd BufRead,BufNewFile * :DigraphNew gl 03BB
-    autocmd BufRead,BufNewFile * :DigraphNew gp 03C0
-    autocmd BufRead,BufNewFile * :DigraphNew mi 222B
-    autocmd BufRead,BufNewFile * :DigraphNew my 221E
-    autocmd BufRead,BufNewFile * :DigraphNew sr 2192
-augroup end
 
 " File/Buffer navigation {{{1
 
@@ -362,26 +356,9 @@ let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
 
 " View directory structure - useful sometimes {{{3
-Plug 'scrooloose/nerdtree', {'on' :['NERDTreeToggle', 'NERDTree']}
+Plug 'scrooloose/nerdtree', {'on': ['NERDTreeToggle', 'NERDTree']}
 nnoremap <silent> <Space>n :NERDTreeToggle<CR>
 nnoremap vx :NERDTree ~/Dropbox/PhD<CR>
-
-" Better window/tab navigation {{{3
-Plug 'yssl/TWcmd.vim'
-nnoremap WL :TWcmd tmv l<CR>
-nnoremap WH :TWcmd tmv h<CR>
-nnoremap Wh :TWcmd tcm t<CR>
-nnoremap Wl :TWcmd tcm b<CR>
-nnoremap Wj :TWcmd twh l<CR>
-nnoremap Wk :TWcmd twh h<CR>
-nnoremap Wo :TWcmd tcm o<CR>
-nnoremap wmH :TWcmd wmvt h<CR>
-nnoremap wmL :TWcmd wmvt l<CR>
-nnoremap wmh :TWcmd wmv h<CR>
-nnoremap wml :TWcmd wmv l<CR>
-nnoremap wmj :TWcmd wmv j<CR>
-nnoremap wmk :TWcmd wmv k<CR>
-nnoremap Z :TWcmd wcm m<CR>
 
 " Searching {{{1
 
@@ -457,7 +434,7 @@ cnoremap <expr> <CR> CCR()
 nnoremap g/ :g//#<Left><Left>
 
 " Vim grepper plugin {{{2
-Plug 'mhinz/vim-grepper'
+Plug 'mhinz/vim-grepper', {'on': ['Grepper', '<Plug>(GrepperOperator)']}
 " Mimic :grep and make ag the default tool.
 let g:grepper = {
             \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
@@ -470,7 +447,7 @@ nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
 " Search and replace across project - trial {{{2
-Plug 'dyng/ctrlsf.vim'
+Plug 'dyng/ctrlsf.vim', {'on': ['CtrlSFUpdate', 'CtrlSF', '<Plug>CtrlSFVwordExec']}
 let g:ctrlsf_mapping = {
     \ "next": "n",
     \ "prev": "N",
@@ -786,7 +763,7 @@ nnoremap <Space><Space> :OverCommandLine<CR>
 vnoremap <Space><Space> :OverCommandLine<CR>
 
 " Easy alignment plugin and auto-align {{{3
-Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
+Plug 'godlygeek/tabular', {'on': 'Tabularize'}
 nnoremap gA :Tabularize<CR>
 nnoremap gl :Tabularize /
 vnoremap gl :Tabularize /
@@ -1065,15 +1042,6 @@ Plug 'kana/vim-operator-user'
 
 " Motions {{{2
 
-" Move similar to a mouse click {{{3
-Plug 'easymotion/vim-easymotion'
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-" Turn on case insensitive feature
-let g:EasyMotion_smartcase = 1
-nmap gw <Plug>(easymotion-E)
-nmap gW <Plug>(easymotion-B)
-nmap we <Plug>(easymotion-overwin-line)
-
 " Snippets {{{1
 " Snippet plugin and snippet collection {{{2
 if has('python') || has('python3')
@@ -1135,7 +1103,7 @@ let g:vsc_tab_complete = 0
 " Language helpers {{{1
 
 " Vim script {{{2
-Plug 'tpope/vim-scriptease'
+Plug 'tpope/vim-scriptease', {'for': 'vim'}
 augroup filetype_vim
     autocmd!
     autocmd FileType vim nnoremap <buffer> J :helpgrep <C-R><C-W><CR>
@@ -1205,7 +1173,7 @@ let g:braceless_easymotion_segment_key = ''
 
 " JavaScript {{{2
 " Tern based autocompletion and navigation
-Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
+Plug 'ternjs/tern_for_vim' , {'do': 'npm install', 'for': 'javascript'}
 augroup filetype_javascript
     autocmd!
     autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
@@ -1214,7 +1182,7 @@ augroup end
 
 " Go {{{2
 " Autocompletion and navigation
-Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
+Plug 'fatih/vim-go', {'do': ':GoInstallBinaries', 'for': 'go'}
 augroup filetype_go
     autocmd!
     autocmd FileType go nnoremap <buffer> gC :compiler! go<CR>
@@ -1223,7 +1191,7 @@ augroup filetype_go
 augroup end
 
 " HTML/CSS {{{2
-Plug 'rstacruz/sparkup'
+Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
 let g:sparkupExecuteMapping = '<C-b>'
 let g:sparkupNextMapping = '<C-j>'
 augroup filetype_html
@@ -1238,16 +1206,16 @@ let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
 
 " Ruby (on Rails) {{{2
-Plug 'vim-ruby/vim-ruby'
+Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
 " Vim-ruby - also adds im/am text object
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
 let g:rubycomplete_load_gemfile = 1
 " let g:rubycomplete_use_bundler = 1
-Plug 'tpope/vim-rails'
+Plug 'tpope/vim-rails', {'for': 'ruby'}
 nnoremap <Space>v :A
-Plug 'danchoi/ri.vim'
+Plug 'danchoi/ri.vim', {'for': 'ruby'}
 let g:ri_no_mappings=1
 augroup filetype_ruby
     autocmd!
@@ -1270,8 +1238,8 @@ augroup end
 " Use these two following commands
 " :packadd vimball
 " :so %
-Plug 'jalvesaq/Nvim-R'
-Plug 'chrisbra/csv.vim'
+Plug 'jalvesaq/Nvim-R', {'for': 'r'}
+Plug 'chrisbra/csv.vim', {'for': 'csv'}
 let R_vsplit = 1
 let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
@@ -1338,7 +1306,7 @@ augroup filetype_r
 augroup end
 
 " Documentation browser {{{2
-Plug 'rizzatti/dash.vim'
+Plug 'rizzatti/dash.vim', {'on': '<Plug>DashSearch'}
 nmap <silent> gD <Plug>DashSearch
 
 " Syntax checking {{{2
@@ -1422,7 +1390,9 @@ endif
 " Plugins {{{2
 
 " Common *nix commands {{{3
-Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-eunuch',
+            \ {'on': ['Remove', 'Rename', 'Move', 'Mkdir', 'Wall',
+            \ 'SudoWrite', 'SudoEdit']}
 nnoremap gK :Remove
 nnoremap gR :Rename<Space>
 nnoremap gM :Move<Space>
@@ -1435,8 +1405,15 @@ nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
 nnoremap <Space>W :Wall<CR>
 
+" Bulk renaming {{{3
+Plug 'qpkorr/vim-renamer', {'on': ['Renamer', 'Ren', 'RenTest', '<Plug>RenamerStart']}
+nnoremap gW :Renamer<Space>
+nnoremap gw :Ren<CR>
+nnoremap Z :RenTest<CR>
+nmap W <Plug>RenamerStart
+
 " Dispatch stuff {{{3
-Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-dispatch', {'on': ['Spawn', 'Start', 'Make', 'Dispatch', 'Copen']}
 nnoremap gh :Spawn<Space>
 nnoremap gH :Start<Space>
 nnoremap cm :Make!<CR>
