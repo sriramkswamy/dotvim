@@ -189,20 +189,14 @@ nnoremap <silent> U :MundoToggle<CR>
 Plug 'junegunn/vim-peekaboo'
 
 " Insert unicode better {{{3
-Plug 'chrisbra/unicode.vim'
+Plug 'chrisbra/unicode.vim',
+            \ {'on': ['<Plug>(UnicodeGA)', '<Plug>(MakeDigraph)',
+            \ 'Digraphs', 'UnicodeSearch']}
 let g:Unicode_ShowPreviewWindow = 1
 nmap ga <Plug>(UnicodeGA)
 nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
-augroup digraphs_init
-    autocmd!
-    autocmd BufRead,BufNewFile * :DigraphNew gl 03BB
-    autocmd BufRead,BufNewFile * :DigraphNew gp 03C0
-    autocmd BufRead,BufNewFile * :DigraphNew mi 222B
-    autocmd BufRead,BufNewFile * :DigraphNew my 221E
-    autocmd BufRead,BufNewFile * :DigraphNew sr 2192
-augroup end
 
 " File/Buffer navigation {{{1
 
@@ -343,23 +337,6 @@ Plug 'scrooloose/nerdtree', {'on' :['NERDTreeToggle', 'NERDTree']}
 nnoremap <silent> <Space>n :NERDTreeToggle<CR>
 nnoremap vx :NERDTree ~/Dropbox/PhD<CR>
 
-" Better window/tab navigation {{{3
-Plug 'yssl/TWcmd.vim'
-nnoremap WL :TWcmd tmv l<CR>
-nnoremap WH :TWcmd tmv h<CR>
-nnoremap Wh :TWcmd tcm t<CR>
-nnoremap Wl :TWcmd tcm b<CR>
-nnoremap Wj :TWcmd twh l<CR>
-nnoremap Wk :TWcmd twh h<CR>
-nnoremap Wo :TWcmd tcm o<CR>
-nnoremap wmH :TWcmd wmvt h<CR>
-nnoremap wmL :TWcmd wmvt l<CR>
-nnoremap wmh :TWcmd wmv h<CR>
-nnoremap wml :TWcmd wmv l<CR>
-nnoremap wmj :TWcmd wmv j<CR>
-nnoremap wmk :TWcmd wmv k<CR>
-nnoremap Z :TWcmd wcm m<CR>
-
 " Searching {{{1
 
 " Set commands {{{2
@@ -375,66 +352,15 @@ set grepprg=grep\ -nH\ $*
 set nomore
 
 " Maps without leader {{{2
-" Auto-center
-nnoremap <silent> n nzz
-nnoremap <silent> g* g*zz
-nnoremap <silent> g# :lvim //%<CR>
-" Make '*' act a little better
-nnoremap <silent> * *N
-nnoremap <silent> # *N:lvimgrep // %<CR>
+" Populating the location list
+nnoremap <silent> g/ *N:lvimgrep // %<CR>
+nnoremap <silent> g? :lvimgrep // %<CR>
 
-" Search for word under visual selection
-vnoremap * y/<C-R>"<CR>N
-vnoremap # y?<C-R>"<CR>N:lvimgrep // %<CR>
-
-" Functions {{{2
-
-" make list-like commands more intuitive
-function! CCR()
-    let cmdline = getcmdline()
-    if cmdline =~ '\v\C^(ls|files|buffers)'
-        " like :ls but prompts for a buffer command
-        return "\<CR>:b "
-    elseif cmdline =~ '\v\C/(#|nu|num|numb|numbe|number)$'
-        " like :g//# but prompts for a command
-        return "\<CR>:"
-    elseif cmdline =~ '\v\C^(dli|il)'
-        " like :dlist or :ilist but prompts for a count for :djump or :ijump
-        return "\<CR>:" . cmdline[0] . "j  " . split(cmdline, " ")[1] . "\<S-Left>\<Left>"
-    elseif cmdline =~ '\v\C^(cli|lli)'
-        " like :clist or :llist but prompts for an error/location number
-        return "\<CR>:sil " . repeat(cmdline[0], 2) . "\<Space>"
-    elseif cmdline =~ '\C^old'
-        " like :oldfiles but prompts for an old file to edit
-        set nomore
-        return "\<CR>:sil se more|e #<"
-    elseif cmdline =~ '\C^changes'
-        " like :changes but prompts for a change to jump to
-        set nomore
-        return "\<CR>:sil se more|norm! g;\<S-Left>"
-    elseif cmdline =~ '\C^ju'
-        " like :jumps but prompts for a position to jump to
-        set nomore
-        return "\<CR>:sil se more|norm! \<C-o>\<S-Left>"
-    elseif cmdline =~ '\C^marks'
-        " like :marks but prompts for a mark to jump to
-        return "\<CR>:norm! `"
-    elseif cmdline =~ '\C^undol'
-        " like :undolist but prompts for a change to undo
-        return "\<CR>:u "
-    else
-        return "\<CR>"
-    endif
-endfunction
-
-" map '<CR>' in command-line mode to execute the function above
-cnoremap <expr> <CR> CCR()
-
-" use global search
-nnoremap g/ :g//#<Left><Left>
+" Automatically disable search highlighting {{{2
+Plug 'junegunn/vim-slash'
 
 " Vim grepper plugin {{{2
-Plug 'mhinz/vim-grepper'
+Plug 'mhinz/vim-grepper', {'on': ['Grepper', '<Plug>(GrepperOperator)']}
 " Mimic :grep and make ag the default tool.
 let g:grepper = {
             \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
@@ -447,7 +373,7 @@ nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
 " Search and replace across project - trial {{{2
-Plug 'dyng/ctrlsf.vim'
+Plug 'dyng/ctrlsf.vim', {'on': ['CtrlSFUpdate', 'CtrlSF', '<Plug>CtrlSFVwordExec']}
 let g:ctrlsf_mapping = {
     \ "next": "n",
     \ "prev": "N",
@@ -474,12 +400,11 @@ let g:fzf_action = {
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> T :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g? :FzfHistory/<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space>/ :FzfBLines<CR>
-nnoremap <silent> <Space>? :FzfLines<CR>
+nnoremap <silent> <Space>/ :FzfLines<CR>
+nnoremap <silent> <Space>? :FzfHistory/<CR>
 nnoremap <silent> <Space>y :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>C :FzfCommits<CR>
@@ -1035,15 +960,6 @@ Plug 'kana/vim-operator-user'
 
 " Motions {{{2
 
-" Move similar to a mouse click {{{3
-Plug 'easymotion/vim-easymotion'
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-" Turn on case insensitive feature
-let g:EasyMotion_smartcase = 1
-nmap gw <Plug>(easymotion-E)
-nmap gW <Plug>(easymotion-B)
-nmap we <Plug>(easymotion-overwin-line)
-
 " Snippets {{{1
 " Snippet plugin and snippet collection {{{2
 if has('python') || has('python3')
@@ -1105,11 +1021,15 @@ let g:vsc_tab_complete = 0
 " Language helpers {{{1
 
 " Vim script {{{2
-Plug 'tpope/vim-scriptease'
-augroup filetype_vim
-    autocmd!
-    autocmd FileType vim nnoremap <buffer> J :helpgrep <C-R><C-W><CR>
-augroup end
+Plug 'tpope/vim-scriptease', {'for': 'vim'}
+
+" " LaTeX {{{2
+" Plug 'lervag/vimtex'
+" let g:vimtex_fold_enabled = 1
+" let g:vimtex_fold_manual = 1
+" let g:vimtex_text_obj_enabled = 0
+" let g:vimtex_imaps_enabled = 0
+" let g:vimtex_motion_enabled = 1
 
 " C/C++ {{{2
 " Autocompletion
@@ -1125,19 +1045,6 @@ autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
-command! CppJumpTo call rtags#JumpTo(g:SAME_WINDOW)
-command! CppJumpToParent call rtags#JumpToParent()
-command! CppReference call rtags#FindRefsOfWordUnderCursor()
-command! CppSymbol call rtags#FindSymbolsOfWordUnderCursor()
-command! CppVirtuals call rtags#FindVirtuals()
-command! CppReindex call rtags#ReindexFile()
-command! CppRename call rtags#RenameSymbolUnderCursor()
-command! CppProjects call rtags#ProjectList()
-augroup filetype_cpp
-    autocmd!
-    autocmd FileType c,cpp nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
-    autocmd FileType c,cpp nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
-augroup end
 
 " Python {{{2
 " Autocompletion and some jumping
@@ -1151,15 +1058,6 @@ let g:jedi#documentation_command = "K"
 let g:jedi#usages_command = ""
 let g:jedi#completions_command = ""
 let g:jedi#rename_command = ""
-command! PyGoTo call jedi#goto()
-command! PyGoToAssignment call jedi#goto_assignments()
-command! PyGoToDefinition call jedi#goto_definitions()
-command! PyRename call jedi#rename()
-command! PyRenameVisual call jedi#rename_visual()
-augroup filetype_python
-    autocmd!
-    autocmd FileType python nnoremap <buffer> J :call jedi#goto()<CR>
-augroup end
 
 " Much better Python text objects and goodies
 Plug 'tweekmonster/braceless.vim'
@@ -1175,31 +1073,16 @@ let g:braceless_easymotion_segment_key = ''
 
 " JavaScript {{{2
 " Tern based autocompletion and navigation
-Plug 'ternjs/tern_for_vim' , {'do': 'npm install'}
-augroup filetype_javascript
-    autocmd!
-    autocmd FileType js,javascript nnoremap <buffer> K :TernDoc<CR>
-    autocmd FileType js,javascript nnoremap <buffer> J :TernDef<CR>
-augroup end
+Plug 'ternjs/tern_for_vim' , {'do': 'npm install', 'for': 'javascript'}
 
 " Go {{{2
 " Autocompletion and navigation
 Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
-augroup filetype_go
-    autocmd!
-    autocmd FileType go nnoremap <buffer> gC :compiler! go<CR>
-    autocmd FileType go nnoremap <buffer> K :GoDoc<CR>
-    autocmd FileType go nnoremap <buffer> J :GoDef<CR>
-augroup end
 
 " HTML/CSS {{{2
-Plug 'rstacruz/sparkup'
+Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
 let g:sparkupExecuteMapping = '<C-b>'
 let g:sparkupNextMapping = '<C-j>'
-augroup filetype_html
-    autocmd!
-    autocmd FileType html nnoremap <buffer> gC :compiler! tidy<CR>
-augroup end
 
 " Java (Eclim) - Eclipse plus Vim {{{2
 let g:EclimShowQuickfixSigns = 0
@@ -1208,22 +1091,17 @@ let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
 
 " Ruby (on Rails) {{{2
-Plug 'vim-ruby/vim-ruby'
+Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
 " Vim-ruby - also adds im/am text object
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
 let g:rubycomplete_rails = 1
 let g:rubycomplete_load_gemfile = 1
 " let g:rubycomplete_use_bundler = 1
-Plug 'tpope/vim-rails'
+Plug 'tpope/vim-rails', {'for': 'ruby'}
 nnoremap <Space>v :A
-Plug 'danchoi/ri.vim'
+Plug 'danchoi/ri.vim', {'for': 'ruby'}
 let g:ri_no_mappings=1
-augroup filetype_ruby
-    autocmd!
-    autocmd FileType ruby nnoremap <buffer> gC :compiler! rake<CR>
-    autocmd FileType ruby nnoremap <buffer> K :call ri#LookupNameUnderCursor()<CR>
-augroup end
 
 " R {{{2
 " Alternative installing 1 for Nvim-R do the following -
@@ -1242,7 +1120,8 @@ augroup end
 " :so %
 Plug 'jalvesaq/Nvim-R'
 Plug 'chrisbra/csv.vim'
-let R_vsplit = 1
+" let R_vsplit = 1
+let R_in_buffer = 0
 let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
 
@@ -1252,61 +1131,6 @@ inoremap <C-\> <C-x><C-a>
 " Normal maps apart from '\' based maps
 nmap mR <Plug>RStart
 nmap mQ <Plug>RClose
-augroup filetype_r
-    autocmd!
-    " maps
-    autocmd FileType r nnoremap <buffer> K :call RAction("help")<CR>
-    " variable viewing
-    " what's the object
-    autocmd FileType r nmap <buffer> mh <Plug>RObjectPr
-    " show object
-    autocmd FileType r nmap <buffer> m? <Plug>RObjectStr
-    " show output
-    autocmd FileType r nmap <buffer> ma <Plug>RShowRout
-    " open the current variable in csv format
-    autocmd FileType r nmap <buffer> mj <Plug>RViewDF
-    " summary of the variable
-    autocmd FileType r nmap <buffer> my <Plug>RSummary
-    " list all variables in the current working space
-    autocmd FileType r nmap <buffer> mb <Plug>RListSpace
-    " update browser
-    autocmd FileType r nmap <buffer> mu <Plug>RUpdateObjBrowser
-    " open lists
-    autocmd FileType r nmap <buffer> m[ <Plug>ROpenLists
-    " close lists
-    autocmd FileType r nmap <buffer> m] <Plug>RCloseLists
-    " repl interaction
-    " run the current file
-    autocmd FileType r nmap <buffer> mm <Plug>RSendFile
-    " send the current para
-    autocmd FileType r nmap <buffer> msap <Plug>REDSendParagraph
-    " send the current function
-    autocmd FileType r nmap <buffer> msaf <Plug>RDSendFunction
-    " send the current function
-    autocmd FileType r nmap <buffer> msif <Plug>RDSendFunction
-    " send the current line
-    autocmd FileType r nmap <buffer> mss <Plug>RDSendLine
-    " send the current line and insert output
-    autocmd FileType r nmap <buffer> m<Space> <Plug>RDSendLineAndInsertOutput
-    " send the current selection
-    autocmd FileType r vmap <buffer> ms <Plug>REDSendSelection
-    " send the current selection and insert output
-    autocmd FileType r vmap <buffer> m<Space> <Plug>RSendSelAndInsertOutput
-    " simple plotting
-    " plot the vector
-    autocmd FileType r nmap <buffer> mfp <Plug>RPlot
-    " help
-    " show brief help on the function at point
-    autocmd FileType r nmap <buffer> m? <Plug>RObjectNames
-    " change the working directory
-    autocmd FileType r nmap <buffer> m~ <Plug>RSetwd
-    " other useful commands
-    " clear screen
-    autocmd FileType r nmap <buffer> mc <Plug>RClearConsole
-    " exit R
-    autocmd FileType r nmap <buffer> mmx <Plug>RClearAll
-augroup end
-
 
 " Documentation browser {{{2
 Plug 'rizzatti/dash.vim'
@@ -1322,19 +1146,6 @@ autocmd! BufWritePost * Neomake
 if exists(":CompilerSet") != 2		" older Vim always used :setlocal
     command -nargs=* CompilerSet setlocal <args>
 endif
-
-" syntax checking for matlab {{{3
-augroup syntax_matlab
-    autocmd!
-    autocmd FileType matlab CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
-    autocmd FileType matlab CompilerSet errorformat=
-                \%-P==========\ %f\ ==========,
-                \%-G%>==========\ %s\ ==========,
-                \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
-                \L\ %l\ (C\ %c):\ %m,
-                \L\ %l\ (C\ %c-%*[0-9]):\ %m,
-                \%-Q
-augroup end
 
 " neomake maker for matlab {{{3
 let g:neomake_matlab_mlint_maker = {
@@ -1392,7 +1203,9 @@ endif
 " Plugins {{{2
 
 " Common *nix commands {{{3
-Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-eunuch',
+            \ {'on': ['Remove', 'Rename', 'Move', 'Mkdir', 'Wall',
+            \ 'SudoWrite', 'SudoEdit']}
 nnoremap gK :Remove
 nnoremap gR :Rename<Space>
 nnoremap gM :Move<Space>
@@ -1405,16 +1218,21 @@ nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
 nnoremap <Space>W :Wall<CR>
 
+" Bulk renaming {{{3
+Plug 'qpkorr/vim-renamer', {'on': ['Renamer', 'Ren', 'RenTest', '<Plug>RenamerStart']}
+nnoremap gW :Renamer<Space>
+nnoremap gw :Ren<CR>
+nnoremap Z :RenTest<CR>
+nmap W <Plug>RenamerStart
+
 " Dispatch stuff {{{3
-Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-dispatch', {'on': ['Spawn', 'Start', 'Make', 'Dispatch', 'Copen']}
 nnoremap gh :Spawn<Space>
 nnoremap gH :Start<Space>
-nnoremap cm :Make!<CR>
+nnoremap cm :Make -C<Space>
 nnoremap sm :Make! %<CR>
-nnoremap vm :Make -C build<CR>
-nnoremap vo :Make -C build doc<CR>
-nnoremap vr :Make -C docs/latex<CR>
-nnoremap <Space>m :Dispatch!<Space>
+nnoremap vm :Make<Space>
+nnoremap <Space>h :Dispatch!<Space>
 nnoremap <silent> <Space>o :Copen<CR>
 
 " Dispatch based commands {{{4
@@ -1427,36 +1245,10 @@ nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
 
 " asynchrous git operations
-command! GitPush Dispatch! git push
-command! GitPull Dispatch! git pull
+nnoremap vr :Dispatch! git push<CR>
+nnoremap vu :Dispatch! git pull<CR>
 
-" Single file C++ compilation with different flags
-command! GppSimple Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %
-command! GppSingle Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GppOpenmp Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GppMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GppHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GppArmadillo Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
-
-" Single file C compilation with different flags
-command! GccSimple Dispatch! cd %:p:h <bar> gcc -Wall -g -o %:p:r.out %
-command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GccHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GccArmadillo Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
-
-" count the number of words in the document
-command! TexCount Dispatch! texcount %
-
-" convert markdown to other formats
-command! ConvertToPDF Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf
-command! ConvertToOrg Dispatch! pandoc % -o %:r.org
-command! ConvertToRst Dispatch! pandoc % -o %:r.rst
-command! ConvertToLatex Dispatch! pandoc % -o %:r.tex
-command! ConvertToEpub3 Dispatch! pandoc % -o %:r.epub
-command! ConvertToHTML5 Dispatch! pandoc % -o %:r.html
-command! ConvertToOPML Dispatch! multimarkdown -t opml % > %:r.opml
+" Also checkout ftplugin files
 
 " start rtags when in c or cpp files
 autocmd FileType c,cpp :Dispatch! rdm &<CR>
@@ -1492,24 +1284,15 @@ nnoremap m. :TxSend<CR><C-R><C-W>
 nnoremap m/ :TxSend<CR><C-F>
 nnoremap m<Space> :TxSend<CR><C-R><C-W><C-F>
 " pane changes
-nnoremap <silent> m11 :TxSetPane 0:1.1<CR>
-nnoremap <silent> m12 :TxSetPane 0:1.2<CR>
-nnoremap <silent> m13 :TxSetPane 0:1.3<CR>
-nnoremap <silent> m21 :TxSetPane 0:2.1<CR>
-nnoremap <silent> m22 :TxSetPane 0:2.2<CR>
-nnoremap <silent> m23 :TxSetPane 0:2.3<CR>
-nnoremap <silent> m31 :TxSetPane 0:3.1<CR>
-nnoremap <silent> m32 :TxSetPane 0:3.2<CR>
-nnoremap <silent> m33 :TxSetPane 0:3.3<CR>
-nnoremap <silent> mm11 :TxSetPane 1:1.1<CR>
-nnoremap <silent> mm12 :TxSetPane 1:1.2<CR>
-nnoremap <silent> mm13 :TxSetPane 1:1.3<CR>
-nnoremap <silent> mm21 :TxSetPane 1:2.1<CR>
-nnoremap <silent> mm22 :TxSetPane 1:2.2<CR>
-nnoremap <silent> mm23 :TxSetPane 1:2.3<CR>
-nnoremap <silent> mm31 :TxSetPane 1:3.1<CR>
-nnoremap <silent> mm32 :TxSetPane 1:3.2<CR>
-nnoremap <silent> mm33 :TxSetPane 1:3.3<CR>
+nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
+nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
+nnoremap m13 :TxSetPane 0:1.3<Left><Left><Left><Left>
+nnoremap m21 :TxSetPane 0:2.1<Left><Left><Left><Left>
+nnoremap m22 :TxSetPane 0:2.2<Left><Left><Left><Left>
+nnoremap m23 :TxSetPane 0:2.3<Left><Left><Left><Left>
+nnoremap m31 :TxSetPane 0:3.1<Left><Left><Left><Left>
+nnoremap m32 :TxSetPane 0:3.2<Left><Left><Left><Left>
+nnoremap m33 :TxSetPane 0:3.3<Left><Left><Left><Left>
 " interaction maps
 nnoremap <silent> mc :TxClear<CR>
 nnoremap <silent> mx :TxSigInt<CR>
@@ -1638,6 +1421,15 @@ function! HexocodeI()
     normal! k$
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
+endfunction
+
+" create an object to send things to tmux {{{1
+map ms <Plug>(operator-tmuxify-send)
+call operator#user#define('tmuxify-send', 'OperatorTmuxifySend')
+function! OperatorTmuxifySend(motion_wise)
+    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
+    execute 'normal!' '`[' . v . '`]"my'
+    TxSend(@m)
 endfunction
 
 " Setup plugins, indents and syntax {{{1

@@ -1000,6 +1000,7 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
     let g:UltiSnipsListSnippets="<C-l>"
+    nnoremap <silent> yo :UltiSnipsEdit<CR>
 endif
 
 " Version control {{{1
@@ -1151,7 +1152,8 @@ let g:ri_no_mappings=1
 " :so %
 Plug 'jalvesaq/Nvim-R', {'for': 'r'}
 Plug 'chrisbra/csv.vim'
-let R_vsplit = 1
+" let R_vsplit = 1
+let R_in_buffer = 0
 let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
 
