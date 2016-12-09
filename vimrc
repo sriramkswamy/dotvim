@@ -1055,13 +1055,13 @@ let g:vsc_tab_complete = 0
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 
-" " LaTeX {{{2
-" Plug 'lervag/vimtex'
-" let g:vimtex_fold_enabled = 1
-" let g:vimtex_fold_manual = 1
-" let g:vimtex_text_obj_enabled = 0
-" let g:vimtex_imaps_enabled = 0
-" let g:vimtex_motion_enabled = 1
+" LaTeX {{{2
+Plug 'lervag/vimtex'
+let g:vimtex_fold_enabled = 1
+let g:vimtex_fold_manual = 1
+let g:vimtex_text_obj_enabled = 0
+let g:vimtex_imaps_enabled = 0
+let g:vimtex_motion_enabled = 1
 
 " C/C++ {{{2
 " Autocompletion
@@ -1107,9 +1107,9 @@ let g:braceless_easymotion_segment_key = ''
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install', 'for': 'javascript'}
 
-" " Go {{{2
-" " Autocompletion and navigation
-" Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
+" Go {{{2
+" Autocompletion and navigation
+Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
@@ -1173,11 +1173,6 @@ Plug 'benekastah/neomake'
 
 " evoke neomake for every save
 autocmd! BufWritePost * Neomake
-
-" set compiler for others {{{3
-if exists(":CompilerSet") != 2		" older Vim always used :setlocal
-    command -nargs=* CompilerSet setlocal <args>
-endif
 
 " neomake maker for matlab {{{3
 let g:neomake_matlab_mlint_maker = {
