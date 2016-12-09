@@ -79,7 +79,7 @@ snippet grappath "graphics path" b
 $0
 endsnippet
 
-snippet title "title" b
+snippet ti "title" b
 \title{$1}
 \date{${3:\today}}
 \author{${2:Sriram Krishnaswamy}}
@@ -94,7 +94,13 @@ snippet se "section" b
 $0
 endsnippet
 
-snippet subs "subsection" b
+snippet su "subsection" b
+\subsection${1:*}{$2}
+\label{sub:$3}
+$0
+endsnippet
+
+snippet ssu "subsection" b
 \subsection${1:*}{$2}
 \label{sub:$3}
 $0
@@ -176,12 +182,12 @@ $2
 $0
 endsnippet
 
-snippet item "itemize" b
+snippet nit "new item" b
 \item $1
 $0
 endsnippet
 
-snippet des "Description" b
+snippet nde "new description" b
 \item[$1] $2
 $3
 endsnippet
@@ -211,6 +217,12 @@ snippet ther "therefore" i
 endsnippet
 
 snippet noi "noindent" b
+\noindent
+$0
+endsnippet
+
+snippet voi "vspace and noindent" b
+\vspace{0.25cm}
 \noindent
 $0
 endsnippet
@@ -247,7 +259,7 @@ snippet cm "centimetre" i
 \centi\metre
 endsnippet
 
-snippet gram "gram" i
+snippet gr "gram" i
 \gram
 endsnippet
 
@@ -297,19 +309,19 @@ snippet newp "newpage" b
 $0
 endsnippet
 
-snippet tableoc "table of contents" b
+snippet toc "table of contents" b
 \tableofcontents
 
 $0
 endsnippet
 
-snippet listoff "list of figures" b
+snippet lof "list of figures" b
 \listoffigures
 
 $0
 endsnippet
 
-snippet listoft "list of tables" b
+snippet lot "list of tables" b
 \listoftables
 
 $0
