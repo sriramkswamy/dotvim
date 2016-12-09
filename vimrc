@@ -94,6 +94,8 @@ nnoremap <silent> ww <C-w><C-w>
 " Alternate files
 nnoremap <BS> :b#<CR>
 nnoremap wa :vsp <bar> b#<CR>
+" open file - I have no idea how I got used to this shortcut
+nnoremap vo :e<Space>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
@@ -138,6 +140,7 @@ nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
 nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
 nnoremap cot :<C-u>set ft=
+nnoremap coy :<C-u>set ft?<CR>
 nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
 nnoremap coz :<C-u>set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
 " Clipboard
@@ -1362,11 +1365,9 @@ nmap W <Plug>RenamerStart
 Plug 'tpope/vim-dispatch', {'on': ['Spawn', 'Start', 'Make', 'Dispatch', 'Copen']}
 nnoremap gh :Spawn<Space>
 nnoremap gH :Start<Space>
-nnoremap cm :Make!<CR>
+nnoremap cm :Make -C<Space>
 nnoremap sm :Make! %<CR>
-nnoremap vm :Make -C build<CR>
-nnoremap vo :Make -C build doc<CR>
-nnoremap vr :Make -C docs/latex<CR>
+nnoremap vm :Make<Space>
 nnoremap <Space>h :Dispatch!<Space>
 nnoremap <silent> <Space>o :Copen<CR>
 
@@ -1380,36 +1381,10 @@ nnoremap gp :Dispatch! gist % -cd ""<Left>
 nnoremap gP :Dispatch! gist -Pcd ""<Left>
 
 " asynchrous git operations
-command! GitPush Dispatch! git push
-command! GitPull Dispatch! git pull
+nnoremap vr :Dispatch! git push<CR>
+nnoremap vu :Dispatch! git pull<CR>
 
-" Single file C++ compilation with different flags
-command! GppSimple Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %
-command! GppSingle Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GppOpenmp Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GppMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GppHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GppArmadillo Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
-
-" Single file C compilation with different flags
-command! GccSimple Dispatch! cd %:p:h <bar> gcc -Wall -g -o %:p:r.out %
-command! GccSingle Dispatch! cd %:p:h <bar> gcc! -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GccOpenmp Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GccMpi Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %
-command! GccHybrid Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpicc -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %
-command! GccArmadillo Dispatch! cd %:p:h <bar> gcc -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %
-
-" count the number of words in the document
-command! TexCount Dispatch! texcount %
-
-" convert markdown to other formats
-command! ConvertToPDF Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf
-command! ConvertToOrg Dispatch! pandoc % -o %:r.org
-command! ConvertToRst Dispatch! pandoc % -o %:r.rst
-command! ConvertToLatex Dispatch! pandoc % -o %:r.tex
-command! ConvertToEpub3 Dispatch! pandoc % -o %:r.epub
-command! ConvertToHTML5 Dispatch! pandoc % -o %:r.html
-command! ConvertToOPML Dispatch! multimarkdown -t opml % > %:r.opml
+" Also checkout ftplugin files
 
 " start rtags when in c or cpp files
 autocmd FileType c,cpp :Dispatch! rdm &<CR>
