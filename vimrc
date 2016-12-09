@@ -101,8 +101,6 @@ vnoremap <silent> < <gv
 nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
-" Remove the highlights
-nnoremap <Space>h :nohl<CR>
 " set compiler
 nnoremap gC :compiler<Space>
 " Navigate in insert mode
@@ -374,19 +372,6 @@ set grepprg=grep\ -nH\ $*
 " Jump directly to the end of huge lists instead of paging
 set nomore
 
-" Maps without leader {{{2
-" Auto-center
-nnoremap <silent> n nzz
-nnoremap <silent> g* g*Nzz
-nnoremap <silent> g# :lvim //%<CR>
-" Make '*' act a little better
-nnoremap <silent> * *N
-nnoremap <silent> # *N:lvimgrep // %<CR>
-
-" Search for word under visual selection
-vnoremap * y/<C-R>"<CR>N
-vnoremap # y?<C-R>"<CR>N:lvimgrep // %<CR>
-
 " Functions {{{2
 
 " make list-like commands more intuitive
@@ -432,6 +417,18 @@ cnoremap <expr> <CR> CCR()
 
 " use global search
 nnoremap g/ :g//#<Left><Left>
+
+" Automatically disable search highlighting {{{2
+Plug 'junegunn/vim-slash'
+
+" Maps without leader {{{2
+" Auto-center
+nnoremap <silent> g# :lvim //%<CR>
+" Make '*' act a little better
+nnoremap <silent> # *N:lvimgrep // %<CR>
+
+" Search for word under visual selection
+vnoremap # y?<C-R>"<CR>N:lvimgrep // %<CR>
 
 " Vim grepper plugin {{{2
 Plug 'mhinz/vim-grepper', {'on': ['Grepper', '<Plug>(GrepperOperator)']}
@@ -1421,7 +1418,7 @@ nnoremap sm :Make! %<CR>
 nnoremap vm :Make -C build<CR>
 nnoremap vo :Make -C build doc<CR>
 nnoremap vr :Make -C docs/latex<CR>
-nnoremap <Space>m :Dispatch!<Space>
+nnoremap <Space>h :Dispatch!<Space>
 nnoremap <silent> <Space>o :Copen<CR>
 
 " Dispatch based commands {{{4
