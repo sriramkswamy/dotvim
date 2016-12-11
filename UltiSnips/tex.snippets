@@ -74,7 +74,7 @@ snippet use "usepackage" b
 \usepackage${2:[$0]}{$1}
 endsnippet
 
-snippet grappath "graphics path" b
+snippet grapp "graphics path" b
 \graphicspath{$1}
 $0
 endsnippet
@@ -147,7 +147,7 @@ snippet hl "hline" b
 $0
 endsnippet
 
-snippet newc "newcolumn" i
+snippet nc "newcolumn" i
 p{${1:4}cm}${2:|}$0
 endsnippet
 
@@ -303,7 +303,7 @@ snippet kpa "kilo Pascal" i
 \kilo\pascal
 endsnippet
 
-snippet newp "newpage" b
+snippet np "newpage" b
 \newpage
 
 $0
@@ -331,7 +331,7 @@ snippet xii "xi" i
 \xi
 endsnippet
 
-snippet rhoo "rho" i
+snippet ro "rho" i
 \rho
 endsnippet
 
@@ -347,7 +347,7 @@ snippet alp "alpha" i
 \alpha
 endsnippet
 
-snippet betaa "beta" i
+snippet bet "beta" i
 \beta
 endsnippet
 
@@ -355,7 +355,7 @@ snippet gam "gamma" i
 \gamma
 endsnippet
 
-snippet chii "chi" i
+snippet ch "chi" i
 \chi
 endsnippet
 
@@ -391,7 +391,7 @@ snippet ep "epsilon" i
 \epsilon
 endsnippet
 
-snippet tauu "tau" i
+snippet ta "tau" i
 \tau
 endsnippet
 
@@ -415,19 +415,19 @@ snippet Ep "Epsilon" i
 \Epsilon
 endsnippet
 
-snippet psii "psi" i
+snippet ps "psi" i
 \psi
 endsnippet
 
-snippet Psii "PSI" i
+snippet Ps "PSI" i
 \Psi
 endsnippet
 
-snippet Phii "Phi" i
+snippet Ph "Phi" i
 \Phi
 endsnippet
 
-snippet phii "phi" i
+snippet ph "phi" i
 \phi
 endsnippet
 
@@ -443,11 +443,11 @@ snippet Om "Omega" i
 \Omega
 endsnippet
 
-snippet Tauu "Tau" i
+snippet Ta "Tau" i
 \mathrm{T}
 endsnippet
 
-snippet Ga "Gamma" i
+snippet Gam "Gamma" i
 \Gamma
 endsnippet
 
@@ -468,19 +468,15 @@ snippet xs "times" i
 endsnippet
 
 snippet inf "infinity" i
-_{\infty}
-endsnippet
-
-snippet infy "infinity" i
 \infty
 endsnippet
 
-snippet partiall "partial" i
+snippet par "partial" i
 \partial{$1}$0
 endsnippet
 
-snippet partialsq "partial^2" i
-\partial^2{$1}$0
+snippet parp "partial power" i
+\partial^{${1:2}}{$2}$0
 endsnippet
 
 snippet dif "differential" i
@@ -491,11 +487,11 @@ snippet Dif "Differential" i
 \mathrm{D}{$1}$0
 endsnippet
 
-snippet DifDif "Double Differential" i
+snippet Difp "Differential power" i
 \mathrm{D}^2{$1}$0
 endsnippet
 
-snippet difdif "double differential" i
+snippet difp "differential power" i
 \mathrm{d}^2{$1}$0
 endsnippet
 
