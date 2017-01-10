@@ -36,6 +36,17 @@ nmap mj <Plug>(vimtex-toggle-main)
 " count the number of words
 nnoremap <buffer> mw :VimtexCountWords<CR>
 
+" matchit like functionality
+nmap <buffer> % <Plug>(vimtex-%)
+" navigation functionality
+nmap <buffer> ]] <Plug>(vimtex-]])
+" navigation functionality
+nmap <buffer> ][ <Plug>(vimtex-][)
+" navigation functionality
+nmap <buffer> [[ <Plug>(vimtex-[[)
+" navigation functionality
+nmap <buffer> [] <Plug>(vimtex-[])
+
 " specifiying the main file
 nnoremap <buffer> mf :normal! o%!TEX root = <CR>A
 

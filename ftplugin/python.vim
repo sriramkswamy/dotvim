@@ -48,6 +48,8 @@ nnoremap <buffer> mv :let @m = expand('<cword>') . ".size"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> ml :let @m = "len(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " get the type of the object
 nnoremap <buffer> mw :let @m = "type(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+" get the type of the object
+vnoremap <buffer> mw "my:let @m = "type(<C-R>m)"<CR>:TxSend(@m)<CR>
 " get the type of the object (from space to space)
 nnoremap <buffer> mW :let @m = "type(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
 " get the sum of the matrix/object
@@ -64,3 +66,7 @@ nnoremap <buffer> mal :let @m = "locals()"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mag :let @m = "globals()"<CR>:TxSend(@m)<CR>
 " list all globals
 nnoremap <buffer> mas :let @m = "dir()"<CR>:TxSend(@m)<CR>
+
+" plotting
+" line plot
+nnoremap <buffer> mfp :let @m = "plt.plot(" . expand('<cword>') . "); plt.show()"<CR>:TxSend(@m)<CR>

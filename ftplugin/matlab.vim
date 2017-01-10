@@ -1,12 +1,12 @@
-" normal syntax support
- CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
- CompilerSet errorformat=
-                \%-P==========\ %f\ ==========,
-                \%-G%>==========\ %s\ ==========,
-                \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
-                \L\ %l\ (C\ %c):\ %m,
-                \L\ %l\ (C\ %c-%*[0-9]):\ %m,
-                \%-Q
+" " normal syntax support
+"  CompilerSet makeprg=/Applications/MATLAB_R2016a.app/bin/maci64/mlint\ -id\ %\ %<
+"  CompilerSet errorformat=
+"                 \%-P==========\ %f\ ==========,
+"                 \%-G%>==========\ %s\ ==========,
+"                 \%-G%>L\ %l\ (C\ %c):\ MDOTM%m,
+"                 \L\ %l\ (C\ %c):\ %m,
+"                 \L\ %l\ (C\ %c-%*[0-9]):\ %m,
+"                 \%-Q
 
 " matlab support - sort of
 nnoremap <buffer> J :find <C-R><C-W><CR>
