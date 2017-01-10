@@ -109,6 +109,7 @@ nnoremap gC :compiler<Space>
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
 inoremap <silent> <C-f> <right>
+inoremap <silent> <C-b> <left>
 inoremap <silent> <C-z> <Esc>zza
 " Insert mode navigation similar to <C-g>j and <C-g>k
 inoremap <silent> <C-g>l <right>
@@ -360,6 +361,7 @@ nnoremap cu :Rooter<CR>
 Plug 'scrooloose/nerdtree', {'on': ['NERDTreeToggle', 'NERDTree']}
 nnoremap <silent> <Space>n :NERDTreeToggle<CR>
 nnoremap vx :NERDTree ~/Dropbox/PhD<CR>
+nnoremap sx :NERDTree ~/.vim/session/<CR>
 
 " Searching {{{1
 
@@ -1046,9 +1048,9 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
-" Aggregate completions {{{2
-Plug 'maxboisvert/vim-simple-complete'
-let g:vsc_tab_complete = 0
+" " Aggregate completions {{{2
+" Plug 'maxboisvert/vim-simple-complete'
+" let g:vsc_tab_complete = 0
 
 " Language helpers {{{1
 
@@ -1062,6 +1064,7 @@ let g:vimtex_fold_manual = 1
 let g:vimtex_text_obj_enabled = 0
 let g:vimtex_imaps_enabled = 0
 let g:vimtex_motion_enabled = 1
+let g:vimtex_mappings_enabled = 0
 
 " C/C++ {{{2
 " Autocompletion
@@ -1309,7 +1312,7 @@ let g:tmuxify_run = {
 " put me in an easy editing modes
 nnoremap m, :TxSend<CR><C-P>
 nnoremap m. :TxSend<CR><C-R><C-W>
-nnoremap m/ :TxSend<CR><C-F>
+nnoremap m/ :TxSend<CR><C-P><C-F>
 nnoremap m<Space> :TxSend<CR><C-R><C-W><C-F>
 " pane changes
 nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
