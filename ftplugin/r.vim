@@ -48,8 +48,8 @@ nmap <buffer> m~ <Plug>RSetwd
 " other useful commands
 " clear screen
 nmap <buffer> mc <Plug>RClearConsole
-" exit R
-nmap <buffer> mmx <Plug>RClearAll
+" clear everything
+nmap <buffer> mC <Plug>RClearAll
 
 " debug helpers
 " set breakpoint at the current line
