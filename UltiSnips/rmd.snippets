@@ -1,0 +1,109 @@
+snippet yml "yaml properties" b
+---
+title: ${1:title}
+author: ${2:author}
+---
+
+$0
+endsnippet
+
+snippet h1 "heading 1" b
+# $1
+
+$0
+endsnippet
+
+snippet h2 "heading 1" b
+## $1
+
+$0
+endsnippet
+
+snippet h3 "heading 1" b
+### $1
+
+$0
+endsnippet
+
+snippet h4 "heading 1" b
+#### $1
+
+$0
+endsnippet
+
+snippet h5 "heading 1" b
+##### $1
+
+$0
+endsnippet
+
+snippet h6 "heading 1" b
+###### $1
+
+$0
+endsnippet
+
+snippet qu "block quote" b
+> $1
+endsnippet
+
+snippet ul "unordered list" b
+* $1
+endsnippet
+
+snippet ol "ordered list" b
+${1:1}. $2
+endsnippet
+
+snippet hr "horizontal rule" b
+***
+
+$1
+endsnippet
+
+snippet link "links"
+[${1:description}](${2:url})$3
+endsnippet
+
+snippet linkr "reference links"
+[${1:description}][${2:ref_id}]$3
+endsnippet
+
+snippet id "id for the reference" b
+[${0:id}]: ${1:url}
+endsnippet
+
+snippet it "italics"
+*$1*$0
+endsnippet
+
+snippet bold "bold"
+**$1**$0
+endsnippet
+
+snippet cd "backtick code"
+\`$1\` $2
+endsnippet
+
+snippet cb "backtick code"
+\`\`\`{${1:r}${2: ${3:options}}}
+$0
+\`\`\`
+endsnippet
+
+snippet img "image inline" b
+![${1:alt_text}](${2:url/path}) $3
+endsnippet
+
+snippet refimg "reference image"
+[${1:alt_text}][${2:ref_id}]$3
+endsnippet
+
+snippet autolink "automatic link"
+<${1:url}> $2
+endsnippet
+
+snippet tda "3 dashes" i
+---
+endsnippet
+
