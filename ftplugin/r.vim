@@ -5,7 +5,7 @@ nnoremap <buffer> K :call RAction("help")<CR>
 " what's the object
 nmap <buffer> mh <Plug>RObjectPr
 " show object
-nmap <buffer> m? <Plug>RObjectStr
+nmap <buffer> mH <Plug>RObjectStr
 " show output
 nmap <buffer> ma <Plug>RShowRout
 " open the current variable in csv format
