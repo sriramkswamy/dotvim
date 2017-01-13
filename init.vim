@@ -81,15 +81,15 @@ nnoremap <silent> ww <C-w><C-w>
 " Alternate files
 nnoremap <BS> :b#<CR>
 nnoremap wa :vsp <bar> b#<CR>
+" open file - I have no idea how I got used to this shortcut
+nnoremap vo :e<Space>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
-" Add mark - frees up 'm' which I use for moving stuff
+" Add mark - frees up 'm' which I use for ftplugin maps
 nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
-" Remove the highlights
-nnoremap <Space>h :nohl<CR>
 " set compiler
 nnoremap gC :compiler!<Space>
 " Navigate in insert mode
@@ -128,6 +128,8 @@ nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
 nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
 nnoremap cot :<C-u>set ft=
+nnoremap coR :<C-u>set ft=r<CR>:<C-u>set ft=rmd<CR>
+nnoremap coy :<C-u>set ft?<CR>
 nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
 nnoremap coz :<C-u>set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
 " Clipboard
@@ -391,8 +393,6 @@ Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
-" Prefer tmux for actions
-let g:fzf_prefer_tmux = 1
 " Actions
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
@@ -971,6 +971,7 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
     let g:UltiSnipsListSnippets="<C-l>"
+    nnoremap <silent> yo :UltiSnipsEdit<CR>
 endif
 
 " Version control {{{1
@@ -1155,6 +1156,7 @@ let g:neomake_matlab_mlint_maker = {
             \ }
 let g:neomake_matlab_enabled_makers = ['mlint']
 
+" neomake maker for R {{{3
 let g:neomake_r_lintr_maker = {
             \ 'exe': 'R',
             \ 'args': ['--slave', '--no-restore', '--no-save',
@@ -1333,7 +1335,7 @@ call textobj#user#plugin('markdowncode', { '-': {
             \ 'select-i-function': 'MarkdownCodeI', 'select-i': 'io',
             \ }, })
 function! MarkdownCodeA()
-    call search('^```\s*\w*$', 'bc')
+    call search('^```\s*\[.*\]$\|\s*\w*$\|\s*{.*}$', 'bc')
     normal! 0
     let head_pos = getpos('.')
     normal! j
@@ -1358,17 +1360,17 @@ call textobj#user#plugin('latex', { '-': {
             \ 'select-i-function': 'LatexI', 'select-i': 'ix',
             \ }, })
 function! LatexA()
-    call search('^\\\%[sub]section', 'bc')
+    call search('^\\\%[sub\|subsub]section', 'bc')
     let head_pos = getpos('.')
-    call search('\%$\|\(\n\ze\\\%[sub]section\)', 'c')
+    call search('\%$\|\(\n\ze\\\%[sub\|subsub]section\)', 'c')
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
 function! LatexI()
-    call search('^\\\%[sub]section', 'bc')
+    call search('^\\\%[sub\|subsub]section', 'bc')
     normal! j
     let head_pos = getpos('.')
-    call search('\%$\|\(\n\ze\\\%[sub]section\)', 'c')
+    call search('\%$\|\(\n\ze\\\%[sub\|subsub]section\)', 'c')
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
@@ -1421,6 +1423,32 @@ function! HexocodeI()
     return ['v', head_pos, tail_pos]
 endfunction
 
+" Rmarkdown code text object - (operator)ig/ag {{{1
+call textobj#user#plugin('hexocode', { '-': {
+            \ 'select-a-function': 'RmdA', 'select-a': 'ag',
+            \ 'select-i-function': 'RmdI', 'select-i': 'ig',
+            \ }, })
+function! RmdA()
+    call search('^```\s*{.*}$', 'bc')
+    normal! 0
+    let head_pos = getpos('.')
+    normal! j
+    call search('^```$', 'c')
+    normal! $
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+function! RmdI()
+    call search('^```\s*{.*}$', 'bc')
+    normal! j0
+    let head_pos = getpos('.')
+    call search('^```$', 'c')
+    normal! k$
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+
+" create an operator to send things to tmux {{{1
 " create an object to send things to tmux {{{1
 map ms <Plug>(operator-tmuxify-send)
 call operator#user#define('tmuxify-send', 'OperatorTmuxifySend')

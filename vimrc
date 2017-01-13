@@ -99,7 +99,7 @@ nnoremap vo :e<Space>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
-" Add mark - frees up 'm' which I use for moving stuff
+" Add mark - frees up 'm' which I use for ftplugin maps
 nnoremap + m
 " Repeat the last macro instead of ex-mode
 nnoremap Q @@
@@ -141,6 +141,7 @@ nnoremap cop :<C-u>setlocal paste!<CR>:set paste?<CR>
 nnoremap cor :<C-u>setlocal relativenumber!<CR>:set relativenumber?<CR>
 nnoremap cos :<C-u>setlocal spell!<CR>:set spell?<CR>
 nnoremap cot :<C-u>set ft=
+nnoremap coR :<C-u>set ft=r<CR>:<C-u>set ft=rmd<CR>
 nnoremap coy :<C-u>set ft?<CR>
 nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
 nnoremap coz :<C-u>set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
@@ -227,7 +228,7 @@ nnoremap gV :UnicodeSearch<Space>
 " Path for the builtin 'find' command
 set path=.,**
 " Tags for movement
-set tags=./tags;,tags;
+set tags=./tags;,tags; " neovim default
 " '%' matching
 runtime macros/matchit.vim
 set showmatch
@@ -415,8 +416,6 @@ Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
-" Prefer tmux for actions
-let g:fzf_prefer_tmux = 1
 " Actions
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
@@ -517,11 +516,11 @@ set nowrap
 set linebreak
 set nolist
 " Use backspace for multiple purposes while moving
-set backspace=indent,eol,start
+set backspace=indent,eol,start " neovim default
 " Indentation
-set autoindent
-set smartindent
-set smarttab
+set autoindent " neovim default
+set smartindent " neovim default
+set smarttab " neovim default
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -1391,17 +1390,17 @@ call textobj#user#plugin('latex', { '-': {
             \ 'select-i-function': 'LatexI', 'select-i': 'ix',
             \ }, })
 function! LatexA()
-    call search('^\\\%[sub]section', 'bc')
+    call search('^\\\%[sub\|subsub]section', 'bc')
     let head_pos = getpos('.')
-    call search('\%$\|\(\n\ze\\\%[sub]section\)', 'c')
+    call search('\%$\|\(\n\ze\\\%[sub\|subsub]section\)', 'c')
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
 function! LatexI()
-    call search('^\\\%[sub]section', 'bc')
+    call search('^\\\%[sub\|subsub]section', 'bc')
     normal! j
     let head_pos = getpos('.')
-    call search('\%$\|\(\n\ze\\\%[sub]section\)', 'c')
+    call search('\%$\|\(\n\ze\\\%[sub\|subsub]section\)', 'c')
     let tail_pos = getpos('.')
     return ['v', head_pos, tail_pos]
 endfunction
@@ -1454,7 +1453,32 @@ function! HexocodeI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-" create an object to send things to tmux {{{1
+" Rmarkdown code text object - (operator)ig/ag {{{1
+call textobj#user#plugin('hexocode', { '-': {
+            \ 'select-a-function': 'RmdA', 'select-a': 'ag',
+            \ 'select-i-function': 'RmdI', 'select-i': 'ig',
+            \ }, })
+function! RmdA()
+    call search('^```\s*{.*}$', 'bc')
+    normal! 0
+    let head_pos = getpos('.')
+    normal! j
+    call search('^```$', 'c')
+    normal! $
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+function! RmdI()
+    call search('^```\s*{.*}$', 'bc')
+    normal! j0
+    let head_pos = getpos('.')
+    call search('^```$', 'c')
+    normal! k$
+    let tail_pos = getpos('.')
+    return ['v', head_pos, tail_pos]
+endfunction
+
+" create an operator to send things to tmux {{{1
 map ms <Plug>(operator-tmuxify-send)
 call operator#user#define('tmuxify-send', 'OperatorTmuxifySend')
 function! OperatorTmuxifySend(motion_wise)
