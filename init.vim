@@ -1049,8 +1049,8 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Aggregate completions {{{2
-Plug 'maxboisvert/vim-simple-complete'
-let g:vsc_tab_complete = 0
+Plug 'Shougo/deoplete.nvim'
+let g:deoplete#enable_at_startup = 1
 
 " Language helpers {{{1
 
