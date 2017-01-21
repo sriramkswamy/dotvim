@@ -1,18 +1,18 @@
 " rtags
 " jump to parent
-nnoremap <buffer> <Space>mp :call rtags#JumpToParent()<CR>
+nnoremap <buffer> mu :call rtags#JumpToParent()<CR>
 " find reference
-nnoremap <buffer> <Space>mr :call rtags#FindRefsOfWordUnderCursor()<CR>
+nnoremap <buffer> mk :call rtags#FindRefsOfWordUnderCursor()<CR>
 " find symbol
-nnoremap <buffer> <Space>my :call rtags#FindSymbolsOfWordUnderCursor()<CR>
+nnoremap <buffer> mj :call rtags#FindSymbolsOfWordUnderCursor()<CR>
 " find virtuals
-nnoremap <buffer> <Space>mv :call rtags#FindVirtuals()<CR>
+nnoremap <buffer> mv :call rtags#FindVirtuals()<CR>
 " reindex file
-nnoremap <buffer> <Space>mx :call rtags#ReindexFile()<CR>
+nnoremap <buffer> mx :call rtags#ReindexFile()<CR>
 " rename symbol
-nnoremap <buffer> <Space>mn :call rtags#RenameSymbolUnderCursor()<CR>
+nnoremap <buffer> mn :call rtags#RenameSymbolUnderCursor()<CR>
 " list projects
-nnoremap <buffer> <Space>ml :call rtags#ProjectList()<CR>
+nnoremap <buffer> ml :call rtags#ProjectList()<CR>
 " jump
 nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
 " information

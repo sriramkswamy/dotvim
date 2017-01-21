@@ -116,8 +116,8 @@ inoremap <silent> <C-g>l <right>
 inoremap <silent> <C-g>h <left>
 inoremap <silent> <C-g><C-l> <right>
 inoremap <silent> <C-g><C-h> <left>
-" Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
-inoremap <silent> <C-o> <C-x><C-o>
+" Omnicomplete - don't use this if you need <C-n> (<C-p> is a superset)
+inoremap <silent> <C-n> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-u> (also useful...I prefer <Esc>cc)
 inoremap <silent> <C-u> <C-x><C-u>
 " Tag complete - don't use this if you need <C-]> (but...why?)
@@ -225,7 +225,7 @@ nmap ga <Plug>(UnicodeGA)
 nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
-nnoremap <C-v> <C-k>
+inoremap <C-v> <C-k>
 
 " File/Buffer navigation {{{1
 
@@ -523,6 +523,7 @@ endfunction
 " Autocmds and let commands for filetypes {{{2
 autocmd BufNewFile,BufReadPost *.rkt,*.rktl set filetype=scheme
 autocmd BufNewFile,BufReadPost *.txt,*.text,*.md,*.mkd,*.markdown set filetype=markdown
+autocmd BufNewFile,BufReadPost CMakeLists.txt set filetype=cmake
 autocmd BufNewFile,BufReadPost *.clj set filetype=clojure
 autocmd BufNewFile,BufReadPost *.jl set filetype=julia
 autocmd BufNewFile,BufReadPost *.m set filetype=matlab
