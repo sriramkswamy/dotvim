@@ -157,6 +157,7 @@ vnoremap <C-y> "*y
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
+cnoremap <C-b> <Left>
 cnoremap <C-n> <Down>
 cnoremap <C-p> <Up>
 " same bindings for merging diffs as in normal mode
@@ -317,6 +318,21 @@ command! LCD lcd %:p:h
 nnoremap cd :LCD<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
+
+" Zoom / Restore window.
+function! s:ZoomToggle() abort
+    if exists('t:zoomed') && t:zoomed
+        execute t:zoom_winrestcmd
+        let t:zoomed = 0
+    else
+        let t:zoom_winrestcmd = winrestcmd()
+        resize
+        vertical resize
+        let t:zoomed = 1
+    endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+nnoremap <silent> Z :ZoomToggle<CR>
 
 " Leader maps {{{2
 
@@ -1223,6 +1239,7 @@ let g:C_UseTool_doxygen = 'yes'
 " terminal
 nnoremap g\ <C-z>
 nnoremap <silent> <Space>e :!tig<CR>
+nnoremap <silent> W :!ranger<CR>
 nnoremap gG :!googler<Space>
 nnoremap <silent> g{ :!googler <cWORD><CR>
 nnoremap <silent> g} :!googler <cword><CR>
@@ -1252,14 +1269,7 @@ command! CopyFilePath let @+ = expand('%:p:h')
 nnoremap ym :CopyFilePath<CR>
 nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
-nnoremap <Space>W :Wall<CR>
-
-" Bulk renaming {{{3
-Plug 'qpkorr/vim-renamer', {'on': ['Renamer', 'Ren', 'RenTest', '<Plug>RenamerStart']}
-nnoremap gW :Renamer<Space>
-nnoremap gw :Ren<CR>
-nnoremap Z :RenTest<CR>
-nmap W <Plug>RenamerStart
+nnoremap gW :Wall<CR>
 
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch', {'on': ['Spawn', 'Start', 'Make', 'Dispatch', 'Copen']}
