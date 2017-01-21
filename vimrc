@@ -162,6 +162,9 @@ cnoremap <C-p> <Up>
 " same bindings for merging diffs as in normal mode
 vnoremap <C-d> :diffput<cr>
 vnoremap <C-e> :diffget<cr>
+" Some convenient maps to edit the current word under the cursor
+nnoremap cn *Ncgn
+nnoremap cN g*Ncgn
 
 " Change guifont
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
@@ -221,6 +224,7 @@ nmap ga <Plug>(UnicodeGA)
 nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
+nnoremap <C-v> <C-k>
 
 " File/Buffer navigation {{{1
 
@@ -361,8 +365,6 @@ nnoremap cu :Rooter<CR>
 " View directory structure - useful sometimes {{{3
 Plug 'scrooloose/nerdtree', {'on': ['NERDTreeToggle', 'NERDTree']}
 nnoremap <silent> <Space>n :NERDTreeToggle<CR>
-nnoremap vx :NERDTree ~/Dropbox/PhD<CR>
-nnoremap sx :NERDTree ~/.vim/session/<CR>
 
 " Searching {{{1
 
@@ -430,7 +432,7 @@ nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space>/ :FzfLines<CR>
 nnoremap <silent> <Space>? :FzfHistory/<CR>
-nnoremap <silent> <Space>y :FzfAg <C-R><C-W><CR>
+nnoremap <silent> <Space>u :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>C :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
@@ -453,7 +455,9 @@ imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>
+nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap sx :enew <bar> cd ~/Dropbox/PhD/meetings/<CR>:e<Space>
+nnoremap <silent> vx :FzfFiles ~/Dropbox/PhD/meetings/<CR>
 
 " Search spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run({
@@ -463,6 +467,12 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ })
 nnoremap <Space>s :FzfSpotlight<Space>
 nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
+
+" Note taking plugin {{{2
+Plug 'Alok/notational-fzf-vim'
+let g:nv_directories = ['~/Dropbox/PhD/notes', '~/Dropbox/PhD/meetings', '~/Dropbox/PhD/jobs']
+let g:nv_default_extension = '.txt'
+nnoremap <C-s> :NV<CR>
 
 " FileTypes {{{1
 
@@ -608,7 +618,6 @@ function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
 inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>a
-nnoremap <C-s> :<C-u>call FixLastSpellingError()<cr>
 
 " Plugins {{{2
 
@@ -1047,9 +1056,14 @@ autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
-" " Aggregate completions {{{2
-" Plug 'maxboisvert/vim-simple-complete'
-" let g:vsc_tab_complete = 0
+" Maps for navigating autocompletion {{{2
+" <C-j> and <C-k> for autocompletion navigation in insert mode
+inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
+
+" Aggregate completions {{{2
+Plug 'maxboisvert/vim-simple-complete'
+let g:vsc_tab_complete = 0
 
 " Language helpers {{{1
 
@@ -1215,14 +1229,6 @@ nnoremap <silent> g} :!googler <cword><CR>
 vnoremap gG :!googler<Space>
 vnoremap <silent> g{ :!googler <cWORD><CR>
 vnoremap <silent> g} :!googler <cword><CR>
-
-" basic tmux integration leader maps {{{2
-if exists('$TMUX')
-    nnoremap <silent> <Space>u :call system("tmux split-window -h")<CR>
-else
-    " dispatch.vim required
-    nnoremap <silent> <Space>u :Spawn<CR>
-endif
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
