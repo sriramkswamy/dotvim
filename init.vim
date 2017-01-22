@@ -461,11 +461,22 @@ command! -nargs=1 FzfSpotlight call fzf#run({
 nnoremap <Space>s :FzfSpotlight<Space>
 nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
 
-" Note taking plugin {{{2
+" Note taking {{{1
+" A la Notational Velocity {{{2
 Plug 'Alok/notational-fzf-vim'
-let g:nv_directories = ['~/Dropbox/PhD/notes', '~/Dropbox/PhD/meetings', '~/Dropbox/PhD/jobs']
+let g:nv_directories = [
+            \ '~/Dropbox/PhD/notes',
+            \ '~/Dropbox/PhD/meetings',
+            \ '~/Dropbox/PhD/jobs',
+            \ '~/Dropbox/org']
 let g:nv_default_extension = '.txt'
 nnoremap <C-s> :NV<CR>
+
+" Universal text linking {{{2
+Plug 'utl.vim'
+
+" Org mode file support {{{2
+Plug 'jceb/vim-orgmode'
 
 " FileTypes {{{1
 
