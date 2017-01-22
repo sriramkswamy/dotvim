@@ -107,3 +107,1123 @@ snippet tda "3 dashes" i
 ---
 endsnippet
 
+# LaTeX snippets
+
+snippet p "preamble" b
+\documentclass[${2:12}pt,a4paper]{${1:article}}
+
+\usepackage[utf8]{inputenc}
+\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage{booktabs}
+\usepackage{cancel}
+\usepackage{caption}
+\usepackage{cleveref}
+\usepackage{colortbl}
+\usepackage{csquotes}
+\usepackage{mathpazo}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.10}
+\usepackage{helvet}
+\usepackage{grffile}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{cite}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[mathscr]{eucal}
+\usepackage{amssymb}
+\usepackage{siunitx}
+\usepackage{chemmacros}
+\usepackage{esint}
+\usepackage{subcaption}
+\usepackage{titlesec}
+\usepackage{epstopdf}
+\usepackage{empheq}
+
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+\definecolor{dark-red}{rgb}{0.4,0.15,0.15}
+\definecolor{dark-blue}{rgb}{0.15,0.15,0.4}
+\definecolor{medium-blue}{rgb}{0,0,0.5}
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\hypersetup{colorlinks,linkcolor={dark-red},citecolor={dark-blue},urlcolor={medium-blue}}
+
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\titleformat{\chapter}[block]
+{\normalfont\huge\bfseries}{\thechapter.}{1em}{\Huge}
+\titlespacing*{\chapter}{0pt}{-19pt}{0pt}
+
+\newcommand{\mychapter}[2]
+{\setcounter{chapter}{#1}
+ \setcounter{section}{0}
+ \chapter*{#2}
+ \addcontentsline{toc}{chapter}{#2}
+}
+
+\pagenumbering{${3:gobble}}
+
+\begin{document}
+
+$0
+
+\end{document}
+endsnippet
+
+snippet use "usepackage" b
+\usepackage${2:[$0]}{$1}
+endsnippet
+
+snippet grapp "graphics path" b
+\graphicspath{$1}
+$0
+endsnippet
+
+snippet ti "title" b
+\title{$1}
+\date{${3:\today}}
+\author{${2:Sriram Krishnaswamy}}
+\maketitle
+
+$0
+endsnippet
+
+snippet se "section" b
+\section${1:*}{$2}
+\label{sec:$3}
+$0
+endsnippet
+
+snippet su "subsection" b
+\subsection${1:*}{$2}
+\label{sub:$3}
+$0
+endsnippet
+
+snippet ssu "subsection" b
+\subsection${1:*}{$2}
+\label{sub:$3}
+$0
+endsnippet
+
+snippet cha "chapter" b
+\chapter${1:*}{$2}
+\label{cha:$3}
+$0
+endsnippet
+
+snippet inp "input file" b
+\input{$1}
+$0
+endsnippet
+
+snippet beg "environment" b
+\begin{$1}
+$2
+\end{$1}
+$0
+endsnippet
+
+snippet tabl "table" b
+\begin{table}[$1]
+\centering
+\begin{tabular}{${2:L}{${3:4}cm}${4:L}{${5:4}cm}$6}
+\toprule
+$9
+\bottomrule
+\end{tabular}
+\caption{$7}
+\label{tab:$8}
+\end{table}
+$0
+endsnippet
+
+snippet and "& when writing columns" i
+& $0
+endsnippet
+
+snippet hl "hline" b
+\hline
+$0
+endsnippet
+
+snippet nc "newcolumn" i
+p{${1:4}cm}${2:|}$0
+endsnippet
+
+snippet incl "include graphics" i
+\includegraphics[scale=${1:1}]{$2}$0
+endsnippet
+
+snippet fig "figure" b
+\begin{figure}[$1]
+${5:\centering}
+$4
+\caption{$2}
+\label{fig:$3}
+\end{figure}
+$0
+endsnippet
+
+snippet sfig "sub figure" b
+\begin{subfigure}[${1:b}]{${2:0.5}\textwidth}
+${6:\centering}
+$5
+\caption{$3}
+\label{sfig:$4}
+\end{subfigure}
+$0
+endsnippet
+
+snippet tik "tikzpicture" b
+\begin{tikzpicture}[scale=${1:1}]
+$2
+\end{tikzpicture}
+$0
+endsnippet
+
+snippet nt "new item" b
+\item $1
+$0
+endsnippet
+
+snippet nd "new description" b
+\item[$1] $2
+$3
+endsnippet
+
+snippet vs "vspace" b
+\vspace{0.25cm}
+$0
+endsnippet
+
+snippet hs "hspace" i
+\hspace{0.25cm} $0
+endsnippet
+
+snippet ma "new line math" b
+\[
+$1
+\]
+$0
+endsnippet
+
+snippet imp "implies" i
+\implies $0
+endsnippet
+
+snippet ther "therefore" i
+\therefore $0
+endsnippet
+
+snippet noi "noindent" b
+\noindent
+$0
+endsnippet
+
+snippet voi "vspace and noindent" b
+\vspace{0.25cm}
+\noindent
+$0
+endsnippet
+
+snippet eqbm "equilibrium" i
+\leftrightharpoons $0
+endsnippet
+
+snippet si "siunitx"
+\si{$1}$0
+endsnippet
+
+snippet kg "kilogram" i
+\kilo\gram
+endsnippet
+
+snippet mps "metre per second" i
+\metre\per\second
+endsnippet
+
+snippet J "joule" i
+\joule
+endsnippet
+
+snippet met "metre" i
+\metre
+endsnippet
+
+snippet sec "second" i
+\second
+endsnippet
+
+snippet cm "centimetre" i
+\centi\metre
+endsnippet
+
+snippet gr "gram" i
+\gram
+endsnippet
+
+snippet per "per" i
+\per
+endsnippet
+
+snippet ki "kilo" i
+\kilo
+endsnippet
+
+snippet ke "kelvin" i
+\kelvin
+endsnippet
+
+snippet squ "square" i
+\square
+endsnippet
+
+snippet cub "cubic" i
+\cubic
+endsnippet
+
+snippet deg "degree" i
+\degree
+endsnippet
+
+snippet Ne "newton" i
+\newton
+endsnippet
+
+snippet hou "hour" i
+\hour
+endsnippet
+
+snippet Pa "Pascal" i
+\pascal
+endsnippet
+
+snippet kpa "kilo Pascal" i
+\kilo\pascal
+endsnippet
+
+snippet np "newpage" b
+\newpage
+
+$0
+endsnippet
+
+snippet toc "table of contents" b
+\tableofcontents
+
+$0
+endsnippet
+
+snippet lof "list of figures" b
+\listoffigures
+
+$0
+endsnippet
+
+snippet lot "list of tables" b
+\listoftables
+
+$0
+endsnippet
+
+snippet xii "xi" i
+\xi
+endsnippet
+
+snippet ro "rho" i
+\rho
+endsnippet
+
+snippet sig "sigma" i
+\sigma
+endsnippet
+
+snippet Sig "Sigma" i
+\Sigma
+endsnippet
+
+snippet alp "alpha" i
+\alpha
+endsnippet
+
+snippet bet "beta" i
+\beta
+endsnippet
+
+snippet gam "gamma" i
+\gamma
+endsnippet
+
+snippet ch "chi" i
+\chi
+endsnippet
+
+snippet nuu "nu" i
+\nu
+endsnippet
+
+snippet lap "laplacian" i
+\nabla^2
+endsnippet
+
+snippet lam "lambda" i
+\lambda
+endsnippet
+
+snippet muu "mu" i
+\mu
+endsnippet
+
+snippet io "iota" i
+\iota
+endsnippet
+
+snippet ka "kappa" i
+\kappa
+endsnippet
+
+snippet fora "for all"
+\forall
+endsnippet
+
+snippet ep "epsilon" i
+\epsilon
+endsnippet
+
+snippet ta "tau" i
+\tau
+endsnippet
+
+snippet Tha "Theta" i
+\Theta
+endsnippet
+
+snippet tha "theta" i
+\theta
+endsnippet
+
+snippet de "delta" i
+\delta
+endsnippet
+
+snippet De "Delta" i
+\Delta
+endsnippet
+
+snippet Ep "Epsilon" i
+\Epsilon
+endsnippet
+
+snippet ps "psi" i
+\psi
+endsnippet
+
+snippet Ps "PSI" i
+\Psi
+endsnippet
+
+snippet Ph "Phi" i
+\Phi
+endsnippet
+
+snippet ph "phi" i
+\phi
+endsnippet
+
+snippet nab "nabla" i
+\nabla
+endsnippet
+
+snippet om "omega" i
+\omega
+endsnippet
+
+snippet Om "Omega" i
+\Omega
+endsnippet
+
+snippet Ta "Tau" i
+\mathrm{T}
+endsnippet
+
+snippet Gam "Gamma" i
+\Gamma
+endsnippet
+
+snippet grad "gradient" i
+\nabla {$1}$0
+endsnippet
+
+snippet div "divergence" i
+\nabla \cdot {$1}$0
+endsnippet
+
+snippet cu "curl" i
+\nabla \times {$1}$0
+endsnippet
+
+snippet xs "times" i
+\times $0
+endsnippet
+
+snippet inf "infinity" i
+\infty
+endsnippet
+
+snippet par "partial" i
+\partial{$1}$0
+endsnippet
+
+snippet parp "partial power" i
+\partial^{${1:2}}{$2}$0
+endsnippet
+
+snippet dif "differential" i
+\mathrm{d}{$1}$0
+endsnippet
+
+snippet Dif "Differential" i
+\mathrm{D}{$1}$0
+endsnippet
+
+snippet Difp "Differential power" i
+\mathrm{D}^2{$1}$0
+endsnippet
+
+snippet difp "differential power" i
+\mathrm{d}^2{$1}$0
+endsnippet
+
+snippet fr "fraction" i
+\frac{$1}{$2}$0
+endsnippet
+
+snippet emp "emphasize" i
+\emph{$1}$0
+endsnippet
+
+snippet bf "boldface" i
+\textbf{$1}$0
+endsnippet
+
+snippet it "italic" i
+\textit{$1}$0
+endsnippet
+
+snippet tt "typewriter" i
+\texttt{$1}$0
+endsnippet
+
+snippet un "underline" i
+\underline{$1}$0
+endsnippet
+
+snippet lim "limit" i
+\lim_{{$1} \to {$2}} {$3} $0
+endsnippet
+
+snippet int "integral" i
+\int_{$1}^{$2} \! {$3} \, \mathrm{d}{$4} $0
+endsnippet
+
+snippet doin "double integral" i
+\iint\limits_{$1} \! {$2} \, \mathrm{d}{$3} $0
+endsnippet
+
+snippet triin "triple integral" i
+\iiint\limits_{$1} \! {$2} \, \mathrm{d}{$3} $0
+endsnippet
+
+snippet cycin "cyclic integral" i
+\oint_{$1} \! {$2} \, \mathrm{d} {$3} $0
+endsnippet
+
+snippet ci "cite" i
+~\cite{$1}$0
+endsnippet
+
+snippet ref "reference" i
+~\ref{$1}$0
+endsnippet
+
+snippet link "hyperlink"
+\href{$2}{$1}$0
+endsnippet
+
+snippet frabox "framebox" b
+\begin{center}
+\framebox{$1}
+\end{center}
+$0
+endsnippet
+
+snippet sum "summation" i
+\sum\limits_{$1}^{$2} {$3} $0
+endsnippet
+
+snippet prod "product" i
+\prod\limits_{$1}^{$2} {$3} $0
+endsnippet
+
+snippet vec "vector" i
+\vec{$1}$0
+endsnippet
+
+snippet dot "dot above the expression" i
+\dot{$1}$0
+endsnippet
+
+snippet . "dot product"
+\cdot $0
+endsnippet
+
+snippet cs "cdots"
+\cdots $0
+endsnippet
+
+snippet - "dash"
+--- $0
+endsnippet
+
+snippet ab "abs" i
+\left| $1 \right| $0
+endsnippet
+
+snippet tens "double right harpoon for tensor" i
+\stackrel{\leftrightarrow}{$1}$0
+endsnippet
+
+snippet hat "hat" i
+\hat{$1}$0
+endsnippet
+
+snippet ne "not equal to"
+\neq $0
+endsnippet
+
+snippet pf "partial fraction" i
+\frac{\partial{$1}}{\partial{$2}}$0
+endsnippet
+
+snippet df "differential fraction" i
+\frac{\mathrm{d}{$1}}{\mathrm{d}{$2}}$0
+endsnippet
+
+snippet DF "Differential Fraction" i
+\frac{\mathrm{D}{$1}}{\mathrm{D}{$2}}$0
+endsnippet
+
+snippet pff "double partial fraction" i
+\frac{\partial^2 {$1}}{\partial {$2}^2}$0
+endsnippet
+
+snippet dff "double differential fraction" i
+\frac{\mathrm{d}^2{$1}}{\mathrm{d}{$2}^2}$0
+endsnippet
+
+snippet DFF "double differential fraction" i
+\frac{\mathrm{D}^2{$1}}{\mathrm{D}{$2}^2}$0
+endsnippet
+
+snippet ls "ldots"
+\ldots $0
+endsnippet
+
+snippet kd "kroenecker delta" i
+\delta_{${1:ij}} $0
+endsnippet
+
+snippet aut "alternating unit tensor" i
+\epsilon_{${1:ijk}} $0
+endsnippet
+
+snippet etaa "eta" i
+\eta
+endsnippet
+
+snippet sameas "equivalent symbol" i
+\equiv $0
+endsnippet
+
+snippet eval "evaluated at" i
+{\biggr \rvert}_{$1}^{$2} $0
+endsnippet
+
+snippet ssq "scaled brackets" i
+\left[ $1 \right]$0
+endsnippet
+
+snippet ssp "scaled paranthesis" i
+\left( $1 \right)$0
+endsnippet
+
+snippet ssb "scaled curly brackets" i
+\left{ $1 \right}$0
+endsnippet
+
+snippet ssa "scaled angles" i
+\langle $1 \rangle$0
+endsnippet
+
+snippet ssd "scaled double bar" i
+\left| $1 \right|$0
+endsnippet
+
+snippet rt "square root" i
+\sqrt{$1}
+endsnippet
+
+snippet cos "cosine" i
+\cos{$1}
+endsnippet
+
+snippet sin "sine" i
+\sin{$1}
+endsnippet
+
+snippet tan "tangent" i
+\tan{$1}
+endsnippet
+
+snippet cosh "hyperbolic cosine" i
+\cosh{$1}
+endsnippet
+
+snippet sinh "hyperbolic sine" i
+\sinh{$1}
+endsnippet
+
+snippet tanh "hyperbolic tangent" i
+\tanh{$1}
+endsnippet
+
+snippet pii "pi" i
+\pi
+endsnippet
+
+snippet Pii "PI" i
+\Pi
+endsnippet
+
+snippet pri "prime" i
+\prime
+endsnippet
+
+snippet pr "prime power" i
+^{\prime}
+endsnippet
+
+snippet sini "sin inverse" i
+\sin^{-1}{$1}
+endsnippet
+
+snippet cosi "cos inverse" i
+\cos^{-1}{$1}
+endsnippet
+
+snippet tani "tan inverse" i
+\tan^{-1}{$1}
+endsnippet
+
+snippet sinhi "hyperbolic sin inverse" i
+\sinh^{-1}{$1}
+endsnippet
+
+snippet coshi "hyperbolic cos inverse" i
+\cosh^{-1}{$1}
+endsnippet
+
+snippet tanhi "hyperbolic tan inverse" i
+\tanh^{-1}{$1}
+endsnippet
+
+snippet newl "newline" i
+\newline
+$0
+endsnippet
+
+snippet app "approximately symbol" i
+\approx $1
+endsnippet
+
+snippet prop "proportional symbol" i
+\propto
+endsnippet
+
+snippet sim "similar symbol" i
+\sim
+endsnippet
+
+snippet acol "add column" i
+${1:L}{${2:4}cm}${3:|}$0
+endsnippet
+
+snippet mi "inline math"
+$$1$ $0
+endsnippet
+
+snippet dev "deviatoric" i
+d_{${1:ij}}$0
+endsnippet
+
+snippet fot "fourth order tensor" i
+B_{ijkl}$0
+endsnippet
+
+snippet bar "bar/average" i
+\bar{$1}$0
+endsnippet
+
+snippet pwise "piecewise function definition" b
+\[
+$1 =
+\begin{cases}
+	\hfill $2 \hfill & \text{, \hspace{0.25cm} $3} \\\\
+	\hfill $4 \hfill & \text{, \hspace{0.25cm} $5} \\\\
+\end{cases}
+\]
+$0
+endsnippet
+
+snippet exam "example" b
+\begin{exampleblock} {$1}
+$2
+\end{exampleblock}
+$0
+endsnippet
+
+snippet cos2 "cos square" i
+\cos^2{$1}
+endsnippet
+
+snippet sin2 "sin square" i
+\sin^2{$1}
+endsnippet
+
+snippet tan2 "tan square" i
+\tan^2{$1}
+endsnippet
+
+snippet cosh2 "hyperbolic cos square" i
+\cosh^2{$1}
+endsnippet
+
+snippet sinh2 "hyperbolic sin square" i
+\sinh^2{$1}
+endsnippet
+
+snippet tanh2 "hyperbolic tan square" i
+\tanh^2{$1}
+endsnippet
+
+snippet ff "Friction factor"
+\frac{4 f l^*_{$1}}{D_H}
+endsnippet
+
+snippet iff "if and only if"
+\Leftrightarrow $0
+endsnippet
+
+snippet cccost "Chance constrained cost function" b
+\begin{aligned}
+& \underset{$1}{\text{minimize}}
+& & $2 \\\\
+& \text{subject to}
+& & $3, ${4:\\;} $5, \\\\
+&&& $6.
+\end{aligned}
+endsnippet
+
+snippet ali "aligned equation" b
+\begin{aligned}
+${1:LHS} & = ${2:RHS} \\\\$0
+\end{aligned}
+endsnippet
+
+snippet nal "new alighned line" b
+& = ${1:RHS} \\\\$0
+endsnippet
+
+snippet prob "probability"
+Prob{\left[ $1 \right]} ${2:\leq} $3
+endsnippet
+
+snippet leq "less than or equal to"
+\leq $0
+endsnippet
+
+snippet geq "greater than or equal to"
+\geq $0
+endsnippet
+
+snippet in "belongs to"
+\in $0
+endsnippet
+
+snippet multif "multi part function" b
+\begin{equation*}
+$1 =
+\left\{
+\begin{array}{ll}
+x  & \mbox{if } x \geq 0 \\
+-x & \mbox{if } x < 0
+\end{array}
+\right}
+=
+\end{equation*}
+endsnippet
+
+snippet union "union symbol"
+\cup $0
+endsnippet
+
+snippet inter "intersection symbol"
+\cap $0
+endsnippet
+
+snippet rac "renew command booktabs" b
+\renewcommand{\arraystretch}{$1}}$0
+endsnippet
+
+snippet btab "booktabs table" b
+\begin{table}[${1:h}]
+\centering
+\begin{tabular}{$2}
+\toprule
+$3
+\midrule
+$4
+\bottomrule
+\end{tabular}
+\caption{$5}
+\label{tab:$6}
+\end{table}
+$0
+endsnippet
+
+snippet cmid "cmidrule" b
+\cmidrule{$1}
+$0
+endsnippet
+
+snippet mcol "multicolumn"
+\multicolumn{$1}{$2}{$3} $0
+endsnippet
+
+snippet lstlang "listings language" b
+\lstset{language=${1:python},
+        % basicstyle=\color{red},
+        breaklines=true,
+        morekeywords={matlab2tikz},
+        keywordstyle=\color{blue},
+        morekeywords=[2]{1},
+        keywordstyle=[2]{\color{black}},
+        identifierstyle=\color{black},
+        stringstyle=\color{mylilas},
+        commentstyle=\color{mygreen},
+        showstringspaces=false, %without this there will be a symbol in the places where there is a space
+        numbers=left,
+        numberstyle={\tiny \color{black}}, % size of the numbers
+        numbersep=9pt, % this defines how far the numbers are from the text
+        emph=[1]{for,end,break},
+        emphstyle=[1]\color{red}, %some words to emphasise
+        % emph=[2]{word1,word2}, emphstyle=[2]{style},
+}
+endsnippet
+
+snippet subsubs "sub sub section" b
+\subsubsection${1:*}{$2}
+\label{ssub:$3}
+$0
+endsnippet
+
+snippet lstinp "lstinputlisting" b
+\lstinputlisting{$1}
+$2
+endsnippet
+
+snippet larrow "Left arrow"
+\leftarrow $0
+endsnippet
+
+snippet rarrow "Right arrow"
+\rightarrow $0
+endsnippet
+
+snippet til "tilde"
+\tilde{$1}$0
+endsnippet
+
+snippet ddot "double dot" i
+\ddot{$1}$0
+endsnippet
+
+snippet def "defined as - triangle over equals"
+\triangleq
+endsnippet
+
+snippet mat "matrix"
+\begin{bmatrix}
+$1
+\end{bmatrix}
+$0
+endsnippet
+
+snippet cal "mathcal" i
+\mathcal{$1}$0
+endsnippet
+
+snippet bb "mathbb" i
+\mathbb{$1}$0
+endsnippet
+
+snippet bo "boldsymbol" i
+\boldsymbol{$1}$0
+endsnippet
+
+snippet bigo "bigotimes" i
+\bigotimes\limits_{$1}^{$2} {$3} $0
+endsnippet
+
+snippet oti "otimes" i
+\otimes $0
+endsnippet
+
+snippet up "superscript" i
+^{$1}$0
+endsnippet
+
+snippet dd "subscript" i
+_{$1}$0
+endsnippet
+
+snippet du "both super and sub scripts" i
+_{$1}^{$2}$0
+endsnippet
+
+snippet tx "text" i
+\text{$1}$0
+endsnippet
+
+snippet cc "circle" i
+\circ
+endsnippet
+
+snippet la "label"
+\label{${1:eq:fig:tab:sec:ssec:cha:}}$0
+endsnippet
+
+snippet * "star power" i
+^{*}
+endsnippet
+
+snippet exp "exponential" i
+\exp{$1}$0
+endsnippet
+
+snippet Pr "Prandtl number" i
+\Pr $0
+endsnippet
+
+snippet max "maximum" i
+\max
+endsnippet
+
+snippet sms "small size"
+\small
+endsnippet
+
+snippet hus "huge size"
+\huge
+endsnippet
+
+snippet las "large size"
+\large
+endsnippet
+
+snippet fns "footnote size"
+\footnotesize
+endsnippet
+
+snippet scs "script size"
+\scriptsize
+endsnippet
+
+snippet empheq "emphasize equation" b
+\begin{empheq}[box=\widefbox]{equation${1:*}}
+  $2
+\end{empheq}
+$0
+endsnippet
+
+snippet ln "natural log" i
+\ln{$1}$0
+endsnippet
+
+snippet myc "my chapter" b
+\mychapter{${1:number}}{${2:name}}
+endsnippet
+
+snippet bib "bibliography" b
+\bibliography{$0}
+endsnippet
+
+snippet bibs "bibliography style" b
+\bibliographystyle{$0}
+endsnippet
+
+snippet nl "newline" i
+ \\\\
+$0
+endsnippet
+
+snippet Re "Reynolds number" i
+\text{Re} $0
+endsnippet
+
+snippet wpmpk "Watt per meter per Kelvin" i
+\watt\per\metre\per\kelvin
+endsnippet
+
+snippet wpm2pk "Watt per meter square per Kelvin" i
+\watt\per\square\metre\per\kelvin
+endsnippet
+
+snippet eul "euler script" i
+\mathscr{$1}$0
+endsnippet
+
+snippet stretch "arraystretch" b
+\renewcommand{\arraystretch}{${1:1.5}}$0
+endsnippet
+
+snippet tr "toprule" b
+\toprule
+$0
+endsnippet
+
+snippet br "bottomrule" b
+\bottomrule
+$0
+endsnippet
+
+snippet mr "midrule" b
+\midrule
+$0
+endsnippet
+
+snippet norm "norm of an object"
+\left\Vert $1 \right\Vert $0
+endsnippet
