@@ -443,12 +443,13 @@ let g:fzf_action = {
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> T :FzfTags <C-R><C-W><CR>
+nnoremap <silent> sc :FzfSnippets<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space>/ :FzfLines<CR>
 nnoremap <silent> <Space>? :FzfHistory/<CR>
-nnoremap <silent> <Space>u :FzfAg <C-R><C-W><CR>
+nnoremap <silent> <Space>y :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>C :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
@@ -463,7 +464,6 @@ nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
 nnoremap <silent> <Space>: :FzfHistory:<CR>
 vnoremap <silent> <Space>: :FzfHistory:<CR>
-nnoremap <silent> <C-l> :FzfSnippets<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
@@ -493,14 +493,11 @@ let g:nv_directories = [
             \ '~/Dropbox/PhD/jobs',
             \ '~/Dropbox/org']
 let g:nv_default_extension = '.txt'
-nnoremap <C-s> :NV<CR>
+nnoremap <Space>u :NV<CR>
 
 " Universal text linking {{{2
-Plug 'utl.vim'
-
-" Org mode file support {{{2
-Plug 'jceb/vim-orgmode'
-
+Plug 'sriramkswamy/utl.vim'
+nnoremap gX :Utl<CR>
 
 " FileTypes {{{1
 
