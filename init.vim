@@ -375,8 +375,9 @@ set nomore
 
 " Maps without leader {{{2
 " Populating the location list
-nnoremap <silent> g/ *N:lvimgrep // %<CR>
-nnoremap <silent> g? :lvimgrep // %<CR>
+nnoremap <silent> g* *N:lvimgrep // %<CR>
+nnoremap <silent> g# :lvimgrep // %<CR>
+nnoremap g/ :lvimgrep // %<Left><Left><Left>
 
 " Automatically disable search highlighting {{{2
 Plug 'junegunn/vim-slash'
@@ -475,6 +476,9 @@ nnoremap <Space>u :NV<CR>
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
 nnoremap gX :Utl<CR>
+
+" Org mode syntax support {{{2
+Plug 'sriramkswamy/vim-orgmode'
 
 " FileTypes {{{1
 
@@ -667,6 +671,10 @@ nmap [<Space> <Plug>BlankCharLeft
 nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
 nmap ]<Space> <Plug>BlankCharRight
 
+" Blank characters on both sides {{{4
+nmap <silent> <Plug>BlankCharBoth i la b:call repeat#set("\<Plug>BlankCharBoth", v:count)<CR>
+nmap g<Space> <Plug>BlankCharBoth
+
 " Delete adjacent lines {{{4
 nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
 nmap [x <Plug>DeleteLineUp
@@ -716,6 +724,9 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
 Plug 'AndrewRadev/inline_edit.vim', {'on': 'InlineEdit'}
 nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
+
+" Better date manipulation {{{3
+Plug 'tpope/vim-speeddating'
 
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
