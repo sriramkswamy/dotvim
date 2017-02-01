@@ -116,8 +116,8 @@ inoremap <silent> <C-g>l <right>
 inoremap <silent> <C-g>h <left>
 inoremap <silent> <C-g><C-l> <right>
 inoremap <silent> <C-g><C-h> <left>
-" Omnicomplete - don't use this if you need <C-n> (<C-p> is a superset)
-inoremap <silent> <C-n> <C-x><C-o>
+" Omnicomplete - don't use this if you need <C-o> (useful...I prefer <Esc>)
+inoremap <silent> <C-o> <C-x><C-o>
 " Usercomplete - don't use this if you need <C-u> (also useful...I prefer <Esc>cc)
 inoremap <silent> <C-u> <C-x><C-u>
 " Tag complete - don't use this if you need <C-]> (but...why?)
@@ -444,13 +444,13 @@ let g:fzf_action = {
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> T :FzfTags <C-R><C-W><CR>
+nnoremap <silent> gp :FzfAg <C-R><C-W><CR>
 nnoremap <silent> sc :FzfSnippets<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space>/ :FzfLines<CR>
 nnoremap <silent> <Space>? :FzfHistory/<CR>
-nnoremap <silent> <Space>y :FzfAg <C-R><C-W><CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>C :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
@@ -1061,7 +1061,7 @@ omap ih <Plug>(signify-motion-inner-pending)
 xmap ih <Plug>(signify-motion-inner-visual)
 omap ah <Plug>(signify-motion-outer-pending)
 xmap ah <Plug>(signify-motion-outer-visual)
-nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>
+nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
@@ -1267,6 +1267,21 @@ nnoremap <silent> g} :!googler <cword><CR>
 vnoremap gG :!googler<Space>
 vnoremap <silent> g{ :!googler <cWORD><CR>
 vnoremap <silent> g} :!googler <cword><CR>
+
+" Wunderlist related stuff - install wunderline first
+nnoremap <Space>ya :!wunderline all<CR>
+nnoremap <Space>yo :!wunderline overdue<CR>
+nnoremap <Space>yd :!wunderline done ''<Left>
+nnoremap <Space>ys :!wunderline search ''<Left>
+nnoremap <Space>yl :!wunderline list ''<Left>
+nnoremap <Space>yc :!wunderline add ''<Left>
+nnoremap <Space>yi :!wunderline inbox<CR>
+nnoremap <Space>yr :!wunderline starred<CR>
+nnoremap <Space>yt :!wunderline today<CR>
+nnoremap <Space>ye :!wunderline week<CR>
+nnoremap <Space>yy :!wunderline lists<CR>
+nnoremap <Space>yx :!wunderline export<CR>
+nnoremap <Space>yw :!wunderline whoami<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
