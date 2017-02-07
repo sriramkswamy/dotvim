@@ -1104,6 +1104,25 @@ let g:vsc_tab_complete = 0
 
 " Language helpers {{{1
 
+" set the sign to be placed on the sign column for debuggingg {{{2
+function! SetBreakpoint()
+    " set the breakpoint character and set the breakpoint
+    exe ':sign define mybreakpoint text=◉ '
+    let s:breakpointplaceline = line('.')
+    exe ":sign place" s:breakpointplaceline " line=" . s:breakpointplaceline . " name=mybreakpoint file=" . expand('%:p')
+endfunction
+
+function! UnsetBreakpoint()
+    " remove the breakpoint character
+    let s:breakpointplaceline = line('.')
+    exe ":sign unplace" s:breakpointplaceline
+endfunction
+
+function! RemoveAllBreakpoints()
+    " remove all breakpoints
+    exe ":sign unplace *"
+endfunction
+
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 

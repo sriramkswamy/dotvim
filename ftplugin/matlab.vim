@@ -11,9 +11,11 @@
 " matlab support - sort of
 nnoremap <buffer> J :find <C-R><C-W><CR>
 nnoremap <buffer> K :Dispatch /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>
+
 " debug helpers
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>
 " set breakpoint at the current line
-nnoremap <buffer> mgs :let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
 " step next
 nnoremap <buffer> mgn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
 " debugging status
@@ -23,15 +25,15 @@ nnoremap <buffer> mgi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
 " step out
 nnoremap <buffer> mgo :let @m = "dbstep out"<CR>:TxSend(@m)<CR>
 " unset breakpoint at the current line
-nnoremap <buffer> mgu :let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
 " delete all breakpoints
-nnoremap <buffer> mga :let @m = "dbclear all"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mga :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all"<CR>:TxSend(@m)<CR>
 " continue until next breakpoint or end of program
 nnoremap <buffer> mgc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
 " put me in debug mode if there is an error
 nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
 " quit debugging mode
-nnoremap <buffer> mgq :let @m = "dbquit"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbquit"<CR>:TxSend(@m)<CR>
 " variable viewing
 " show the GUI workspace
 nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>

@@ -64,9 +64,9 @@ nmap <buffer> mC <Plug>RClearAll
 
 " debug helpers
 " set breakpoint at the current line
-nnoremap <buffer> mgs :normal! Obrowser()<CR>j
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Obrowser()<CR>j
 " unset breakpoint at the current line
-nnoremap <buffer> mgu :normal! kdd<CR>
+nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
 " step next
 nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
 " step in
@@ -76,9 +76,9 @@ nnoremap <buffer> mgo :let @m = "f"<CR>:TxSend(@m)<CR>
 " continue until next breakpoint or end of program
 nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
 " unset breakpoint at the current line
-nnoremap <buffer> mga :let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mga :call UnsetBreakpoint()<CR>:let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " delete all breakpoints
-nnoremap <buffer> mgd :let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgd :call SetBreakpoint()<CR>:let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " rerun with debug
 nnoremap <buffer> mgr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mgk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
@@ -86,7 +86,7 @@ nnoremap <buffer> mgk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mgw :let @m = "where"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mgt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
 " quit debugging mode
-nnoremap <buffer> mgq :let @m = "Q"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>
 " quit r
 nnoremap <buffer> mk :let @m = "q()"<CR>:TxSend(@m)<CR>
 " metadata on variables

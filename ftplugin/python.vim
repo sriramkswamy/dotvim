@@ -18,9 +18,9 @@ nnoremap <buffer> mu :let @m = "%reset -f"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mk :let @m = "exit()"<CR>:TxSend(@m)<CR>
 " debugging
 " set break point
-nnoremap <buffer> mgs :normal! Oimport ipdb; ipdb.set_trace()<CR>j
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Oimport ipdb; ipdb.set_trace()<CR>j
 " unset break point
-nnoremap <buffer> mgu :normal! kdd<CR>
+nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
 " next line
 nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
 " step in
@@ -36,7 +36,8 @@ nnoremap <buffer> mgw :let @m = "p self"<CR>:TxSend(@m)<CR>
 " list where i am
 nnoremap <buffer> mgl :let @m = "l"<CR>:TxSend(@m)<CR>
 " quit debugging
-nnoremap <buffer> mgq :let @m = "q"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "q"<CR>:TxSend(@m)<CR>
+
 " metadata
 " get the shape of the matrix/object
 nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>
