@@ -745,7 +745,7 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \ ]
 
 " Emacs like narrowing {{{3
-Plug 'chirsbra/NrrwRgn', {'on': ['NR', 'NW']}
+Plug 'chrisbra/NrrwRgn', {'on': ['NR', 'NW']}
 nnoremap gW :NW<CR>
 " see operator defined later in the file
 

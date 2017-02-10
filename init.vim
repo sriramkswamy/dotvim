@@ -721,7 +721,7 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \ ]
 
 " Emacs like narrowing {{{3
-Plug 'chirsbra/NrrwRgn', {'on': ['NR', 'NW']}
+Plug 'chrisbra/NrrwRgn', {'on': ['NR', 'NW']}
 nnoremap gW :NW<CR>
 " see operator defined later in the file
 
@@ -1591,7 +1591,7 @@ set statusline+=%l      "cursor line/total lines
 set statusline+=\ %P    "percent through file
 set laststatus=2
 set statusline+=\ %{ObsessionStatus()} " vim session status
-" set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus('Fix:\ ')}
+set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus('Fix:\ ')}
 
 "return '[\s]' if trailing white space is detected
 "return '' otherwise
