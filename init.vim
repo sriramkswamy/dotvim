@@ -660,9 +660,9 @@ nmap <silent> <Plug>MoveLineDown :<c-u>execute 'move +'. v:count1<cr>:call repea
 nmap ]e <Plug>MoveLineDown
 
 " Blank line {{{4
-nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
+nmap <silent> <Plug>BlankLineUp :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[j:call repeat#set("\<Plug>BlankLineUp", v:count)<CR>
 nmap [o <Plug>BlankLineUp
-nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
+nmap <silent> <Plug>BlankLineDown :<c-u>put =repeat(nr2char(10), v:count1)<cr>k:call repeat#set("\<Plug>BlankLineDown", v:count)<CR>
 nmap ]o <Plug>BlankLineDown
 
 " Blank character before/after current word {{{4
@@ -720,10 +720,10 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
             \ ]
 
-" Org mode like embedded code editing {{{3
-Plug 'AndrewRadev/inline_edit.vim', {'on': 'InlineEdit'}
-nnoremap <Space>i :InlineEdit<CR>
-vnoremap <Space>i :InlineEdit<CR>
+" Emacs like narrowing {{{3
+Plug 'chirsbra/NrrwRgn', {'on': ['NR', 'NW']}
+nnoremap gW :NW<CR>
+" see operator defined later in the file
 
 " Better date manipulation {{{3
 Plug 'tpope/vim-speeddating'
@@ -1077,7 +1077,7 @@ let g:deoplete#enable_at_startup = 1
 " set the sign to be placed on the sign column for debuggingg {{{2
 function! SetBreakpoint()
     " set the breakpoint character and set the breakpoint
-    exe ':sign define mybreakpoint text=◉ '
+    exe ':sign define mybreakpoint text=◉'
     let s:breakpointplaceline = line('.')
     exe ":sign place" s:breakpointplaceline " line=" . s:breakpointplaceline . " name=mybreakpoint file=" . expand('%:p')
 endfunction
@@ -1163,6 +1163,7 @@ let g:EclimShowQuickfixSigns = 0
 let g:EclimShowLoclistSigns = 0
 let g:EclimShowCurrentError = 1
 let g:EclimShowCurrentErrorBalloon = 0
+let g:EclimJavaDebugLineSignText = '◉'
 
 " Ruby (on Rails) {{{2
 Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
@@ -1249,14 +1250,14 @@ let g:C_UseTool_doxygen = 'yes'
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
 nnoremap g\ :vsplit <bar> terminal<CR>
-nnoremap <silent> <Space>e :terminal tig<CR>
+nnoremap <silent> <Space>e :vsplit <bar> terminal tig<CR>
 nnoremap <silent> W :terminal ranger<CR>
 nnoremap gG :vsp <bar> terminal googler<Space>
-nnoremap <silent> g{ :vsp <bar> terminal googler <cWORD><CR>
-nnoremap <silent> g} :vsp <bar> terminal googler <cword><CR>
+nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
+nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
 vnoremap gG :vsp <bar> terminal googler<Space>
-vnoremap <silent> g{ :vsp <bar> terminal googler <cWORD><CR>
-vnoremap <silent> g} :vsp <bar> terminal googler <cword><CR>
+vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
+vnoremap g} "my:vsp <bar> terminal googler <C-R>m<CR>
 
 " Wunderlist related stuff - install wunderline first
 nnoremap <Space>ya :vsp <bar> terminal wunderline all<CR>
@@ -1295,7 +1296,6 @@ command! CopyFilePath let @+ = expand('%:p:h')
 nnoremap ym :CopyFilePath<CR>
 nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
-nnoremap gW :Wall<CR>
 
 " Dispatch stuff {{{3
 Plug 'tpope/vim-dispatch', {'on': ['Spawn', 'Start', 'Make', 'Dispatch', 'Copen']}
@@ -1520,13 +1520,21 @@ function! RmdI()
 endfunction
 
 " create an operator to send things to tmux {{{1
-" create an object to send things to tmux {{{1
 map ms <Plug>(operator-tmuxify-send)
 call operator#user#define('tmuxify-send', 'OperatorTmuxifySend')
 function! OperatorTmuxifySend(motion_wise)
     let v = operator#user#visual_command_from_wise_name(a:motion_wise)
     execute 'normal!' '`[' . v . '`]"my'
     TxSend(@m)
+endfunction
+
+" create an operator to narrow {{{1
+map gw <Plug>(operator-narrow-region)
+call operator#user#define('narrow-region', 'OperatorNarrowRegion')
+function! OperatorNarrowRegion(motion_wise)
+    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
+    execute 'normal!' '`[' . v . '`]'
+    NR
 endfunction
 
 " Setup plugins, indents and syntax {{{1
