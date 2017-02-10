@@ -1037,6 +1037,7 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
+nnoremap <silent> gG :Glog<CR>
 nnoremap du :Gdiff<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
@@ -1252,10 +1253,8 @@ tnoremap <C-g> <C-\><C-n>
 nnoremap g\ :vsplit <bar> terminal<CR>
 nnoremap <silent> <Space>e :vsplit <bar> terminal tig<CR>
 nnoremap <silent> W :terminal ranger<CR>
-nnoremap gG :vsp <bar> terminal googler<Space>
 nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
 nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
-vnoremap gG :vsp <bar> terminal googler<Space>
 vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
 vnoremap g} "my:vsp <bar> terminal googler <C-R>m<CR>
 
