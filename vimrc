@@ -746,7 +746,7 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
 
 " Emacs like narrowing {{{3
 Plug 'chrisbra/NrrwRgn', {'on': ['NR', 'NW']}
-nnoremap gW :NW<CR>
+nnoremap gW :WidenRegion<CR>
 " see operator defined later in the file
 
 " Better date manipulation {{{3
@@ -1564,7 +1564,7 @@ call operator#user#define('narrow-region', 'OperatorNarrowRegion')
 function! OperatorNarrowRegion(motion_wise)
     let v = operator#user#visual_command_from_wise_name(a:motion_wise)
     execute 'normal!' '`[' . v . '`]'
-    NR
+    execute "'<,'>NarrowRegion"
 endfunction
 
 " Setup plugins, indents and syntax {{{1
