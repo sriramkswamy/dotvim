@@ -1103,6 +1103,9 @@ function! RemoveAllBreakpoints()
     exe ":sign unplace *"
 endfunction
 
+" get all the signs for breakpoints {{{2
+nnoremap ys :sign list mybreakpoint<CR>
+
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 

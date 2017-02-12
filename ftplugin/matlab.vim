@@ -43,6 +43,7 @@ nnoremap <buffer> mj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend
 nnoremap <buffer> mw :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
 " type of the variable (big word)
 nnoremap <buffer> mW :let @m = "whos " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
+
 " metadata on variables
 " size of the variable at point
 nnoremap <buffer> mz :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
@@ -67,7 +68,10 @@ nnoremap <buffer> ma :let @m = "whos"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mfp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " plot the matrix as a mesh plot
 nnoremap <buffer> mfm :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+
 " help
+" add to current path
+nnoremap <buffer> mu :CopyFilePath<CR>:let @m = "addpath('<C-r>*')"<CR>:TxSend(@m)<CR>
 " show brief help on the function at point
 nnoremap <buffer> mh :let @m = "help " . expand('<cword>')<CR>:TxSend(@m)<CR>
 " open the complete GUI documentation of the function at point
