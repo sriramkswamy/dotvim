@@ -486,15 +486,24 @@ nnoremap <Space>s :FzfSpotlight<Space>
 nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
 
 " Note taking {{{1
+
 " A la Notational Velocity {{{2
-Plug 'Alok/notational-fzf-vim'
+Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
 let g:nv_directories = [
+            \ '~/Dropbox/Finances',
             \ '~/Dropbox/PhD/notes',
             \ '~/Dropbox/PhD/meetings',
             \ '~/Dropbox/PhD/jobs',
             \ '~/Dropbox/org']
 let g:nv_default_extension = '.txt'
 nnoremap <Space>u :NV<CR>
+
+" Distraction free writing {{{2
+Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
+Plug 'junegunn/limelight.vim', {'on': ['Goyo', 'Limelight', 'Limelight!']}
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
+nnoremap <silent> dy :Goyo<CR>
 
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
@@ -1286,21 +1295,6 @@ nnoremap g{ :!googler <cWORD><Space>
 nnoremap g} :!googler <cWORD><CR>
 vnoremap <silent> g{ "my:!googler <C-R>m<Space>
 vnoremap <silent> g} "my:!googler <C-R>m<CR>
-
-" Wunderlist related stuff - install wunderline first
-nnoremap <Space>ya :!wunderline all<CR>
-nnoremap <Space>yo :!wunderline overdue<CR>
-nnoremap <Space>yd :!wunderline done ''<Left>
-nnoremap <Space>ys :!wunderline search ''<Left>
-nnoremap <Space>yl :!wunderline list ''<Left>
-nnoremap <Space>yc :!wunderline add ''<Left>
-nnoremap <Space>yi :!wunderline inbox<CR>
-nnoremap <Space>yr :!wunderline starred<CR>
-nnoremap <Space>yt :!wunderline today<CR>
-nnoremap <Space>ye :!wunderline week<CR>
-nnoremap <Space>yy :!wunderline lists<CR>
-nnoremap <Space>yx :!wunderline export<CR>
-nnoremap <Space>yw :!wunderline whoami<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
