@@ -34,6 +34,7 @@ nnoremap <buffer> mgc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
 " quit debugging mode
 nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbquit"<CR>:TxSend(@m)<CR>
+
 " variable viewing
 " show the GUI workspace
 nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>
@@ -71,14 +72,17 @@ nnoremap <buffer> mfm :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)
 
 " help
 " add to current path
-nnoremap <buffer> mu :CopyFilePath<CR>:let @m = "addpath('<C-r>*')"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> my :CopyFilePath<CR>:let @m = "addpath('<C-r>*')"<CR>:TxSend(@m)<CR>
 " show brief help on the function at point
 nnoremap <buffer> mh :let @m = "help " . expand('<cword>')<CR>:TxSend(@m)<CR>
 " open the complete GUI documentation of the function at point
 nnoremap <buffer> mi :let @m = "doc " . expand('<cword>')<CR>:TxSend(@m)<CR>
+
 " other useful commands
 " clear screen
 nnoremap <buffer> mc :let @m = "clc"<CR>:TxSend(@m)<CR>
+" clear variable list
+nnoremap <buffer> mu :let @m = "clear all"<CR>:TxSend(@m)<CR>
 " exit matlab
 nnoremap <buffer> mk :let @m = "exit"<CR>:TxSend(@m)<CR>
 " run the current file

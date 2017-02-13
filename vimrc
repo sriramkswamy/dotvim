@@ -753,6 +753,17 @@ autocmd FileType gitrebase let b:switch_custom_definitions =
             \   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
             \ ]
 
+" Delete/Change checkboxes {{{4
+nmap <silent> <Plug>CompleteCheckBox :call search('[ ', 'c')<CR>:Switch<CR>:call repeat#set("\<Plug>CompleteCheckBox", v:count)<CR>
+nmap c- <Plug>CompleteCheckBox
+nmap <silent> <Plug>DeleteCheckBox :call search('[ ', 'c')<CR>dgn:call repeat#set("\<Plug>DeleteCheckBox", v:count)<CR>
+nmap d- <Plug>DeleteCheckBox
+
+" Org like code block narrowing in markdown {{{3
+Plug 'AndrewRadev/inline_edit.vim'
+nnoremap <Space>i :InlineEdit<CR>
+vnoremap <Space>i :InlineEdit<CR>
+
 " Emacs like narrowing {{{3
 Plug 'chrisbra/NrrwRgn', {'on': ['NR', 'NW']}
 nnoremap gW :WidenRegion<CR>
