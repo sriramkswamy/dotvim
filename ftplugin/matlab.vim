@@ -33,7 +33,7 @@ nnoremap <buffer> mgc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
 " put me in debug mode if there is an error
 nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
 " quit debugging mode
-nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbquit"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all; dbquit"<CR>:TxSend(@m)<CR>
 
 " variable viewing
 " show the GUI workspace
