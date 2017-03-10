@@ -64,6 +64,7 @@ nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<C
 nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " list all variables in the current working space
 nnoremap <buffer> ma :let @m = "whos"<CR>:TxSend(@m)<CR>
+
 " simple plotting
 " plot the vector
 nnoremap <buffer> mfp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>

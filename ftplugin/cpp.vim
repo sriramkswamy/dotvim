@@ -18,19 +18,25 @@ nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
 " information
 nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
 
-" Single file C++ compilation with different flags
+" Single file C compilation with different flags
 " simple
-nnoremap <buffer> <Space>ms :Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -g -o %:p:r.out %<CR>
+nnoremap <buffer> <Space>ms :let @m = "g++ -O3 -Wall -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
+" intel compiler
+nnoremap <buffer> <Space>mc :let @m = "icc -fast -O3 -Wall -g " . expand('%') . "-o " . expand('%:p:r') . ".in"<CR>:TxSend(@m)<CR>
 " with math support
-nnoremap <buffer> <Space>mm :Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %<CR>
+nnoremap <buffer> <Space>mm :let @m = "g++ -Wall -lgsl -lcblas -llapack -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
 " openmp
-nnoremap <buffer> <Space>mo :Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %<CR>
+nnoremap <buffer> <Space>mo :let @m = "g++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
 " mpi
-nnoremap <buffer> <Space>mi :Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -O2 -g -o %:p:r.out %<CR>
+nnoremap <buffer> <Space>mi :let @m = "mpic++ -Wall -lgsl -lcblas -llapack -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
 " hybrid
-nnoremap <buffer> <Space>mh :Dispatch! cd %:p:h <bar> /usr/local/openmpi/bin/mpic++ -std=c++11 -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g -o %:p:r.out %<CR>
+nnoremap <buffer> <Space>mh :let @m = "mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
 " armadillo
-nnoremap <buffer> <Space>ma :Dispatch! cd %:p:h <bar> g++ -std=c++11 -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g -o %:p:r.out %<CR>
+nnoremap <buffer> <Space>ma :let @m = "g++ -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
+" run gcc compiled binary
+nnoremap <buffer> <Space>mr :let @m = "./" . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
+" run icc compiled binary
+nnoremap <buffer> <Space>mx :let @m = "./" . expand('%:p:r') . ".in"<CR>:TxSend(@m)<CR>
 
 " debugging
 " call gdb
