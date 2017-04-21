@@ -982,6 +982,13 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 " Aggregate completions {{{2
 Plug 'Shougo/deoplete.nvim'
 let g:deoplete#enable_at_startup = 1
+let g:deoplete#omni_patterns = {}
+let g:deoplete#omni_patterns.java = '[^. *\t]\.\w*'
+let g:deoplete#omni_patterns.javascript = '[^. *\t]\.\w*'
+let g:deoplete#omni_patterns.python = '[^. *\t]\.\w*'
+let g:deoplete#omni_patterns.cpp = '[^. *\t]\.\w*\|[^. *\t]\->\w*'
+let g:deoplete#omni_patterns.c = '[^. *\t]\.\w*\|[^. *\t]\->\w*'
+let g:deoplete#omni_patterns.r = '[^. *\t]\.\w*\|[^. *\t]\\$\w*'
 
 " Language helpers {{{1
 

@@ -1021,7 +1021,8 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 " Aggregate completions {{{2
 Plug 'maralla/completor.vim'
 let g:completor_auto_trigger = 1
-" let g:completor_java_omni_trigger = '\w+$|[\w\)\]\}\'\"]+\.\w*$'
+let g:completor_java_omni_trigger = '\w+$|[\w\)\]]+\.\w*$'
+let g:completor_r_omni_trigger = '(?\$\w*|\.\w*)$'
 let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
 let g:completor_php_omni_trigger = '([$\w]+|use\s*|->[$\w]*|::[$\w]*'
             \ . '|implements\s*|extends\s*|class\s+[$\w]+|new\s*)$'
