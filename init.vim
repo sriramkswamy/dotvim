@@ -112,7 +112,7 @@ inoremap <silent> <C-]> <C-x><C-]>
 " Dictionary - <C-w> achieves the same thing
 inoremap <silent> <C-d> <C-x><C-k>
 " File complete - <C-c> in insert mode doesn't exit properly anyway
-inoremap <silent> <C-c> <C-x><C-f>
+" inoremap <silent> <C-c> <C-x><C-f>
 " Toggle few options - inspired by unimpaired
 nnoremap cob :<C-u>set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
@@ -950,6 +950,10 @@ nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
 
+" Interactive rebasing and tree {{{3
+Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv' , {'on': 'Gitv'}
+nnoremap <silent> <Space>e :Gitv<CR>
+
 " Project/Session management {{{1
 Plug 'tpope/vim-obsession'
 nnoremap sr :Obsess ~/.vim/session/
@@ -1156,7 +1160,6 @@ let g:C_UseTool_doxygen = 'yes'
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
 nnoremap g\ :vsplit <bar> terminal<CR>
-nnoremap <silent> <Space>e :vsplit <bar> terminal tig<CR>
 nnoremap <silent> W :terminal ranger<CR>
 nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
 nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
@@ -1211,7 +1214,7 @@ nnoremap vu :Dispatch! git pull<CR>
 " Also checkout ftplugin files
 
 " start rtags when in c or cpp files
-autocmd FileType c,cpp :Dispatch! rdm &<CR>
+autocmd FileType c,cpp :Start rdm &<CR>
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'

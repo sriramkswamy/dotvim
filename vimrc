@@ -125,7 +125,7 @@ inoremap <silent> <C-]> <C-x><C-]>
 " Dictionary - <C-w> achieves the same thing
 inoremap <silent> <C-d> <C-x><C-k>
 " File complete - <C-c> in insert mode doesn't exit properly anyway
-inoremap <silent> <C-c> <C-x><C-f>
+" inoremap <silent> <C-c> <C-x><C-f>
 " Toggle few options - inspired by unimpaired
 nnoremap cob :<C-u>set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
@@ -989,6 +989,10 @@ nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
 
+" Interactive rebasing and tree {{{3
+Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv' , {'on': 'Gitv'}
+nnoremap <silent> <Space>e :Gitv<CR>
+
 " Project/Session management {{{1
 Plug 'tpope/vim-obsession'
 nnoremap sr :Obsess ~/.vim/session/
@@ -1017,7 +1021,7 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 " Aggregate completions {{{2
 Plug 'maralla/completor.vim'
 let g:completor_auto_trigger = 1
-let g:completor_java_omni_trigger = '\w+$|[\w\)\]\}\'\"]+\.\w*$'
+" let g:completor_java_omni_trigger = '\w+$|[\w\)\]\}\'\"]+\.\w*$'
 let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
 let g:completor_php_omni_trigger = '([$\w]+|use\s*|->[$\w]*|::[$\w]*'
             \ . '|implements\s*|extends\s*|class\s+[$\w]+|new\s*)$'
@@ -1032,6 +1036,56 @@ let g:completor_tex_omni_trigger = '\\\\(:?'
             \ . '|includestandalone(\s*\[[^]]*\])?\s*\{[^}]*'
             \ .')$'
 
+" FZF Completion function {{{3
+" " Thanks to https://nondev.io/Fuzzy-completion-in-Vim
+" function! FzfCompletefunc(findstart, base) abort
+"     let Func = function(get(g:, 'FzfCompletefunc', &omnifunc))
+"     let results = Func(a:findstart, a:base)
+"
+"     if a:findstart
+"         return results
+"     endif
+"
+"     let words = type(results) == type({}) && has_key(results, 'words')
+"                 \ ? len(results.words) && type(results.words[0]) == type({})
+"                 \ ? map(results.words, 'v:val.word . "\t" . v:val.menu')
+"                 \ : results.words
+"                 \ : results
+"
+"     let results = len(words) > 1
+"                 \ ? fzf#run({
+"                 \ 'source': words,
+"                 \ 'down': '~40%',
+"                 \ 'options': printf('--query "%s" +s -m', a:base)
+"                 \ })
+"                 \ : words
+"
+"     if exists('*UltiSnips#ExpandSnippet')
+"                 \ && len(results) == 1
+"                 \ && len(results[0]) > 1
+"         let resultsplit = split(results[0], "\t")
+"
+"         if len(resultsplit) > 1 && resultsplit[1] =~? '\[snip\]'
+"             call feedkeys("\<c-r>=UltiSnips#ExpandSnippet()\<cr>", 'n')
+"         endif
+"     endif
+"
+"     return map(results, 'split(v:val, "\t")[0]')
+" endfunction
+"
+" function! FzfComplete(...) abort
+"     if len(a:000) && a:000[0] && getline('.')[col('.') - 1] !~# '\S'
+"         call feedkeys("\<tab>", 'n')
+"         return
+"     endif
+"
+"     setlocal completefunc=FzfCompletefunc
+"     setlocal completeopt=menu
+"     call feedkeys("\<c-x>\<c-u>", 'n')
+" endfunction
+"
+" inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
+"
 " Language helpers {{{1
 
 " set the sign to be placed on the sign column for debuggingg {{{2
@@ -1212,7 +1266,6 @@ let g:C_UseTool_doxygen = 'yes'
 
 " terminal
 nnoremap g\ <C-z>
-nnoremap <silent> <Space>e :!tig<CR>
 nnoremap <silent> W :!ranger<CR>
 nnoremap g{ :!googler <cWORD><Space>
 nnoremap g} :!googler <cWORD><CR>
@@ -1268,7 +1321,7 @@ nnoremap vu :Dispatch! git pull<CR>
 " Also checkout ftplugin files
 
 " start rtags when in c or cpp files
-autocmd FileType c,cpp :Dispatch! rdm &<CR>
+autocmd FileType c,cpp :Start rdm &<CR>
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
