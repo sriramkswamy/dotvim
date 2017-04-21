@@ -210,8 +210,8 @@ let g:markdown_fold_style = 'nested'
 Plug 'flazz/vim-colorschemes'
 
 " Undotree {{{3
-Plug 'simnalamburt/vim-mundo', {'on': 'MundoToggle'}
-nnoremap <silent> U :MundoToggle<CR>
+Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
+nnoremap <silent> U :UndotreeToggle<CR>
 
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
@@ -285,6 +285,18 @@ nnoremap <silent> <C-i> za
 nnoremap cv :vsp $MYVIMRC<CR>
 
 " Functions and commands {{{2
+
+" Open file structure in ranger {{{3
+" Thanks to https://redd.it/3utqfx
+function! RangerChooser()
+    exec "silent !ranger --choosefile=/tmp/chosenfile " . expand("%:p:h")
+    if filereadable('/tmp/chosenfile')
+        exec 'edit ' . system('cat /tmp/chosenfile')
+        call system('rm /tmp/chosenfile')
+    endif
+    redraw!
+endfunction
+nnoremap <Space>n :call RangerChooser()<CR>
 
 " Filter from quickfix list - someone's vimrc {{{3
 function! GrepQuickFix(pat)
@@ -377,10 +389,6 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap cu :Rooter<CR>
-
-" View directory structure - useful sometimes {{{3
-Plug 'scrooloose/nerdtree', {'on': ['NERDTreeToggle', 'NERDTree']}
-nnoremap <silent> <Space>n :NERDTreeToggle<CR>
 
 " Searching {{{1
 
@@ -498,19 +506,9 @@ let g:nv_directories = [
 let g:nv_default_extension = '.txt'
 nnoremap <Space>u :NV<CR>
 
-" Distraction free writing {{{2
-Plug 'junegunn/goyo.vim', {'on': 'Goyo'}
-Plug 'junegunn/limelight.vim', {'on': ['Goyo', 'Limelight', 'Limelight!']}
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
-nnoremap <silent> dy :Goyo<CR>
-
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
 nnoremap gX :Utl<CR>
-
-" " Org mode syntax support {{{2
-" Plug 'sriramkswamy/vim-orgmode'
 
 " FileTypes {{{1
 
@@ -865,121 +863,6 @@ Plug 'kana/vim-textobj-user' | Plug 'sriramkswamy/vim-textobj-function'
 " Operate on comments - (operator)ic/ac/aC {{{4
 Plug 'kana/vim-textobj-user' | Plug 'sriramkswamy/vim-textobj-comment'
 
-" Niceties for Lisp editing {{{4
-" Textobjects -
-Plug 'guns/vim-sexp'
-" Disable mapping hooks
-let g:sexp_filetypes = ''
-function! s:vim_sexp_mappings()
-    xmap <silent><buffer> ad         <Plug>(sexp_outer_list)
-    omap <silent><buffer> ad         <Plug>(sexp_outer_list)
-    xmap <silent><buffer> id         <Plug>(sexp_inner_list)
-    omap <silent><buffer> id         <Plug>(sexp_inner_list)
-    xmap <silent><buffer> aD         <Plug>(sexp_outer_top_list)
-    omap <silent><buffer> aD         <Plug>(sexp_outer_top_list)
-    xmap <silent><buffer> iD         <Plug>(sexp_inner_top_list)
-    omap <silent><buffer> iD         <Plug>(sexp_inner_top_list)
-    xmap <silent><buffer> ag         <Plug>(sexp_outer_string)
-    omap <silent><buffer> ag         <Plug>(sexp_outer_string)
-    xmap <silent><buffer> ig         <Plug>(sexp_inner_string)
-    omap <silent><buffer> ig         <Plug>(sexp_inner_string)
-    xmap <silent><buffer> ay         <Plug>(sexp_outer_element)
-    omap <silent><buffer> ay         <Plug>(sexp_outer_element)
-    xmap <silent><buffer> iy         <Plug>(sexp_inner_element)
-    omap <silent><buffer> iy         <Plug>(sexp_inner_element)
-    nmap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
-    xmap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
-    omap <silent><buffer> (          <Plug>(sexp_move_to_prev_bracket)
-    nmap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
-    xmap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
-    omap <silent><buffer> )          <Plug>(sexp_move_to_next_bracket)
-    nmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
-    xmap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
-    omap <silent><buffer> B          <Plug>(sexp_move_to_prev_element_head)
-    nmap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
-    xmap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
-    omap <silent><buffer> ]d         <Plug>(sexp_move_to_next_element_head)
-    nmap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
-    xmap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
-    omap <silent><buffer> [d         <Plug>(sexp_move_to_prev_element_tail)
-    nmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
-    xmap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
-    omap <silent><buffer> E          <Plug>(sexp_move_to_next_element_tail)
-    nmap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
-    xmap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
-    omap <silent><buffer> [[         <Plug>(sexp_move_to_prev_top_element)
-    nmap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
-    xmap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
-    omap <silent><buffer> ]]         <Plug>(sexp_move_to_next_top_element)
-    nmap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
-    xmap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
-    omap <silent><buffer> [y         <Plug>(sexp_select_prev_element)
-    nmap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
-    xmap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
-    omap <silent><buffer> ]y         <Plug>(sexp_select_next_element)
-    nmap <silent><buffer> ==         <Plug>(sexp_indent)
-    nmap <silent><buffer> =-         <Plug>(sexp_indent_top)
-    nmap <silent><buffer> csd(       <Plug>(sexp_round_head_wrap_list)
-    xmap <silent><buffer> csd(       <Plug>(sexp_round_head_wrap_list)
-    nmap <silent><buffer> csd)       <Plug>(sexp_round_tail_wrap_list)
-    xmap <silent><buffer> csd)       <Plug>(sexp_round_tail_wrap_list)
-    nmap <silent><buffer> csd[       <Plug>(sexp_square_head_wrap_list)
-    xmap <silent><buffer> csd[       <Plug>(sexp_square_head_wrap_list)
-    nmap <silent><buffer> csd]       <Plug>(sexp_square_tail_wrap_list)
-    xmap <silent><buffer> csd]       <Plug>(sexp_square_tail_wrap_list)
-    nmap <silent><buffer> csd{       <Plug>(sexp_curly_head_wrap_list)
-    xmap <silent><buffer> csd{       <Plug>(sexp_curly_head_wrap_list)
-    nmap <silent><buffer> csd}       <Plug>(sexp_curly_tail_wrap_list)
-    xmap <silent><buffer> csd}       <Plug>(sexp_curly_tail_wrap_list)
-    nmap <silent><buffer> csy(       <Plug>(sexp_round_head_wrap_element)
-    xmap <silent><buffer> csy(       <Plug>(sexp_round_head_wrap_element)
-    nmap <silent><buffer> csy)       <Plug>(sexp_round_tail_wrap_element)
-    xmap <silent><buffer> csy)       <Plug>(sexp_round_tail_wrap_element)
-    nmap <silent><buffer> csy[       <Plug>(sexp_square_head_wrap_element)
-    xmap <silent><buffer> csy[       <Plug>(sexp_square_head_wrap_element)
-    nmap <silent><buffer> csy]       <Plug>(sexp_square_tail_wrap_element)
-    xmap <silent><buffer> csy]       <Plug>(sexp_square_tail_wrap_element)
-    nmap <silent><buffer> csy{       <Plug>(sexp_curly_head_wrap_element)
-    xmap <silent><buffer> csy{       <Plug>(sexp_curly_head_wrap_element)
-    nmap <silent><buffer> csy}       <Plug>(sexp_curly_tail_wrap_element)
-    xmap <silent><buffer> csy}       <Plug>(sexp_curly_tail_wrap_element)
-    nmap <silent><buffer> gI         <Plug>(sexp_insert_at_list_head)
-    nmap <silent><buffer> gA         <Plug>(sexp_insert_at_list_tail)
-    nmap <silent><buffer> dsd        <Plug>(sexp_splice_list)
-    nmap <silent><buffer> crd        <Plug>(sexp_raise_list)
-    xmap <silent><buffer> crd        <Plug>(sexp_raise_list)
-    nmap <silent><buffer> cry        <Plug>(sexp_raise_element)
-    xmap <silent><buffer> cry        <Plug>(sexp_raise_element)
-    nmap <silent><buffer> <d         <Plug>(sexp_swap_list_backward)
-    xmap <silent><buffer> <d         <Plug>(sexp_swap_list_backward)
-    nmap <silent><buffer> >d         <Plug>(sexp_swap_list_forward)
-    xmap <silent><buffer> >d         <Plug>(sexp_swap_list_forward)
-    nmap <silent><buffer> <y         <Plug>(sexp_swap_element_backward)
-    xmap <silent><buffer> <y         <Plug>(sexp_swap_element_backward)
-    nmap <silent><buffer> >y         <Plug>(sexp_swap_element_forward)
-    xmap <silent><buffer> >y         <Plug>(sexp_swap_element_forward)
-    nmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
-    xmap <silent><buffer> <(         <Plug>(sexp_emit_head_element)
-    nmap <silent><buffer> >)         <Plug>(sexp_emit_tail_element)
-    xmap <silent><buffer> >)         <Plug>(sexp_emit_tail_element)
-    nmap <silent><buffer> >(         <Plug>(sexp_capture_prev_element)
-    xmap <silent><buffer> >(         <Plug>(sexp_capture_prev_element)
-    nmap <silent><buffer> <)         <Plug>(sexp_capture_next_element)
-    xmap <silent><buffer> <)         <Plug>(sexp_capture_next_element)
-    imap <silent><buffer> <BS>       <Plug>(sexp_insert_backspace)
-    imap <silent><buffer> "          <Plug>(sexp_insert_double_quote)
-    imap <silent><buffer> (          <Plug>(sexp_insert_opening_round)
-    imap <silent><buffer> )          <Plug>(sexp_insert_closing_round)
-    imap <silent><buffer> [          <Plug>(sexp_insert_opening_square)
-    imap <silent><buffer> ]          <Plug>(sexp_insert_closing_square)
-    imap <silent><buffer> {          <Plug>(sexp_insert_opening_curly)
-    imap <silent><buffer> }          <Plug>(sexp_insert_closing_curly)
-endfunction
-augroup VIM_SEXP_MAPPING
-    autocmd!
-    autocmd FileType clojure,scheme,lisp,racket call s:vim_sexp_mappings()
-augroup END
-
 " Operators {{{2
 
 " Functions {{{3
@@ -1053,6 +936,18 @@ nmap ]r <Plug>ExchangeArgNext
 nmap <silent> <Plug>ExchangeArgPrev cxIrF,hcxIr :call repeat#set("\<Plug>ExchangeSearchPrev", v:count)<CR>
 nmap [r <Plug>ExchangeArgPrev
 
+" Operate on lisp expressions {{{4
+Plug 'bounceme/fairedit.vim'
+" any operator ex. g~$ , c$ , d$ etc
+omap $ <Plug>Fair_dollar
+
+" or with the one key variants ex. C,D,Y/y$
+nmap C <Plug>Fair_C
+nmap D <Plug>Fair_D
+if maparg('Y','n') ==# 'y$'
+  nmap Y <Plug>Fair_yEOL
+endif
+
 " Create your own operators {{{4
 Plug 'kana/vim-operator-user'
 
@@ -1120,8 +1015,22 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Aggregate completions {{{2
-Plug 'maxboisvert/vim-simple-complete'
-let g:vsc_tab_complete = 0
+Plug 'maralla/completor.vim'
+let g:completor_auto_trigger = 1
+let g:completor_java_omni_trigger = '\w+$|[\w\)\]\}\'\"]+\.\w*$'
+let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
+let g:completor_php_omni_trigger = '([$\w]+|use\s*|->[$\w]*|::[$\w]*'
+            \ . '|implements\s*|extends\s*|class\s+[$\w]+|new\s*)$'
+let g:completor_tex_omni_trigger = '\\\\(:?'
+            \ . '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
+            \ . '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
+            \ . '|hyperref\s*\[[^]]*'
+            \ . '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|(?:include(?:only)?|input)\s*\{[^}]*'
+            \ . '|\w*(gls|Gls|GLS)(pl)?\w*(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|includepdf(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ . '|includestandalone(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ .')$'
 
 " Language helpers {{{1
 
@@ -1160,7 +1069,7 @@ let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
 
 " C/C++ {{{2
-" Autocompletion
+" Omnicompletion
 Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
 let g:clang_compilation_database = './build'
 let g:clang_c_options = '-std=gnu11'
@@ -1175,7 +1084,7 @@ let g:rtagsUseLocationList = 0
 let g:rtagsMinCharsForCommandCompletion = 2
 
 " Python {{{2
-" Autocompletion and some jumping
+" Omnicompletion and some jumping
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python setl omnifunc=jedi#completions
 let g:jedi#popup_on_dot = 0
@@ -1360,13 +1269,6 @@ nnoremap vu :Dispatch! git pull<CR>
 
 " start rtags when in c or cpp files
 autocmd FileType c,cpp :Dispatch! rdm &<CR>
-
-" Piping to eval {{{3
-Plug 'zweifisch/pipe2eval'
-nnoremap g$ :Pipe2<Space>
-vnoremap g$ :Pipe2<Space>
-vnoremap m<Space> ':!~/.vim/plugged/pipe2eval/plugin/pipe2eval.sh text<CR><CR>'
-let g:pipe2eval_map_key = 'm<Space>'
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'

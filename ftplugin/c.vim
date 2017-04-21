@@ -20,23 +20,43 @@ nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
 
 " Single file C compilation with different flags
 " simple
-nnoremap <buffer> <Space>ms :let @m = "g++ -O3 -Wall -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> <Space>mss :let @m = "gcc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " intel compiler
-nnoremap <buffer> <Space>mc :let @m = "icc -fast -O3 -Wall -g " . expand('%') . "-o " . expand('%:p:r') . ".in"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> <Space>msi :let @m = "icc -fast -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
 " with math support
-nnoremap <buffer> <Space>mm :let @m = "g++ -Wall -lgsl -lcblas -llapack -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
-" openmp
-nnoremap <buffer> <Space>mo :let @m = "g++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
-" mpi
-nnoremap <buffer> <Space>mi :let @m = "mpic++ -Wall -lgsl -lcblas -llapack -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> <Space>msm :let @m = "gcc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" intel compiler with openmp
+nnoremap <buffer> <Space>moi :let @m = "icc -fast -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
+" openmp without math
+nnoremap <buffer> <Space>mos :let @m = "gcc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" openmp with math
+nnoremap <buffer> <Space>mom :let @m = "gcc -O3 -Wall -lcblas -llapack -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" cuda math
+nnoremap <buffer> <Space>mcm :let @m = "nvcc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" cuda simple
+nnoremap <buffer> <Space>mcs :let @m = "nvcc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" cuda openmp
+nnoremap <buffer> <Space>mco :let @m = "nvcc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" mpi math
+nnoremap <buffer> <Space>mim :let @m = "mpicc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" mpi simple
+nnoremap <buffer> <Space>mis :let @m = "mpicc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " hybrid
-nnoremap <buffer> <Space>mh :let @m = "mpic++ -Wall -lgsl -lcblas -llapack -fopenmp -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
-" armadillo
-nnoremap <buffer> <Space>ma :let @m = "g++ -Wall -lgsl -lcblas -llapack -larmadillo -O2 -g " . expand('%') . "-o " . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> <Space>mhm :let @m = "mpicc -O3 -Wall -lcblas -llapack -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" hybrid simple
+nnoremap <buffer> <Space>mhs :let @m = "mpicc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" armadillo simple
+nnoremap <buffer> <Space>mas :let @m = "gcc -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" armadillo math
+nnoremap <buffer> <Space>mam :let @m = "gcc -O3 -Wall -lcblas -llapack -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+" armadillo intel
+nnoremap <buffer> <Space>mai :let @m = "icc -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " run gcc compiled binary
-nnoremap <buffer> <Space>mr :let @m = "./" . expand('%:p:r') . ".out"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> <Space>mr :let @m = "./" . expand('%:t:r') . ".out " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 " run icc compiled binary
-nnoremap <buffer> <Space>mx :let @m = "./" . expand('%:p:r') . ".in"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> <Space>mi :let @m = "./" . expand('%:t:r') . ".in " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+" run mpi compiled binary
+nnoremap <buffer> <Space>me :let @m = "mpiexec ./" . expand('%:t:r') . ".out " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 
 " debugging
 " call gdb
@@ -73,3 +93,6 @@ nnoremap <buffer> mgp :let @m = "p " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mgo :let @m = "p * " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
 " quit debugger
 nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "q"<CR>:TxSend(@m)<CR>
+
+" get all the signs for breakpoints in vim {{{2
+nnoremap <buffer> mgv :sign list mybreakpoint<CR>

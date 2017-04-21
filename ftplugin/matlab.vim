@@ -35,6 +35,9 @@ nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
 " quit debugging mode
 nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all; dbquit"<CR>:TxSend(@m)<CR>
 
+" get all the signs for breakpoints in vim {{{2
+nnoremap <buffer> mgv :sign list mybreakpoint<CR>
+
 " variable viewing
 " show the GUI workspace
 nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>
