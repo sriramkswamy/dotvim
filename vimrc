@@ -1197,26 +1197,15 @@ Plug 'danchoi/ri.vim', {'for': 'ruby'}
 let g:ri_no_mappings=1
 
 " R {{{2
-" Alternative installing 1 for Nvim-R do the following -
 " Download it from https://github.com/jalvesaq/Nvim-R/releases
-" mkdir -p ~/.local/share/nvim/site/pack/R
-" cd ~/.local/share/nvim/site/pack/R
-" If you downloaded it to <dir>, the do
-" unzip <dir>/Nvim-R_0.9.7.zip
-" Install the helptags from Neovim
-" :helptags ~/.local/share/nvim/site/pack/R/start/Nvim-R/doc
-" Alternative installing 1 for Nvim-R do the following -
-" Download vimball from http://www.vim.org/scripts/script.php?script_id=2628
-" Open it
-" Use these two following commands
-" :packadd vimball
-" :so %
 Plug 'jalvesaq/Nvim-R', {'for': 'r'}
-Plug 'chrisbra/csv.vim'
 " let R_vsplit = 1
 let R_in_buffer = 0
 let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
+
+" CSV {{{2
+Plug 'chrisbra/csv.vim'
 
 " Maps {{{3
 " Complete the arguments
