@@ -1,12 +1,12 @@
 " jedi support
 " goto assignment
-nnoremap <buffer> <Space>ma call jedi#goto_assignments()
+nnoremap <buffer> ma call jedi#goto_assignments()
 " goto definition
-nnoremap <buffer> <Space>md call jedi#goto_definitions()
+nnoremap <buffer> md call jedi#goto_definitions()
 " rename
-nnoremap <buffer> <Space>mn call jedi#rename()
+nnoremap <buffer> mn call jedi#rename()
 " visual rename
-nnoremap <buffer> <Space>mv call jedi#rename_visual()
+nnoremap <buffer> mv call jedi#rename_visual()
 " jump
 nnoremap <buffer> J :call jedi#goto()<CR>
 

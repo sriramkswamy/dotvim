@@ -33,10 +33,10 @@ nnoremap <buffer> mw :!hexo new ""<Left>
 nnoremap <buffer> mu :let @m = "hexo clean"<CR>:TxSend(@m)<CR>
 
 " convert markdown to other formats
-nnoremap <buffer> <Space>mp :Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf<CR>
-nnoremap <buffer> <Space>mo :Dispatch! pandoc % -o %:r.org<CR>
-nnoremap <buffer> <Space>mr :Dispatch! pandoc % -o %:r.rst<CR>
-nnoremap <buffer> <Space>mx :Dispatch! pandoc % -o %:r.tex<CR>
-nnoremap <buffer> <Space>me :Dispatch! pandoc % -o %:r.epub<CR>
-nnoremap <buffer> <Space>mh :Dispatch! pandoc % -o %:r.html<CR>
-nnoremap <buffer> <Space>ml :Dispatch! multimarkdown -t opml % > %:r.opml<CR>
+nnoremap <buffer> mm :Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf<CR>
+nnoremap <buffer> mo :Dispatch! pandoc % -o %:r.org<CR>
+nnoremap <buffer> mr :Dispatch! pandoc % -o %:r.rst<CR>
+nnoremap <buffer> mx :Dispatch! pandoc % -o %:r.tex<CR>
+nnoremap <buffer> mk :Dispatch! pandoc % -o %:r.epub<CR>
+nnoremap <buffer> mh :Dispatch! pandoc % -o %:r.html<CR>
+nnoremap <buffer> ml :Dispatch! multimarkdown -t opml % > %:r.opml<CR>

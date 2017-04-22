@@ -1,48 +1,48 @@
 " eclim projects
 " create a new project
-nnoremap <buffer> <Space>mc :ProjectCreate <C-r>=expand("%:p:h")<CR> -n java
+nnoremap <buffer> mpc :ProjectCreate <C-r>=expand("%:p:h")<CR> -n java
 " list all the projects
-nnoremap <buffer> <Space>ml :ProjectList<CR>
+nnoremap <buffer> mpl :ProjectList<CR>
 " build the project
-nnoremap <buffer> <Space>mm :ProjectBuild<CR>
+nnoremap <buffer> mpb :ProjectBuild<CR>
 " run the project
-nnoremap <buffer> <Space>mr :ProjectRun<CR>
+nnoremap <buffer> mpr :ProjectRun<CR>
 " run list
-nnoremap <buffer> <Space>mf :ProjectRunList<CR>
+nnoremap <buffer> mpf :ProjectRunList<CR>
 " Import
-nnoremap <buffer> <Space>mi :ProjectImport<Space>
+nnoremap <buffer> mpi :ProjectImport<Space>
 " close/quit
-nnoremap <buffer> <Space>mq :ProjectClose<CR>
+nnoremap <buffer> mpq :ProjectClose<CR>
 " delete
-nnoremap <buffer> <Space>mx :ProjectDelete<CR>
+nnoremap <buffer> mpx :ProjectDelete<CR>
 " grep
-nnoremap <buffer> <Space>ms :ProjectGrep<Space>
+nnoremap <buffer> mps :ProjectGrep<Space>
 " tree toggle
-nnoremap <buffer> <Space>mt :ProjectTreeToggle<CR>
+nnoremap <buffer> mpt :ProjectTreeToggle<CR>
 " todo
-nnoremap <buffer> <Space>md :ProjectTodo<CR>
+nnoremap <buffer> mpd :ProjectTodo<CR>
 " natures
-nnoremap <buffer> <Space>mo :ProjectNatures<CR>
+nnoremap <buffer> mpo :ProjectNatures<CR>
 " nature add
-nnoremap <buffer> <Space>ma :ProjectNatureAdd<Space>
+nnoremap <buffer> mpa :ProjectNatureAdd<Space>
 " nature remove/erase
-nnoremap <buffer> <Space>mu :ProjectNatureRemove<Space>
+nnoremap <buffer> mpu :ProjectNatureRemove<Space>
 " problems
-nnoremap <buffer> <Space>mp :ProjectProblems<CR>
+nnoremap <buffer> mpp :ProjectProblems<CR>
 " jump to
-nnoremap <buffer> <Space>mj :ProjectOpen<CR>
+nnoremap <buffer> mpj :ProjectOpen<CR>
 " info
-nnoremap <buffer> <Space>mk :ProjectInfo<CR>
+nnoremap <buffer> mpk :ProjectInfo<CR>
 " refresh
-nnoremap <buffer> <Space>mg :ProjectRefreshAll<CR>
+nnoremap <buffer> mpg :ProjectRefreshAll<CR>
 " rename
-nnoremap <buffer> <Space>mn :ProjectRename<Space>
+nnoremap <buffer> mpn :ProjectRename<Space>
 " settings
-nnoremap <buffer> <Space>mw :ProjectSettings<CR>
+nnoremap <buffer> mpw :ProjectSettings<CR>
 " new source entry
-nnoremap <buffer> <Space>me :NewSrcEntry<Space>
+nnoremap <buffer> mpe :NewSrcEntry<Space>
 " variable list
-nnoremap <buffer> <Space>mv :VariableList<CR>
+nnoremap <buffer> mpv :VariableList<CR>
 
 " eclim java
 " run the project

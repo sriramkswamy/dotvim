@@ -76,8 +76,10 @@ set splitbelow
 " Maps without leader {{{2
 
 " Window management
-nnoremap <silent> w <C-w>
-nnoremap <silent> ww <C-w><C-w>
+nnoremap <silent> gw <C-w>
+nnoremap <silent> gww <C-w>o
+" quit whatever
+nnoremap <Space>q :q<CR>
 " Alternate files
 nnoremap <BS> :b#<CR>
 nnoremap wa :vsp <bar> b#<CR>
@@ -164,9 +166,8 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 let maplocalleader="\\"
 
-" Folding
-nnoremap <silent> ]z zj
-nnoremap <silent> [z zk
+" Window management
+nnoremap <Space>m <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
@@ -207,6 +208,12 @@ nnoremap gV :UnicodeSearch<Space>
 inoremap <C-v> <C-k>
 
 " File/Buffer navigation {{{1
+
+" Netrw {{{2
+let g:netrw_liststyle=3         " thin (change to 3 for tree)
+let g:netrw_banner=0            " no banner
+let g:netrw_altv=1              " open files on right
+let g:netrw_preview=1           " open previews vertically
 
 " Set commands {{{2
 " Path for the builtin 'find' command
@@ -273,7 +280,7 @@ function! RangerChooser()
     endif
     redraw!
 endfunction
-nnoremap <Space>n :call RangerChooser()<CR>
+nnoremap gW :call RangerChooser()<CR>
 
 " Filter from quickfix list - someone's vimrc {{{3
 function! GrepQuickFix(pat)
@@ -325,6 +332,9 @@ nnoremap <silent> Z :ZoomToggle<CR>
 
 " Leader maps {{{2
 
+" Netrw
+nnoremap <Space>n :Vexplore<CR>
+
 " Quickfix and Location list maps {{{3
 let g:lt_height = get( g:, 'lt_height', 10 )
 
@@ -355,7 +365,7 @@ function! s:QListToggle()
     endif
 endfunction
 command!  QToggle call s:QListToggle()
-nnoremap <silent> <Space>q :QToggle<CR>
+nnoremap <silent> <Space>v :QToggle<CR>
 
 " Plugins {{{2
 
@@ -434,8 +444,8 @@ nnoremap <silent> sc :FzfSnippets<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space>/ :FzfLines<CR>
-nnoremap <silent> <Space>? :FzfHistory/<CR>
+nnoremap <silent> <Space><Space> :FzfBLines<CR>
+nnoremap <silent> <Space>/ :FzfHistory/<CR>
 nnoremap <silent> <Space>c :FzfBCommits<CR>
 nnoremap <silent> <Space>C :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
@@ -584,8 +594,6 @@ xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
 " Preview the substitution - amazing feature {{{2
 set inccommand=split
-nnoremap <Space><Space> :s//<Left>
-vnoremap <Space><Space> :s//<Left>
 
 " Functions and commands {{{2
 
@@ -737,14 +745,6 @@ nmap d- <Plug>DeleteCheckBox
 Plug 'AndrewRadev/inline_edit.vim'
 nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
-
-" Emacs like narrowing {{{3
-Plug 'chrisbra/NrrwRgn', {'on': ['NR', 'WidenRegion']}
-nnoremap gW :WidenRegion<CR>:bd!<CR>
-" see operator defined later in the file
-
-" Better date manipulation {{{3
-Plug 'tpope/vim-speeddating'
 
 " Easy alignment plugin and auto-align {{{3
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
@@ -1156,7 +1156,6 @@ let g:C_UseTool_doxygen = 'yes'
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
 nnoremap g\ :vsplit <bar> terminal<CR>
-nnoremap <silent> W :terminal ranger<CR>
 nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
 nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
 vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
@@ -1350,35 +1349,10 @@ function! LatexEnvI()
     return ['v', head_pos, tail_pos]
 endfunction
 
-" Hexo code text object - (operator)ik/ak {{{1
-call textobj#user#plugin('hexocode', { '-': {
-            \ 'select-a-function': 'HexocodeA', 'select-a': 'ak',
-            \ 'select-i-function': 'HexocodeI', 'select-i': 'ik',
-            \ }, })
-function! HexocodeA()
-    call search('^```\s*\[.*\]$', 'bc')
-    normal! 0
-    let head_pos = getpos('.')
-    normal! j
-    call search('^```$', 'c')
-    normal! $
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunction
-function! HexocodeI()
-    call search('^```\s*\[.*\]$', 'bc')
-    normal! j0
-    let head_pos = getpos('.')
-    call search('^```$', 'c')
-    normal! k$
-    let tail_pos = getpos('.')
-    return ['v', head_pos, tail_pos]
-endfunction
-
-" Rmarkdown code text object - (operator)ig/ag {{{1
-call textobj#user#plugin('hexocode', { '-': {
-            \ 'select-a-function': 'RmdA', 'select-a': 'ag',
-            \ 'select-i-function': 'RmdI', 'select-i': 'ig',
+" Rmarkdown code text object - (operator)ik/ak {{{1
+call textobj#user#plugin('rmdcode', { '-': {
+            \ 'select-a-function': 'RmdA', 'select-a': 'ak',
+            \ 'select-i-function': 'RmdI', 'select-i': 'ik',
             \ }, })
 function! RmdA()
     call search('^```\s*{.*}$', 'bc')
@@ -1407,15 +1381,6 @@ function! OperatorTmuxifySend(motion_wise)
     let v = operator#user#visual_command_from_wise_name(a:motion_wise)
     execute 'normal!' '`[' . v . '`]"my'
     TxSend(@m)
-endfunction
-
-" create an operator to narrow {{{1
-map gw <Plug>(operator-narrow-region)
-call operator#user#define('narrow-region', 'OperatorNarrowRegion')
-function! OperatorNarrowRegion(motion_wise)
-    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
-    execute 'normal!' '`[' . v . '`]'
-    execute "'<,'>NR"
 endfunction
 
 " Setup plugins, indents and syntax {{{1
