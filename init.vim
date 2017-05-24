@@ -269,9 +269,9 @@ nnoremap cv :vsp $MYVIMRC<CR>
 " Open file structure in ranger {{{3
 " Thanks to https://redd.it/3utqfx
 function! RangerChooser()
-    exec "silent !ranger --choosefile=/tmp/chosenfile " . expand("%:p:h")
+    exec "silent terminal ranger --choosefile=/tmp/chosenfile " . expand("%:p:h")
     if filereadable('/tmp/chosenfile')
-        exec 'edit ' . system('cat /tmp/chosenfile')
+        exec 'terminal nvr --servername 127.0.0.1:32500 ' . system('cat /tmp/chosenfile')
         call system('rm /tmp/chosenfile')
     endif
     redraw!
