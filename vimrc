@@ -51,7 +51,7 @@ set novisualbell
 " No backups
 set nobackup
 set noswapfile
-set nowb
+set nowritebackup
 " Session management
 let g:session_autosave = 'no'
 set sessionoptions+=tabpages
@@ -88,14 +88,10 @@ set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
 
-" Window management
-nnoremap <silent> gw <C-w>
-nnoremap <silent> gww <C-w>o
 " quit whatever
 nnoremap <Space>q :q<CR>
 " Alternate files
 nnoremap <BS> :b#<CR>
-nnoremap wa :vsp <bar> b#<CR>
 " open file - I have no idea how I got used to this shortcut
 nnoremap vo :e<Space>
 " Keep me in visual mode
@@ -166,8 +162,7 @@ cnoremap <C-p> <Up>
 vnoremap <C-d> :diffput<cr>
 vnoremap <C-e> :diffget<cr>
 " Some convenient maps to edit the current word under the cursor
-nnoremap cn *Ncgn
-nnoremap cN g*Ncgn
+nnoremap c* *Ncgn
 
 " Change guifont
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
@@ -188,6 +183,7 @@ endif
 let maplocalleader="\\"
 
 " Window management
+nnoremap gO <C-w>o
 nnoremap <Space>m <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
@@ -198,10 +194,18 @@ nnoremap <Space><Tab> gt
 nnoremap <Space><BS> gT
 nnoremap gt :tabe<CR>
 nnoremap gT :tabc<CR>
-" Open in Finder
-nnoremap gF :!open %:p:h<CR>
-" Open in Safari
-nnoremap gB :!open -a Safari %<CR>
+if has('unix')
+    if has('mac')
+        " Open in Finder
+        nnoremap gF :!open %:p:h<CR>
+        " Open in Safari
+        nnoremap gB :!open -a Safari %<CR>
+    endif
+    " Open in Navigator
+    nnoremap gF :!xdg-open %:p:h<CR>
+    " Open in Browser
+    nnoremap gB :!xdg-open %<CR>
+endif
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -217,16 +221,8 @@ nnoremap <silent> U :UndotreeToggle<CR>
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
 
-" Insert unicode better {{{3
-Plug 'chrisbra/unicode.vim',
-            \ {'on': ['<Plug>(UnicodeGA)', '<Plug>(MakeDigraph)',
-            \ 'Digraphs', 'UnicodeSearch']}
-let g:Unicode_ShowPreviewWindow = 1
-nmap ga <Plug>(UnicodeGA)
-nmap gz <Plug>(MakeDigraph)
-nnoremap gN :Digraphs<Space>
-nnoremap gV :UnicodeSearch<Space>
-inoremap <C-v> <C-k>
+" Highlight unicode better {{{3
+Plug 'vim-utils/vim-troll-stopper'
 
 " File/Buffer navigation {{{1
 
@@ -356,7 +352,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>n :Vexplore<CR>
+nnoremap <Space>n :10vsp <bar> Explore<CR>
 
 " Quickfix and Location list maps {{{3
 let g:lt_height = get( g:, 'lt_height', 10 )
@@ -398,7 +394,6 @@ Plug 'airblade/vim-rooter'
 let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
-nnoremap cu :Rooter<CR>
 
 " Searching {{{1
 
@@ -416,6 +411,7 @@ set nomore
 
 " Maps without leader {{{2
 " Populating the location list
+nnoremap <silent> # :nohl<CR>
 nnoremap <silent> g* *N:lvimgrep // %<CR>
 nnoremap <silent> g# :lvimgrep // %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
@@ -427,25 +423,17 @@ Plug 'junegunn/vim-slash'
 Plug 'mhinz/vim-grepper', {'on': ['Grepper', '<Plug>(GrepperOperator)']}
 " Mimic :grep and make ag the default tool.
 let g:grepper = {
-            \ 'tools': [ 'ag', 'pt', 'ack', 'git', 'grep'],
+            \ 'tools': [ 'rg', 'ag', 'pt', 'ack', 'git', 'grep'],
             \ 'open':  1,
             \ 'jump':  0,
             \ 'next_tool': ']g'
             \ }
-nnoremap gss :Grepper -tool ag -noswitch<CR>
+nnoremap gss :Grepper -tool rg -noswitch<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
-
-" Search and replace across project - trial {{{2
-Plug 'dyng/ctrlsf.vim', {'on': ['CtrlSFUpdate', 'CtrlSF', '<Plug>CtrlSFVwordExec']}
-let g:ctrlsf_mapping = {
-    \ "next": "n",
-    \ "prev": "N",
-    \ }
-let g:ctrlsf_position = 'right'
-nnoremap <silent> gE :CtrlSFUpdate<CR>
-nnoremap <silent> ge :CtrlSF<CR>
-vmap ge <Plug>CtrlSFVwordExec
+nnoremap <silent> ge :Grepper -tool rg -noswitch -noprompt -cword<CR>
+nnoremap <silent> gE :Grepper -tool rg -noswitch -query '<C-R>=expand('<cWORD>')<CR>'<CR>
+vnoremap <silent> ge "gy:Grepper -tool rg -noswitch -query '<C-R>=@g<CR>'<CR>
 
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -459,10 +447,19 @@ let g:fzf_action = {
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit',
             \ 'ctrl-o': '!open'}
+
+" Ripgrep instead of Ag
+command! -bang -nargs=* FzfRg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
 nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfAg <C-R><C-W><CR>
+nnoremap <silent> J :FzfRg <C-R><C-W><CR>
 nnoremap <silent> T :FzfTags <C-R><C-W><CR>
-nnoremap <silent> gp :FzfAg <C-R><C-W><CR>
+nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
 nnoremap <silent> sc :FzfSnippets<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
@@ -478,7 +475,7 @@ nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>a :FzfBuffers<CR>
 nnoremap <silent> <Space>t :FzfWindows<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>p :FzfAg<CR>
+nnoremap <silent> <Space>p :FzfRg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :FzfCommands<CR>
 nnoremap <silent> <Space>: :FzfHistory:<CR>
@@ -489,10 +486,9 @@ omap <Space>, <Plug>(fzf-maps-o)
 imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
-nnoremap <silent> <Space>b :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap dx :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-nnoremap sx :enew <bar> cd ~/Dropbox/PhD/meetings/<CR>:e<Space>
-nnoremap <silent> vx :FzfFiles ~/Dropbox/PhD/meetings/<CR>
+nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
+nnoremap dn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap cn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 
 " Search spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run({
@@ -504,6 +500,8 @@ nnoremap <Space>s :FzfSpotlight<Space>
 nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
 
 " Note taking {{{1
+
+" Vim Wiki
 
 " A la Notational Velocity {{{2
 Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
@@ -635,8 +633,8 @@ command! StripWhiteSpace :call StripWhitespace()
 nnoremap crs :StripWhiteSpace<CR>
 
 " Strip trailing whitespace {{{3
+nnoremap crr :lvimgrep /\s\+$/ %<CR>
 nnoremap crw :s/\s\+$//e<CR>
-vnoremap <C-@> :s/\s\+$//e<CR>
 
 " Convert tabs to whitespace {{{3
 function! TabsToWhitespace()
@@ -967,7 +965,6 @@ if has('python') || has('python3')
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="vertical"
     let g:UltiSnipsListSnippets="<C-l>"
-    nnoremap <silent> yo :UltiSnipsEdit<CR>
 endif
 
 " Version control {{{1
@@ -988,6 +985,7 @@ Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
 nnoremap <silent> gG :Glog<CR>
+nnoremap cu :Gwrite<CR>Gcommit<CR>
 nnoremap du :Gdiff<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
@@ -1043,55 +1041,55 @@ let g:completor_tex_omni_trigger = '\\\\(:?'
             \ .')$'
 
 " FZF Completion function {{{3
-" " Thanks to https://nondev.io/Fuzzy-completion-in-Vim
-" function! FzfCompletefunc(findstart, base) abort
-"     let Func = function(get(g:, 'FzfCompletefunc', &omnifunc))
-"     let results = Func(a:findstart, a:base)
-"
-"     if a:findstart
-"         return results
-"     endif
-"
-"     let words = type(results) == type({}) && has_key(results, 'words')
-"                 \ ? len(results.words) && type(results.words[0]) == type({})
-"                 \ ? map(results.words, 'v:val.word . "\t" . v:val.menu')
-"                 \ : results.words
-"                 \ : results
-"
-"     let results = len(words) > 1
-"                 \ ? fzf#run({
-"                 \ 'source': words,
-"                 \ 'down': '~40%',
-"                 \ 'options': printf('--query "%s" +s -m', a:base)
-"                 \ })
-"                 \ : words
-"
-"     if exists('*UltiSnips#ExpandSnippet')
-"                 \ && len(results) == 1
-"                 \ && len(results[0]) > 1
-"         let resultsplit = split(results[0], "\t")
-"
-"         if len(resultsplit) > 1 && resultsplit[1] =~? '\[snip\]'
-"             call feedkeys("\<c-r>=UltiSnips#ExpandSnippet()\<cr>", 'n')
-"         endif
-"     endif
-"
-"     return map(results, 'split(v:val, "\t")[0]')
-" endfunction
-"
-" function! FzfComplete(...) abort
-"     if len(a:000) && a:000[0] && getline('.')[col('.') - 1] !~# '\S'
-"         call feedkeys("\<tab>", 'n')
-"         return
-"     endif
-"
-"     setlocal completefunc=FzfCompletefunc
-"     setlocal completeopt=menu
-"     call feedkeys("\<c-x>\<c-u>", 'n')
-" endfunction
-"
-" inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
-"
+" Thanks to https://nondev.io/Fuzzy-completion-in-Vim
+function! FzfCompletefunc(findstart, base) abort
+    let Func = function(get(g:, 'FzfCompletefunc', &omnifunc))
+    let results = Func(a:findstart, a:base)
+
+    if a:findstart
+        return results
+    endif
+
+    let words = type(results) == type({}) && has_key(results, 'words')
+                \ ? len(results.words) && type(results.words[0]) == type({})
+                \ ? map(results.words, 'v:val.word . "\t" . v:val.menu')
+                \ : results.words
+                \ : results
+
+    let results = len(words) > 1
+                \ ? fzf#run({
+                \ 'source': words,
+                \ 'down': '~40%',
+                \ 'options': printf('--query "%s" +s -m', a:base)
+                \ })
+                \ : words
+
+    if exists('*UltiSnips#ExpandSnippet')
+                \ && len(results) == 1
+                \ && len(results[0]) > 1
+        let resultsplit = split(results[0], "\t")
+
+        if len(resultsplit) > 1 && resultsplit[1] =~? '\[snip\]'
+            call feedkeys("\<c-r>=UltiSnips#ExpandSnippet()\<cr>", 'n')
+        endif
+    endif
+
+    return map(results, 'split(v:val, "\t")[0]')
+endfunction
+
+function! FzfComplete(...) abort
+    if len(a:000) && a:000[0] && getline('.')[col('.') - 1] !~# '\S'
+        call feedkeys("\<tab>", 'n')
+        return
+    endif
+
+    setlocal completefunc=FzfCompletefunc
+    setlocal completeopt=menu
+    call feedkeys("\<c-x>\<c-u>", 'n')
+endfunction
+
+inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
+
 " Language helpers {{{1
 
 " set the sign to be placed on the sign column for debuggingg {{{2
@@ -1112,9 +1110,6 @@ function! RemoveAllBreakpoints()
     " remove all breakpoints
     exe ":sign unplace *"
 endfunction
-
-" get all the signs for breakpoints {{{2
-nnoremap ys :sign list mybreakpoint<CR>
 
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
@@ -1567,4 +1562,4 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 " Set colorscheme {{{1
 set termguicolors
 set background=dark
-colorscheme PaperColor
+colorscheme gruvbox

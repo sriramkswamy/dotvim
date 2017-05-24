@@ -39,6 +39,9 @@ nnoremap <buffer> mgl :let @m = "l"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "q"<CR>:TxSend(@m)<CR>
 
 " metadata
+" sort the imports
+nnoremap <buffer> mi :sort i /\w\+/<CR>
+vnoremap <buffer> mi :sort i /\w\+/<CR>
 " get the shape of the matrix/object
 nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>
 " dimensions of the variable at point
