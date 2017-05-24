@@ -985,7 +985,7 @@ Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>
 nnoremap <silent> gG :Glog<CR>
-nnoremap cu :Gwrite<CR>Gcommit<CR>
+nnoremap cu :Gwrite<CR>:Gcommit<CR>O
 nnoremap du :Gdiff<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
