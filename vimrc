@@ -352,7 +352,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>n :10vsp <bar> Explore<CR>
+nnoremap <Space>n :30vsp <bar> Explore<CR>
 
 " Quickfix and Location list maps {{{3
 let g:lt_height = get( g:, 'lt_height', 10 )
@@ -1014,6 +1014,7 @@ autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buff
 nnoremap <silent> <Space>g :Gstatus<CR>
 nnoremap <silent> gG :Glog<CR>
 nnoremap cu :Gwrite<CR>:Gcommit<CR>O
+nnoremap yu :Gwrite<CR>
 nnoremap du :Gdiff<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
