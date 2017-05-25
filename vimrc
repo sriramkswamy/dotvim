@@ -523,7 +523,7 @@ autocmd BufNewFile,BufReadPost *.txt,*.text set filetype=vimwiki
 " Wiki Index
 nmap <Space>ui <Plug>VimwikiTabIndex
 " Select Wiki
-nmap <Space>uo <Plug>VimwikiUISelect
+nmap <Space>uu <Plug>VimwikiUISelect
 " Diary index
 nmap <Space>ud <Plug>VimwikiDiaryIndex
 " Diary note
@@ -690,7 +690,7 @@ nnoremap crn :StripNewLine<CR>
 function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
-inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<cr>a
+nnoremap gz :<C-u>call FixLastSpellingError()<CR>
 
 " Plugins {{{2
 
