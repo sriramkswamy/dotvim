@@ -501,7 +501,35 @@ nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
 
 " Note taking {{{1
 
-" Vim Wiki
+" Vim Wiki {{{2
+Plug 'vimwiki/vimwiki'
+let g:vimwiki_hl_cb_checked = 1
+let g:vimwiki_global_ext = 0
+let g:vimwiki_folding = 'expr'
+let g:vimwiki_ext2syntax = {'.txt': 'markdown',
+            \ '.md': 'markdown',
+            \ '.mkd': 'markdown',
+            \ '.wiki': 'media'}
+let g:vimwiki_list = [
+            \ {'path': '~/Dropbox/PhD/notes/',
+            \ 'syntax': 'markdown',
+            \ 'ext': '.txt'},
+            \ {'path': '~/Dropbox/notes/',
+            \ 'syntax': 'markdown',
+            \ 'ext': '.txt'}]
+autocmd BufNewFile,BufReadPost *.txt,*.text set filetype=vimwiki
+
+" Maps {{{3
+" Wiki Index
+nmap <Space>ui <Plug>VimwikiTabIndex
+" Select Wiki
+nmap <Space>uo <Plug>VimwikiUISelect
+" Diary index
+nmap <Space>ud <Plug>VimwikiDiaryIndex
+" Diary note
+nmap <Space>un <Plug>VimwikiTabMakeDiaryNote
+" Yesterday note
+nmap <Space>uy <Plug>VimwikiMakeYesterdayDiaryNote
 
 " A la Notational Velocity {{{2
 Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
@@ -510,9 +538,9 @@ let g:nv_directories = [
             \ '~/Dropbox/PhD/notes',
             \ '~/Dropbox/PhD/meetings',
             \ '~/Dropbox/PhD/jobs',
-            \ '~/Dropbox/org']
+            \ '~/Dropbox/notes']
 let g:nv_default_extension = '.txt'
-nnoremap <Space>u :NV<CR>
+nnoremap <Space>o :NV<CR>
 
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
@@ -550,7 +578,7 @@ endfunction
 
 " Autocmds and let commands for filetypes {{{2
 autocmd BufNewFile,BufReadPost *.rkt,*.rktl set filetype=scheme
-autocmd BufNewFile,BufReadPost *.txt,*.text,*.md,*.mkd,*.markdown set filetype=markdown
+autocmd BufNewFile,BufReadPost *.md,*.mkd,*.markdown set filetype=markdown
 autocmd BufNewFile,BufReadPost CMakeLists.txt set filetype=cmake
 autocmd BufNewFile,BufReadPost *.clj set filetype=clojure
 autocmd BufNewFile,BufReadPost *.jl set filetype=julia
@@ -1291,7 +1319,7 @@ nnoremap cm :Make -C<Space>
 nnoremap sm :Make! %<CR>
 nnoremap vm :Make<Space>
 nnoremap <Space>h :Dispatch!<Space>
-nnoremap <silent> <Space>o :Copen<CR>
+nnoremap <silent> <Space>b :Copen<CR>
 
 " Dispatch based commands {{{4
 

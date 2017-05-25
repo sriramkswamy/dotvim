@@ -4,9 +4,9 @@ setlocal spell
 
 " pandoc
 " convert to html
-nnoremap <buffer> mh :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mh :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".html && open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
 " convert to pdf with toc
-nnoremap <buffer> mm :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm -o " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mm :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm -o " . expand('%:r') . ".pdf && open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
 " convert to latex with toc
 nnoremap <buffer> mt :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
 " convert to rst with toc
@@ -31,12 +31,3 @@ nnoremap <buffer> mi :let @m = "hexo publish"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mw :!hexo new ""<Left>
 " hexo clean
 nnoremap <buffer> mu :let @m = "hexo clean"<CR>:TxSend(@m)<CR>
-
-" convert markdown to other formats
-nnoremap <buffer> mm :Dispatch! pandoc % -V geometry:margin=2cm -o %:r.pdf<CR>
-nnoremap <buffer> mo :Dispatch! pandoc % -o %:r.org<CR>
-nnoremap <buffer> mr :Dispatch! pandoc % -o %:r.rst<CR>
-nnoremap <buffer> mx :Dispatch! pandoc % -o %:r.tex<CR>
-nnoremap <buffer> mk :Dispatch! pandoc % -o %:r.epub<CR>
-nnoremap <buffer> mh :Dispatch! pandoc % -o %:r.html<CR>
-nnoremap <buffer> ml :Dispatch! multimarkdown -t opml % > %:r.opml<CR>
