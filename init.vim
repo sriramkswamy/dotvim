@@ -162,8 +162,10 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 let maplocalleader="\\"
 
 " Window management
-nnoremap gO <C-w>o
-nnoremap <Space>m <C-w><C-w>
+nnoremap <silent> gO <C-w>o
+nnoremap <silent> sm :split<CR>
+nnoremap <silent> vm :vsplit<CR>
+nnoremap <silent> <Space>m <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
@@ -443,18 +445,16 @@ nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space><Space> :FzfBLines<CR>
 nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>c :FzfBCommits<CR>
-nnoremap <silent> <Space>C :FzfCommits<CR>
+nnoremap <silent> <Space>c :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
-nnoremap <silent> <Space>F :FzfFiles ~<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>a :FzfBuffers<CR>
 nnoremap <silent> <Space>t :FzfWindows<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfRg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
-vnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
 nnoremap <silent> <Space>: :FzfHistory:<CR>
 vnoremap <silent> <Space>: :FzfHistory:<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
@@ -473,8 +473,7 @@ command! -nargs=1 FzfSpotlight call fzf#run({
             \ 'sink'    : 'e',
             \ 'options' : '-m --prompt "Spotlight> "'
             \ })
-nnoremap <Space>s :FzfSpotlight<Space>
-nnoremap <Space>S :FzfSpotlight <C-R><C-W><CR>
+nnoremap <Space>s :FzfSpotlight <C-R><C-W>
 
 " Note taking {{{1
 
@@ -1225,9 +1224,7 @@ nnoremap sU :SudoWrite<CR>
 Plug 'tpope/vim-dispatch', {'on': ['Spawn', 'Start', 'Make', 'Dispatch', 'Copen']}
 nnoremap gh :Spawn<Space>
 nnoremap gH :Start<Space>
-nnoremap cm :Make -C<Space>
-nnoremap sm :Make! %<CR>
-nnoremap vm :Make<Space>
+nnoremap cm :Make<Space>
 nnoremap <Space>h :Dispatch!<Space>
 nnoremap <silent> <Space>b :Copen<CR>
 
