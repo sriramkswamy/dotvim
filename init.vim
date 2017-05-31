@@ -165,6 +165,7 @@ let maplocalleader="\\"
 nnoremap <silent> gO <C-w>o
 nnoremap <silent> sm :split<CR>
 nnoremap <silent> vm :vsplit<CR>
+nnoremap <silent> m<Space> <C-w>=
 nnoremap <silent> <Space>m <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>k :bd!<CR>
@@ -467,12 +468,11 @@ nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
 nnoremap dn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 nnoremap cn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 
-" Search spotlight {{{2
-command! -nargs=1 FzfSpotlight call fzf#run({
+" Search using spotlight {{{2
+command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
             \ 'source'  : 'mdfind -onlyin ~ <q-args>',
-            \ 'sink'    : 'e',
             \ 'options' : '-m --prompt "Spotlight> "'
-            \ })
+            \ }))
 nnoremap <Space>s :FzfSpotlight <C-R><C-W>
 
 " Note taking {{{1
@@ -1036,11 +1036,20 @@ function! SetBreakpoint()
     exe ":sign place" s:breakpointplaceline " line=" . s:breakpointplaceline . " name=mybreakpoint file=" . expand('%:p')
 endfunction
 
+function! SetBreakIndicator()
+    " set the breakpoint character and indicate the breakpoint
+    exe ':sign define mybreakindicator text=➤'
+    let s:breakpointplaceline = line('.')
+    exe ":sign place" s:breakpointplaceline " line=" . s:breakpointplaceline . " name=mybreakindicator file=" . expand('%:p')
+endfunction
+nnoremap <> :call SetBreakIndicator()<CR>
+
 function! UnsetBreakpoint()
     " remove the breakpoint character
     let s:breakpointplaceline = line('.')
     exe ":sign unplace" s:breakpointplaceline
 endfunction
+nnoremap >< :call UnsetBreakpoint()<CR>
 
 function! RemoveAllBreakpoints()
     " remove all breakpoints
@@ -1214,9 +1223,9 @@ nnoremap gR :Rename<Space>
 nnoremap gM :Move<Space>
 nnoremap dm :Mkdir<Space>
 command! CopyFileName let @+ = expand('%:p')
-nnoremap gY :CopyFileName<CR>
+nnoremap gy :CopyFileName<CR>
 command! CopyFilePath let @+ = expand('%:p:h')
-nnoremap ym :CopyFilePath<CR>
+nnoremap gY :CopyFilePath<CR>
 nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
 
@@ -1267,17 +1276,19 @@ let g:tmuxify_run = {
 nnoremap m, :TxSend<CR><C-P>
 nnoremap m. :TxSend<CR><C-R><C-W>
 nnoremap m/ :TxSend<CR><C-P><C-F>
-nnoremap m<Space> :TxSend<CR><C-R><C-W><C-F>
 " pane changes
 nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
 nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
 nnoremap m13 :TxSetPane 0:1.3<Left><Left><Left><Left>
+nnoremap m14 :TxSetPane 0:1.4<Left><Left><Left><Left>
 nnoremap m21 :TxSetPane 0:2.1<Left><Left><Left><Left>
 nnoremap m22 :TxSetPane 0:2.2<Left><Left><Left><Left>
 nnoremap m23 :TxSetPane 0:2.3<Left><Left><Left><Left>
+nnoremap m24 :TxSetPane 0:2.4<Left><Left><Left><Left>
 nnoremap m31 :TxSetPane 0:3.1<Left><Left><Left><Left>
 nnoremap m32 :TxSetPane 0:3.2<Left><Left><Left><Left>
 nnoremap m33 :TxSetPane 0:3.3<Left><Left><Left><Left>
+nnoremap m34 :TxSetPane 0:3.4<Left><Left><Left><Left>
 " interaction maps
 nnoremap <silent> mc :TxClear<CR>
 nnoremap <silent> mx :TxSigInt<CR>
