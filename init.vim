@@ -995,11 +995,14 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-nnoremap <silent> <Space>g :Gstatus<CR>
+nnoremap <silent> <Space>e :Gstatus<CR>
 nnoremap <silent> gG :Glog<CR>
 nnoremap cu :Gwrite<CR>:Gcommit<CR>O
 nnoremap yu :Gwrite<CR>
 nnoremap du :Gdiff<CR>
+" git operations
+nnoremap vr :Gpush<CR>
+nnoremap vu :Gpull<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
@@ -1007,7 +1010,7 @@ nnoremap <silent> gm :Merginal<CR>
 
 " Interactive rebasing and tree {{{3
 Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv' , {'on': 'Gitv'}
-nnoremap <silent> <Space>e :Gitv<CR>
+nnoremap <silent> <Space>g :Gitv<CR>
 
 " Project/Session management {{{1
 Plug 'tpope/vim-obsession'
@@ -1262,11 +1265,8 @@ nnoremap <silent> <Space>b :Copen<CR>
 nnoremap dc :Dispatch! ctags -R %:p:h<CR>
 
 " post file as gist
-nnoremap gP :Dispatch! gist % -cd ""<Left>
-
-" asynchrous git operations
-nnoremap vr :Dispatch! git push<CR>
-nnoremap vu :Dispatch! git pull<CR>
+nnoremap gp :Dispatch! gist % -cd ""<Left>
+nnoremap gP :Dispatch! gist -Pcd ""<Left>
 
 " Also checkout ftplugin files
 
