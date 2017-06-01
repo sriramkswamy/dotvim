@@ -468,7 +468,6 @@ nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space><Space> :FzfBLines<CR>
 nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>c :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
@@ -1022,7 +1021,6 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>e :Gstatus<CR>
-nnoremap <silent> gG :Glog<CR>
 nnoremap cu :Gwrite<CR>:Gcommit<CR>O
 nnoremap yu :Gwrite<CR>
 nnoremap du :Gdiff<CR>
@@ -1035,8 +1033,11 @@ nnoremap <silent> gb :Gblame<CR>
 nnoremap <silent> gm :Merginal<CR>
 
 " Interactive rebasing and tree {{{3
-Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv' , {'on': 'Gitv'}
-nnoremap <silent> <Space>g :Gitv<CR>
+Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'
+nnoremap <silent> <Space>g :GV?<CR>
+nnoremap <silent> <Space>c :GV<CR>
+vnoremap <silent> <Space>g :GV?<CR>
+vnoremap <silent> <Space>c :GV<CR>
 
 " Project/Session management {{{1
 Plug 'tpope/vim-obsession'
@@ -1154,12 +1155,22 @@ function! UnsetBreakpoint()
     " remove the breakpoint character
     let s:breakpointplaceline = line('.')
     exe ":sign unplace" s:breakpointplaceline
+    if exists(':SignifyRefresh')
+        SignifyRefresh
+        redraw!
+        SignifyEnable
+    endif
 endfunction
 nnoremap >< :call UnsetBreakpoint()<CR>
 
 function! RemoveAllBreakpoints()
     " remove all breakpoints
     exe ":sign unplace *"
+    if exists(':SignifyRefresh')
+        SignifyRefresh
+        redraw!
+        SignifyEnable
+    endif
 endfunction
 
 " Vim script {{{2
