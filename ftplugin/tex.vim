@@ -1,38 +1,34 @@
 " vimtex maps
 " star vs unstarred
-nmap mn <Plug>(vimtex-env-toggle-star)
+nmap <buffer> mn <Plug>(vimtex-env-toggle-star)
 " delimiters toggle
-nmap mb <Plug>(vimtex-delim-toggle-modifier)
+nmap <buffer> mb <Plug>(vimtex-delim-toggle-modifier)
 " info
-nmap mh <Plug>(vimtex-info-full)
+nnoremap <buffer> mi :VimtexInfo<CR>
 " toc
-nmap mt <Plug>(vimtex-toc-toggle)
+nnoremap <buffer> mt :VimtexTocToggle<CR>
 " labels
-nmap ml <Plug>(vimtex-labels-toggle)
+nnoremap <buffer> ml :VimtexLabelsToggle<CR>
 " view
-nmap mv <Plug>(vimtex-view)
-" reverse search
-nmap m/ <Plug>(vimtex-reverse-search)
+nnoremap <buffer> mv :VimtexView<CR>
 " compile toggle
-nmap mm <Plug>(vimtex-compile-toggle)
+nnoremap <buffer> mm :VimtexCompile<CR>
 " compile selected
-xmap mm <Plug>(vimtex-compile-selected)
+vnoremap <buffer> mm :VimtexCompileSelected<CR>
 " stop all vimtex processes
-nmap mk <Plug>(vimtex-stop-all)
+nnoremap <buffer> mk :VimtexStopAll<CR>
 " show errors
-nmap me <Plug>(vimtex-errors)
+nnoremap <buffer> me :VimtexErrors<CR>
 " show compile output
-nmap ma <Plug>(vimtex-compile-output)
+nnoremap <buffer> ma :VimtexCompileOutput<CR>
 " show status
-nmap mz <Plug>(vimtex-status-all)
+nnoremap <buffer> mz :VimtexStatus<CR>
 " clean completely
-nmap mg <Plug>(vimtex-clean-full)
-" list imaps
-nmap mi <Plug>(vimtex-imaps-list)
-" reloac vimtex
-nmap md <Plug>(vimtex-reload)
+nnoremap <buffer> mg :VimtexClean!<CR>
+" reload vimtex
+nnoremap <buffer> md :VimtexReload<CR>
 " toggling main file
-nmap mj <Plug>(vimtex-toggle-main)
+nnoremap <buffer> mj :VimtexToggleMain<CR>
 " count the number of words
 nnoremap <buffer> mw :VimtexCountWords<CR>
 
