@@ -168,7 +168,7 @@ nnoremap <silent> vm :vsplit<CR>
 nnoremap <silent> m<Space> <C-w>=
 nnoremap <silent> <Space>m <C-w><C-w>
 " Kill, save or quit
-nnoremap <silent> <Space>k :bd!<CR>
+nnoremap <silent> <Space>a :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
 nnoremap <silent> dr :redraw!<CR>
 " Tabs
@@ -176,13 +176,12 @@ nnoremap <Space><Tab> gt
 nnoremap <Space><BS> gT
 nnoremap gt :tabe<CR>
 nnoremap gT :tabc<CR>
-if has('unix')
-    if has('mac')
-        " Open in Finder
-        nnoremap gF :!open %:p:h<CR>
-        " Open in Safari
-        nnoremap gB :!open -a Safari %<CR>
-    endif
+if has('macunix')
+    " Open in Finder
+    nnoremap gF :!open %:p:h<CR>
+    " Open in Safari
+    nnoremap gB :!open -a Safari %<CR>
+elseif has('unix')
     " Open in Navigator
     nnoremap gF :!xdg-open %:p:h<CR>
     " Open in Browser
@@ -450,7 +449,7 @@ nnoremap <silent> <Space>c :FzfCommits<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>a :FzfBuffers<CR>
+nnoremap <silent> <Space>k :FzfBuffers<CR>
 nnoremap <silent> <Space>t :FzfWindows<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfRg<CR>
@@ -480,6 +479,7 @@ nnoremap <Space>s :FzfSpotlight <C-R><C-W>
 " Vim Wiki {{{2
 Plug 'vimwiki/vimwiki'
 let g:vimwiki_hl_cb_checked = 1
+let g:vimwiki_table_mappings = 0
 let g:vimwiki_global_ext = 0
 let g:vimwiki_folding = 'expr'
 let g:vimwiki_ext2syntax = {'.txt': 'markdown',
@@ -891,6 +891,15 @@ nnoremap <silent> goo :call SourceVimscript("currentline")<cr>
 " Better surround - cs/ds/ys(to add surrounding) {{{4
 Plug 'tpope/vim-surround'
 let g:surround_no_mappings = 1
+nmap ds  <Plug>Dsurround
+nmap cs  <Plug>Csurround
+nmap s  <Plug>Ysurround
+nmap S  <Plug>YSurround
+nmap ss <Plug>Yssurround
+nmap Ss <Plug>YSsurround
+nmap SS <Plug>YSsurround
+xmap s   <Plug>VSurround
+xmap S  <Plug>VgSurround
 
 " Easy commenting - gc(motion/textobject) {{{4
 Plug 'tomtom/tcomment_vim'
@@ -950,12 +959,22 @@ omap W <Plug>Sneak_S
 
 " Snippets {{{1
 " Snippet plugin and snippet collection {{{2
-if has('python') || has('python3')
+if has('python3')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
+    let g:UltiSnipsUsePythonVersion = 3
     let g:UltiSnipsExpandTrigger="<tab>"
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-    let g:UltiSnipsEditSplit="vertical"
+    let g:UltiSnipsEditSplit="context"
+    let g:UltiSnipsListSnippets="<C-l>"
+    nnoremap <silent> yo :UltiSnipsEdit<CR>
+elseif has('python')
+    Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
+    let g:UltiSnipsUsePythonVersion = 2
+    let g:UltiSnipsExpandTrigger="<tab>"
+    let g:UltiSnipsJumpForwardTrigger="<tab>"
+    let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+    let g:UltiSnipsEditSplit="context"
     let g:UltiSnipsListSnippets="<C-l>"
     nnoremap <silent> yo :UltiSnipsEdit<CR>
 endif

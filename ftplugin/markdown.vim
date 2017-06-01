@@ -2,6 +2,9 @@
 setlocal wrap
 setlocal spell
 
+" Ultisnips add tex snippets
+UltiSnipsAddFiletypes markdown.tex
+
 " pandoc
 " convert to html
 nnoremap <buffer> mh :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".html && open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
