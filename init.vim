@@ -1008,9 +1008,9 @@ nnoremap <silent> gm :Merginal<CR>
 
 " Interactive rebasing and tree {{{3
 Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'
-nnoremap <silent> <Space>g :GV?<CR>
+nnoremap <silent> gG :GV?<CR>
 nnoremap <silent> <Space>c :GV<CR>
-vnoremap <silent> <Space>g :GV?<CR>
+vnoremap <silent> gG :GV?<CR>
 vnoremap <silent> <Space>c :GV<CR>
 
 " Project/Session management {{{1
@@ -1238,6 +1238,9 @@ nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
 nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
 vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
 vnoremap g} "my:vsp <bar> terminal googler <C-R>m<CR>
+
+" tig client open
+nnoremap <Space>g :vsp <bar> terminal tig<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
