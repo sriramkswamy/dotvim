@@ -72,6 +72,8 @@ set showmode
 " Set splits to the right
 set splitright
 set splitbelow
+" Show text normally
+set conceallevel=0
 
 " Maps without leader {{{2
 
@@ -562,6 +564,7 @@ autocmd BufNewFile,BufRead *.plt set filetype=gnuplot
 autocmd BufNewFile,BufRead *.r,*.R set filetype=r
 " TeX and Markdown support
 let g:tex_flavor='latex'
+let g:tex_conceal = ""
 let g:vim_markdown_disabled = 1
 let g:vim_markdown_math = 1
 

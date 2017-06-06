@@ -1,3 +1,7 @@
+" some settings for tex files
+setlocal wrap
+setlocal spell
+
 " vimtex maps
 " star vs unstarred
 nmap <buffer> mn <Plug>(vimtex-env-toggle-star)
