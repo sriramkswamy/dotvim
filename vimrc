@@ -488,8 +488,8 @@ imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap dn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-nnoremap cn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 
 " Search using spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
@@ -511,12 +511,10 @@ let g:vimwiki_ext2syntax = {'.txt': 'markdown',
             \ '.mkd': 'markdown',
             \ '.wiki': 'media'}
 let g:vimwiki_list = [
-            \ {'path': '~/Dropbox/PhD/notes/',
-            \ 'syntax': 'markdown',
-            \ 'ext': '.txt'},
             \ {'path': '~/Dropbox/notes/',
             \ 'syntax': 'markdown',
-            \ 'ext': '.txt'}]
+            \ 'ext': '.txt'}
+            \ ]
 autocmd BufNewFile,BufReadPost *.txt,*.text set filetype=vimwiki
 
 " Maps {{{3
@@ -624,23 +622,6 @@ cnoremap :: <c-r>=expand('%:p:h')<cr>/
 " repeat in visual mode
 vnoremap . :normal .<CR>
 vnoremap <C-o> :normal<Space>
-" Easier pairs when required
-inoremap {<Tab> {}<Esc>i
-inoremap {<CR> {<CR>}<Esc>O
-inoremap [<Tab> []<Esc>i
-inoremap [<CR> [<CR>]<Esc>O
-inoremap (<Tab> ()<Esc>i
-inoremap (<CR> (<CR>)<Esc>O
-inoremap <<Tab> <><Esc>i
-inoremap <<CR> <<CR>><Esc>O
-inoremap '<Tab> ''<Esc>i
-inoremap '<CR> '<CR>'<Esc>O
-inoremap "<Tab> ""<Esc>i
-inoremap "<CR> "<CR>"<Esc>O
-inoremap `<Tab> ``<Esc>i
-inoremap `<CR> `<CR>`<Esc>O
-inoremap ```<Tab> ``````<Esc>hhi
-inoremap ```<CR> ```<CR>```<Esc>O
 " Macros in visual mode
 function! ExecuteMacroOverVisualRange()
     echo "@".getcmdline()
@@ -698,6 +679,9 @@ nnoremap gz :<C-u>call FixLastSpellingError()<CR>
 " Indentation settings for collaborative work {{{3
 Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
+" Better closing - experimental {{{3
+Plug 'kana/vim-smartinput'
 
 " Better '.' command {{{3
 Plug 'tpope/vim-repeat'
@@ -1050,92 +1034,6 @@ nnoremap so :source ~/.vim/session/
 nnoremap sd :Obsess!<CR>
 nnoremap sq :qall<CR>
 
-" Autocompletion {{{1
-
-" vim-omnicomplete activation {{{2
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd filetype vim set omnifunc=syntaxcomplete#Complete
-autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
-autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
-" Close after auto completion
-autocmd CompleteDone * pclose
-
-" Maps for navigating autocompletion {{{2
-" <C-j> and <C-k> for autocompletion navigation in insert mode
-inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
-
-" Aggregate completions {{{2
-Plug 'maralla/completor.vim'
-let g:completor_auto_trigger = 1
-let g:completor_java_omni_trigger = '\w+$|[\w\)\]]+\.\w*$'
-let g:completor_r_omni_trigger = '(?\$\w*|\.\w*)$'
-let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
-let g:completor_php_omni_trigger = '([$\w]+|use\s*|->[$\w]*|::[$\w]*'
-            \ . '|implements\s*|extends\s*|class\s+[$\w]+|new\s*)$'
-let g:completor_tex_omni_trigger = '\\\\(:?'
-            \ . '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
-            \ . '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
-            \ . '|hyperref\s*\[[^]]*'
-            \ . '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-            \ . '|(?:include(?:only)?|input)\s*\{[^}]*'
-            \ . '|\w*(gls|Gls|GLS)(pl)?\w*(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-            \ . '|includepdf(\s*\[[^]]*\])?\s*\{[^}]*'
-            \ . '|includestandalone(\s*\[[^]]*\])?\s*\{[^}]*'
-            \ .')$'
-
-" FZF Completion function {{{3
-" Thanks to https://nondev.io/Fuzzy-completion-in-Vim
-function! FzfCompletefunc(findstart, base) abort
-    let Func = function(get(g:, 'FzfCompletefunc', &omnifunc))
-    let results = Func(a:findstart, a:base)
-
-    if a:findstart
-        return results
-    endif
-
-    let words = type(results) == type({}) && has_key(results, 'words')
-                \ ? len(results.words) && type(results.words[0]) == type({})
-                \ ? map(results.words, 'v:val.word . "\t" . v:val.menu')
-                \ : results.words
-                \ : results
-
-    let results = len(words) > 1
-                \ ? fzf#run({
-                \ 'source': words,
-                \ 'down': '~40%',
-                \ 'options': printf('--query "%s" +s -m', a:base)
-                \ })
-                \ : words
-
-    if exists('*UltiSnips#ExpandSnippet')
-                \ && len(results) == 1
-                \ && len(results[0]) > 1
-        let resultsplit = split(results[0], "\t")
-
-        if len(resultsplit) > 1 && resultsplit[1] =~? '\[snip\]'
-            call feedkeys("\<c-r>=UltiSnips#ExpandSnippet()\<cr>", 'n')
-        endif
-    endif
-
-    return map(results, 'split(v:val, "\t")[0]')
-endfunction
-
-function! FzfComplete(...) abort
-    if len(a:000) && a:000[0] && getline('.')[col('.') - 1] !~# '\S'
-        call feedkeys("\<tab>", 'n')
-        return
-    endif
-
-    setlocal completefunc=FzfCompletefunc
-    setlocal completeopt=menu
-    call feedkeys("\<c-x>\<c-u>", 'n')
-endfunction
-
-inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
-
 " Language helpers {{{1
 
 " set the sign to be placed on the sign column for debuggingg {{{2
@@ -1311,6 +1209,92 @@ let g:neomake_r_lintr_maker = {
             \ '%E%f:%l:%c: error: %m,',
             \ }
 let g:neomake_r_enabled_makers = ['lintr']
+
+" Autocompletion {{{1
+
+" vim-omnicomplete activation {{{2
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd filetype vim set omnifunc=syntaxcomplete#Complete
+autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
+autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
+" Close after auto completion
+autocmd CompleteDone * pclose
+
+" Maps for navigating autocompletion {{{2
+" <C-j> and <C-k> for autocompletion navigation in insert mode
+inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
+
+" Aggregate completions {{{2
+Plug 'maralla/completor.vim'
+let g:completor_auto_trigger = 1
+let g:completor_java_omni_trigger = '\w+$|[\w\)\]]+\.\w*$'
+let g:completor_r_omni_trigger = '(?\$\w*|\.\w*)$'
+let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
+let g:completor_php_omni_trigger = '([$\w]+|use\s*|->[$\w]*|::[$\w]*'
+            \ . '|implements\s*|extends\s*|class\s+[$\w]+|new\s*)$'
+let g:completor_tex_omni_trigger = '\\\\(:?'
+            \ . '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
+            \ . '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
+            \ . '|hyperref\s*\[[^]]*'
+            \ . '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|(?:include(?:only)?|input)\s*\{[^}]*'
+            \ . '|\w*(gls|Gls|GLS)(pl)?\w*(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|includepdf(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ . '|includestandalone(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ .')$'
+
+" FZF Completion function {{{3
+" Thanks to https://nondev.io/Fuzzy-completion-in-Vim
+function! FzfCompletefunc(findstart, base) abort
+    let Func = function(get(g:, 'FzfCompletefunc', &omnifunc))
+    let results = Func(a:findstart, a:base)
+
+    if a:findstart
+        return results
+    endif
+
+    let words = type(results) == type({}) && has_key(results, 'words')
+                \ ? len(results.words) && type(results.words[0]) == type({})
+                \ ? map(results.words, 'v:val.word . "\t" . v:val.menu')
+                \ : results.words
+                \ : results
+
+    let results = len(words) > 1
+                \ ? fzf#run({
+                \ 'source': words,
+                \ 'down': '~40%',
+                \ 'options': printf('--query "%s" +s -m', a:base)
+                \ })
+                \ : words
+
+    if exists('*UltiSnips#ExpandSnippet')
+                \ && len(results) == 1
+                \ && len(results[0]) > 1
+        let resultsplit = split(results[0], "\t")
+
+        if len(resultsplit) > 1 && resultsplit[1] =~? '\[snip\]'
+            call feedkeys("\<c-r>=UltiSnips#ExpandSnippet()\<cr>", 'n')
+        endif
+    endif
+
+    return map(results, 'split(v:val, "\t")[0]')
+endfunction
+
+function! FzfComplete(...) abort
+    if len(a:000) && a:000[0] && getline('.')[col('.') - 1] !~# '\S'
+        call feedkeys("\<tab>", 'n')
+        return
+    endif
+
+    setlocal completefunc=FzfCompletefunc
+    setlocal completeopt=menu
+    call feedkeys("\<c-x>\<c-u>", 'n')
+endfunction
+
+inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
 
 " REPL and Tmux {{{1
 

@@ -1,6 +1,7 @@
 " some settings for markdown files
 setlocal wrap
 setlocal spell
+setlocal formatoptions-=t
 
 " Ultisnips add tex snippets
 UltiSnipsAddFiletypes markdown.tex

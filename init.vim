@@ -465,8 +465,8 @@ imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap dn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-nnoremap cn :enew <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 
 " Search using spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
@@ -488,12 +488,10 @@ let g:vimwiki_ext2syntax = {'.txt': 'markdown',
             \ '.mkd': 'markdown',
             \ '.wiki': 'media'}
 let g:vimwiki_list = [
-            \ {'path': '~/Dropbox/PhD/notes/',
-            \ 'syntax': 'markdown',
-            \ 'ext': '.txt'},
             \ {'path': '~/Dropbox/notes/',
             \ 'syntax': 'markdown',
-            \ 'ext': '.txt'}]
+            \ 'ext': '.txt'}
+            \ ]
 autocmd BufNewFile,BufReadPost *.txt,*.text set filetype=vimwiki
 
 " Maps {{{3
@@ -595,23 +593,6 @@ cnoremap :: <c-r>=expand('%:p:h')<cr>/
 " repeat in visual mode
 vnoremap . :normal .<CR>
 vnoremap <C-o> :normal<Space>
-" Easier pairs when required
-inoremap {<Tab> {}<Esc>i
-inoremap {<CR> {<CR>}<Esc>O
-inoremap [<Tab> []<Esc>i
-inoremap [<CR> [<CR>]<Esc>O
-inoremap (<Tab> ()<Esc>i
-inoremap (<CR> (<CR>)<Esc>O
-inoremap <<Tab> <><Esc>i
-inoremap <<CR> <<CR>><Esc>O
-inoremap '<Tab> ''<Esc>i
-inoremap '<CR> '<CR>'<Esc>O
-inoremap "<Tab> ""<Esc>i
-inoremap "<CR> "<CR>"<Esc>O
-inoremap `<Tab> ``<Esc>i
-inoremap `<CR> `<CR>`<Esc>O
-inoremap ```<Tab> ``````<Esc>hhi
-inoremap ```<CR> ```<CR>```<Esc>O
 " Macros in visual mode
 function! ExecuteMacroOverVisualRange()
     echo "@".getcmdline()
@@ -672,6 +653,9 @@ nnoremap gz :<C-u>call FixLastSpellingError()<CR>
 " Indentation settings for collaborative work {{{3
 Plug 'editorconfig/editorconfig-vim'
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
+" Better closing - experimental {{{3
+Plug 'kana/vim-smartinput'
 
 " Better '.' command {{{3
 Plug 'tpope/vim-repeat'
@@ -1024,34 +1008,6 @@ nnoremap so :source ~/.vim/session/
 nnoremap sd :Obsess!<CR>
 nnoremap sq :qall<CR>
 
-" Autocompletion {{{1
-
-" vim-omnicomplete activation {{{2
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd filetype vim set omnifunc=syntaxcomplete#Complete
-autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
-autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
-" Close after auto completion
-autocmd CompleteDone * pclose
-
-" Maps for navigating autocompletion {{{2
-" <C-j> and <C-k> for autocompletion navigation in insert mode
-inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
-
-" Aggregate completions {{{2
-Plug 'Shougo/deoplete.nvim'
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#omni_patterns = {}
-let g:deoplete#omni_patterns.java = '[^. *\t]\.\w*'
-let g:deoplete#omni_patterns.javascript = '[^. *\t]\.\w*'
-let g:deoplete#omni_patterns.python = '[^. *\t]\.\w*'
-let g:deoplete#omni_patterns.cpp = '[^. *\t]\.\w*\|[^. *\t]\->\w*'
-let g:deoplete#omni_patterns.c = '[^. *\t]\.\w*\|[^. *\t]\->\w*'
-let g:deoplete#omni_patterns.r = '[^. *\t]\.\w*\|[^. *\t]\\$\w*'
-
 " Language helpers {{{1
 
 " set the sign to be placed on the sign column for debuggingg {{{2
@@ -1227,6 +1183,34 @@ let g:neomake_r_lintr_maker = {
             \ '%E%f:%l:%c: error: %m,',
             \ }
 let g:neomake_r_enabled_makers = ['lintr']
+
+" Autocompletion {{{1
+
+" vim-omnicomplete activation {{{2
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd filetype vim set omnifunc=syntaxcomplete#Complete
+autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
+autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
+" Close after auto completion
+autocmd CompleteDone * pclose
+
+" Maps for navigating autocompletion {{{2
+" <C-j> and <C-k> for autocompletion navigation in insert mode
+inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
+
+" Aggregate completions {{{2
+Plug 'Shougo/deoplete.nvim'
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#omni_patterns = {}
+let g:deoplete#omni_patterns.java = '[^. *\t]\.\w*'
+let g:deoplete#omni_patterns.javascript = '[^. *\t]\.\w*'
+let g:deoplete#omni_patterns.python = '[^. *\t]\.\w*'
+let g:deoplete#omni_patterns.cpp = '[^. *\t]\.\w*\|[^. *\t]\->\w*'
+let g:deoplete#omni_patterns.c = '[^. *\t]\.\w*\|[^. *\t]\->\w*'
+let g:deoplete#omni_patterns.r = '[^. *\t]\.\w*\|[^. *\t]\\$\w*'
 
 " REPL and Tmux {{{1
 
