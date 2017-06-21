@@ -416,65 +416,6 @@ nnoremap <silent> ge :Grepper -tool rg -noswitch -noprompt -cword<CR>
 nnoremap <silent> gE :Grepper -tool rg -noswitch -query '<C-R>=expand('<cWORD>')<CR>'<CR>
 vnoremap <silent> ge "gy:Grepper -tool rg -noswitch -query '<C-R>=@g<CR>'<CR>
 
-" FZF {{{1
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-let g:fzf_command_prefix='Fzf'
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
-" Actions
-let g:fzf_action = {
-            \ 'ctrl-t': 'tab split',
-            \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit',
-            \ 'ctrl-o': '!open'}
-
-" Ripgrep instead of Ag
-command! -bang -nargs=* FzfRg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
-
-nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfRg <C-R><C-W><CR>
-nnoremap <silent> T :FzfTags <C-R><C-W><CR>
-nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
-nnoremap <silent> sc :FzfSnippets<CR>
-nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space><Space> :FzfBLines<CR>
-nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>d :FzfGFiles<CR>
-nnoremap <silent> <Space>f :FzfFiles<CR>
-nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>k :FzfBuffers<CR>
-nnoremap <silent> <Space>t :FzfWindows<CR>
-nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>p :FzfRg<CR>
-nnoremap <silent> <Space>j :FzfCommands<CR>
-vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
-nnoremap <silent> <Space>: :FzfHistory:<CR>
-vnoremap <silent> <Space>: :FzfHistory:<CR>
-nmap <Space>, <Plug>(fzf-maps-n)
-xmap <Space>, <Plug>(fzf-maps-x)
-omap <Space>, <Plug>(fzf-maps-o)
-imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
-" PhD related stuff
-nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-
-" Search using spotlight {{{2
-command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
-            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
-            \ 'options' : '-m --prompt "Spotlight> "'
-            \ }))
-nnoremap <Space>s :FzfSpotlight <C-R><C-W>
-
 " Note taking {{{1
 
 " Vim Wiki {{{2
@@ -1183,6 +1124,65 @@ let g:neomake_r_lintr_maker = {
             \ '%E%f:%l:%c: error: %m,',
             \ }
 let g:neomake_r_enabled_makers = ['lintr']
+
+" FZF {{{1
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix='Fzf'
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+" Actions
+let g:fzf_action = {
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit',
+            \ 'ctrl-o': '!open'}
+
+" Ripgrep instead of Ag
+command! -bang -nargs=* FzfRg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> J :FzfRg <C-R><C-W><CR>
+nnoremap <silent> T :FzfTags <C-R><C-W><CR>
+nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
+nnoremap <silent> sc :FzfSnippets<CR>
+nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>. :FzfColors<CR>
+nnoremap <silent> <Space><Space> :FzfBLines<CR>
+nnoremap <silent> <Space>/ :FzfHistory/<CR>
+nnoremap <silent> <Space>d :FzfGFiles<CR>
+nnoremap <silent> <Space>f :FzfFiles<CR>
+nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>k :FzfBuffers<CR>
+nnoremap <silent> <Space>t :FzfWindows<CR>
+nnoremap <silent> <Space>x :FzfHelptags<CR>
+nnoremap <silent> <Space>p :FzfRg<CR>
+nnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
+nnoremap <silent> <Space>: :FzfHistory:<CR>
+vnoremap <silent> <Space>: :FzfHistory:<CR>
+nmap <Space>, <Plug>(fzf-maps-n)
+xmap <Space>, <Plug>(fzf-maps-x)
+omap <Space>, <Plug>(fzf-maps-o)
+imap <silent> <C-d> <Plug>(fzf-complete-word)
+imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
+" PhD related stuff
+nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
+nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+
+" Search using spotlight {{{2
+command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
+            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
+            \ 'options' : '-m --prompt "Spotlight> "'
+            \ }))
+nnoremap <Space>s :FzfSpotlight <C-R><C-W>
 
 " Autocompletion {{{1
 
