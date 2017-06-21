@@ -10,7 +10,7 @@ UltiSnipsAddFiletypes markdown.tex
 " convert to html
 nnoremap <buffer> mm :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".html && open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
 " convert to pdf
-nnoremap <buffer> mf :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm -o " . expand('%:r') . ".pdf && open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mf :let @m = "pandoc " . expand('%') . " --latex-engine=xelatex -V geometry:margin=2cm -o " . expand('%:r') . ".pdf && open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
 " convert to rst with toc
 nnoremap <buffer> mu :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
 

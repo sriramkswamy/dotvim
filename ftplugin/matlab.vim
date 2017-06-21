@@ -32,7 +32,9 @@ nnoremap <buffer> mga :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all"<CR
 nnoremap <buffer> mgc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
 " put me in debug mode if there is an error
 nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
-" quit debugging mode
+" exit debug mode without removing breakpoints
+nnoremap <buffer> mgk :let @m = "dbquit"<CR>:TxSend(@m)<CR>
+" quit debugging mode and remove all breakpoints
 nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all; dbquit"<CR>:TxSend(@m)<CR>
 
 " get all the signs for breakpoints in vim {{{2
@@ -43,51 +45,74 @@ nnoremap <buffer> mgv :sign list mybreakpoint<CR>
 nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>
 " open the current variable in the GUI variable viewer
 nnoremap <buffer> mj :let @m = "openvar('" . expand('<cword>') . "')"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mJ :let @m = "openvar('" . expand('<cWORD>') . "')"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mj "my:let @m = "openvar('<C-R>m')"<CR>:TxSend(@m)<CR>
 " type of the variable
 nnoremap <buffer> mw :let @m = "whos " . expand('<cword>')<CR>:TxSend(@m)<CR>
-" type of the variable (big word)
 nnoremap <buffer> mW :let @m = "whos " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mw "my:let @m = "whos <C-R>m"<CR>:TxSend(@m)<CR>
 
 " metadata on variables
 " size of the variable at point
 nnoremap <buffer> mz :let @m = "size(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mZ :let @m = "size(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mz "my:let @m = "size(<C-R>m)"<CR>:TxSend(@m)<CR>
 " length of the variable at point
 nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mL :let @m = "length(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> ml "my:let @m = "length(<C-R>m)"<CR>:TxSend(@m)<CR>
 " number of elements in the variable at point
 nnoremap <buffer> mv :let @m = "numel(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mV :let @m = "numel(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mv "my:let @m = "numel(<C-R>m)"<CR>:TxSend(@m)<CR>
 " fieldnames of the variable at point
 nnoremap <buffer> m? :let @m = "fieldnames(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> m? "my:let @m = "fieldnames(<C-R>m)"<CR>:TxSend(@m)<CR>
 " dimensions of the variable at point
 nnoremap <buffer> md :let @m = "ndim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mD :let @m = "ndim(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> md "my:let @m = "ndim(<C-R>m)"<CR>:TxSend(@m)<CR>
 " mean of the variable at point
 nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mE :let @m = "mean(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> me "my:let @m = "mean(<C-R>m)"<CR>:TxSend(@m)<CR>
 " sum of the variable at point
 nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> m= "my:let @m = "sum(<C-R>m)"<CR>:TxSend(@m)<CR>
 " cumulative sum of the variable at point
 nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> m+ "my:let @m = "cumsum(<C-R>m)"<CR>:TxSend(@m)<CR>
 " list all variables in the current working space
 nnoremap <buffer> ma :let @m = "whos"<CR>:TxSend(@m)<CR>
 
 " simple plotting
 " plot the vector
 nnoremap <buffer> mfp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mfP :let @m = "plot(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mfp "my:let @m = "plot(<C-R>m)"<CR>:TxSend(@m)<CR>
 " plot the matrix as a mesh plot
 nnoremap <buffer> mfm :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mfM :let @m = "mesh(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mfm "my:let @m = "mesh(<C-R>m)"<CR>:TxSend(@m)<CR>
 
 " help
 " add to current path
 nnoremap <buffer> my :CopyFilePath<CR>:let @m = "addpath('<C-r>*')"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mY :CopyFilePath<CR>:let @m = "addpath(genpath('<C-r>*'))"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> my "my:let @m = "addpath('<C-r>m')"<CR>:TxSend(@m)<CR>
 " show brief help on the function at point
 nnoremap <buffer> mh :let @m = "help " . expand('<cword>')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mH :let @m = "help " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mh "my:let @m = "help <C-R>m"<CR>:TxSend(@m)<CR>
 " open the complete GUI documentation of the function at point
 nnoremap <buffer> mi :let @m = "doc " . expand('<cword>')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mI :let @m = "doc " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mi "my:let @m = "doc <C-R>m"<CR>:TxSend(@m)<CR>
 
 " other useful commands
 " clear screen
 nnoremap <buffer> mc :let @m = "clc"<CR>:TxSend(@m)<CR>
 " clear variable list
 nnoremap <buffer> mu :let @m = "clear all"<CR>:TxSend(@m)<CR>
-" exit matlab
-nnoremap <buffer> mk :let @m = "exit"<CR>:TxSend(@m)<CR>
 " run the current file
 nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
