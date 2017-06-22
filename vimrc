@@ -92,6 +92,9 @@ set guicursor+=a:blinkon0
 
 " quit whatever
 nnoremap <Space>q :q<CR>
+" Close all folds
+nnoremap c- zM
+nnoremap d- zM
 " Alternate files
 nnoremap <BS> :b#<CR>
 " open file - I have no idea how I got used to this shortcut
@@ -185,10 +188,10 @@ endif
 let maplocalleader="\\"
 
 " Window management
-nnoremap <silent> gO <C-w>o
+nnoremap <silent> - <C-w>o
 nnoremap <silent> sm :split<CR>
 nnoremap <silent> vm :vsplit<CR>
-nnoremap <silent> m<Space> <C-w>=
+nnoremap <silent> gO <C-w>=
 nnoremap <silent> <Space>m <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>a :bd!<CR>
@@ -222,11 +225,19 @@ Plug 'flazz/vim-colorschemes'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 nnoremap <silent> U :UndotreeToggle<CR>
 
+" Insert unicode better {{{3
+Plug 'chrisbra/unicode.vim',
+            \ {'on': ['<Plug>(UnicodeGA)', '<Plug>(MakeDigraph)',
+            \ 'Digraphs', 'DigraphNew', 'UnicodeSearch']}
+let g:Unicode_ShowPreviewWindow = 1
+nmap ga <Plug>(UnicodeGA)
+nmap gz <Plug>(MakeDigraph)
+nnoremap gN :Digraphs<Space>
+nnoremap gV :UnicodeSearch<Space>
+inoremap <C-v> <C-k>
+
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
-
-" Highlight unicode better {{{3
-Plug 'vim-utils/vim-troll-stopper'
 
 " File/Buffer navigation {{{1
 
@@ -483,6 +494,8 @@ nnoremap <Space>o :NV<CR>
 
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
+nnoremap m<Space> :let @w = expand('%') . '#line=' . line('.')<CR>
+nnoremap gA :let @w = '<url:<C-R>w>'<CR>"wp
 nnoremap gX :Utl<CR>
 
 " FileTypes {{{1
@@ -581,7 +594,7 @@ function! StripWhitespace()
     call setreg('/', old_query)
 endfunction
 command! StripWhiteSpace :call StripWhitespace()
-nnoremap crs :StripWhiteSpace<CR>
+nnoremap cra :StripWhiteSpace<CR>
 
 " Strip trailing whitespace {{{3
 nnoremap crr :lvimgrep /\s\+$/ %<CR>
@@ -613,7 +626,8 @@ nnoremap crn :StripNewLine<CR>
 function! FixLastSpellingError()
   normal! mm[s1z=`m"
 endfunction
-nnoremap gz :<C-u>call FixLastSpellingError()<CR>
+nnoremap <C-s> :<C-u>call FixLastSpellingError()<CR>
+inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<CR>a
 
 " Plugins {{{2
 
@@ -664,60 +678,14 @@ nmap [<Space> <Plug>BlankCharLeft
 nmap <silent> <Plug>BlankCharRight a h:call repeat#set("\<Plug>BlankCharRight", v:count)<CR>
 nmap ]<Space> <Plug>BlankCharRight
 
-" Blank characters on both sides {{{4
-nmap <silent> <Plug>BlankCharBoth i la b:call repeat#set("\<Plug>BlankCharBoth", v:count)<CR>
-nmap g<Space> <Plug>BlankCharBoth
-
 " Delete adjacent lines {{{4
 nmap <silent> <Plug>DeleteLineUp kdd:call repeat#set("\<Plug>DeleteLineUp", v:count)<CR>
 nmap [x <Plug>DeleteLineUp
 nmap <silent> <Plug>DeleteLineDown jddk:call repeat#set("\<Plug>DeleteLineDown", v:count)<CR>
 nmap ]x <Plug>DeleteLineDown
 
-" Switch {{{3
-Plug 'AndrewRadev/switch.vim'
-let g:switch_mapping = "-"
-let g:switch_custom_definitions =
-            \ [
-            \   {
-            \     '\<\(\l\)\(\l\+\(\u\l\+\)\+\)\>': '\=toupper(submatch(1)) . submatch(2)',
-            \     '\<\(\u\l\+\)\(\u\l\+\)\+\>': "\\=tolower(substitute(submatch(0), '\\(\\l\\)\\(\\u\\)', '\\1_\\2', 'g'))",
-            \     '\<\(\l\+\)\(_\l\+\)\+\>': '\U\0',
-            \     '\<\(\u\+\)\(_\u\+\)\+\>': "\\=tolower(substitute(submatch(0), '_', '-', 'g'))",
-            \     '\<\(\l\+\)\(-\l\+\)\+\>': "\\=substitute(submatch(0), '-\\(\\l\\)', '\\u\\1', 'g')",
-            \   },
-            \ ['TODO', 'DONE', 'WAITING', 'CANCELLED'],
-            \ ['[ ]', '[X]']
-            \ ]
-autocmd FileType tex,plaintex let b:switch_custom_definitions =
-            \ [
-            \    [ '\\tiny', '\\scriptsize', '\\footnotesize', '\\small', '\\normalsize', '\\large', '\\Large', '\\LARGE', '\\huge', '\\Huge' ],
-            \    [ '\\displaystyle', '\\scriptstyle', '\\scriptscriptstyle', '\\textstyle' ],
-            \    [ '\\part', '\\chapter', '\\section', '\\subsection', '\\subsubsection', '\\paragraph', '\\subparagraph' ],
-            \    [ 'part:', 'chap:', 'sec:', 'subsec:', 'subsubsec:' ],
-            \    [ 'fig:', 'sfig:', 'eqn:', 'tab:' ],
-            \    [ 'article', 'report', 'book', 'letter', 'slides' ],
-            \    [ 'a4paper', 'a5paper', 'b5paper', 'executivepaper', 'legalpaper', 'letterpaper', 'beamer', 'subfiles', 'standalone' ],
-            \    [ 'onecolumn', 'twocolumn' ],
-            \    [ 'oneside', 'twoside' ],
-            \    [ 'draft', 'final' ],
-            \    [ 'AnnArbor', 'Antibes', 'Bergen', 'Berkeley',
-            \      'Berlin', 'Boadilla', 'CambridgeUS', 'Copenhagen', 'Darmstadt',
-            \      'Dresden', 'Frankfurt', 'Goettingen', 'Hannover', 'Ilmenau',
-            \      'JuanLesPins', 'Luebeck', 'Madrid', 'Malmoe', 'Marburg',
-            \      'Montpellier', 'PaloAlto', 'Pittsburgh', 'Rochester', 'Singapore',
-            \      'Szeged', 'Warsaw' ]
-            \ ]
-autocmd FileType gitrebase let b:switch_custom_definitions =
-            \ [
-            \   [ 'pick', 'reword', 'edit', 'squash', 'fixup', 'exec' ]
-            \ ]
-
-" Delete/Change checkboxes {{{4
-nmap <silent> <Plug>CompleteCheckBox :call search('[ ', 'c')<CR>:Switch<CR>:call repeat#set("\<Plug>CompleteCheckBox", v:count)<CR>
-nmap c- <Plug>CompleteCheckBox
-nmap <silent> <Plug>DeleteCheckBox :call search('[ ', 'c')<CR>dgn:call repeat#set("\<Plug>DeleteCheckBox", v:count)<CR>
-nmap d- <Plug>DeleteCheckBox
+" Abolish {{{3
+Plug 'tpope/tpope-vim-abolish'
 
 " Org like code block narrowing in markdown {{{3
 Plug 'AndrewRadev/inline_edit.vim'
@@ -725,33 +693,21 @@ nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
 
 " Easy alignment plugin and auto-align {{{3
-Plug 'godlygeek/tabular', {'on': 'Tabularize'}
-nnoremap gA :Tabularize<CR>
-nnoremap gl :Tabularize /
-vnoremap gl :Tabularize /
-nnoremap g<Tab> :Tabularize /\s\+<CR>
-vnoremap g<Tab> :Tabularize /\s\+<CR>
-nnoremap g= :Tabularize /=<CR>
-vnoremap g= :Tabularize /=<CR>
-nnoremap g& :Tabularize /&<CR>
-vnoremap g& :Tabularize /&<CR>
-nnoremap g<Bar> :Tabularize /<bar><CR>
-vnoremap g<Bar> :Tabularize /<bar><CR>
-nnoremap g: :Tabularize /:<CR>
-vnoremap g: :Tabularize /:<CR>
-
-" Auto-align when typing | {{{4
-inoremap <silent> <Bar>   <Bar><Esc>:call <SID>baralign()<CR>a
-function! s:baralign()
-    let p = '^\s*|\s.*\s|\s*$'
-    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-        Tabularize/|/l1
-        normal! 0
-        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-    endif
-endfunction
+Plug 'junegunn/vim-easy-align' , {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
+nmap gl <Plug>(EasyAlign)
+xmap gl <Plug>(EasyAlign)
+nnoremap g<Tab> vip:EasyAlign */\s\+/<CR>
+vnoremap g<Tab> vip:EasyAlign */\s\+/<CR>
+nnoremap g<Space> vip:EasyAlign \<CR>
+vnoremap g<Space> vip:EasyAlign \<CR>
+nnoremap g= vip:EasyAlign =<CR>
+vnoremap g= vip:EasyAlign =<CR>
+nnoremap g& vie:EasyAlign &<CR>
+vnoremap g& vie:EasyAlign &<CR>
+nnoremap g<Bar> vip:EasyAlign <bar><CR>
+vnoremap g<Bar> vip:EasyAlign <bar><CR>
+nnoremap g: vip:EasyAlign :<CR>
+vnoremap g: vip:EasyAlign :<CR>
 
 " Multiple cursors - because why not? {{{3
 Plug 'terryma/vim-multiple-cursors'
@@ -1209,6 +1165,13 @@ command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
             \ 'options' : '-m --prompt "Spotlight> "'
             \ }))
 nnoremap <Space>s :FzfSpotlight <C-R><C-W>
+
+" Get back 't' and 'T' maps which keeps getting stolen {{{2
+function GetBackTMaps()
+    exec "nnoremap t :FzfBTags<CR>"
+    exec "nnoremap T :FzfTags<CR>"
+endfunction
+nnoremap <silent> coT :call GetBackTMaps()<CR>
 
 " Autocompletion {{{1
 
