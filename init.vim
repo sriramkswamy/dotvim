@@ -884,9 +884,6 @@ nnoremap <silent> <Space>e :Gstatus<CR>
 nnoremap cu :Gwrite<CR>:Gcommit<CR>O
 nnoremap yu :Gwrite<CR>
 nnoremap du :Gdiff<CR>
-" git operations
-nnoremap vr :Gpush<CR>
-nnoremap vu :Gpull<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
@@ -1087,31 +1084,31 @@ let g:neomake_r_enabled_makers = ['lintr']
 Plug 'Shougo/denite.nvim'
 
 " files and buffers
-nnoremap <silent> <Space>k :Denite -buffer-name=denite-buffers buffer<CR>
-nnoremap <silent> <Space>r :Denite -buffer-name=denite-recent file_old<CR>
-nnoremap <silent> <Space>f :DeniteBufferDir -buffer-name=denite-files file<CR>
-nnoremap <silent> <Space>d :DeniteProjectDir -buffer-name=denite-project file_rec<CR>
-nnoremap <silent> dx :lcd ~/Dropbox/PhD<CR>:Denite -buffer-name=denite-phd file_rec<CR>
+nnoremap <silent> <Space>k :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-buffers buffer<CR>
+nnoremap <silent> <Space>r :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-recent file_old<CR>
+nnoremap <silent> <Space>f :DeniteBufferDir -no-auto-highlight -winheight=10 -buffer-name=denite-files file<CR>
+nnoremap <silent> <Space>d :DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-project file_rec<CR>
+nnoremap <silent> dx :lcd ~/Dropbox/PhD<CR>:Denite -no-auto-highlight -winheight=10 -buffer-name=denite-phd file_rec<CR>
 
 " grep
-nnoremap <silent> <Space>p :DeniteProjectDir -buffer-name=denite-project-grep grep:::!<CR>
-nnoremap <silent> J :Denite -buffer-name=denite-grep-word grep:::`expand('<cword>')`<CR>
-nnoremap <silent> gw :DeniteProjectDir -buffer-name=denite-word grep:::`expand('<cword>')`<CR>
-vnoremap <silent> gw "gy:DeniteProjectDir -buffer-name=denite-word grep:::<C-R>g<CR>
+nnoremap <silent> <Space>p :DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-project-grep grep:::!<CR>
+nnoremap <silent> J :Denite -winheight=10 -no-auto-highlight -buffer-name=denite-grep-word grep:::`expand('<cword>')`<CR>
+nnoremap <silent> gw :DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-word grep:::`expand('<cword>')`<CR>
+vnoremap <silent> gw "gy:DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-word grep:::<C-R>g<CR>
 
 " search
-nnoremap <silent> <Space>. :Denite -buffer-name=denite-colors colorscheme<CR>
-nnoremap <silent> <Space>x :Denite -buffer-name=denite-help help<CR>
-nnoremap <silent> <Space><Space> :Denite -buffer-name=search%`bufnr('%')` line<CR>
-nnoremap <Space>o :lcd ~/Dropbox/notes<CR>:Denite -buffer-name=denite-notes grep:::!<CR>
+nnoremap <silent> <Space>. :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-colors colorscheme<CR>
+nnoremap <silent> <Space>x :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-help help<CR>
+nnoremap <silent> <Space><Space> :Denite -no-auto-highlight -winheight=10 -buffer-name=search%`bufnr('%')` line<CR>
+nnoremap <Space>o :lcd ~/Dropbox/notes<CR>:Denite -no-auto-highlight -winheight=10 -buffer-name=denite-notes grep:::!<CR>
 
 " tags
-nnoremap <silent> t :Denite -buffer-name=denite-outline outline<CR>
-nnoremap <silent> T :Denite -buffer-name=denite-tag tag<CR>
+nnoremap <silent> t :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-outline outline<CR>
+nnoremap <silent> T :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-tag tag<CR>
 
 " commands
-nnoremap <silent> <Space>j :Denite -buffer-name=denite-commands command<CR>
-nnoremap <silent> cot :Denite -buffer-name=denite-filetype filetype<CR>
+nnoremap <silent> <Space>j :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-commands command<CR>
+nnoremap <silent> cot :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-filetype filetype<CR>
 
 " Autocompletion {{{1
 
@@ -1192,6 +1189,10 @@ nnoremap cm :AsyncRun make<CR>
 " post file as gist
 nnoremap gp :AsyncRun gist % -cd ""<Left>
 nnoremap gP :AsyncRun gist -Pcd ""<Left>
+
+" git operations
+nnoremap vr :AsyncRun git push<CR>
+nnoremap vu :AsyncRun git pull<CR>
 
 " ctags
 nnoremap dc :AsyncRun ctags -R %:p:h<CR>
