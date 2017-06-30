@@ -119,7 +119,7 @@ inoremap <silent> <C-d> <C-x><C-k>
 " Toggle few options - inspired by unimpaired
 nnoremap cob :<C-u>set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
-nnoremap cod :<C-u>set scrollbind!<CR>:set scrollbind?<CR>
+nnoremap coa :<C-u>set scrollbind!<C-w><C-w>:<C-u>set scrollbind!<CR><C-w><C-w>:set scrollbind?<CR>
 nnoremap cof :<C-u>set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap cog :<C-u>set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
 nnoremap coh :<C-u>setlocal hlsearch!<CR>:set hlsearch?<CR>
@@ -218,6 +218,13 @@ nmap gz <Plug>(MakeDigraph)
 nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
 inoremap <C-v> <C-k>
+
+" Set new digraphs {{{4
+function SetNewDigraphs()
+    exec ":DigraphNew ii 3044"
+    exec ":DigraphNew nn 3093"
+endfunction
+nnoremap <silent> cod :call SetNewDigraphs()<CR>
 
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
@@ -349,6 +356,9 @@ nnoremap <silent> Z :ZoomToggle<CR>
 
 " Netrw
 nnoremap <Space>n :30vsp <bar> Explore<CR>
+
+" check maps
+nnoremap <Space>, :verbose map<Space>
 
 " Quickfix and Location list maps {{{3
 let g:lt_height = get( g:, 'lt_height', 10 )
@@ -880,7 +890,7 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-nnoremap <silent> <Space>e :Gstatus<CR>
+nnoremap <silent> <Space>e :Gstatus<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>:Gcommit<CR>O
 nnoremap yu :Gwrite<CR>
 nnoremap du :Gdiff<CR>
@@ -1146,6 +1156,11 @@ let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
+let $EDITOR = 'nvr --servername 127.0.0.1:32500'
+let $VISUAL = 'nvr --servername 127.0.0.1:32500'
+let $GIT_EDITOR = 'nvr --servername 127.0.0.1:32500'
+
+" terminal maps
 nnoremap g\ :vsplit <bar> terminal<CR>
 nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
 nnoremap g} :vsp <bar> terminal googler <cWORD><CR>

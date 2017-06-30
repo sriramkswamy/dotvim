@@ -240,6 +240,13 @@ nnoremap gN :Digraphs<Space>
 nnoremap gV :UnicodeSearch<Space>
 inoremap <C-v> <C-k>
 
+" Set new digraphs {{{4
+function SetNewDigraphs()
+    exec ":DigraphNew ii 3044"
+    exec ":DigraphNew nn 3093"
+endfunction
+nnoremap <silent> cod :call SetNewDigraphs()<CR>
+
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
 
@@ -372,6 +379,9 @@ nnoremap <silent> Z :ZoomToggle<CR>
 
 " Netrw
 nnoremap <Space>n :30vsp <bar> Explore<CR>
+
+" check maps
+nnoremap <Space>, :verbose map<Space>
 
 " Quickfix and Location list maps {{{3
 let g:lt_height = get( g:, 'lt_height', 10 )
@@ -906,7 +916,7 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-nnoremap <silent> <Space>e :Gstatus<CR>
+nnoremap <silent> <Space>e :Gstatus<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>:Gcommit<CR>O
 nnoremap yu :Gwrite<CR>
 nnoremap du :Gdiff<CR>
