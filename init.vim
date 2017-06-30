@@ -425,12 +425,12 @@ let g:grepper = {
             \ 'jump':  0,
             \ 'next_tool': ']g'
             \ }
-nnoremap gss :Grepper -tool rg -noswitch<CR>
+nnoremap gss :Grepper -tool rg -noswitch<CR>:copen<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
-nnoremap <silent> ge :Grepper -tool rg -noswitch -noprompt -cword<CR>
-nnoremap <silent> gE :Grepper -tool rg -noswitch -query '<C-R>=expand('<cWORD>')<CR>'<CR>
-vnoremap <silent> ge "gy:Grepper -tool rg -noswitch -query '<C-R>=@g<CR>'<CR>
+nnoremap <silent> ge :Grepper -tool rg -noswitch -noprompt -cword<CR>:copen<CR>
+nnoremap <silent> gE :Grepper -tool rg -noswitch -query '<C-R>=expand('<cWORD>')<CR>'<CR>:copen<CR>
+vnoremap <silent> ge "gy:Grepper -tool rg -noswitch -query '<C-R>=@g<CR>'<CR>:copen<CR>
 
 " Note taking {{{1
 
@@ -1181,27 +1181,27 @@ nnoremap sU :SudoWrite<CR>
 " run asynchronous commands {{{3
 Plug 'skywind3000/asyncrun.vim'
 nnoremap <Space>h :AsyncRun<Space>
-nnoremap <Space>t :AsyncStop!<CR>
+nnoremap <Space>t :AsyncStop!<CR>:copen<CR>
 
 " make
-nnoremap cm :AsyncRun make<CR>
+nnoremap cm :AsyncRun make<CR>:copen<CR>
 
 " post file as gist
-nnoremap gp :AsyncRun gist % -cd ""<Left>
-nnoremap gP :AsyncRun gist -Pcd ""<Left>
+nnoremap gp :AsyncRun gist % -cd ""<Left>:copen<CR>
+nnoremap gP :AsyncRun gist -Pcd ""<Left>:copen<CR>
 
 " git operations
-nnoremap vr :AsyncRun git push<CR>
-nnoremap vu :AsyncRun git pull<CR>
+nnoremap vr :AsyncRun git push<CR>:copen<CR>
+nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
-nnoremap dc :AsyncRun ctags -R %:p:h<CR>
+nnoremap dc :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 
 " bibliography
-nnoremap <Space>b :AsyncRun! mdfind -onlyin ~/Dropbox/PhD <cword><CR>
+nnoremap <Space>b :AsyncRun! mdfind -onlyin ~/Dropbox/PhD <cword><CR>:copen<CR>
 
 " spotlight search
-nnoremap <Space>s :AsyncRun! mdfind -onlyin ~<Space>
+nnoremap <Space>s :AsyncRun! mdfind -onlyin ~<Space>:copen<CR>
 
 " start rtags when in c or cpp files
 autocmd FileType c,cpp :AsyncRun! rdm &<CR>
