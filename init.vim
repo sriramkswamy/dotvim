@@ -182,13 +182,17 @@ nnoremap <Space><BS> gT
 nnoremap gt :tabe<CR>
 nnoremap gT :tabc<CR>
 if has('macunix')
-    " Open in Finder
-    nnoremap gF :!open %:p:h<CR>
+    " Open in default program
+    nnoremap gF :!open <cfile><CR>
+    " Open Finder
+    nnoremap gH :!open %:p:h<CR>
     " Open in Safari
     nnoremap gB :!open -a Safari %<CR>
 elseif has('unix')
-    " Open in Navigator
-    nnoremap gF :!xdg-open %:p:h<CR>
+    " Open in default program
+    nnoremap gF :!xdg-open <cfile><CR>
+    " Open file manager
+    nnoremap gH :!xdg-open %:p:h<CR>
     " Open in Browser
     nnoremap gB :!xdg-open %<CR>
 endif
@@ -404,6 +408,7 @@ set nomore
 " Maps without leader {{{2
 " Populating the location list
 nnoremap <silent> # :nohl<CR>
+nnoremap <silent> gh :nohl<CR>
 nnoremap <silent> g* *N:lvimgrep // %<CR>
 nnoremap <silent> g# :lvimgrep // %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
@@ -446,7 +451,15 @@ let g:vimwiki_list = [
             \ ]
 autocmd BufNewFile,BufReadPost *.txt,*.text set filetype=vimwiki
 
+" notes {{{2
+nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+
 " Maps {{{3
+" Create file links
+nnoremap m, :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
+" Paste file links
+nnoremap m. :let @x = '[[<C-R>v<bar><C-R>z]]'<CR>"xp
 " Wiki Index
 nmap <Space>ui <Plug>VimwikiTabIndex
 " Select Wiki
@@ -472,7 +485,7 @@ nnoremap <Space>o :NV<CR>
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
 nnoremap m<Space> :let @w = expand('%') . '#line=' . line('.')<CR>
-nnoremap gA :let @w = '<url:<C-R>w>'<CR>"wp
+nnoremap m/ :let @u = '<url:<C-R>w>'<CR>"up
 nnoremap gX :Utl<CR>
 
 " FileTypes {{{1
@@ -583,7 +596,7 @@ function! TabsToWhitespace()
     call setreg('/', old_query)
 endfunction
 command! TabsToWhitespace :call TabsToWhitespace()
-nnoremap crt :TabsToWhitespace<CR>
+nnoremap cro :TabsToWhitespace<CR>
 
 " strip ^M character at end of lines {{{3
 function! StripNewLine()
@@ -670,8 +683,6 @@ vnoremap <Space>i :InlineEdit<CR>
 Plug 'junegunn/vim-easy-align' , {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 nmap gl <Plug>(EasyAlign)
 xmap gl <Plug>(EasyAlign)
-nnoremap g<Tab> vip:EasyAlign */\s\+/<CR>
-vnoremap g<Tab> vip:EasyAlign */\s\+/<CR>
 nnoremap g<Space> vip:EasyAlign \<CR>
 vnoremap g<Space> vip:EasyAlign \<CR>
 nnoremap g= vip:EasyAlign =<CR>
@@ -682,6 +693,8 @@ nnoremap g<Bar> vip:EasyAlign <bar><CR>
 vnoremap g<Bar> vip:EasyAlign <bar><CR>
 nnoremap g: vip:EasyAlign :<CR>
 vnoremap g: vip:EasyAlign :<CR>
+nnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
+vnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 
 " Multiple cursors - because why not? {{{3
 Plug 'terryma/vim-multiple-cursors'
@@ -1081,71 +1094,34 @@ let g:neomake_r_lintr_maker = {
             \ }
 let g:neomake_r_enabled_makers = ['lintr']
 
-" FZF {{{1
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-let g:fzf_command_prefix='Fzf'
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
-" Actions
-let g:fzf_action = {
-            \ 'ctrl-t': 'tab split',
-            \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit',
-            \ 'ctrl-o': '!open'}
+" Denite {{{1
+Plug 'Shougo/denite.nvim'
 
-" Ripgrep instead of Ag
-command! -bang -nargs=* FzfRg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
+" files and buffers
+nnoremap <silent> <Space>k :Denite -buffer-name=denite-buffers buffer<CR>
+nnoremap <silent> <Space>r :Denite -buffer-name=denite-recent file_old<CR>
+nnoremap <silent> <Space>f :DeniteBufferDir -buffer-name=denite-files file<CR>
+nnoremap <silent> <Space>d :DeniteProjectDir -buffer-name=denite-project file_rec<CR>
+nnoremap <silent> dx :lcd ~/Dropbox/PhD<CR>:DeniteBufferDirDir -buffer-name=denite-phd file_rec<CR>
 
-nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfRg <C-R><C-W><CR>
-nnoremap <silent> T :FzfTags <C-R><C-W><CR>
-nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
-nnoremap <silent> sc :FzfSnippets<CR>
-nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space><Space> :FzfBLines<CR>
-nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>d :FzfGFiles<CR>
-nnoremap <silent> <Space>f :FzfFiles<CR>
-nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>k :FzfBuffers<CR>
-nnoremap <silent> <Space>t :FzfWindows<CR>
-nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>p :FzfRg<CR>
-nnoremap <silent> <Space>j :FzfCommands<CR>
-vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
-nnoremap <silent> <Space>: :FzfHistory:<CR>
-vnoremap <silent> <Space>: :FzfHistory:<CR>
-nmap <Space>, <Plug>(fzf-maps-n)
-xmap <Space>, <Plug>(fzf-maps-x)
-omap <Space>, <Plug>(fzf-maps-o)
-imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
-" PhD related stuff
-nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
-nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+" grep
+nnoremap <silent> <Space>p :DeniteProjectDir -buffer-name=denite-project-grep grep:::!<CR>
+nnoremap <silent> J :Denite -buffer-name=denite-grep-word grep:::`expand('<cword>')`<CR>
+nnoremap <silent> gw :DeniteProjectDir -buffer-name=denite-word grep:::`expand('<cword>')`<CR>
+vnoremap <silent> gw "gy:DeniteProjectDir -buffer-name=denite-word grep:::<C-R>g<CR>
 
-" Search using spotlight {{{2
-command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
-            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
-            \ 'options' : '-m --prompt "Spotlight> "'
-            \ }))
-nnoremap <Space>s :FzfSpotlight <C-R><C-W>
+" search
+nnoremap <silent> <Space>. :Denite -buffer-name=denite-colors colorscheme<CR>
+nnoremap <silent> <Space>x :Denite -buffer-name=denite-help help<CR>
+nnoremap <silent> <Space><Space> :Denite -buffer-name=search%`bufnr('%')` line<CR>
 
-" Get back 't' and 'T' maps which keeps getting stolen {{{2
-function GetBackTMaps()
-    exec "nnoremap t :FzfBTags<CR>"
-    exec "nnoremap T :FzfTags<CR>"
-endfunction
-nnoremap <silent> coT :call GetBackTMaps()<CR>
+" tags
+nnoremap <silent> t :Denite -buffer-name=denite-outline outline<CR>
+nnoremap <silent> T :Denite -buffer-name=denite-tag tag<CR>
+
+" commands
+nnoremap <silent> <Space>j :Denite -buffer-name=denite-commands command<CR>
+nnoremap <silent> cot :Denite -buffer-name=denite-filetype filetype<CR>
 
 " Autocompletion {{{1
 
@@ -1215,27 +1191,29 @@ nnoremap gY :CopyFilePath<CR>
 nnoremap su :SudoEdit<CR>
 nnoremap sU :SudoWrite<CR>
 
-" Dispatch stuff {{{3
-Plug 'tpope/vim-dispatch', {'on': ['Spawn', 'Start', 'Make', 'Dispatch', 'Copen']}
-nnoremap gh :Spawn<Space>
-nnoremap gH :Start<Space>
-nnoremap cm :Make<Space>
-nnoremap <Space>h :Dispatch!<Space>
-nnoremap <silent> <Space>b :Copen<CR>
+" run asynchronous commands {{{3
+Plug 'skywind3000/asyncrun.vim'
+nnoremap <Space>h :AsyncRun<Space>
+nnoremap <Space>t :AsyncStop!<CR>
 
-" Dispatch based commands {{{4
-
-" regenerate ctags
-nnoremap dc :Dispatch! ctags -R %:p:h<CR>
+" make
+nnoremap cm :AsyncRun make<CR>
 
 " post file as gist
-nnoremap gp :Dispatch! gist % -cd ""<Left>
-nnoremap gP :Dispatch! gist -Pcd ""<Left>
+nnoremap gp :AsyncRun gist % -cd ""<Left>
+nnoremap gP :AsyncRun gist -Pcd ""<Left>
 
-" Also checkout ftplugin files
+" ctags
+nnoremap dc :AsyncRun ctags -R %:p:h<CR>
+
+" bibliography
+nnoremap <Space>b :AsyncRun! mdfind -onlyin ~/Dropbox/PhD <cword><CR>
+
+" spotlight search
+nnoremap <Space>s :AsyncRun! mdfind -onlyin ~<Space>
 
 " start rtags when in c or cpp files
-autocmd FileType c,cpp :Start rdm &<CR>
+autocmd FileType c,cpp :AsyncRun! rdm &<CR>
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
@@ -1256,9 +1234,7 @@ let g:tmuxify_run = {
 
 " Mappings for any tmux session {{{4
 " put me in an easy editing modes
-nnoremap m, :TxSend<CR><C-P>
-nnoremap m. :TxSend<CR><C-R><C-W>
-nnoremap m/ :TxSend<CR><C-P><C-F>
+nnoremap gA :TxSend<CR><C-F>
 " pane changes
 nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
 nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
@@ -1286,6 +1262,17 @@ nnoremap <silent> mss V"my:TxSend(@m)<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
+
+" Denite settings {{{1
+
+" Ripgrep command on grep source
+call denite#custom#var('grep', 'command', ['rg'])
+call denite#custom#var('grep', 'default_opts',
+            \ ['--vimgrep', '--no-heading'])
+call denite#custom#var('grep', 'recursive_opts', [])
+call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+call denite#custom#var('grep', 'separator', ['--'])
+call denite#custom#var('grep', 'final_opts', [])
 
 " Markdown section text object - (operator)id/ad for markdown section {{{1
 call textobj#user#plugin('markdown', { '-': {
