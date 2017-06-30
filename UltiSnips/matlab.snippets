@@ -7,8 +7,8 @@ endsnippet
 
 snippet fun "funciton" b
 function ${1:myFunction} = ${2:func}($3)
-	$0
-end
+$0
+return
 endsnippet
 
 snippet cc "comment line" i
@@ -98,4 +98,28 @@ endsnippet
 snippet el "else" b
 else
 	$0
+endsnippet
+
+snippet cl "classdef" b
+classdef ${1:MyClass}
+
+$0
+
+end
+endsnippet
+
+snippet meth "methods" b
+methods (Access = ${1:private})
+
+	$0
+
+end
+endsnippet
+
+snippet prop "properties" b
+properties
+
+	$0
+
+end
 endsnippet

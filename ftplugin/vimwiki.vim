@@ -69,7 +69,7 @@ nmap <buffer> mwj <Plug>VimwikiDiaryNextDay
 nmap <buffer> mh <Plug>VimwikiAddHeaderLevel
 nmap <buffer> me <Plug>VimwikiRemoveHeaderLevel
 " search
-nnoremap <buffer> m/ :VimwikiSearch //<Left>
+nnoremap <buffer> ma :VimwikiSearch //<Left>
 nnoremap <buffer> mi :VimwikiTOC<CR>
 nnoremap <buffer> mg :VimwikiGoto<Space>
 " tags
