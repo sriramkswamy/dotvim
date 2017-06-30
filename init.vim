@@ -471,17 +471,6 @@ nmap <Space>un <Plug>VimwikiTabMakeDiaryNote
 " Yesterday note
 nmap <Space>uy <Plug>VimwikiMakeYesterdayDiaryNote
 
-" A la Notational Velocity {{{2
-Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
-let g:nv_directories = [
-            \ '~/Dropbox/Finances',
-            \ '~/Dropbox/PhD/notes',
-            \ '~/Dropbox/PhD/meetings',
-            \ '~/Dropbox/PhD/jobs',
-            \ '~/Dropbox/notes']
-let g:nv_default_extension = '.txt'
-nnoremap <Space>o :NV<CR>
-
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
 nnoremap m<Space> :let @w = expand('%') . '#line=' . line('.')<CR>
@@ -1102,7 +1091,7 @@ nnoremap <silent> <Space>k :Denite -buffer-name=denite-buffers buffer<CR>
 nnoremap <silent> <Space>r :Denite -buffer-name=denite-recent file_old<CR>
 nnoremap <silent> <Space>f :DeniteBufferDir -buffer-name=denite-files file<CR>
 nnoremap <silent> <Space>d :DeniteProjectDir -buffer-name=denite-project file_rec<CR>
-nnoremap <silent> dx :lcd ~/Dropbox/PhD<CR>:DeniteBufferDirDir -buffer-name=denite-phd file_rec<CR>
+nnoremap <silent> dx :lcd ~/Dropbox/PhD<CR>:Denite -buffer-name=denite-phd file_rec<CR>
 
 " grep
 nnoremap <silent> <Space>p :DeniteProjectDir -buffer-name=denite-project-grep grep:::!<CR>
@@ -1114,6 +1103,7 @@ vnoremap <silent> gw "gy:DeniteProjectDir -buffer-name=denite-word grep:::<C-R>g
 nnoremap <silent> <Space>. :Denite -buffer-name=denite-colors colorscheme<CR>
 nnoremap <silent> <Space>x :Denite -buffer-name=denite-help help<CR>
 nnoremap <silent> <Space><Space> :Denite -buffer-name=search%`bufnr('%')` line<CR>
+nnoremap <Space>o :lcd ~/Dropbox/notes<CR>:Denite -buffer-name=denite-notes grep:::!<CR>
 
 " tags
 nnoremap <silent> t :Denite -buffer-name=denite-outline outline<CR>
@@ -1264,6 +1254,29 @@ nnoremap <silent> mss V"my:TxSend(@m)<CR>
 call plug#end()
 
 " Denite settings {{{1
+
+" change fuzzy matcher since it's not great
+call denite#custom#source('file_rec', 'matchers', ['matcher_substring', 'matcher_regexp'])
+
+" add maps
+call denite#custom#map(
+            \ 'insert',
+            \ '<C-j>',
+            \ '<denite:move_to_next_line>',
+            \ 'noremap'
+            \)
+call denite#custom#map(
+            \ 'insert',
+            \ '<C-k>',
+            \ '<denite:move_to_previous_line>',
+            \ 'noremap'
+            \)
+call denite#custom#map(
+            \ 'insert',
+            \ '<C-x>',
+            \ '<denite:do_action:vsplitswitch>',
+            \ 'noremap'
+            \)
 
 " Ripgrep command on grep source
 call denite#custom#var('grep', 'command', ['rg'])
