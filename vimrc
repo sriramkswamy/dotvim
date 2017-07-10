@@ -130,9 +130,8 @@ inoremap <silent> <C-d> <C-x><C-k>
 " File complete - <C-c> in insert mode doesn't exit properly anyway
 " inoremap <silent> <C-c> <C-x><C-f>
 " Toggle few options - inspired by unimpaired
-nnoremap cob :<C-u>set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
-nnoremap cod :<C-u>set scrollbind!<CR>:set scrollbind?<CR>
+nnoremap cob :<C-u>set scrollbind!<CR>:set scrollbind?<CR>
 nnoremap cof :<C-u>set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap cog :<C-u>set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
 nnoremap coh :<C-u>setlocal hlsearch!<CR>:set hlsearch?<CR>
@@ -242,13 +241,21 @@ inoremap <C-v> <C-k>
 
 " Set new digraphs {{{4
 function SetNewDigraphs()
-    exec ":DigraphNew ii 3044"
-    exec ":DigraphNew nn 3093"
+    DigraphNew ii 3044
+    DigraphNew nn 3093
 endfunction
 nnoremap <silent> cod :call SetNewDigraphs()<CR>
 
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
+
+" Inidcates indents {{{3
+Plug 'tweekmonster/local-indent.vim'
+command! LocalIndentOn LocalIndentGuide +hl +cc
+command! LocalIndentOff LocalIndentGuide -hl -cc
+autocmd FileType * LocalIndentGuide +hl +cc
+nnoremap g. :LocalIndentOn<CR>
+nnoremap g_ :LocalIndentOff<CR>
 
 " File/Buffer navigation {{{1
 
@@ -698,6 +705,23 @@ nmap ]x <Plug>DeleteLineDown
 
 " Abolish {{{3
 Plug 'tpope/tpope-vim-abolish'
+function SetAutoCorrect()
+    Abolish   teh{,m,n}                                      the{}
+    Abolish   {despa,sepe}rat{e,es,ed,ing,ely,ion,ions,or}   {despe,sepa}rat{}
+    Abolish   {,in}consistant{,ly}                           {}consistent{}
+    Abolish   lan{gauge,gue,guege,guegae,ague,agueg}         language
+    Abolish   delimeter{,s}                                  delimiter{}
+    Abolish   {,non}existan{ce,t}                            {}existen{}
+    Abolish   d{e,i}screp{e,a}nc{y,ies}                      d{i}screp{a}nc{}
+    Abolish   {,un}nec{ce,ces,e}sar{y,ily}                   {}nec{es}sar{}
+    Abolish   persistan{ce,t,tly}                            persisten{}
+    Abolish   {,ir}releven{ce,cy,t,tly}                      {}relevan{}
+    Abolish   cal{a,e}nder{,s}                               cal{e}ndar{}
+    Abolish   reproducable                                   reproducible
+    Abolish   retreive                                       retrieve
+    Abolish   compeletly                                     completely
+endfunction
+nnoremap <silent> coa :call SetAutoCorrect()<CR>
 
 " Org like code block narrowing in markdown {{{3
 Plug 'AndrewRadev/inline_edit.vim'
@@ -1020,18 +1044,6 @@ let g:jedi#usages_command = ""
 let g:jedi#completions_command = ""
 let g:jedi#rename_command = ""
 
-" Much better Python text objects and goodies
-Plug 'tweekmonster/braceless.vim'
-command! BracelessOn BracelessEnable +indent +fold +highlight
-command! BracelessOff BracelessEnable -indent -fold -highlight
-nnoremap g. :BracelessOn<CR>
-nnoremap g_ :BracelessOff<CR>
-autocmd FileType python BracelessOn
-let g:braceless_generate_scripts = 1
-let g:braceless_enable_easymotion = 0
-let g:braceless_block_key = 'b'
-let g:braceless_easymotion_segment_key = ''
-
 " JavaScript {{{2
 " Tern based autocompletion and navigation
 Plug 'ternjs/tern_for_vim' , {'do': 'npm install', 'for': 'javascript'}
@@ -1122,7 +1134,7 @@ Plug 'Shougo/denite.nvim'
 " files and buffers
 nnoremap <silent> <Space>k :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-buffers buffer<CR>
 nnoremap <silent> <Space>r :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-recent file_old<CR>
-nnoremap <silent> <Space>f :DeniteBufferDir -no-auto-highlight -winheight=10 -buffer-name=denite-files file<CR>
+nnoremap <silent> <Space>f :DeniteBufferDir -no-auto-highlight -winheight=10 -buffer-name=denite-files file_rec<CR>
 nnoremap <silent> <Space>d :DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-project file_rec<CR>
 nnoremap <silent> dx :lcd ~/Dropbox/PhD<CR>:Denite -no-auto-highlight -winheight=10 -buffer-name=denite-phd file_rec<CR>
 
@@ -1295,7 +1307,7 @@ nnoremap dc :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 nnoremap <Space>b :AsyncRun! mdfind -onlyin ~/Dropbox/PhD <cword><CR>:copen<CR>
 
 " spotlight search
-nnoremap <Space>s :AsyncRun! mdfind -onlyin ~<Space>:copen<CR>
+nnoremap <Space>s :AsyncRun! mdfind -onlyin ~<Space>
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
