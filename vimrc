@@ -511,6 +511,17 @@ nmap <Space>un <Plug>VimwikiTabMakeDiaryNote
 " Yesterday note
 nmap <Space>uy <Plug>VimwikiMakeYesterdayDiaryNote
 
+" A la Notational Velocity {{{2
+Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
+let g:nv_directories = [
+            \ '~/Dropbox/Finances',
+            \ '~/Dropbox/PhD/notes',
+            \ '~/Dropbox/PhD/meetings',
+            \ '~/Dropbox/PhD/jobs',
+            \ '~/Dropbox/notes']
+let g:nv_default_extension = '.txt'
+nnoremap <Space>o :NV<CR>
+
 " Universal text linking {{{2
 Plug 'sriramkswamy/utl.vim'
 nnoremap m<Space> :let @w = expand('%') . '#line=' . line('.')<CR>
@@ -1128,35 +1139,77 @@ let g:neomake_r_lintr_maker = {
             \ }
 let g:neomake_r_enabled_makers = ['lintr']
 
-" Denite {{{1
-Plug 'Shougo/denite.nvim'
+" FZF {{{1
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix='Fzf'
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+" Actions
+let g:fzf_action = {
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit',
+            \ 'ctrl-o': '!open'}
 
-" files and buffers
-nnoremap <silent> <Space>k :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-buffers buffer<CR>
-nnoremap <silent> <Space>r :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-recent file_old<CR>
-nnoremap <silent> <Space>f :DeniteBufferDir -no-auto-highlight -winheight=10 -buffer-name=denite-files file_rec<CR>
-nnoremap <silent> <Space>d :DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-project file_rec<CR>
-nnoremap <silent> dx :lcd ~/Dropbox/PhD<CR>:Denite -no-auto-highlight -winheight=10 -buffer-name=denite-phd file_rec<CR>
+" Ripgrep instead of Ag
+command! -bang -nargs=* FzfRg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
 
-" grep
-nnoremap <silent> <Space>p :DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-project-grep grep:::!<CR>
-nnoremap <silent> J :Denite -winheight=10 -no-auto-highlight -buffer-name=denite-grep-word grep:::`expand('<cword>')`<CR>
-nnoremap <silent> gw :DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-word grep:::`expand('<cword>')`<CR>
-vnoremap <silent> gw "gy:DeniteProjectDir -no-auto-highlight -winheight=10 -buffer-name=denite-word grep:::<C-R>g<CR>
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> J :FzfRg <C-R><C-W><CR>
+nnoremap <silent> T :FzfTags <C-R><C-W><CR>
+nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
+vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
+nnoremap <silent> sc :FzfSnippets<CR>
+nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>. :FzfColors<CR>
+nnoremap <silent> <Space><Space> :FzfBLines<CR>
+nnoremap <silent> <Space>/ :FzfHistory/<CR>
+nnoremap <silent> <Space>d :FzfGFiles<CR>
+nnoremap <silent> <Space>f :FzfFiles<CR>
+nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>k :FzfBuffers<CR>
+nnoremap <silent> <Space>t :FzfWindows<CR>
+nnoremap <silent> <Space>x :FzfHelptags<CR>
+nnoremap <silent> <Space>p :FzfRg<CR>
+nnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
+nnoremap <silent> <Space>: :FzfHistory:<CR>
+vnoremap <silent> <Space>: :FzfHistory:<CR>
+nmap <Space>, <Plug>(fzf-maps-n)
+xmap <Space>, <Plug>(fzf-maps-x)
+omap <Space>, <Plug>(fzf-maps-o)
+imap <silent> <C-d> <Plug>(fzf-complete-word)
+imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
+" PhD related stuff
+nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
 
-" search
-nnoremap <silent> <Space>. :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-colors colorscheme<CR>
-nnoremap <silent> <Space>x :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-help help<CR>
-nnoremap <silent> <Space><Space> :Denite -no-auto-highlight -winheight=10 -buffer-name=search%`bufnr('%')` line<CR>
-nnoremap <Space>o :lcd ~/Dropbox/notes<CR>:Denite -no-auto-highlight -winheight=10 -buffer-name=denite-notes grep:::!<CR>
+" Search using spotlight {{{2
+command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
+            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
+            \ 'options' : '-m --prompt "Spotlight> "'
+            \ }))
+nnoremap <Space>s :FzfSpotlight<Space>
 
-" tags
-nnoremap <silent> t :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-outline outline<CR>
-nnoremap <silent> T :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-tag tag<CR>
+" Search bib using spotlight {{{2
+command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
+            \ 'source'  : 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
+            \ 'options' : '-m --prompt "Bib> "'
+            \ }))
+nnoremap <Space>b :FzfBib <C-R><C-W><CR>
 
-" commands
-nnoremap <silent> <Space>j :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-commands command<CR>
-nnoremap <silent> cot :Denite -no-auto-highlight -winheight=10 -buffer-name=denite-filetype filetype<CR>
+" Get back 't' and 'T' maps which keeps getting stolen {{{2
+function GetBackTMaps()
+    exec "nnoremap t :FzfBTags<CR>"
+    exec "nnoremap T :FzfTags<CR>"
+endfunction
+nnoremap <silent> coo :call GetBackTMaps()<CR>
 
 " Autocompletion {{{1
 
@@ -1303,12 +1356,6 @@ nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 " ctags
 nnoremap dc :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 
-" bibliography
-nnoremap <Space>b :AsyncRun! mdfind -onlyin ~/Dropbox/PhD <cword><CR>:copen<CR>
-
-" spotlight search
-nnoremap <Space>s :AsyncRun! mdfind -onlyin ~<Space>
-
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
 let g:tmuxify_map_prefix = ''
@@ -1356,40 +1403,6 @@ nnoremap <silent> mss V"my:TxSend(@m)<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
-
-" Denite settings {{{1
-
-" change fuzzy matcher since it's not great
-call denite#custom#source('file_rec', 'matchers', ['matcher_substring', 'matcher_regexp'])
-
-" add maps
-call denite#custom#map(
-            \ 'insert',
-            \ '<C-j>',
-            \ '<denite:move_to_next_line>',
-            \ 'noremap'
-            \)
-call denite#custom#map(
-            \ 'insert',
-            \ '<C-k>',
-            \ '<denite:move_to_previous_line>',
-            \ 'noremap'
-            \)
-call denite#custom#map(
-            \ 'insert',
-            \ '<C-x>',
-            \ '<denite:do_action:vsplitswitch>',
-            \ 'noremap'
-            \)
-
-" Ripgrep command on grep source
-call denite#custom#var('grep', 'command', ['rg'])
-call denite#custom#var('grep', 'default_opts',
-            \ ['--vimgrep', '--no-heading'])
-call denite#custom#var('grep', 'recursive_opts', [])
-call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
-call denite#custom#var('grep', 'separator', ['--'])
-call denite#custom#var('grep', 'final_opts', [])
 
 " Markdown section text object - (operator)id/ad for markdown section {{{1
 call textobj#user#plugin('markdown', { '-': {
