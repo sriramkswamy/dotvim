@@ -499,7 +499,7 @@ nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 " Create file links
 nnoremap m, :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
 " Paste file links
-nnoremap m. :let @x = '[[<C-R>v<bar><C-R>z]]'<CR>"xp
+nnoremap m. :let @x = '[<C-R>z](<C-R>v)'<CR>"xp
 " Wiki Index
 nmap <Space>ui <Plug>VimwikiTabIndex
 " Select Wiki
@@ -811,9 +811,6 @@ Plug 'kana/vim-textobj-user' | Plug 'Julian/vim-textobj-variable-segment'
 " Operate on functions - (operator)if/af {{{4
 Plug 'kana/vim-textobj-user' | Plug 'sriramkswamy/vim-textobj-function'
 
-" Operate on comments - (operator)ic/ac/aC {{{4
-Plug 'kana/vim-textobj-user' | Plug 'sriramkswamy/vim-textobj-comment'
-
 " Operators {{{2
 
 " Functions {{{3
@@ -942,10 +939,10 @@ endif
 Plug 'mhinz/vim-signify'
 let g:signify_sign_change = '~'
 let g:signify_vcs_list = ['git', 'svn', 'hg', 'bzr', 'perforce']
-omap ih <Plug>(signify-motion-inner-pending)
-xmap ih <Plug>(signify-motion-inner-visual)
-omap ah <Plug>(signify-motion-outer-pending)
-xmap ah <Plug>(signify-motion-outer-visual)
+omap ic <Plug>(signify-motion-inner-pending)
+xmap ic <Plug>(signify-motion-inner-visual)
+omap ac <Plug>(signify-motion-outer-pending)
+xmap ac <Plug>(signify-motion-outer-visual)
 nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 
 " Git Wrapper {{{2
@@ -1067,13 +1064,6 @@ Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
 let g:sparkupExecuteMapping = '<C-b>'
 let g:sparkupNextMapping = '<C-j>'
-
-" Java (Eclim) - Eclipse plus Vim {{{2
-let g:EclimShowQuickfixSigns = 0
-let g:EclimShowLoclistSigns = 0
-let g:EclimShowCurrentError = 1
-let g:EclimShowCurrentErrorBalloon = 0
-let g:EclimJavaDebugLineSignText = '◉'
 
 " Ruby (on Rails) {{{2
 Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
