@@ -431,6 +431,10 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 
+" auto generate tags {{{3
+Plug 'ludovicchabant/vim-gutentags'
+let g:gutentags_exclude_project_root = ['~/']
+
 " Searching {{{1
 
 " Set commands {{{2
@@ -939,10 +943,10 @@ endif
 Plug 'mhinz/vim-signify'
 let g:signify_sign_change = '~'
 let g:signify_vcs_list = ['git', 'svn', 'hg', 'bzr', 'perforce']
-omap ic <Plug>(signify-motion-inner-pending)
-xmap ic <Plug>(signify-motion-inner-visual)
-omap ac <Plug>(signify-motion-outer-pending)
-xmap ac <Plug>(signify-motion-outer-visual)
+omap ij <Plug>(signify-motion-inner-pending)
+xmap ij <Plug>(signify-motion-inner-visual)
+omap aj <Plug>(signify-motion-outer-pending)
+xmap aj <Plug>(signify-motion-outer-visual)
 nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 
 " Git Wrapper {{{2
