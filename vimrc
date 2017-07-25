@@ -511,9 +511,9 @@ nmap <Space>uu <Plug>VimwikiUISelect
 " Diary index
 nmap <Space>ud <Plug>VimwikiDiaryIndex
 " Diary note
-nmap <Space>un <Plug>VimwikiTabMakeDiaryNote
+nmap <Space>uo <Plug>VimwikiTabMakeDiaryNote
 " Yesterday note
-nmap <Space>uy <Plug>VimwikiMakeYesterdayDiaryNote
+nmap <Space>up <Plug>VimwikiMakeYesterdayDiaryNote
 
 " A la Notational Velocity {{{2
 Plug 'Alok/notational-fzf-vim', {'on': 'NV'}

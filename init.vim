@@ -488,9 +488,9 @@ nmap <Space>uu <Plug>VimwikiUISelect
 " Diary index
 nmap <Space>ud <Plug>VimwikiDiaryIndex
 " Diary note
-nmap <Space>un <Plug>VimwikiTabMakeDiaryNote
+nmap <Space>uo <Plug>VimwikiTabMakeDiaryNote
 " Yesterday note
-nmap <Space>uy <Plug>VimwikiMakeYesterdayDiaryNote
+nmap <Space>up <Plug>VimwikiMakeYesterdayDiaryNote
 
 " A la Notational Velocity {{{2
 Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
@@ -1152,7 +1152,9 @@ nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
 imap <silent> <C-d> <Plug>(fzf-complete-word)
+imap <silent> <C-c> <Plug>(fzf-complete-path)
 imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
+
 " PhD related stuff
 nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
 
