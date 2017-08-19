@@ -253,7 +253,8 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'tweekmonster/local-indent.vim'
 command! LocalIndentOn LocalIndentGuide +hl +cc
 command! LocalIndentOff LocalIndentGuide -hl -cc
-autocmd FileType * LocalIndentGuide +hl +cc
+autocmd FileType python,matlab LocalIndentGuide +hl +cc
+autocmd FileType r,c,cpp LocalIndentGuide +hl +cc
 nnoremap g. :LocalIndentOn<CR>
 nnoremap g_ :LocalIndentOff<CR>
 
@@ -430,6 +431,7 @@ Plug 'airblade/vim-rooter'
 let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
+nnoremap <silent> dv :Rooter<CR>
 
 " auto generate tags {{{3
 Plug 'ludovicchabant/vim-gutentags'
@@ -478,59 +480,20 @@ vnoremap <silent> ge "gy:Grepper -tool rg -noswitch -query '<C-R>=@g<CR>'<CR>:co
 
 " Note taking {{{1
 
-" Vim Wiki {{{2
-Plug 'vimwiki/vimwiki'
-let g:vimwiki_hl_cb_checked = 1
-let g:vimwiki_table_mappings = 0
-let g:vimwiki_global_ext = 0
-let g:vimwiki_folding = 'expr'
-let g:vimwiki_ext2syntax = {'.txt': 'markdown',
-            \ '.md': 'markdown',
-            \ '.mkd': 'markdown',
-            \ '.wiki': 'media'}
-let g:vimwiki_list = [
-            \ {'path': '~/Dropbox/notes/',
-            \ 'syntax': 'markdown',
-            \ 'ext': '.txt'}
-            \ ]
-autocmd BufNewFile,BufReadPost *.txt,*.text set filetype=vimwiki
-
 " notes {{{2
 nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 
-" Maps {{{3
-" Create file links
-nnoremap m, :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
+" Create file links {{{3
+nnoremap m<Space> :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
 " Paste file links
-nnoremap m. :let @x = '[<C-R>z](<C-R>v)'<CR>"xp
-" Wiki Index
-nmap <Space>ui <Plug>VimwikiTabIndex
-" Select Wiki
-nmap <Space>uu <Plug>VimwikiUISelect
-" Diary index
-nmap <Space>ud <Plug>VimwikiDiaryIndex
-" Diary note
-nmap <Space>uo <Plug>VimwikiTabMakeDiaryNote
-" Yesterday note
-nmap <Space>up <Plug>VimwikiMakeYesterdayDiaryNote
+nnoremap m, :let @x = '[<C-R>z](<C-R>v)'<CR>"xp
 
 " A la Notational Velocity {{{2
 Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
-let g:nv_directories = [
-            \ '~/Dropbox/Finances',
-            \ '~/Dropbox/PhD/notes',
-            \ '~/Dropbox/PhD/meetings',
-            \ '~/Dropbox/PhD/jobs',
-            \ '~/Dropbox/notes']
-let g:nv_default_extension = '.txt'
+let g:nv_directories = [ '~/Dropbox/Paper' ]
+let g:nv_default_extension = '.md'
 nnoremap <Space>o :NV<CR>
-
-" Universal text linking {{{2
-Plug 'sriramkswamy/utl.vim'
-nnoremap m<Space> :let @w = expand('%') . '#line=' . line('.')<CR>
-nnoremap m/ :let @u = '<url:<C-R>w>'<CR>"up
-nnoremap gX :Utl<CR>
 
 " FileTypes {{{1
 
@@ -952,9 +915,9 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-nnoremap <silent> <Space>e :Gstatus<CR>gg<C-n>
-nnoremap cu :Gwrite<CR>:Gcommit<CR>O
-nnoremap yu :Gwrite<CR>
+nnoremap <silent> <Space>g :Gstatus<CR>gg<C-n>
+nnoremap cu :Gwrite<CR>
+nnoremap yu :Gcommit<CR>
 nnoremap du :Gdiff<CR>
 " Blame people!
 nnoremap <silent> gb :Gblame<CR>
@@ -1156,7 +1119,8 @@ command! -bang -nargs=* FzfRg
 
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfRg <C-R><C-W><CR>
-nnoremap <silent> T :FzfTags <C-R><C-W><CR>
+nnoremap <silent> T :FzfTags<CR>
+nnoremap <silent> <C-]> :FzfTags <C-R><C-W><CR>
 nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
 vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
 nnoremap <silent> sc :FzfSnippets<CR>
@@ -1190,13 +1154,14 @@ command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
             \ 'options' : '-m --prompt "Spotlight> "'
             \ }))
 nnoremap <Space>s :FzfSpotlight<Space>
+nnoremap <Space>u :FzfSpotlight <C-R><C-W><CR>
 
 " Search bib using spotlight {{{2
 command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
             \ 'source'  : 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
             \ 'options' : '-m --prompt "Bib> "'
             \ }))
-nnoremap <Space>b :FzfBib <C-R><C-W><CR>
+nnoremap <Space>b :FzfBib<Space>
 
 " Get back 't' and 'T' maps which keeps getting stolen {{{2
 function GetBackTMaps()
@@ -1306,7 +1271,7 @@ vnoremap <silent> g{ "my:!googler <C-R>m<Space>
 vnoremap <silent> g} "my:!googler <C-R>m<CR>
 
 " tig client open
-nnoremap <Space>g :!tig<CR>
+nnoremap <Space>e :!tig<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
@@ -1369,7 +1334,8 @@ let g:tmuxify_run = {
 
 " Mappings for any tmux session {{{4
 " put me in an easy editing modes
-nnoremap gA :TxSend<CR><C-F>
+nnoremap m/ :TxSend<CR><C-F>
+nnoremap m. :TxSend<CR><C-P>
 " pane changes
 nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
 nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
