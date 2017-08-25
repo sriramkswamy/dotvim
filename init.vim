@@ -166,11 +166,11 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 let maplocalleader="\\"
 
 " Window management
-nnoremap <silent> - <C-w>o
-nnoremap <silent> sm :split<CR>
-nnoremap <silent> vm :vsplit<CR>
+nnoremap <silent> <Space>i <C-w>o
+nnoremap <silent> - :vsplit<CR>
+nnoremap <silent> <bar> :split<CR>
 nnoremap <silent> gO <C-w>=
-nnoremap <silent> <Space>m <C-w><C-w>
+nnoremap <silent> <Space>o <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>a :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
@@ -310,7 +310,7 @@ function! RangerChooser()
     endif
     redraw!
 endfunction
-nnoremap gW :call RangerChooser()<CR>
+nnoremap <Space>m :call RangerChooser()<CR>
 
 " Filter from quickfix list - someone's vimrc {{{3
 function! GrepQuickFix(pat)
@@ -363,7 +363,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>n :30vsp <bar> Explore<CR>
+nnoremap <Space>t :30vsp <bar> Explore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
@@ -423,17 +423,26 @@ set smartcase
 " Highlight search incrementally
 set hlsearch " Can be toggled with unimpaired's 'coh'
 set incsearch
-" Grep
-set grepprg=grep\ -nH\ $*
 " Jump directly to the end of huge lists instead of paging
 set nomore
+
+" Grep {{{2
+" set appropriate grep programs
+if executable("rg")
+    set grepprg=rg\ --vimgrep\ --no-heading
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+elseif executable("ag")
+    set grepprg=ag\ --nogroup\ --nocolor
+else
+    set grepprg=grep\ -nH\ $*
+endif
 
 " Maps without leader {{{2
 " Populating the location list
 nnoremap <silent> # :nohl<CR>
 nnoremap <silent> gh :nohl<CR>
-nnoremap <silent> g* *N:lvimgrep // %<CR>
-nnoremap <silent> g# :lvimgrep // %<CR>
+nnoremap <silent> g* *N:lvimgrep /<C-R>// %<CR>
+nnoremap <silent> g# :lvimgrep /<C-R>// %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
 
 " Automatically disable search highlighting {{{2
@@ -451,9 +460,6 @@ let g:grepper = {
 nnoremap gss :Grepper -tool rg -noswitch<CR>:copen<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
-nnoremap <silent> ge :Grepper -tool rg -noswitch -noprompt -cword<CR>:copen<CR>
-nnoremap <silent> gE :Grepper -tool rg -noswitch -query '<C-R>=expand('<cWORD>')<CR>'<CR>:copen<CR>
-vnoremap <silent> ge "gy:Grepper -tool rg -noswitch -query '<C-R>=@g<CR>'<CR>:copen<CR>
 
 " Note taking {{{1
 
@@ -465,12 +471,6 @@ nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
 nnoremap m<Space> :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
 " Paste file links
 nnoremap m, :let @x = '[<C-R>z](<C-R>v)'<CR>"xp
-
-" A la Notational Velocity {{{2
-Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
-let g:nv_directories = [ '~/Dropbox/Paper' ]
-let g:nv_default_extension = '.md'
-nnoremap <Space>o :NV<CR>
 
 " FileTypes {{{1
 
@@ -567,9 +567,9 @@ endfunction
 command! StripAllWhiteSpace :call StripAllWhitespace()
 nnoremap cra :StripAllWhiteSpace<CR>
 
-" Strip trailing whitespace {{{3
-nnoremap crr :lvimgrep /\s\+$/ %<CR>
-nnoremap crw :s/\s\+$//e<CR>
+" show trailing whitespace {{{3
+nnoremap crw :lvimgrep /\s\+$/ %<CR>
+nnoremap crr :s/\s\+$//e<CR>
 
 " Convert tabs to whitespace {{{3
 function! TabsToWhitespace()
@@ -676,9 +676,10 @@ endfunction
 nnoremap <silent> coa :call SetAutoCorrect()<CR>
 
 " Org like code block narrowing in markdown {{{3
+" also check out operator ge
 Plug 'AndrewRadev/inline_edit.vim'
-nnoremap <Space>i :InlineEdit<CR>
-vnoremap <Space>i :InlineEdit<CR>
+nnoremap ge :InlineEdit<CR>
+vnoremap ge :InlineEdit<CR>
 
 " Easy alignment plugin and auto-align {{{3
 Plug 'junegunn/vim-easy-align' , {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
@@ -696,16 +697,8 @@ nnoremap g: vip:EasyAlign :<CR>
 vnoremap g: vip:EasyAlign :<CR>
 nnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 vnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
-
-" Multiple cursors - because why not? {{{3
-Plug 'terryma/vim-multiple-cursors'
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-j>'
-let g:multi_cursor_prev_key='<C-k>'
-let g:multi_cursor_skip_key='<C-l>'
-let g:multi_cursor_quit_key='<C-g>'
-nnoremap <C-n> :MultipleCursorsFind<Space>
-vnoremap <C-n> :MultipleCursorsFind<Space>
+nnoremap gE :EasyAlign *//<Left>
+vnoremap gE :EasyAlign *//<Left>
 
 " Text objects, operators and motions {{{1
 
@@ -782,7 +775,7 @@ nnoremap <silent> goo :call SourceVimscript("currentline")<cr>
 
 " Plugins {{{3
 
-" Better surround - cs/ds/ys(to add surrounding) {{{4
+" Better surround - cs/ds/s(to add surrounding) {{{4
 Plug 'tpope/vim-surround'
 let g:surround_no_mappings = 1
 nmap ds  <Plug>Dsurround
@@ -993,30 +986,10 @@ let g:jedi#usages_command = ""
 let g:jedi#completions_command = ""
 let g:jedi#rename_command = ""
 
-" JavaScript {{{2
-" Tern based autocompletion and navigation
-Plug 'ternjs/tern_for_vim' , {'do': 'npm install', 'for': 'javascript'}
-
-" Go {{{2
-" Autocompletion and navigation
-Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
-
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
 let g:sparkupExecuteMapping = '<C-b>'
 let g:sparkupNextMapping = '<C-j>'
-
-" Ruby (on Rails) {{{2
-Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
-" Vim-ruby - also adds im/am text object
-let g:rubycomplete_buffer_loading = 1
-let g:rubycomplete_classes_in_global = 1
-let g:rubycomplete_rails = 1
-let g:rubycomplete_load_gemfile = 1
-" let g:rubycomplete_use_bundler = 1
-Plug 'tpope/vim-rails', {'for': 'ruby'}
-Plug 'danchoi/ri.vim', {'for': 'ruby'}
-let g:ri_no_mappings=1
 
 " R {{{2
 " Download it from https://github.com/jalvesaq/Nvim-R/releases
@@ -1026,9 +999,6 @@ let R_in_buffer = 0
 let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
 
-" CSV {{{2
-Plug 'chrisbra/csv.vim'
-
 " Maps {{{3
 " Complete the arguments
 inoremap <C-\> <C-x><C-a>
@@ -1036,9 +1006,8 @@ inoremap <C-\> <C-x><C-a>
 nmap mR <Plug>RStart
 nmap mQ <Plug>RClose
 
-" Documentation browser {{{2
-Plug 'rizzatti/dash.vim'
-nmap <silent> gD <Plug>DashSearch
+" CSV - nice display of csv {{{3
+Plug 'chrisbra/csv.vim'
 
 " Syntax checking {{{2
 Plug 'benekastah/neomake'
@@ -1096,6 +1065,7 @@ nnoremap <silent> J :FzfRg <C-R><C-W><CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> <C-]> :FzfTags <C-R><C-W><CR>
 nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
+nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
 vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
 nnoremap <silent> sc :FzfSnippets<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
@@ -1107,8 +1077,7 @@ nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>k :FzfBuffers<CR>
-nnoremap <silent> <Space>t :FzfWindows<CR>
-nnoremap <silent> <Space>x :FzfHelptags<CR>
+nnoremap <silent> <Space>h :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfRg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
@@ -1130,7 +1099,6 @@ command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
             \ 'options' : '-m --prompt "Spotlight> "'
             \ }))
 nnoremap <Space>s :FzfSpotlight<Space>
-nnoremap <Space>u :FzfSpotlight <C-R><C-W><CR>
 
 " Search bib using spotlight {{{2
 command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
@@ -1138,6 +1106,12 @@ command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
             \ 'options' : '-m --prompt "Bib> "'
             \ }))
 nnoremap <Space>b :FzfBib<Space>
+
+" A la Notational Velocity {{{2
+Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
+let g:nv_directories = [ '~/Dropbox/Paper' ]
+let g:nv_default_extension = '.md'
+nnoremap <Space>n :NV<CR>
 
 " Get back 't' and 'T' maps which keeps getting stolen {{{2
 function GetBackTMaps()
@@ -1174,9 +1148,6 @@ let g:C_UseTool_doxygen = 'yes'
 
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
-let $EDITOR = 'nvr --servername 127.0.0.1:32500'
-let $VISUAL = 'nvr --servername 127.0.0.1:32500'
-let $GIT_EDITOR = 'nvr --servername 127.0.0.1:32500'
 
 " terminal maps
 nnoremap g\ :vsplit <bar> terminal<CR>
@@ -1213,22 +1184,23 @@ nnoremap sU :SudoWrite<CR>
 
 " run asynchronous commands {{{3
 Plug 'skywind3000/asyncrun.vim'
-nnoremap <Space>h :AsyncRun<Space>
-nnoremap <Space>t :AsyncStop!<CR>:copen<CR>
+nnoremap <Space>u :AsyncRun<Space>
+nnoremap <Space>x :AsyncStop!<CR>:copen<CR>
 
 " make
-nnoremap cm :AsyncRun make<CR>:copen<CR>
+nnoremap sm :AsyncRun make<CR>:copen<CR>
+nnoremap vm :AsyncRun make -C build<CR>:copen<CR>
 
 " post file as gist
 nnoremap gp :AsyncRun gist % -cd ""<Left>:copen<CR>
 nnoremap gP :AsyncRun gist -Pcd ""<Left>:copen<CR>
 
 " git operations
-nnoremap vr :AsyncRun git push<CR>:copen<CR>
+nnoremap vp :AsyncRun git push<CR>:copen<CR>
 nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
-nnoremap dc :AsyncRun ctags -R %:p:h<CR>:copen<CR>
+nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 
 " start rtags when in c or cpp files
 autocmd FileType c,cpp :AsyncRun! rdm &<CR>
