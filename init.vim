@@ -1203,7 +1203,10 @@ nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 
 " start rtags when in c or cpp files
-autocmd FileType c,cpp :AsyncRun! rdm &<CR>
+augroup rtags_cpp
+    autocmd!
+    autocmd FileType c,cpp AsyncRun! rdm & 
+augroup end
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'

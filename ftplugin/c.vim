@@ -18,63 +18,69 @@ nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
 " information
 nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
 
+" make
+nnoremap <buffer> mm :AsyncRun make<CR>:copen<CR>
+" build
+nnoremap <buffer> mb :AsyncRun make -C build<CR>:copen<CR>
+" cmake
+nnoremap <buffer> ma :AsyncRun cd build && cmake ..<CR>:copen<CR>
+nnoremap <buffer> mz :AsyncRun cmake .<CR>:copen<CR>
+
 " Single file C compilation with different flags
 " simple
-nnoremap <buffer> mss :let @m = "gcc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcs :let @m = "gcc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " intel compiler
-nnoremap <buffer> msi :let @m = "icc -fast -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcis :let @m = "icc -fast -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
 " with math support
-nnoremap <buffer> msm :let @m = "gcc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcS :let @m = "gcc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " intel compiler with openmp
-nnoremap <buffer> moi :let @m = "icc -fast -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcio :let @m = "icc -fast -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
 " openmp without math
-nnoremap <buffer> mos :let @m = "gcc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mco :let @m = "gcc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " openmp with math
-nnoremap <buffer> mom :let @m = "gcc -O3 -Wall -lcblas -llapack -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcO :let @m = "gcc -O3 -Wall -lcblas -llapack -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " cuda math
-nnoremap <buffer> mcm :let @m = "nvcc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mccm :let @m = "nvcc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " cuda simple
-nnoremap <buffer> mcs :let @m = "nvcc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mccs :let @m = "nvcc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " cuda openmp
-nnoremap <buffer> mco :let @m = "nvcc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcco :let @m = "nvcc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " mpi math
-nnoremap <buffer> mim :let @m = "mpicc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcim :let @m = "mpicc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " mpi simple
-nnoremap <buffer> mis :let @m = "mpicc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcis :let @m = "mpicc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " hybrid
-nnoremap <buffer> mhm :let @m = "mpicc -O3 -Wall -lcblas -llapack -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mchm :let @m = "mpicc -O3 -Wall -lcblas -llapack -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " hybrid simple
-nnoremap <buffer> mhs :let @m = "mpicc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mchs :let @m = "mpicc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " armadillo simple
-nnoremap <buffer> mas :let @m = "gcc -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcas :let @m = "gcc -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " armadillo math
-nnoremap <buffer> mam :let @m = "gcc -O3 -Wall -lcblas -llapack -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcam :let @m = "gcc -O3 -Wall -lcblas -llapack -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " armadillo intel
-nnoremap <buffer> mai :let @m = "icc -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcai :let @m = "icc -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " run gcc compiled binary
 nnoremap <buffer> mr :let @m = "./" . expand('%:t:r') . ".out " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 " run icc compiled binary
-nnoremap <buffer> mi :let @m = "./" . expand('%:t:r') . ".in " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+nnoremap <buffer> mi let @m = "./" . expand('%:t:r') . ".in " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 " run mpi compiled binary
 nnoremap <buffer> me :let @m = "mpiexec ./" . expand('%:t:r') . ".out " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 
 " debugging
-" call gdb
-nnoremap <buffer> mgg :let @m = "gdb"<CR>:TxSend(@m)<CR>
+" call lldb
+nnoremap <buffer> mgg :let @m = "lldb"<CR>:TxSend(@m)<CR>
+" create target
+nnoremap <buffer> mge :let @m = "target create "<bar>TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 " set breakpoint in current line
-nnoremap <buffer> mgs :call SetBreakpoint()<CR>:let @m = "break " . expand('%') . ":" . line('.')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:LCD<CR>:let @m = "breakpoint set --file " . expand('%') . " --line " . line('.')<CR>:TxSend(@m)<CR>:Rooter<CR>
 " unset breakpoint in current line
-nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:let @m = "clear " . expand('%') . ":" . line('.')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgx :call UnsetBreakpoint()<CR>:let @m = "breakpoint list"<CR>:TxSend(@m)<CR>:let @m = "breakpoint delete "<bar>TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 " set breakpoint in current function
-nnoremap <buffer> mgf :call SetBreakpoint()<CR>:let @m = "break " . expand('%') . ":" . line('<cword>')<CR>:TxSend(@m)<CR>
-" unset breakpoint in current function
-nnoremap <buffer> mgd :call UnsetBreakpoint()<CR>:let @m = "break " . expand('%') . ":" . line('<cword>')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgf :call SetBreakpoint()<CR>:let @m = "breakpoint set --name " line('<cword>')<CR>:TxSend(@m)<CR>
 " set breakpoint in current class method
-nnoremap <buffer> mgm :call SetBreakpoint()<CR>:let @m = "break " . expand('%') . ":" . line('<cword>')<CR>:TxSend(@m)<CR>
-" unset breakpoint in current class method
-nnoremap <buffer> mgb :call UnsetBreakpoint()<CR>:let @m = "break " . expand('%') . ":" . line('<cword>')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgm :call SetBreakpoint()<CR>:let @m = "breakpoint set --method " . expand('%') . ":" . line('<cword>')<CR>:TxSend(@m)<CR>
 " clear all breakpoints
-nnoremap <buffer> mga :call RemoveAllBreakpoints()<CR>:let @m = "delete"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mga :call RemoveAllBreakpoints()<CR>:let @m = "breakpoint delete"<CR>:TxSend(@m)<CR>:let @m = "Y"<CR>:TxSend(@m)<CR>
 " next line
 nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
 " continue
@@ -82,7 +88,7 @@ nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
 " run
 nnoremap <buffer> mgr :let @m = "r"<CR>:TxSend(@m)<CR>
 " list all breakpoints
-nnoremap <buffer> mgl :let @m = "info breakpoints"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgl :let @m = "breakpoint list"<CR>:TxSend(@m)<CR>
 " step in
 nnoremap <buffer> mgi :let @m = "s"<CR>:TxSend(@m)<CR>
 " go one level up

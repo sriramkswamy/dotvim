@@ -30,8 +30,9 @@ nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:let @m = "dbclear at " . line(
 nnoremap <buffer> mga :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all"<CR>:TxSend(@m)<CR>
 " continue until next breakpoint or end of program
 nnoremap <buffer> mgc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
-" put me in debug mode if there is an error
+" put me in debug mode if there is an error or warning
 nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgw :let @m = "dbstop on warning"<CR>:TxSend(@m)<CR>
 " exit debug mode without removing breakpoints
 nnoremap <buffer> mgk :let @m = "dbquit"<CR>:TxSend(@m)<CR>
 " quit debugging mode and remove all breakpoints
@@ -115,4 +116,4 @@ nnoremap <buffer> mc :let @m = "clc"<CR>:TxSend(@m)<CR>
 " clear variable list
 nnoremap <buffer> mu :let @m = "clear all"<CR>:TxSend(@m)<CR>
 " run the current file
-nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mm :let @m = expand('%:r')<CR>:TxSend(@m)<CR>
