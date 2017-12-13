@@ -1,14 +1,16 @@
-" jedi support
-" goto assignment
-nnoremap <buffer> ma call jedi#goto_assignments()
-" goto definition
-nnoremap <buffer> md call jedi#goto_definitions()
+" lsp support
+" goto references
+nnoremap <buffer> ma :call LanguageClient_textDocument_references()<CR>
+" document symbols
+nnoremap <buffer> md :call LanguageClient_textDocument_documentSymbol()<CR>
 " rename
-nnoremap <buffer> mn call jedi#rename()
-" visual rename
-nnoremap <buffer> mv call jedi#rename_visual()
+nnoremap <buffer> mn :call LanguageClient_textDocument_rename()<CR>
+" workspace symbols
+nnoremap <buffer> mv :call LanguageClient_workspace_symbol()<CR>
 " jump
-nnoremap <buffer> J :call jedi#goto()<CR>
+nnoremap <buffer> J :call LanguageClient_textDocument_definition()<CR>
+" information
+nnoremap <buffer> K :call LanguageClient_textDocument_hover()<CR>
 
 " run the current file
 nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
@@ -45,9 +47,9 @@ vnoremap <buffer> mi :sort i /\w\+/<CR>
 " get the shape of the matrix/object
 nnoremap <buffer> mz :let @m = expand('<cword>') . ".shape"<CR>:TxSend(@m)<CR>
 " dimensions of the variable at point
-nnoremap <buffer> md :let @m = expand('<cword>') . ".ndim"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mX :let @m = expand('<cword>') . ".ndim"<CR>:TxSend(@m)<CR>
 " get the size of object
-nnoremap <buffer> mv :let @m = expand('<cword>') . ".size"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mx :let @m = expand('<cword>') . ".size"<CR>:TxSend(@m)<CR>
 " get the length of the object
 nnoremap <buffer> ml :let @m = "len(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
 " get the type of the object

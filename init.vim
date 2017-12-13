@@ -240,10 +240,10 @@ nnoremap g_ :LocalIndentOff<CR>
 " File/Buffer navigation {{{1
 
 " Netrw {{{2
-let g:netrw_liststyle=3         " thin (change to 3 for tree)
-let g:netrw_banner=0            " no banner
-let g:netrw_altv=1              " open files on right
-let g:netrw_preview=1           " open previews vertically
+let g:netrw_liststyle=3 " thin (change to 3 for tree)
+let g:netrw_banner=0    " no banner
+let g:netrw_altv=1      " open files on right
+let g:netrw_preview=1   " open previews vertically
 
 " Set commands {{{2
 " Path for the builtin 'find' command
@@ -300,18 +300,6 @@ nnoremap cv :vsp $MYVIMRC<CR>
 
 " Functions and commands {{{2
 
-" Open file structure in ranger {{{3
-" Thanks to https://redd.it/3utqfx
-function! RangerChooser()
-    exec "silent terminal ranger --choosefile=/tmp/chosenfile " . expand("%:p:h")
-    if filereadable('/tmp/chosenfile')
-        exec 'terminal nvr --servername 127.0.0.1:32500 ' . system('cat /tmp/chosenfile')
-        call system('rm /tmp/chosenfile')
-    endif
-    redraw!
-endfunction
-nnoremap <Space>m :call RangerChooser()<CR>
-
 " Filter from quickfix list - someone's vimrc {{{3
 function! GrepQuickFix(pat)
     let qfl = getqflist()
@@ -363,7 +351,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>t :30vsp <bar> Explore<CR>
+nnoremap <Space>t :Lexplore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
@@ -398,7 +386,7 @@ function! s:QListToggle()
     endif
 endfunction
 command!  QToggle call s:QListToggle()
-nnoremap <silent> <Space>v :QToggle<CR>
+nnoremap <silent> <Space>m :QToggle<CR>
 
 " Plugins {{{2
 
@@ -441,9 +429,9 @@ endif
 " Populating the location list
 nnoremap <silent> # :nohl<CR>
 nnoremap <silent> gh :nohl<CR>
-nnoremap <silent> g* *N:lvimgrep /<C-R>// %<CR>
 nnoremap <silent> g# :lvimgrep /<C-R>// %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
+nnoremap <silent> <Space>n *N:lvimgrep /<C-R>// %<CR>
 
 " Automatically disable search highlighting {{{2
 Plug 'junegunn/vim-slash'
@@ -537,10 +525,6 @@ set textwidth=80
 nnoremap <silent> Y y$
 " '&' remembers the flags of the last substitute
 nnoremap & g&
-" %% for current buffer file name
-" :: for current buffer file path
-cnoremap %% <c-r>=expand('%')<cr>
-cnoremap :: <c-r>=expand('%:p:h')<cr>/
 " repeat in visual mode
 vnoremap . :normal .<CR>
 vnoremap <C-o> :normal<Space>
@@ -626,10 +610,6 @@ nmap <Space>_ <Plug>ListToLine
 nmap <Plug>ElementarySplit Dop==k$:call repeat#set("\<Plug>ElementarySplit", v:count)<CR>
 nmap gS <Plug>ElementarySplit
 nnoremap gJ J
-
-" Blank the current line {{{4
-nmap <Plug>BlankCurrentLine cc:call repeat#set("\<Plug>BlankCurrentLine", v:count)<CR>
-nmap crb <Plug>BlankCurrentLine
 
 " Move the current line {{{4
 nmap <silent> <Plug>MoveLineUp :<c-u>execute 'move -1-'. v:count1<cr>:call repeat#set("\<Plug>MoveLineUp", v:count)<CR>
@@ -822,8 +802,6 @@ nmap [r <Plug>ExchangeArgPrev
 Plug 'bounceme/fairedit.vim'
 " any operator ex. g~$ , c$ , d$ etc
 omap $ <Plug>Fair_dollar
-
-" or with the one key variants ex. C,D,Y/y$
 nmap C <Plug>Fair_C
 nmap D <Plug>Fair_D
 if maparg('Y','n') ==# 'y$'
@@ -906,7 +884,7 @@ nnoremap so :source ~/.vim/session/
 nnoremap sd :Obsess!<CR>
 nnoremap sq :qall<CR>
 
-" Language helpers {{{1
+" Debugging {{{1
 
 " set the sign to be placed on the sign column for debuggingg {{{2
 function! SetBreakpoint()
@@ -916,6 +894,7 @@ function! SetBreakpoint()
     exe ":sign place" s:breakpointplaceline " line=" . s:breakpointplaceline . " name=mybreakpoint file=" . expand('%:p')
 endfunction
 
+" Set the breakpoint {{{2
 function! SetBreakIndicator()
     " set the breakpoint character and indicate the breakpoint
     exe ':sign define mybreakindicator text=➤'
@@ -924,8 +903,8 @@ function! SetBreakIndicator()
 endfunction
 nnoremap <> :call SetBreakIndicator()<CR>
 
+" Unset the breakpoint {{{2
 function! UnsetBreakpoint()
-    " remove the breakpoint character
     let s:breakpointplaceline = line('.')
     exe ":sign unplace" s:breakpointplaceline
     if exists(':SignifyRefresh')
@@ -936,8 +915,8 @@ function! UnsetBreakpoint()
 endfunction
 nnoremap >< :call UnsetBreakpoint()<CR>
 
+" Remove all breakpoints {{{2
 function! RemoveAllBreakpoints()
-    " remove all breakpoints
     exe ":sign unplace *"
     if exists(':SignifyRefresh')
         SignifyRefresh
@@ -945,6 +924,8 @@ function! RemoveAllBreakpoints()
         SignifyEnable
     endif
 endfunction
+
+" Language Support {{{1
 
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
@@ -957,34 +938,6 @@ let g:vimtex_text_obj_enabled = 0
 let g:vimtex_imaps_enabled = 0
 let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
-
-" C/C++ {{{2
-" Omnicompletion
-Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
-let g:clang_compilation_database = './build'
-let g:clang_c_options = '-std=gnu11'
-let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
-let g:clang_diagsopt = ''   " disable diagnostics
-
-" Indexer (for cmake projects)
-Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
-autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
-let g:rtagsUseDefaultMappings = 0
-let g:rtagsUseLocationList = 0
-let g:rtagsMinCharsForCommandCompletion = 2
-
-" Python {{{2
-" Omnicompletion and some jumping
-Plug 'davidhalter/jedi-vim' , {'for': 'python'}
-autocmd filetype python setl omnifunc=jedi#completions
-let g:jedi#popup_on_dot = 0
-let g:jedi#goto_command = ""
-let g:jedi#goto_assignments_command = ""
-let g:jedi#goto_definitions_command = ""
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = ""
-let g:jedi#completions_command = ""
-let g:jedi#rename_command = ""
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
@@ -1009,35 +962,45 @@ nmap mQ <Plug>RClose
 " CSV - nice display of csv {{{3
 Plug 'chrisbra/csv.vim'
 
-" Syntax checking {{{2
-Plug 'benekastah/neomake'
+" Syntax checking {{{1
+Plug 'w0rp/ale'
+let g:ale_set_quickfix = 1
+let g:ale_set_loclist = 0
 
-" evoke neomake for every save
-autocmd! BufWritePost * Neomake
-
-" neomake maker for matlab {{{3
-let g:neomake_matlab_mlint_maker = {
-            \ 'exe': '/Applications/MATLAB_R2016a.app/bin/maci64/mlint',
-            \ 'args': ['-id'],
-            \ 'errorformat':
-            \ '%EL %l (C %c): %*[a-zA-Z0-9]: %m,'.
-            \ '%WL %l (C %c-%*[0-9]): %*[a-zA-Z0-9]: %m,',
+" Language Server Protocol {{{1
+Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+let g:LanguageClient_serverCommands = {
+            \ 'r': ['R', '--quiet', '--slave', '-e', 'languageserver::run()'],
+            \ 'python': ['pyls'],
+            \ 'cpp': ['clangd']
             \ }
-let g:neomake_matlab_enabled_makers = ['mlint']
 
-" neomake maker for R {{{3
-let g:neomake_r_lintr_maker = {
-            \ 'exe': 'R',
-            \ 'args': ['--slave', '--no-restore', '--no-save',
-            \ '-e', 'suppressPackageStartupMessages(library(lintr))',
-            \ '-e', 'lint(cache = FALSE, commandArgs(TRUE), default_linters)',
-            \ '--args'],
-            \ 'errorformat':
-            \ '%I%f:%l:%c: style: %m,' .
-            \ '%W%f:%l:%c: warning: %m,' .
-            \ '%E%f:%l:%c: error: %m,',
-            \ }
-let g:neomake_r_enabled_makers = ['lintr']
+" start lsp when in c or cpp files {{{2
+augroup lsp_cpp
+    autocmd!
+    autocmd FileType c,cpp LanguageClientStart
+    autocmd FileType c,cpp setlocal completefunc=LanguageClient#complete()
+augroup end
+
+" start lsp when in python files {{{2
+augroup lsp_py
+    autocmd!
+    autocmd FileType python LanguageClientStart
+    autocmd FileType python setlocal completefunc=LanguageClient#complete()
+augroup end
+
+" start lsp when in c or cpp files {{{2
+augroup lsp_r
+    autocmd!
+    autocmd FileType r LanguageClientStart
+    autocmd FileType r setlocal completefunc=LanguageClient#complete()
+augroup end
+
+" Auto completion {{{1
+Plug 'roxma/nvim-completion-manager'
+
+" R completion {{{2
+Plug 'gaalcaras/ncm-R'
 
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -1063,7 +1026,7 @@ command! -bang -nargs=* FzfRg
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfRg <C-R><C-W><CR>
 nnoremap <silent> T :FzfTags<CR>
-nnoremap <silent> <C-]> :FzfTags <C-R><C-W><CR>
+nnoremap <silent> g] :FzfTags <C-R><C-W><CR>
 nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
 nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
 vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
@@ -1107,12 +1070,6 @@ command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
             \ }))
 nnoremap <Space>b :FzfBib<Space>
 
-" A la Notational Velocity {{{2
-Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
-let g:nv_directories = [ '~/Dropbox/Paper' ]
-let g:nv_default_extension = '.md'
-nnoremap <Space>n :NV<CR>
-
 " Get back 't' and 'T' maps which keeps getting stolen {{{2
 function GetBackTMaps()
     exec "nnoremap t :FzfBTags<CR>"
@@ -1123,12 +1080,12 @@ nnoremap <silent> coo :call GetBackTMaps()<CR>
 " Autocompletion {{{1
 
 " vim-omnicomplete activation {{{2
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd filetype vim set omnifunc=syntaxcomplete#Complete
-autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
-autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd filetype html,markdown,ctp setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd filetype vim setlocal omnifunc=syntaxcomplete#Complete
+autocmd filetype xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd filetype cpp setlocal omnifunc=ccomplete#CompleteTags
 " Close after auto completion
 autocmd CompleteDone * pclose
 
@@ -1136,9 +1093,6 @@ autocmd CompleteDone * pclose
 " <C-j> and <C-k> for autocompletion navigation in insert mode
 inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
-
-" Aggregate completions {{{2
-Plug 'roxma/nvim-completion-manager'
 
 " REPL and Tmux {{{1
 
@@ -1201,12 +1155,6 @@ nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
 nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
-
-" start rtags when in c or cpp files
-augroup rtags_cpp
-    autocmd!
-    autocmd FileType c,cpp AsyncRun! rdm & 
-augroup end
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
@@ -1435,7 +1383,6 @@ set statusline+=%l      "cursor line/total lines
 set statusline+=\ %P    "percent through file
 set laststatus=2
 set statusline+=\ %{ObsessionStatus()} " vim session status
-set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus('Fix:\ ')}
 
 "return '[\s]' if trailing white space is detected
 "return '' otherwise

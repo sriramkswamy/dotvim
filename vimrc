@@ -1303,7 +1303,7 @@ nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 " start rtags when in c or cpp files
 augroup rtags_cpp
     autocmd!
-    autocmd FileType c,cpp AsyncRun! rdm & 
+    autocmd FileType c,cpp AsyncRun rdm & <bar> copen
 augroup end
 
 " Tmux integration {{{3

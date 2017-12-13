@@ -1,29 +1,23 @@
-" rtags
-" jump to parent
-nnoremap <buffer> mu :call rtags#JumpToParent()<CR>
-" find reference
-nnoremap <buffer> mk :call rtags#FindRefsOfWordUnderCursor()<CR>
-" find symbol
-nnoremap <buffer> mj :call rtags#FindSymbolsOfWordUnderCursor()<CR>
-" find virtuals
-nnoremap <buffer> mv :call rtags#FindVirtuals()<CR>
-" reindex file
-nnoremap <buffer> mx :call rtags#ReindexFile()<CR>
-" rename symbol
-nnoremap <buffer> mn :call rtags#RenameSymbolUnderCursor()<CR>
-" list projects
-nnoremap <buffer> ml :call rtags#ProjectList()<CR>
+" lsp support
+" goto references
+nnoremap <buffer> ma :call LanguageClient_textDocument_references()<CR>
+" document symbols
+nnoremap <buffer> md :call LanguageClient_textDocument_documentSymbol()<CR>
+" rename
+nnoremap <buffer> mn :call LanguageClient_textDocument_rename()<CR>
+" workspace symbols
+nnoremap <buffer> mv :call LanguageClient_workspace_symbol()<CR>
 " jump
-nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
+nnoremap <buffer> J :call LanguageClient_textDocument_definition()<CR>
 " information
-nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
+nnoremap <buffer> K :call LanguageClient_textDocument_hover()<CR>
 
 " make
 nnoremap <buffer> mm :AsyncRun make<CR>:copen<CR>
 " build
 nnoremap <buffer> mb :AsyncRun make -C build<CR>:copen<CR>
 " cmake
-nnoremap <buffer> ma :AsyncRun cd build && cmake ..<CR>:copen<CR>
+nnoremap <buffer> mx :AsyncRun cd build && cmake ..<CR>:copen<CR>
 nnoremap <buffer> mz :AsyncRun cmake .<CR>:copen<CR>
 
 " Single file C compilation with different flags

@@ -1,50 +1,44 @@
-" rtags
-" jump to parent
-nnoremap <buffer> mu :call rtags#JumpToParent()<CR>
-" find reference
-nnoremap <buffer> mk :call rtags#FindRefsOfWordUnderCursor()<CR>
-" find symbol
-nnoremap <buffer> mj :call rtags#FindSymbolsOfWordUnderCursor()<CR>
-" find virtuals
-nnoremap <buffer> mv :call rtags#FindVirtuals()<CR>
-" reindex file
-nnoremap <buffer> mx :call rtags#ReindexFile()<CR>
-" rename symbol
-nnoremap <buffer> mn :call rtags#RenameSymbolUnderCursor()<CR>
-" list projects
-nnoremap <buffer> ml :call rtags#ProjectList()<CR>
+" lsp support
+" goto references
+nnoremap <buffer> ma :call LanguageClient_textDocument_references()<CR>
+" document symbols
+nnoremap <buffer> md :call LanguageClient_textDocument_documentSymbol()<CR>
+" rename
+nnoremap <buffer> mn :call LanguageClient_textDocument_rename()<CR>
+" workspace symbols
+nnoremap <buffer> mv :call LanguageClient_workspace_symbol()<CR>
 " jump
-nnoremap <buffer> J :call rtags#JumpTo(g:SAME_WINDOW)<CR>
+nnoremap <buffer> J :call LanguageClient_textDocument_definition()<CR>
 " information
-nnoremap <buffer> K :call rtags#SymbolInfo()<CR>
+nnoremap <buffer> K :call LanguageClient_textDocument_hover()<CR>
 
 " make
 nnoremap <buffer> mm :AsyncRun make<CR>:copen<CR>
 " build
 nnoremap <buffer> mb :AsyncRun make -C build<CR>:copen<CR>
 " cmake
-nnoremap <buffer> ma :AsyncRun cd build && cmake ..<CR>:copen<CR>
+nnoremap <buffer> mx :AsyncRun cd build && cmake ..<CR>:copen<CR>
 nnoremap <buffer> mz :AsyncRun cmake .<CR>:copen<CR>
 
 " Single file C compilation with different flags
 " simple
 nnoremap <buffer> mcs :let @m = "g++ -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " intel compiler
-nnoremap <buffer> mcis :let @m = "icc -fast -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcis :let @m = "ic++ -fast -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
 " with math support
 nnoremap <buffer> mcS :let @m = "g++ -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " intel compiler with openmp
-nnoremap <buffer> mcio :let @m = "icc -fast -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcio :let @m = "ic++ -fast -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".in" <bar> TxSend(@m)<CR>
 " openmp without math
 nnoremap <buffer> mco :let @m = "g++ -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " openmp with math
 nnoremap <buffer> mcO :let @m = "g++ -O3 -Wall -lcblas -llapack -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " cuda math
-nnoremap <buffer> mccm :let @m = "nvcc -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mccm :let @m = "nvc++ -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " cuda simple
-nnoremap <buffer> mccs :let @m = "nvcc -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mccs :let @m = "nvc++ -O3 -Wall -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " cuda openmp
-nnoremap <buffer> mcco :let @m = "nvcc -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcco :let @m = "nvc++ -O3 -Wall -fopenmp -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " mpi math
 nnoremap <buffer> mcim :let @m = "mpic++ -O3 -Wall -lcblas -llapack -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " mpi simple
@@ -58,10 +52,10 @@ nnoremap <buffer> mcas :let @m = "g++ -O3 -Wall -larmadillo -g " . expand('%:t')
 " armadillo math
 nnoremap <buffer> mcam :let @m = "g++ -O3 -Wall -lcblas -llapack -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " armadillo intel
-nnoremap <buffer> mcai :let @m = "icc -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
+nnoremap <buffer> mcai :let @m = "ic++ -O3 -Wall -larmadillo -g " . expand('%:t') . " -o " . expand('%:t:r') . ".out" <bar> TxSend(@m)<CR>
 " run g++ compiled binary
 nnoremap <buffer> mr :let @m = "./" . expand('%:t:r') . ".out " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
-" run icc compiled binary
+" run ic++ compiled binary
 nnoremap <buffer> mi let @m = "./" . expand('%:t:r') . ".in " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 " run mpi compiled binary
 nnoremap <buffer> me :let @m = "mpiexec ./" . expand('%:t:r') . ".out " <bar> TxSend(@m)<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
