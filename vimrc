@@ -707,7 +707,7 @@ nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
 
 " Easy alignment plugin and auto-align {{{3
-Plug 'junegunn/vim-easy-align' , {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
+Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 nmap gl <Plug>(EasyAlign)
 xmap gl <Plug>(EasyAlign)
 nnoremap g<Space> vip:EasyAlign \<CR>
@@ -904,7 +904,7 @@ xmap aj <Plug>(signify-motion-outer-visual)
 nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 
 " Git Wrapper {{{2
-Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal', {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>
@@ -1014,33 +1014,31 @@ Plug 'chrisbra/csv.vim'
 Plug 'w0rp/ale'
 
 " Language Server Protocol {{{1
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
+let g:LanguageClient_serverCommands = {
+            \ 'r': ['R', '--quiet', '--slave', '-e', 'languageserver::run()'],
+            \ 'python': ['pyls'],
+            \ 'cpp': ['clangd']
+            \ }
 
 " start lsp when in c or cpp files {{{2
-if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd']},
-        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-        \ })
-endif
 augroup lsp_cpp
     autocmd!
-    autocmd FileType c,cpp setlocal completefunc=lsp#complete()
+    autocmd FileType c,cpp LanguageClientStart
+    autocmd FileType c,cpp setlocal completefunc=LanguageClient#complete()
 augroup end
 
 " start lsp when in python files {{{2
-if executable('pyls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
 augroup lsp_py
     autocmd!
-    autocmd FileType python setlocal completefunc=lsp#complete()
+    autocmd FileType python LanguageClientStart
+    autocmd FileType python setlocal completefunc=LanguageClient#complete()
+augroup end
+
+" start lsp when in c or cpp files {{{2
+augroup lsp_r
+    autocmd!
+    autocmd FileType r LanguageClientStart
 augroup end
 
 " FZF {{{1
@@ -1135,18 +1133,6 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-let g:lsp_async_completion = 1
-
-" buffer completion {{{2
-Plug 'prabirshrestha/asyncomplete-buffer.vim'
-
-" omni completion {{{2
-Plug 'yami-beta/asyncomplete-omni.vim'
-
-" snippets {{{2
-Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
 
 " REPL and Tmux {{{1
 
@@ -1382,33 +1368,6 @@ function! OperatorTmuxifySend(motion_wise)
     execute 'normal!' '`[' . v . '`]"my'
     TxSend(@m)
 endfunction
-
-" auto completion - asyncomplete {{{1
-
-" buffer completion {{{2
-call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-            \ 'name': 'buffer',
-            \ 'whitelist': ['*'],
-            \ 'blacklist': ['go'],
-            \ 'completor': function('asyncomplete#sources#buffer#completor'),
-            \ }))
-
-" omni completion {{{2
-call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-            \ 'name': 'omni',
-            \ 'whitelist': ['*'],
-            \ 'blacklist': ['html'],
-            \ 'completor': function('asyncomplete#sources#omni#completor')
-            \  }))
-
-" snippets {{{2
-if has('python3')
-    call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-                \ 'name': 'ultisnips',
-                \ 'whitelist': ['*'],
-                \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-                \ }))
-endif
 
 " Setup plugins, indents and syntax {{{1
 filetype plugin indent on

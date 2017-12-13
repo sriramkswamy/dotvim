@@ -661,7 +661,7 @@ nnoremap <Space>i :InlineEdit<CR>
 vnoremap <Space>i :InlineEdit<CR>
 
 " Easy alignment plugin and auto-align {{{3
-Plug 'junegunn/vim-easy-align' , {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
+Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 nmap gl <Plug>(EasyAlign)
 xmap gl <Plug>(EasyAlign)
 nnoremap g<Space> vii:EasyAlign \<CR>
@@ -858,7 +858,7 @@ xmap aj <Plug>(signify-motion-outer-visual)
 nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 
 " Git Wrapper {{{2
-Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal' , {'branch': 'develop'}
+Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal', {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
 nnoremap <silent> <Space>g :Gstatus<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>
@@ -966,7 +966,7 @@ Plug 'chrisbra/csv.vim'
 Plug 'w0rp/ale'
 
 " Language Server Protocol {{{1
-Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
 let g:LanguageClient_serverCommands = {
             \ 'r': ['R', '--quiet', '--slave', '-e', 'languageserver::run()'],
             \ 'python': ['pyls'],

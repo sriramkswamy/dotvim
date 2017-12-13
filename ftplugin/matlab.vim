@@ -44,6 +44,7 @@ nnoremap <buffer> mgv :sign list mybreakpoint<CR>
 " variable viewing
 " open in GUI
 nnoremap <buffer> mk :let @m = "edit " . expand('<cword>')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mK :let @m = "edit " . expand('%:r')<CR>:TxSend(@m)<CR>
 " show the GUI workspace
 nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>
 " open the current variable in the GUI variable viewer
