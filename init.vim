@@ -993,15 +993,6 @@ augroup lsp_r
     autocmd FileType r LanguageClientStart
 augroup end
 
-" Auto completion {{{1
-Plug 'roxma/nvim-completion-manager'
-
-" C/C++ completion {{{2
-Plug 'roxma/ncm-clang'
-
-" R completion {{{2
-Plug 'gaalcaras/ncm-R'
-
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -1094,6 +1085,15 @@ autocmd CompleteDone * pclose
 " <C-j> and <C-k> for autocompletion navigation in insert mode
 inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
+
+" Auto completion {{{1
+Plug 'roxma/nvim-completion-manager'
+
+" C/C++ completion {{{2
+Plug 'roxma/ncm-clang'
+
+" R completion {{{2
+Plug 'gaalcaras/ncm-R'
 
 " REPL and Tmux {{{1
 

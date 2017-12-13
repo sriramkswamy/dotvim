@@ -1041,6 +1041,97 @@ augroup lsp_r
     autocmd FileType r LanguageClientStart
 augroup end
 
+" FZF {{{1
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix='Fzf'
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+" Actions
+let g:fzf_action = {
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit',
+            \ 'ctrl-o': '!open'}
+
+" Ripgrep instead of Ag
+command! -bang -nargs=* FzfRg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> J :FzfRg <C-R><C-W><CR>
+nnoremap <silent> T :FzfTags<CR>
+nnoremap <silent> g] :FzfTags <C-R><C-W><CR>
+nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
+nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
+vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
+nnoremap <silent> sc :FzfSnippets<CR>
+nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>. :FzfColors<CR>
+nnoremap <silent> <Space><Space> :FzfBLines<CR>
+nnoremap <silent> <Space>/ :FzfHistory/<CR>
+nnoremap <silent> <Space>a :FzfWindows<CR>
+nnoremap <silent> <Space>d :FzfGFiles<CR>
+nnoremap <silent> <Space>f :FzfFiles<CR>
+nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>k :FzfBuffers<CR>
+nnoremap <silent> <Space>h :FzfHelptags<CR>
+nnoremap <silent> <Space>p :FzfRg<CR>
+nnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
+nnoremap <silent> <Space>: :FzfHistory:<CR>
+vnoremap <silent> <Space>: :FzfHistory:<CR>
+nmap <Space>, <Plug>(fzf-maps-n)
+xmap <Space>, <Plug>(fzf-maps-x)
+omap <Space>, <Plug>(fzf-maps-o)
+imap <silent> <C-d> <Plug>(fzf-complete-word)
+imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
+" PhD related stuff
+nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
+
+" Search using spotlight {{{2
+command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
+            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
+            \ 'options' : '-m --prompt "Spotlight> "'
+            \ }))
+nnoremap <Space>s :FzfSpotlight<Space>
+
+" Search bib using spotlight {{{2
+command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
+            \ 'source'  : 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
+            \ 'options' : '-m --prompt "Bib> "'
+            \ }))
+nnoremap <Space>b :FzfBib<Space>
+
+" Get back 't' and 'T' maps which keeps getting stolen {{{2
+function GetBackTMaps()
+    exec "nnoremap t :FzfBTags<CR>"
+    exec "nnoremap T :FzfTags<CR>"
+endfunction
+nnoremap <silent> coo :call GetBackTMaps()<CR>
+
+" omnifunc {{{1
+
+" vim-omnicomplete activation {{{2
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd filetype vim set omnifunc=syntaxcomplete#Complete
+autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
+autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
+" Close after auto completion
+autocmd CompleteDone * pclose
+
+" Maps for navigating autocompletion {{{2
+" <C-j> and <C-k> for autocompletion navigation in insert mode
+inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
+
 " Auto completion {{{1
 Plug 'maralla/completor.vim'
 let g:completor_auto_trigger = 1
@@ -1111,102 +1202,14 @@ endfunction
 
 inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
 
-" FZF {{{1
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-let g:fzf_command_prefix='Fzf'
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
-" Actions
-let g:fzf_action = {
-            \ 'ctrl-t': 'tab split',
-            \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit',
-            \ 'ctrl-o': '!open'}
-
-" Ripgrep instead of Ag
-command! -bang -nargs=* FzfRg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
-
-nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfRg <C-R><C-W><CR>
-nnoremap <silent> T :FzfTags<CR>
-nnoremap <silent> <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
-nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
-vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
-nnoremap <silent> sc :FzfSnippets<CR>
-nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space><Space> :FzfBLines<CR>
-nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>a :FzfWindows<CR>
-nnoremap <silent> <Space>d :FzfGFiles<CR>
-nnoremap <silent> <Space>f :FzfFiles<CR>
-nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>k :FzfBuffers<CR>
-nnoremap <silent> <Space>h :FzfHelptags<CR>
-nnoremap <silent> <Space>p :FzfRg<CR>
-nnoremap <silent> <Space>j :FzfCommands<CR>
-vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
-nnoremap <silent> <Space>: :FzfHistory:<CR>
-vnoremap <silent> <Space>: :FzfHistory:<CR>
-nmap <Space>, <Plug>(fzf-maps-n)
-xmap <Space>, <Plug>(fzf-maps-x)
-omap <Space>, <Plug>(fzf-maps-o)
-imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
-" PhD related stuff
-nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
-
-" Search using spotlight {{{2
-command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
-            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
-            \ 'options' : '-m --prompt "Spotlight> "'
-            \ }))
-nnoremap <Space>s :FzfSpotlight<Space>
-
-" Search bib using spotlight {{{2
-command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
-            \ 'source'  : 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
-            \ 'options' : '-m --prompt "Bib> "'
-            \ }))
-nnoremap <Space>b :FzfBib<Space>
-
-" Get back 't' and 'T' maps which keeps getting stolen {{{2
-function GetBackTMaps()
-    exec "nnoremap t :FzfBTags<CR>"
-    exec "nnoremap T :FzfTags<CR>"
-endfunction
-nnoremap <silent> coo :call GetBackTMaps()<CR>
-
-" omnifunc {{{1
-
-" vim-omnicomplete activation {{{2
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd filetype vim set omnifunc=syntaxcomplete#Complete
-autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
-autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
-" Close after auto completion
-autocmd CompleteDone * pclose
-
-" Maps for navigating autocompletion {{{2
-" <C-j> and <C-k> for autocompletion navigation in insert mode
-inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
-
 " REPL and Tmux {{{1
 
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
+
+" terminal - Go to normal mode
+tnoremap <C-g> <C-\><C-n>
 
 " terminal maps
 nnoremap g\ :vsplit <bar> terminal<CR>
