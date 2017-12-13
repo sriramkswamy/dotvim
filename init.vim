@@ -152,8 +152,6 @@ cnoremap <C-p> <Up>
 " same bindings for merging diffs as in normal mode
 vnoremap <C-d> :diffput<cr>
 vnoremap <C-e> :diffget<cr>
-" Some convenient maps to edit the current word under the cursor
-nnoremap c* *Ncgn
 
 " Change guifont
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
@@ -166,11 +164,8 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 let maplocalleader="\\"
 
 " Window management
-nnoremap <silent> <Space>i <C-w>o
-nnoremap <silent> - :vsplit<CR>
-nnoremap <silent> <bar> :split<CR>
-nnoremap <silent> gO <C-w>=
-nnoremap <silent> <Space>o <C-w><C-w>
+nnoremap <silent> w <C-w>
+nnoremap <silent> ww <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>a :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
@@ -433,6 +428,9 @@ nnoremap <silent> g# :lvimgrep /<C-R>// %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
 nnoremap <silent> <Space>n *N:lvimgrep /<C-R>// %<CR>
 
+" basic renaming
+nnoremap <silent> - *Ncgn
+
 " Automatically disable search highlighting {{{2
 Plug 'junegunn/vim-slash'
 
@@ -446,6 +444,8 @@ let g:grepper = {
             \ 'next_tool': ']g'
             \ }
 nnoremap gss :Grepper -tool rg -noswitch<CR>:copen<CR>
+nnoremap ge :Grepper -tool ag -cword -noprompt<CR>
+nnoremap gE :Grepper -tool ag -cWORD -noprompt<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
@@ -658,8 +658,8 @@ nnoremap <silent> coa :call SetAutoCorrect()<CR>
 " Org like code block narrowing in markdown {{{3
 " also check out operator ge
 Plug 'AndrewRadev/inline_edit.vim'
-nnoremap ge :InlineEdit<CR>
-vnoremap ge :InlineEdit<CR>
+nnoremap <Space>i :InlineEdit<CR>
+vnoremap <Space>i :InlineEdit<CR>
 
 " Easy alignment plugin and auto-align {{{3
 Plug 'junegunn/vim-easy-align' , {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
@@ -677,8 +677,8 @@ nnoremap g: vip:EasyAlign :<CR>
 vnoremap g: vip:EasyAlign :<CR>
 nnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 vnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
-nnoremap gE :EasyAlign *//<Left>
-vnoremap gE :EasyAlign *//<Left>
+nnoremap <bar> :EasyAlign *//<Left>
+vnoremap <bar> :EasyAlign *//<Left>
 
 " Text objects, operators and motions {{{1
 
@@ -812,15 +812,6 @@ endif
 Plug 'kana/vim-operator-user'
 
 " Motions {{{2
-
-" Move by two characters instead of one {{{3
-Plug 'justinmk/vim-sneak'
-nmap w <Plug>Sneak_s
-nmap W <Plug>Sneak_S
-xmap w <Plug>Sneak_s
-xmap W <Plug>Sneak_S
-omap w <Plug>Sneak_s
-omap W <Plug>Sneak_S
 
 " Snippets {{{1
 " Snippet plugin and snippet collection {{{2
