@@ -91,7 +91,7 @@ set guicursor+=a:blinkon0
 " Maps without leader {{{2
 
 " quit whatever
-nnoremap <Space>q :q<CR>
+nnoremap <Space>q :bd!<CR>
 " Close all folds
 nnoremap c- zM
 nnoremap d- zM
@@ -193,7 +193,6 @@ nnoremap <silent> <bar> :split<CR>
 nnoremap <silent> gO <C-w>=
 nnoremap <silent> <Space>o <C-w><C-w>
 " Kill, save or quit
-nnoremap <silent> <Space>a :bd!<CR>
 nnoremap <silent> <Space>w :update<CR>
 nnoremap <silent> dr :redraw!<CR>
 " Tabs
@@ -1109,6 +1108,7 @@ nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space><Space> :FzfBLines<CR>
 nnoremap <silent> <Space>/ :FzfHistory/<CR>
+nnoremap <silent> <Space>a :FzfWindows<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
