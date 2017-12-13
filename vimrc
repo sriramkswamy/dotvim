@@ -165,8 +165,6 @@ cnoremap <C-p> <Up>
 " same bindings for merging diffs as in normal mode
 vnoremap <C-d> :diffput<cr>
 vnoremap <C-e> :diffget<cr>
-" Some convenient maps to edit the current word under the cursor
-nnoremap c* *Ncgn
 
 " Change guifont
 command! Bigger  :let &guifont = substitute(&guifont, '\d\+$', '\=submatch(0)+1', '')
@@ -187,11 +185,8 @@ endif
 let maplocalleader="\\"
 
 " Window management
-nnoremap <silent> <Space>i <C-w>o
-nnoremap <silent> - :vsplit<CR>
-nnoremap <silent> <bar> :split<CR>
-nnoremap <silent> gO <C-w>=
-nnoremap <silent> <Space>o <C-w><C-w>
+nnoremap <silent> w <C-w>
+nnoremap <silent> ww <C-w><C-w>
 " Kill, save or quit
 nnoremap <silent> <Space>w :update<CR>
 nnoremap <silent> dr :redraw!<CR>
@@ -385,7 +380,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>t :30vsp <bar> Explore<CR>
+nnoremap <Space>t :Lexplore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
@@ -463,9 +458,12 @@ endif
 " Populating the location list
 nnoremap <silent> # :nohl<CR>
 nnoremap <silent> gh :nohl<CR>
-nnoremap <silent> g* *N:lvimgrep /<C-R>// %<CR>
 nnoremap <silent> g# :lvimgrep /<C-R>// %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
+nnoremap <silent> <Space>n *N:lvimgrep /<C-R>// %<CR>
+
+" basic renaming
+nnoremap <silent> - *Ncgn
 
 " Automatically disable search highlighting {{{2
 Plug 'junegunn/vim-slash'
@@ -480,6 +478,8 @@ let g:grepper = {
             \ 'next_tool': ']g'
             \ }
 nnoremap gss :Grepper -tool rg -noswitch<CR>:copen<CR>
+nnoremap ge :Grepper -tool ag -cword -noprompt<CR>:copen<CR>
+nnoremap gE :Grepper -tool ag -cWORD -noprompt<CR>:copen<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
@@ -703,8 +703,8 @@ nnoremap <silent> coa :call SetAutoCorrect()<CR>
 " Org like code block narrowing in markdown {{{3
 " also check out operator ge
 Plug 'AndrewRadev/inline_edit.vim'
-nnoremap ge :InlineEdit<CR>
-vnoremap ge :InlineEdit<CR>
+nnoremap <Space>i :InlineEdit<CR>
+vnoremap <Space>i :InlineEdit<CR>
 
 " Easy alignment plugin and auto-align {{{3
 Plug 'junegunn/vim-easy-align' , {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
@@ -722,8 +722,8 @@ nnoremap g: vip:EasyAlign :<CR>
 vnoremap g: vip:EasyAlign :<CR>
 nnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 vnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
-nnoremap gE :EasyAlign *//<Left>
-vnoremap gE :EasyAlign *//<Left>
+nnoremap <bar> :EasyAlign *//<Left>
+vnoremap <bar> :EasyAlign *//<Left>
 
 " Multiple cursors - because why not? {{{3
 Plug 'terryma/vim-multiple-cursors'
@@ -857,8 +857,6 @@ nmap [r <Plug>ExchangeArgPrev
 Plug 'bounceme/fairedit.vim'
 " any operator ex. g~$ , c$ , d$ etc
 omap $ <Plug>Fair_dollar
-
-" or with the one key variants ex. C,D,Y/y$
 nmap C <Plug>Fair_C
 nmap D <Plug>Fair_D
 if maparg('Y','n') ==# 'y$'
@@ -869,15 +867,6 @@ endif
 Plug 'kana/vim-operator-user'
 
 " Motions {{{2
-
-" Move by two characters instead of one {{{3
-Plug 'justinmk/vim-sneak'
-nmap w <Plug>Sneak_s
-nmap W <Plug>Sneak_S
-xmap w <Plug>Sneak_s
-xmap W <Plug>Sneak_S
-omap w <Plug>Sneak_s
-omap W <Plug>Sneak_S
 
 " Snippets {{{1
 " Snippet plugin and snippet collection {{{2
@@ -941,9 +930,9 @@ nnoremap so :source ~/.vim/session/
 nnoremap sd :Obsess!<CR>
 nnoremap sq :qall<CR>
 
-" Language helpers {{{1
+" Debugging {{{1
 
-" set the sign to be placed on the sign column for debuggingg {{{2
+" set the sign to be placed on the sign column for debugging {{{2
 function! SetBreakpoint()
     " set the breakpoint character and set the breakpoint
     exe ':sign define mybreakpoint text=◉'
@@ -951,6 +940,7 @@ function! SetBreakpoint()
     exe ":sign place" s:breakpointplaceline " line=" . s:breakpointplaceline . " name=mybreakpoint file=" . expand('%:p')
 endfunction
 
+" Set the breakpoint {{{2
 function! SetBreakIndicator()
     " set the breakpoint character and indicate the breakpoint
     exe ':sign define mybreakindicator text=➤'
@@ -959,6 +949,7 @@ function! SetBreakIndicator()
 endfunction
 nnoremap <> :call SetBreakIndicator()<CR>
 
+" Unset the breakpoint {{{2
 function! UnsetBreakpoint()
     " remove the breakpoint character
     let s:breakpointplaceline = line('.')
@@ -971,6 +962,7 @@ function! UnsetBreakpoint()
 endfunction
 nnoremap >< :call UnsetBreakpoint()<CR>
 
+" Remove all breakpoints {{{2
 function! RemoveAllBreakpoints()
     " remove all breakpoints
     exe ":sign unplace *"
@@ -980,6 +972,8 @@ function! RemoveAllBreakpoints()
         SignifyEnable
     endif
 endfunction
+
+" Language support {{{1
 
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
@@ -992,34 +986,6 @@ let g:vimtex_text_obj_enabled = 0
 let g:vimtex_imaps_enabled = 0
 let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
-
-" C/C++ {{{2
-" Omnicompletion
-Plug 'justmao945/vim-clang' , {'for': ['cpp', 'c']}
-let g:clang_compilation_database = './build'
-let g:clang_c_options = '-std=gnu11'
-let g:clang_cpp_options = '-std=c++11 -stdlib=libc++'
-let g:clang_diagsopt = ''   " disable diagnostics
-
-" Indexer (for cmake projects)
-Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
-autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
-let g:rtagsUseDefaultMappings = 0
-let g:rtagsUseLocationList = 0
-let g:rtagsMinCharsForCommandCompletion = 2
-
-" Python {{{2
-" Omnicompletion and some jumping
-Plug 'davidhalter/jedi-vim' , {'for': 'python'}
-autocmd filetype python setl omnifunc=jedi#completions
-let g:jedi#popup_on_dot = 0
-let g:jedi#goto_command = ""
-let g:jedi#goto_assignments_command = ""
-let g:jedi#goto_definitions_command = ""
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = ""
-let g:jedi#completions_command = ""
-let g:jedi#rename_command = ""
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
@@ -1044,134 +1010,38 @@ nmap mQ <Plug>RClose
 " CSV {{{3
 Plug 'chrisbra/csv.vim'
 
-" Syntax checking {{{2
-Plug 'benekastah/neomake'
+" Syntax checking {{{1
+Plug 'w0rp/ale'
 
-" evoke neomake for every save
-autocmd! BufWritePost * Neomake
-
-" neomake maker for matlab {{{3
-let g:neomake_matlab_mlint_maker = {
-            \ 'exe': '/Applications/MATLAB_R2016a.app/bin/maci64/mlint',
-            \ 'args': ['-id'],
-            \ 'errorformat':
-            \ '%EL %l (C %c): %*[a-zA-Z0-9]: %m,'.
-            \ '%WL %l (C %c-%*[0-9]): %*[a-zA-Z0-9]: %m,',
+" Language Server Protocol {{{1
+Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+let g:LanguageClient_serverCommands = {
+            \ 'r': ['R', '--quiet', '--slave', '-e', 'languageserver::run()'],
+            \ 'python': ['pyls'],
+            \ 'cpp': ['clangd']
             \ }
-let g:neomake_matlab_enabled_makers = ['mlint']
 
-" neomake maker for R {{{3
-let g:neomake_r_lintr_maker = {
-            \ 'exe': 'R',
-            \ 'args': ['--slave', '--no-restore', '--no-save',
-                     \ '-e', 'suppressPackageStartupMessages(library(lintr))',
-                     \ '-e', 'lint(cache = FALSE, commandArgs(TRUE), default_linters)',
-                     \ '--args'],
-            \ 'errorformat':
-            \ '%I%f:%l:%c: style: %m,' .
-            \ '%W%f:%l:%c: warning: %m,' .
-            \ '%E%f:%l:%c: error: %m,',
-            \ }
-let g:neomake_r_enabled_makers = ['lintr']
+" start lsp when in c or cpp files {{{2
+augroup lsp_cpp
+    autocmd!
+    autocmd FileType c,cpp LanguageClientStart
+    autocmd FileType c,cpp setlocal completefunc=LanguageClient#complete()
+augroup end
 
-" FZF {{{1
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-let g:fzf_command_prefix='Fzf'
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
-" Actions
-let g:fzf_action = {
-            \ 'ctrl-t': 'tab split',
-            \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit',
-            \ 'ctrl-o': '!open'}
+" start lsp when in python files {{{2
+augroup lsp_py
+    autocmd!
+    autocmd FileType python LanguageClientStart
+    autocmd FileType python setlocal completefunc=LanguageClient#complete()
+augroup end
 
-" Ripgrep instead of Ag
-command! -bang -nargs=* FzfRg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
+" start lsp when in c or cpp files {{{2
+augroup lsp_r
+    autocmd!
+    autocmd FileType r LanguageClientStart
+augroup end
 
-nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfRg <C-R><C-W><CR>
-nnoremap <silent> T :FzfTags<CR>
-nnoremap <silent> <C-]> :FzfTags <C-R><C-W><CR>
-nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
-nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
-vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
-nnoremap <silent> sc :FzfSnippets<CR>
-nnoremap <silent> cot :FzfFiletypes<CR>
-nnoremap <silent> <Space>` :FzfMarks<CR>
-nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space><Space> :FzfBLines<CR>
-nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>a :FzfWindows<CR>
-nnoremap <silent> <Space>d :FzfGFiles<CR>
-nnoremap <silent> <Space>f :FzfFiles<CR>
-nnoremap <silent> <Space>r :FzfHistory<CR>
-nnoremap <silent> <Space>k :FzfBuffers<CR>
-nnoremap <silent> <Space>h :FzfHelptags<CR>
-nnoremap <silent> <Space>p :FzfRg<CR>
-nnoremap <silent> <Space>j :FzfCommands<CR>
-vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
-nnoremap <silent> <Space>: :FzfHistory:<CR>
-vnoremap <silent> <Space>: :FzfHistory:<CR>
-nmap <Space>, <Plug>(fzf-maps-n)
-xmap <Space>, <Plug>(fzf-maps-x)
-omap <Space>, <Plug>(fzf-maps-o)
-imap <silent> <C-d> <Plug>(fzf-complete-word)
-imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
-" PhD related stuff
-nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
-
-" Search using spotlight {{{2
-command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
-            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
-            \ 'options' : '-m --prompt "Spotlight> "'
-            \ }))
-nnoremap <Space>s :FzfSpotlight<Space>
-
-" Search bib using spotlight {{{2
-command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
-            \ 'source'  : 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
-            \ 'options' : '-m --prompt "Bib> "'
-            \ }))
-nnoremap <Space>b :FzfBib<Space>
-
-" A la Notational Velocity {{{2
-Plug 'Alok/notational-fzf-vim', {'on': 'NV'}
-let g:nv_directories = [ '~/Dropbox/Paper' ]
-let g:nv_default_extension = '.md'
-nnoremap <Space>n :NV<CR>
-
-" Get back 't' and 'T' maps which keeps getting stolen {{{2
-function GetBackTMaps()
-    exec "nnoremap t :FzfBTags<CR>"
-    exec "nnoremap T :FzfTags<CR>"
-endfunction
-nnoremap <silent> coo :call GetBackTMaps()<CR>
-
-" Autocompletion {{{1
-
-" vim-omnicomplete activation {{{2
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd filetype vim set omnifunc=syntaxcomplete#Complete
-autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
-autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
-" Close after auto completion
-autocmd CompleteDone * pclose
-
-" Maps for navigating autocompletion {{{2
-" <C-j> and <C-k> for autocompletion navigation in insert mode
-inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
-
-" Aggregate completions {{{2
+" Auto completion {{{1
 Plug 'maralla/completor.vim'
 let g:completor_auto_trigger = 1
 let g:completor_blacklist = ['qf', 'netrw']
@@ -1241,21 +1111,112 @@ endfunction
 
 inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
 
+" FZF {{{1
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix='Fzf'
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+" Actions
+let g:fzf_action = {
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit',
+            \ 'ctrl-o': '!open'}
+
+" Ripgrep instead of Ag
+command! -bang -nargs=* FzfRg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> J :FzfRg <C-R><C-W><CR>
+nnoremap <silent> T :FzfTags<CR>
+nnoremap <silent> <C-]> :FzfTags <C-R><C-W><CR>
+nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
+nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
+vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
+nnoremap <silent> sc :FzfSnippets<CR>
+nnoremap <silent> cot :FzfFiletypes<CR>
+nnoremap <silent> <Space>` :FzfMarks<CR>
+nnoremap <silent> <Space>. :FzfColors<CR>
+nnoremap <silent> <Space><Space> :FzfBLines<CR>
+nnoremap <silent> <Space>/ :FzfHistory/<CR>
+nnoremap <silent> <Space>a :FzfWindows<CR>
+nnoremap <silent> <Space>d :FzfGFiles<CR>
+nnoremap <silent> <Space>f :FzfFiles<CR>
+nnoremap <silent> <Space>r :FzfHistory<CR>
+nnoremap <silent> <Space>k :FzfBuffers<CR>
+nnoremap <silent> <Space>h :FzfHelptags<CR>
+nnoremap <silent> <Space>p :FzfRg<CR>
+nnoremap <silent> <Space>j :FzfCommands<CR>
+vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
+nnoremap <silent> <Space>: :FzfHistory:<CR>
+vnoremap <silent> <Space>: :FzfHistory:<CR>
+nmap <Space>, <Plug>(fzf-maps-n)
+xmap <Space>, <Plug>(fzf-maps-x)
+omap <Space>, <Plug>(fzf-maps-o)
+imap <silent> <C-d> <Plug>(fzf-complete-word)
+imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
+" PhD related stuff
+nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
+
+" Search using spotlight {{{2
+command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
+            \ 'source'  : 'mdfind -onlyin ~ <q-args>',
+            \ 'options' : '-m --prompt "Spotlight> "'
+            \ }))
+nnoremap <Space>s :FzfSpotlight<Space>
+
+" Search bib using spotlight {{{2
+command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
+            \ 'source'  : 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
+            \ 'options' : '-m --prompt "Bib> "'
+            \ }))
+nnoremap <Space>b :FzfBib<Space>
+
+" Get back 't' and 'T' maps which keeps getting stolen {{{2
+function GetBackTMaps()
+    exec "nnoremap t :FzfBTags<CR>"
+    exec "nnoremap T :FzfTags<CR>"
+endfunction
+nnoremap <silent> coo :call GetBackTMaps()<CR>
+
+" omnifunc {{{1
+
+" vim-omnicomplete activation {{{2
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd filetype html,markdown,ctp set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd filetype vim set omnifunc=syntaxcomplete#Complete
+autocmd filetype xml set omnifunc=xmlcomplete#CompleteTags
+autocmd filetype cpp set omnifunc=ccomplete#CompleteTags
+" Close after auto completion
+autocmd CompleteDone * pclose
+
+" Maps for navigating autocompletion {{{2
+" <C-j> and <C-k> for autocompletion navigation in insert mode
+inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
+
 " REPL and Tmux {{{1
 
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
-" terminal
-nnoremap g\ <C-z>
-nnoremap g{ :!googler <cWORD><Space>
-nnoremap g} :!googler <cWORD><CR>
-vnoremap <silent> g{ "my:!googler <C-R>m<Space>
-vnoremap <silent> g} "my:!googler <C-R>m<CR>
+" terminal maps
+nnoremap g\ :vsplit <bar> terminal<CR>
+nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
+nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
+vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
+vnoremap g} "my:vsp <bar> terminal googler <C-R>m<CR>
 
 " tig client open
-nnoremap <Space>e :!tig<CR>
+nnoremap <Space>e :vsp <bar> terminal tig<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')

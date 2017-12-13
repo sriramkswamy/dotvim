@@ -443,8 +443,8 @@ let g:grepper = {
             \ 'next_tool': ']g'
             \ }
 nnoremap gss :Grepper -tool rg -noswitch<CR>:copen<CR>
-nnoremap ge :Grepper -tool ag -cword -noprompt<CR>
-nnoremap gE :Grepper -tool ag -cWORD -noprompt<CR>
+nnoremap ge :Grepper -tool ag -cword -noprompt<CR>:copen<CR>
+nnoremap gE :Grepper -tool ag -cWORD -noprompt<CR>:copen<CR>
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
@@ -678,6 +678,16 @@ nnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 vnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 nnoremap <bar> :EasyAlign *//<Left>
 vnoremap <bar> :EasyAlign *//<Left>
+
+" Multiple cursors - because why not? {{{3
+Plug 'terryma/vim-multiple-cursors'
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-j>'
+let g:multi_cursor_prev_key='<C-k>'
+let g:multi_cursor_skip_key='<C-l>'
+let g:multi_cursor_quit_key='<C-g>'
+nnoremap <C-n> :MultipleCursorsFind<Space>
+vnoremap <C-n> :MultipleCursorsFind<Space>
 
 " Text objects, operators and motions {{{1
 
@@ -981,11 +991,13 @@ augroup end
 augroup lsp_r
     autocmd!
     autocmd FileType r LanguageClientStart
-    autocmd FileType r setlocal completefunc=LanguageClient#complete()
 augroup end
 
 " Auto completion {{{1
 Plug 'roxma/nvim-completion-manager'
+
+" C/C++ completion {{{2
+Plug 'roxma/ncm-clang'
 
 " R completion {{{2
 Plug 'gaalcaras/ncm-R'
@@ -1066,7 +1078,7 @@ function GetBackTMaps()
 endfunction
 nnoremap <silent> coo :call GetBackTMaps()<CR>
 
-" Autocompletion {{{1
+" omnifunc {{{1
 
 " vim-omnicomplete activation {{{2
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS

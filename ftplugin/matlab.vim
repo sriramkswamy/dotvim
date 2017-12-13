@@ -42,6 +42,8 @@ nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all; db
 nnoremap <buffer> mgv :sign list mybreakpoint<CR>
 
 " variable viewing
+" open in GUI
+nnoremap <buffer> mk :let @m = "edit " . expand('<cword>')<CR>:TxSend(@m)<CR>
 " show the GUI workspace
 nnoremap <buffer> mb :let @m = "workspace"<CR>:TxSend(@m)<CR>
 " open the current variable in the GUI variable viewer
