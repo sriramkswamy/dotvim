@@ -1,16 +1,31 @@
 " lsp support
-" goto references
-nnoremap <buffer> ma :call LanguageClient_textDocument_references()<CR>
-" document symbols
-nnoremap <buffer> md :call LanguageClient_textDocument_documentSymbol()<CR>
-" rename
-nnoremap <buffer> mn :call LanguageClient_textDocument_rename()<CR>
-" workspace symbols
-nnoremap <buffer> mv :call LanguageClient_workspace_symbol()<CR>
-" jump
-nnoremap <buffer> J :call LanguageClient_textDocument_definition()<CR>
-" information
-nnoremap <buffer> K :call LanguageClient_textDocument_hover()<CR>
+if has('nvim')
+    " goto references
+    nnoremap <buffer> ma :call LanguageClient_textDocument_references()<CR>
+    " document symbols
+    nnoremap <buffer> md :call LanguageClient_textDocument_documentSymbol()<CR>
+    " rename
+    nnoremap <buffer> mn :call LanguageClient_textDocument_rename()<CR>
+    " workspace symbols
+    nnoremap <buffer> mv :call LanguageClient_workspace_symbol()<CR>
+    " jump
+    nnoremap <buffer> J :call LanguageClient_textDocument_definition()<CR>
+    " information
+    nnoremap <buffer> K :call LanguageClient_textDocument_hover()<CR>
+else
+    " goto references
+    nnoremap <buffer> ma :LspReferences<CR>
+    " document symbols
+    nnoremap <buffer> md :LspDocumentSymbol<CR>
+    " rename
+    nnoremap <buffer> mn :LspRename<CR>
+    " workspace symbols
+    nnoremap <buffer> mv :LspWorkspaceSymbol<CR>
+    " jump
+    nnoremap <buffer> J :LspDefinition<CR>
+    " information
+    nnoremap <buffer> K :LspHover<CR>
+end
 
 " make
 nnoremap <buffer> mm :AsyncRun make<CR>:copen<CR>

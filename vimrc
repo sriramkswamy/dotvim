@@ -327,7 +327,7 @@ function! RangerChooser()
     endif
     redraw!
 endfunction
-nnoremap <Space>m :call RangerChooser()<CR>
+nnoremap <Space>v :call RangerChooser()<CR>
 
 " Filter from quickfix list - someone's vimrc {{{3
 function! GrepQuickFix(pat)
@@ -415,7 +415,7 @@ function! s:QListToggle()
     endif
 endfunction
 command!  QToggle call s:QListToggle()
-nnoremap <silent> <Space>v :QToggle<CR>
+nnoremap <silent> <Space>m :QToggle<CR>
 
 " Plugins {{{2
 
@@ -1014,31 +1014,33 @@ Plug 'chrisbra/csv.vim'
 Plug 'w0rp/ale'
 
 " Language Server Protocol {{{1
-Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-let g:LanguageClient_serverCommands = {
-            \ 'r': ['R', '--quiet', '--slave', '-e', 'languageserver::run()'],
-            \ 'python': ['pyls'],
-            \ 'cpp': ['clangd']
-            \ }
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
 
 " start lsp when in c or cpp files {{{2
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd']},
+        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+        \ })
+endif
 augroup lsp_cpp
     autocmd!
-    autocmd FileType c,cpp LanguageClientStart
-    autocmd FileType c,cpp setlocal completefunc=LanguageClient#complete()
+    autocmd FileType c,cpp setlocal completefunc=lsp#complete()
 augroup end
 
 " start lsp when in python files {{{2
+if executable('pyls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+endif
 augroup lsp_py
     autocmd!
-    autocmd FileType python LanguageClientStart
-    autocmd FileType python setlocal completefunc=LanguageClient#complete()
-augroup end
-
-" start lsp when in c or cpp files {{{2
-augroup lsp_r
-    autocmd!
-    autocmd FileType r LanguageClientStart
+    autocmd FileType python setlocal completefunc=lsp#complete()
 augroup end
 
 " FZF {{{1
@@ -1133,74 +1135,18 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
-Plug 'maralla/completor.vim'
-let g:completor_auto_trigger = 1
-let g:completor_blacklist = ['qf', 'netrw']
-let g:completor_java_omni_trigger = '\w+$|[\w\)\]]+\.\w*$'
-let g:completor_r_omni_trigger = '(?\$\w*|\.\w*)$'
-let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
-let g:completor_php_omni_trigger = '([$\w]+|use\s*|->[$\w]*|::[$\w]*'
-            \ . '|implements\s*|extends\s*|class\s+[$\w]+|new\s*)$'
-let g:completor_tex_omni_trigger = '\\\\(:?'
-            \ . '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
-            \ . '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
-            \ . '|hyperref\s*\[[^]]*'
-            \ . '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-            \ . '|(?:include(?:only)?|input)\s*\{[^}]*'
-            \ . '|\w*(gls|Gls|GLS)(pl)?\w*(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-            \ . '|includepdf(\s*\[[^]]*\])?\s*\{[^}]*'
-            \ . '|includestandalone(\s*\[[^]]*\])?\s*\{[^}]*'
-            \ .')$'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+let g:lsp_async_completion = 1
 
-" FZF Completion function {{{3
-" Thanks to https://nondev.io/Fuzzy-completion-in-Vim
-function! FzfCompletefunc(findstart, base) abort
-    let Func = function(get(g:, 'FzfCompletefunc', &omnifunc))
-    let results = Func(a:findstart, a:base)
+" buffer completion {{{2
+Plug 'prabirshrestha/asyncomplete-buffer.vim'
 
-    if a:findstart
-        return results
-    endif
+" omni completion {{{2
+Plug 'yami-beta/asyncomplete-omni.vim'
 
-    let words = type(results) == type({}) && has_key(results, 'words')
-                \ ? len(results.words) && type(results.words[0]) == type({})
-                \ ? map(results.words, 'v:val.word . "\t" . v:val.menu')
-                \ : results.words
-                \ : results
-
-    let results = len(words) > 1
-                \ ? fzf#run({
-                \ 'source': words,
-                \ 'down': '~40%',
-                \ 'options': printf('--query "%s" +s -m', a:base)
-                \ })
-                \ : words
-
-    if exists('*UltiSnips#ExpandSnippet')
-                \ && len(results) == 1
-                \ && len(results[0]) > 1
-        let resultsplit = split(results[0], "\t")
-
-        if len(resultsplit) > 1 && resultsplit[1] =~? '\[snip\]'
-            call feedkeys("\<c-r>=UltiSnips#ExpandSnippet()\<cr>", 'n')
-        endif
-    endif
-
-    return map(results, 'split(v:val, "\t")[0]')
-endfunction
-
-function! FzfComplete(...) abort
-    if len(a:000) && a:000[0] && getline('.')[col('.') - 1] !~# '\S'
-        call feedkeys("\<tab>", 'n')
-        return
-    endif
-
-    setlocal completefunc=FzfCompletefunc
-    setlocal completeopt=menu
-    call feedkeys("\<c-x>\<c-u>", 'n')
-endfunction
-
-inoremap <silent> <C-c> <c-o>:call FzfComplete()<cr>
+" snippets {{{2
+Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
 
 " REPL and Tmux {{{1
 
@@ -1263,12 +1209,6 @@ nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
 nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
-
-" start rtags when in c or cpp files
-augroup rtags_cpp
-    autocmd!
-    autocmd FileType c,cpp AsyncRun rdm & <bar> copen
-augroup end
 
 " Tmux integration {{{3
 Plug 'jebaum/vim-tmuxify'
@@ -1442,6 +1382,33 @@ function! OperatorTmuxifySend(motion_wise)
     execute 'normal!' '`[' . v . '`]"my'
     TxSend(@m)
 endfunction
+
+" auto completion - asyncomplete {{{1
+
+" buffer completion {{{2
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+            \ 'name': 'buffer',
+            \ 'whitelist': ['*'],
+            \ 'blacklist': ['go'],
+            \ 'completor': function('asyncomplete#sources#buffer#completor'),
+            \ }))
+
+" omni completion {{{2
+call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+            \ 'name': 'omni',
+            \ 'whitelist': ['*'],
+            \ 'blacklist': ['html'],
+            \ 'completor': function('asyncomplete#sources#omni#completor')
+            \  }))
+
+" snippets {{{2
+if has('python3')
+    call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+                \ 'name': 'ultisnips',
+                \ 'whitelist': ['*'],
+                \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+                \ }))
+endif
 
 " Setup plugins, indents and syntax {{{1
 filetype plugin indent on
