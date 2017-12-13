@@ -1494,7 +1494,6 @@ set statusline+=%l      "cursor line/total lines
 set statusline+=\ %P    "percent through file
 set laststatus=2
 set statusline+=\ %{ObsessionStatus()} " vim session status
-set statusline+=\ %#ErrorMsg#%{neomake#statusline#LoclistStatus('Fix:\ ')}
 
 "return '[\s]' if trailing white space is detected
 "return '' otherwise
