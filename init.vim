@@ -955,8 +955,6 @@ Plug 'chrisbra/csv.vim'
 
 " Syntax checking {{{1
 Plug 'w0rp/ale'
-let g:ale_set_quickfix = 1
-let g:ale_set_loclist = 0
 
 " Language Server Protocol {{{1
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
