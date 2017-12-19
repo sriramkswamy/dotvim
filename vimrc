@@ -464,7 +464,7 @@ endif
 
 " convenient function to use in maps/operators
 function! LGrepper(pat)
-    execute 'silent lgrep ' . a:pat
+    execute 'silent lgrep! ' . a:pat
 endfunction
 command! -nargs=* Grepper call LGrepper(<q-args>)
 nnoremap gss :Grepper<Space>
