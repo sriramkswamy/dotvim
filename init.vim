@@ -426,6 +426,15 @@ else
     set grepprg=grep\ -nH\ $*
 endif
 
+" convenient function to use in maps/operators
+function! LGrepper(pat)
+    execute 'silent lgrep! ' . a:pat
+endfunction
+command! -nargs=* Grepper call LGrepper(<q-args>)
+nnoremap gss :Grepper<Space>
+nnoremap ge :Grepper '<cword>'<CR>
+nnoremap gE :Grepper '<cWORD>'<CR>
+
 " Maps without leader {{{2
 " Populating the location list
 nnoremap <silent> # :nohl<CR>
@@ -443,21 +452,6 @@ nnoremap <silent> - *Ncgn
 
 " Automatically disable search highlighting {{{2
 Plug 'junegunn/vim-slash'
-
-" Vim grepper plugin {{{2
-Plug 'mhinz/vim-grepper', {'on': ['Grepper', '<Plug>(GrepperOperator)']}
-" Mimic :grep and make ag the default tool.
-let g:grepper = {
-            \ 'tools': [ 'rg', 'ag', 'pt', 'ack', 'git', 'grep'],
-            \ 'open':  0,
-            \ 'jump':  0,
-            \ 'next_tool': ']g'
-            \ }
-nnoremap gss :Grepper -tool rg -noswitch<CR>:copen<CR>
-nnoremap ge :Grepper -tool ag -cword -noprompt<CR>:copen<CR>
-nnoremap gE :Grepper -tool ag -cWORD -noprompt<CR>:copen<CR>
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
 
 " Note taking {{{1
 
@@ -994,6 +988,8 @@ Plug 'chrisbra/csv.vim'
 
 " Syntax checking {{{1
 Plug 'w0rp/ale'
+let g:ale_set_quickfix = 1
+let g:ale_set_loclist = 0
 let g:ale_lint_on_text_changed = 'never'
 " Opening witht he default program
 if has('macunix')
@@ -1343,6 +1339,15 @@ function! OperatorTmuxSend(motion_wise)
     Twrite
 endfunction
 nnoremap mss V:Twrite<CR>
+
+" create an operator to grep things {{{1
+map gs <Plug>(operator-grepper)
+call operator#user#define('grepper', 'OperatorGrepper')
+function! OperatorGrepper(motion_wise)
+    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
+    execute 'normal!' '`[' . v . '`]"my'
+    call LGrepper(@m)
+endfunction
 
 " Setup plugins, indents and syntax {{{1
 filetype plugin indent on
