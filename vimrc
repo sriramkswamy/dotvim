@@ -1182,18 +1182,19 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
-" terminal - Go to normal mode
+" terminal - Go to normal mode and delete previous word
 tnoremap <C-g> <C-\><C-n>
+tnoremap <C-w> <C-\><C-n>ciw
 
 " terminal maps
-nnoremap g\ :vsplit <bar> terminal<CR>
-nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
-nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
-vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
-vnoremap g} "my:vsp <bar> terminal googler <C-R>m<CR>
+nnoremap g\ :terminal<CR>
+nnoremap g{ :terminal googler <cWORD><Space>
+nnoremap g} :terminal googler <cWORD><CR>
+vnoremap g{ "my:terminal googler <C-R>m<Space>
+vnoremap g} "my:terminal googler <C-R>m<CR>
 
 " tig client open
-nnoremap <Space>e :vsp <bar> terminal tig<CR>
+nnoremap <Space>e :terminal tig<CR>
 
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
