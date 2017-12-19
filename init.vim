@@ -675,16 +675,16 @@ vnoremap <Space>i :InlineEdit<CR>
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 nmap gl <Plug>(EasyAlign)
 xmap gl <Plug>(EasyAlign)
-nnoremap g<Space> vii:EasyAlign \<CR>
-vnoremap g<Space> vii:EasyAlign \<CR>
-nnoremap g= vii:EasyAlign =<CR>
-vnoremap g= vii:EasyAlign =<CR>
-nnoremap g& vie:EasyAlign &<CR>
-vnoremap g& vie:EasyAlign &<CR>
-nnoremap g<Bar> vip:EasyAlign <bar><CR>
-vnoremap g<Bar> vip:EasyAlign <bar><CR>
-nnoremap g: vii:EasyAlign :<CR>
-vnoremap g: vii:EasyAlign :<CR>
+nnoremap g<Space> vii:EasyAlign *\<CR>
+vnoremap g<Space> vii:EasyAlign *\<CR>
+nnoremap g= vii:EasyAlign *=<CR>
+vnoremap g= vii:EasyAlign *=<CR>
+nnoremap g& vie:EasyAlign *&<CR>
+vnoremap g& vie:EasyAlign *&<CR>
+nnoremap g<Bar> vip:EasyAlign *<bar><CR>
+vnoremap g<Bar> vip:EasyAlign *<bar><CR>
+nnoremap g: vii:EasyAlign *:<CR>
+vnoremap g: vii:EasyAlign *:<CR>
 nnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 vnoremap g<Tab> vip:EasyAlign */\s\+%/<CR>
 nnoremap <bar> :EasyAlign *//<Left>
