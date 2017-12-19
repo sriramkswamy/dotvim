@@ -1124,6 +1124,84 @@ endsnippet
 
 snippet thm "theorem"
 \begin{${1:theorem}}
-$0
+	$0
 \end{$1}
+endsnippet
+
+snippet sl "beamer slide" b
+\begin{frame}{${1:title}}
+	$0
+\label{fr:$2}
+\end{frame}
+endsnippet
+
+snippet pau "pause for visual effects"
+\pause
+$0
+endsnippet
+
+snippet blk "block for slides"
+\begin{${1:alert}block}${3:<$4>}{$2}
+
+	$0
+
+\end{$1block}
+endsnippet
+
+snippet col "extra column"
+\column{${1:0.5}\\textwidth}
+	$0
+endsnippet
+
+snippet gotob "goto button"
+\beamergotobutton{${1:description}}$0
+endsnippet
+
+snippet skipb "skip button"
+\beamerskipbutton{${1:description}}$0
+endsnippet
+
+snippet retb "return button"
+\beamerreturnbutton{${1:description}}$0
+endsnippet
+
+snippet ons "appear on said slides"
+\onslide<$1>{${0:text}}
+endsnippet
+
+snippet unc "uncover for visual effects"
+\uncover{${1:0.5}}$0
+endsnippet
+
+snippet inv "make subsequent stuff transparent"
+\setbeamercovered{transparent}
+$0
+endsnippet
+
+snippet vis "make subsequent stuff visible"
+\setbeamercovered{invisible}
+$0
+endsnippet
+
+snippet only "make subsequent stuff visible"
+\only<${1:slide}>{${0:text}
+endsnippet
+
+snippet ov "overlay for visual effects"
+<${1:slide number}>$0
+endsnippet
+
+snippet cols "column mode"
+\begin{columns}
+
+	\column{${1:0.5}\textwidth},
+		$0,
+
+\end{columns}
+endsnippet
+
+snippet no "notes environment"
+\note{
+	$0
+}
 endsnippet

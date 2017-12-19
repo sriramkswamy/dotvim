@@ -1,3 +1,4 @@
+.ropeproject/*
 autoload/**
 eclim/**
 plugged/**
