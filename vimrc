@@ -1182,10 +1182,8 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
 
-" terminal - Go to normal mode and delete previous word
+" terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
-" zsh vi mode dependent - native way of doing this?
-tnoremap <C-w> <Esc>ciw
 
 " terminal maps
 nnoremap g\ :terminal<CR>
