@@ -53,43 +53,44 @@ nmap <buffer> mC <Plug>RClearAll
 
 " debug helpers
 " set breakpoint at the current line
-nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Obrowser()<CR>j
+nnoremap <buffer> mds :call SetBreakpoint()<CR>:normal! Obrowser()<CR>j
 " unset breakpoint at the current line
-nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
+nnoremap <buffer> mdu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
 " step next
-nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdn :let @m = "n"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " step in
-nnoremap <buffer> mgi :let @m = "s"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdi :let @m = "s"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " step out
-nnoremap <buffer> mgo :let @m = "f"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdo :let @m = "f"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " continue until next breakpoint or end of program
-nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdc :let @m = "c"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " unset breakpoint at the current line
-nnoremap <buffer> mga :call UnsetBreakpoint()<CR>:let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mda :call UnsetBreakpoint()<CR>:let @m = "undebug(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " delete all breakpoints
-nnoremap <buffer> mgd :call SetBreakpoint()<CR>:let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdd :call SetBreakpoint()<CR>:let @m = "debug(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " rerun with debug
-nnoremap <buffer> mgr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
-nnoremap <buffer> mgk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdr :let @m = "options(error = browser)"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
+nnoremap <buffer> mdk :let @m = "options(error = NULL)"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " get the traceback
-nnoremap <buffer> mgw :let @m = "where"<CR>:TxSend(@m)<CR>
-nnoremap <buffer> mgt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdw :let @m = "where"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
+nnoremap <buffer> mdt :let @m = "traceback()"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " quit debugging mode
-nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
+
 " quit r
-nnoremap <buffer> mk :let @m = "q()"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mq :let @m = "q()"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " metadata on variables
 " size of the variable at point
-nnoremap <buffer> mz :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mz :let @m = "dim(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " length of the variable at point
-nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " mean of the variable at point
-nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " get the type of the object
-nnoremap <buffer> mw :let @m = "typeof(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mw :let @m = "typeof(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " get the type of the object (from space to space)
-nnoremap <buffer> mW :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mW :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " sum of the variable at point
-nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " cumulative sum of the variable at point
-nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:Tmux send-keys '<C-r>m' C-m<CR>

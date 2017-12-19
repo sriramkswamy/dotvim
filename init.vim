@@ -147,6 +147,8 @@ vnoremap <C-y> "*y
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-b> <Left>
+cnoremap <C-d> <C-f>
+cnoremap <C-f> <Right>
 cnoremap <C-n> <Down>
 cnoremap <C-p> <Up>
 " same bindings for merging diffs as in normal mode
@@ -166,14 +168,18 @@ let maplocalleader="\\"
 " Window management
 nnoremap <silent> w <C-w>
 nnoremap <silent> ww <C-w><C-w>
-" Kill, save or quit
+
+" Save and redraw
 nnoremap <silent> <Space>w :update<CR>
 nnoremap <silent> dr :redraw!<CR>
+
 " Tabs
 nnoremap <Space><Tab> gt
 nnoremap <Space><BS> gT
 nnoremap gt :tabe<CR>
 nnoremap gT :tabc<CR>
+
+" Opening with the default program
 if has('macunix')
     " Open in default program
     nnoremap gF :!open <cfile><CR>
@@ -189,6 +195,7 @@ elseif has('unix')
     " Open in Browser
     nnoremap gB :!xdg-open %<CR>
 endif
+
 " Markdown folding
 let g:markdown_fold_style = 'nested'
 
@@ -426,6 +433,10 @@ nnoremap <silent> gh :nohl<CR>
 nnoremap <silent> g# :lvimgrep /<C-R>// %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
 nnoremap <silent> <Space>n *N:lvimgrep /<C-R>// %<CR>
+
+" substitution
+nnoremap <Space>y :<C-u>%s///g<Left><Left><Left>
+vnoremap <Space>y :s///g<Left><Left><Left>
 
 " basic renaming
 nnoremap <silent> - *Ncgn
@@ -930,6 +941,25 @@ endfunction
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 
+" Indexer (for cmake projects)
+Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c'], 'branch': 'py_2_and_3'}
+autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
+let g:rtagsUseDefaultMappings = 0
+let g:rtagsUseLocationList = 0
+let g:rtagsMinCharsForCommandCompletion = 2
+
+" Python {{{2
+Plug 'davidhalter/jedi-vim' , {'for': 'python'}
+autocmd filetype python setl omnifunc=jedi#completions
+let g:jedi#popup_on_dot = 0
+let g:jedi#goto_command = ""
+let g:jedi#goto_assignments_command = ""
+let g:jedi#goto_definitions_command = ""
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = ""
+let g:jedi#completions_command = ""
+let g:jedi#rename_command = ""
+
 " LaTeX {{{2
 Plug 'lervag/vimtex'
 let g:vimtex_fold_enabled = 1
@@ -964,34 +994,45 @@ Plug 'chrisbra/csv.vim'
 
 " Syntax checking {{{1
 Plug 'w0rp/ale'
+let g:ale_lint_on_text_changed = 'never'
+" Opening witht he default program
+if has('macunix')
+    let g:ale_linters = {
+    \   'cpp': ['clang', 'clangcheck', 'cppcheck', 'cpplint'],
+    \   'c': ['clang', 'cppcheck'],
+    \}
+elseif has('unix')
+    let g:ale_linters = {
+    \   'cpp': ['gcc', 'cppcheck', 'cpplint'],
+    \   'c': ['gcc', 'cppcheck'],
+    \}
+endif
 
-" Language Server Protocol {{{1
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
-let g:LanguageClient_serverCommands = {
-            \ 'r': ['R', '--quiet', '--slave', '-e', 'languageserver::run()'],
-            \ 'python': ['pyls'],
-            \ 'cpp': ['clangd']
-            \ }
-
-" start lsp when in c or cpp files {{{2
-augroup lsp_cpp
-    autocmd!
-    autocmd FileType c,cpp LanguageClientStart
-    autocmd FileType c,cpp setlocal completefunc=LanguageClient#complete()
-augroup end
-
-" start lsp when in python files {{{2
-augroup lsp_py
-    autocmd!
-    autocmd FileType python LanguageClientStart
-    autocmd FileType python setlocal completefunc=LanguageClient#complete()
-augroup end
-
-" start lsp when in c or cpp files {{{2
-augroup lsp_r
-    autocmd!
-    autocmd FileType r LanguageClientStart
-augroup end
+" debugging - trial {{{1
+Plug 'Shougo/vimproc.vim', {'do' : 'make'} | Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+command! -nargs=+ -complete=file VBGstartLLDB call vebugger#lldb#start([<f-args>][0],{'args':[<f-args>][1:]})
+command! -nargs=1 -complete=file VBGattachLLDB call vebugger#lldb#searchAndAttach(<q-args>)
+nnoremap <Space>hd :VBGstart
+nnoremap <Space>hj :VBGstepOver<CR>
+nnoremap <Space>hk :VBGstepOut<CR>
+nnoremap <Space>hl :VBGstepIn<CR>
+nnoremap <Space>hc :VBGcontinue<CR>
+nnoremap <Space>hs :VBGtoggleBreakpointThisLine<CR>
+nnoremap <Space>hS :VBGtoggleBreakpoint<Space>
+nnoremap <Space>ha :VBGclearBreakpoints<CR>
+nnoremap <Space>he V:VBGevalSelectedText<CR>
+vnoremap <Space>he :VBGevalSelectedText<CR>
+nnoremap <Space>hE :VBGeval<Space>
+nnoremap <Space>hw :VBGevalWordUnderCursor<CR>
+nnoremap <Space>hW viW:VBGevalSelectedText<CR>
+nnoremap <Space>hx V:VBGexecuteSelectedText<CR>
+vnoremap <Space>hx :VBGexecuteSelectedText<CR>
+nnoremap <Space>hX :VBGexecute<Space>
+nnoremap <Space>hq :VBGkill<CR>
+nnoremap <Space>hf :VBGtoggleTerminalBuffer<CR>
+nnoremap <Space>hr V:VBGrawWriteSelectedText<CR>
+vnoremap <Space>hr :VBGrawWriteSelectedText<CR>
+nnoremap <Space>hR :VBGrawWrite<Space>
 
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -1032,7 +1073,7 @@ nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>k :FzfBuffers<CR>
-nnoremap <silent> <Space>h :FzfHelptags<CR>
+nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfRg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
@@ -1140,7 +1181,7 @@ nnoremap sU :SudoWrite<CR>
 " run asynchronous commands {{{3
 Plug 'skywind3000/asyncrun.vim'
 nnoremap <Space>u :AsyncRun<Space>
-nnoremap <Space>x :AsyncStop!<CR>:copen<CR>
+nnoremap <Space>v :AsyncStop!<CR>:copen<CR>
 
 " make
 nnoremap sm :AsyncRun make<CR>:copen<CR>
@@ -1157,51 +1198,23 @@ nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 " ctags
 nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 
-" Tmux integration {{{3
-Plug 'jebaum/vim-tmuxify'
-let g:tmuxify_map_prefix = ''
-let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
-let g:tmuxify_run = {
-            \ 'sh': 'bash %',
-            \ 'go': 'go build %',
-            \ 'tex': 'latexmk -pdf -pvc %',
-            \ 'python': 'ipython',
-            \ 'R': 'R --no-save --quiet',
-            \ 'matlab': 'matlab',
-            \ 'julia': 'julia',
-            \ 'scheme': 'racket',
-            \ 'racket': 'racket',
-            \ 'sml': 'sml',
-            \}
+" rdm
+nnoremap dc :AsyncRun rdm &<CR>
 
-" Mappings for any tmux session {{{4
-" put me in an easy editing modes
-nnoremap m/ :TxSend<CR><C-F>
-nnoremap m. :TxSend<CR><C-P>
-" pane changes
-nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
-nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
-nnoremap m13 :TxSetPane 0:1.3<Left><Left><Left><Left>
-nnoremap m14 :TxSetPane 0:1.4<Left><Left><Left><Left>
-nnoremap m21 :TxSetPane 0:2.1<Left><Left><Left><Left>
-nnoremap m22 :TxSetPane 0:2.2<Left><Left><Left><Left>
-nnoremap m23 :TxSetPane 0:2.3<Left><Left><Left><Left>
-nnoremap m24 :TxSetPane 0:2.4<Left><Left><Left><Left>
-nnoremap m31 :TxSetPane 0:3.1<Left><Left><Left><Left>
-nnoremap m32 :TxSetPane 0:3.2<Left><Left><Left><Left>
-nnoremap m33 :TxSetPane 0:3.3<Left><Left><Left><Left>
-nnoremap m34 :TxSetPane 0:3.4<Left><Left><Left><Left>
-" interaction maps
-nnoremap <silent> mc :TxClear<CR>
-nnoremap <silent> mx :TxSigInt<CR>
-nnoremap <silent> mn :TxCreate<CR>
-nnoremap <silent> mp :TxSetPane<CR>
-nnoremap <silent> mq :TxKill<CR>
-nnoremap <silent> mr :TxRun<CR>
-nnoremap <silent> md :TxSetRunCmd<CR>
-nnoremap <silent> mo :TxSend<CR>
-nnoremap <silent> mss V"my:TxSend(@m)<CR>
-" also check out the operator defined at the end of the file
+" Tmux integration {{{3
+Plug 'tpope/vim-tbone'
+nnoremap <Space>oa :Tattach<Space>
+nnoremap <Space>od :Tattach<CR>
+nnoremap <Space>oy :Tyank<Space>
+nnoremap <Space>op :Tput<Space>
+nnoremap <Space>oe :Twrite<Space>
+nnoremap <Space>ow V:Twrite<CR>
+vnoremap <Space>ow :Twrite<CR>
+nnoremap <Space>or :Tmux<Space>
+nnoremap <Space>oo :Tmux send-keys '' C-m<S-Left><S-Left><Right>
+nnoremap <Space>oq :Tmux kill-pane<CR>
+nnoremap <Space>o- :Tmux split-window -v<CR>
+nnoremap <Space>o<bar> :Tmux split-window -h<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
@@ -1322,13 +1335,14 @@ function! RmdI()
 endfunction
 
 " create an operator to send things to tmux {{{1
-map ms <Plug>(operator-tmuxify-send)
-call operator#user#define('tmuxify-send', 'OperatorTmuxifySend')
-function! OperatorTmuxifySend(motion_wise)
+map ms <Plug>(operator-tmux-send)
+call operator#user#define('tmux-send', 'OperatorTmuxSend')
+function! OperatorTmuxSend(motion_wise)
     let v = operator#user#visual_command_from_wise_name(a:motion_wise)
-    execute 'normal!' '`[' . v . '`]"my'
-    TxSend(@m)
+    execute 'normal!' '`[' . v . '`]'
+    Twrite
 endfunction
+nnoremap mss V:Twrite<CR>
 
 " Setup plugins, indents and syntax {{{1
 filetype plugin indent on
@@ -1408,4 +1422,4 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set background=dark
-colorscheme gruvbox
+colorscheme onedark
