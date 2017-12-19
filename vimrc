@@ -1184,7 +1184,8 @@ let g:C_UseTool_doxygen = 'yes'
 
 " terminal - Go to normal mode and delete previous word
 tnoremap <C-g> <C-\><C-n>
-tnoremap <C-w> <C-\><C-n>ciw
+" zsh vi mode dependent - native way of doing this?
+tnoremap <C-w> <Esc>ciw
 
 " terminal maps
 nnoremap g\ :terminal<CR>
