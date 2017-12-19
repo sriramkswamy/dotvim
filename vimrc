@@ -85,7 +85,8 @@ set splitbelow
 " Show text normally
 set conceallevel=0
 " Gui fonts
-set guifont=Hack:h14
+set macligatures
+set guifont=Fira\ Code:h12
 set guicursor+=a:blinkon0
 
 " Maps without leader {{{2
