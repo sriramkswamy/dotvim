@@ -18,8 +18,6 @@ nnoremap <buffer> mu :let @m = "%reset -f"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 nnoremap <buffer> mq :let @m = "exit()"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 
 " debugging
-" vebugger
-nnoremap <buffer> <Space>hd :VBGstartPDB3<Space>
 " set break point
 nnoremap <buffer> mds :call SetBreakpoint()<CR>:normal! Oimport ipdb; ipdb.set_trace()<CR>j
 " unset break point

@@ -3,8 +3,6 @@ setlocal wrap
 setlocal spell
 
 " vimtex maps
-" star vs unstarred
-nmap <buffer> mn <Plug>(vimtex-env-toggle-star)
 " delimiters toggle
 nmap <buffer> mb <Plug>(vimtex-delim-toggle-modifier)
 " info
