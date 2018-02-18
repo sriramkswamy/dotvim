@@ -109,6 +109,8 @@ nnoremap + m
 nnoremap Q @@
 " set compiler
 nnoremap gC :compiler<Space>
+" exit from insert mode with a chord
+inoremap <silent> <space><space> <Esc>
 " Navigate in insert mode
 inoremap <silent> <C-a> <home>
 inoremap <silent> <C-e> <end>
@@ -1016,6 +1018,43 @@ nmap mQ <Plug>RClose
 " CSV {{{3
 Plug 'chrisbra/csv.vim'
 
+" Language Server Protocol (LSP) {{{2
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+
+" log
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('~/vim-lsp.log')
+
+" python server {{{3
+if executable('pyls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+endif
+
+" clang server {{{3
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd']},
+        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+        \ })
+endif
+
+" " cquery server {{{3
+" if executable('cquery')
+"    au User lsp_setup call lsp#register_server({
+"       \ 'name': 'cquery',
+"       \ 'cmd': {server_info->['cquery']},
+"       \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+"       \ 'initialization_options': { 'cacheDirectory': '~/bin/cquery/cache' },
+"       \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+"       \ })
+" endif
+
 " Syntax checking {{{1
 Plug 'w0rp/ale'
 let g:ale_lint_on_text_changed = 'never'
@@ -1152,6 +1191,23 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
+let g:asyncomplete_auto_popup = 1
+
+" Buffer completion {{{2
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-buffer.vim'
+
+" file completion {{{2
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-file.vim'
+
+" omni completion {{{2
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'yami-beta/asyncomplete-omni.vim'
+
+" snippets completion {{{2
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+
+" log {{{2
+let g:asyncomplete_log_file = expand('~/asyncomplete.log')
 
 " REPL and Tmux {{{1
 
@@ -1369,6 +1425,39 @@ function! OperatorGrepper(motion_wise)
     execute 'normal!' '`[' . v . '`]"my'
     call LGrepper(@m)
 endfunction
+
+" Autocompletion {{{1
+
+" buffer completion {{{2
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'whitelist': ['*'],
+    \ 'blacklist': ['go'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ }))
+
+" file completion {{{2
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'whitelist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+
+" omni completion {{{2
+call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+\ 'name': 'omni',
+\ 'whitelist': ['*'],
+\ 'blacklist': ['html'],
+\ 'completor': function('asyncomplete#sources#omni#completor')
+\  }))
+
+" snippet completion {{{2
+call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+        \ 'name': 'ultisnips',
+        \ 'whitelist': ['*'],
+        \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+        \ }))
 
 " Setup plugins, indents and syntax {{{1
 filetype plugin indent on
