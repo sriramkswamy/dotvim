@@ -51,7 +51,7 @@ set sessionoptions+=winpos
 set sessionoptions+=winsize
 " Fold options
 set foldmethod=indent
-set foldnestmax=4
+set foldnestmax=10
 set nofoldenable
 set foldlevel=2
 " Set list characters - Can be toggled with 'col'
@@ -916,12 +916,14 @@ endfunction
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 
-" Indexer (for cmake projects)
+" C/C++ {{{2
 Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c'], 'branch': 'py_2_and_3'}
 autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
+let g:rtagsAutoLaunchRdm = 1
+let g:rtagsExcludeSysHeaders = 1
 let g:rtagsUseDefaultMappings = 0
-let g:rtagsUseLocationList = 0
-let g:rtagsMinCharsForCommandCompletion = 2
+let g:rtagsUseLocationList = 1
+let g:rtagsMinCharsForCommandCompletion = 1
 
 " Python {{{2
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
@@ -967,6 +969,15 @@ nmap mQ <Plug>RClose
 " CSV - nice display of csv {{{3
 Plug 'chrisbra/csv.vim'
 
+" Language Server Protocol (LSP) {{{2
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
+let g:LanguageClient_serverCommands = {
+    \ 'python': ['pyls'],
+    \ 'cpp': ['clangd'],
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ }
+
 " Syntax checking {{{1
 Plug 'w0rp/ale'
 let g:ale_set_quickfix = 1
@@ -984,32 +995,6 @@ elseif has('unix')
     \   'c': ['gcc', 'cppcheck'],
     \}
 endif
-
-" debugging - trial {{{1
-Plug 'Shougo/vimproc.vim', {'do' : 'make'} | Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
-command! -nargs=+ -complete=file VBGstartLLDB call vebugger#lldb#start([<f-args>][0],{'args':[<f-args>][1:]})
-command! -nargs=1 -complete=file VBGattachLLDB call vebugger#lldb#searchAndAttach(<q-args>)
-nnoremap <Space>hd :VBGstart
-nnoremap <Space>hj :VBGstepOver<CR>
-nnoremap <Space>hk :VBGstepOut<CR>
-nnoremap <Space>hl :VBGstepIn<CR>
-nnoremap <Space>hc :VBGcontinue<CR>
-nnoremap <Space>hs :VBGtoggleBreakpointThisLine<CR>
-nnoremap <Space>hS :VBGtoggleBreakpoint<Space>
-nnoremap <Space>ha :VBGclearBreakpoints<CR>
-nnoremap <Space>he V:VBGevalSelectedText<CR>
-vnoremap <Space>he :VBGevalSelectedText<CR>
-nnoremap <Space>hE :VBGeval<Space>
-nnoremap <Space>hw :VBGevalWordUnderCursor<CR>
-nnoremap <Space>hW viW:VBGevalSelectedText<CR>
-nnoremap <Space>hx V:VBGexecuteSelectedText<CR>
-vnoremap <Space>hx :VBGexecuteSelectedText<CR>
-nnoremap <Space>hX :VBGexecute<Space>
-nnoremap <Space>hq :VBGkill<CR>
-nnoremap <Space>hf :VBGtoggleTerminalBuffer<CR>
-nnoremap <Space>hr V:VBGrawWriteSelectedText<CR>
-vnoremap <Space>hr :VBGrawWriteSelectedText<CR>
-nnoremap <Space>hR :VBGrawWrite<Space>
 
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -1054,8 +1039,8 @@ nnoremap <silent> <Space>x :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfRg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
-nnoremap <silent> <Space>: :FzfHistory:<CR>
-vnoremap <silent> <Space>: :FzfHistory:<CR>
+nnoremap <silent> <Space>; :FzfHistory:<CR>
+vnoremap <silent> <Space>; :FzfHistory:<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
@@ -1105,13 +1090,26 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
-Plug 'roxma/nvim-completion-manager'
-
-" C/C++ completion {{{2
-Plug 'roxma/ncm-clang'
-
-" R completion {{{2
-Plug 'gaalcaras/ncm-R'
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --system-libclang --all'}
+let g:ycm_global_ycm_extra_conf = expand('$MYVIMRC') . '.ycm_global_ycm_extra_conf.py'
+nnoremap <Space>hh :YcmCompleter GoTo<CR>
+nnoremap <Space>hj :YcmCompleter GoToDefinition<CR>
+nnoremap <Space>hk :YcmCompleter GoToDeclaration<CR>
+nnoremap <Space>ha :YcmCompleter GoToImprecise<CR>
+nnoremap <Space>hl :YcmCompleter GetType<CR>
+nnoremap <Space>hy :YcmCompleter GetTypeImprecise<CR>
+nnoremap <Space>hd :YcmCompleter GetDoc<CR>
+nnoremap <Space>hs :YcmCompleter GetDocImprecise<CR>
+nnoremap <Space>hi :YcmCompleter GoToInclude<CR>
+nnoremap <Space>hp :YcmCompleter GetParent<CR>
+nnoremap <Space>hf :YcmCompleter FixIt<CR>
+nnoremap <Space>hx :YcmCompleter ClearCompilationFlagCache<CR>
+nnoremap <Space>hR :YcmRestartServer<CR>
+nnoremap <Space>hI :YcmDebugInfo<CR>
+vnoremap <Space>hD :YcmDiags<CR>
+nnoremap <Space>hF :YcmForceCompileAndDiagnostics<CR>
+nnoremap <Space>hS :YcmShowDetailedDiagnostic<CR>
+nnoremap <Space>hL :YcmToggleLogs<CR>
 
 " REPL and Tmux {{{1
 
@@ -1180,18 +1178,17 @@ nnoremap dc :AsyncRun rdm &<CR>
 
 " Tmux integration {{{3
 Plug 'tpope/vim-tbone'
-nnoremap <Space>oa :Tattach<Space>
-nnoremap <Space>od :Tattach<CR>
-nnoremap <Space>oy :Tyank<Space>
-nnoremap <Space>op :Tput<Space>
-nnoremap <Space>oe :Twrite<Space>
-nnoremap <Space>ow V:Twrite<CR>
-vnoremap <Space>ow :Twrite<CR>
-nnoremap <Space>or :Tmux<Space>
-nnoremap <Space>oo :Tmux send-keys '' C-m<S-Left><S-Left><Right>
-nnoremap <Space>oq :Tmux kill-pane<CR>
-nnoremap <Space>o- :Tmux split-window -v<CR>
-nnoremap <Space>o<bar> :Tmux split-window -h<CR>
+nnoremap mv :Tattach<Space>
+nnoremap md :Tattach<CR>
+nnoremap my :Tyank<Space>
+nnoremap mp :Tput<Space>
+nnoremap mu :Twrite<Space>
+nnoremap mU :Twrite<CR>
+nnoremap mr :Tmux<Space>
+nnoremap mc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
+nnoremap mq :Tmux kill-pane<CR>
+nnoremap m- :Tmux split-window -v<CR>
+nnoremap m<bar> :Tmux split-window -h<CR>
 
 " Stop plugin installation {{{1
 call plug#end()

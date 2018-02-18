@@ -67,8 +67,6 @@ nnoremap <buffer> mi let @m = "./" . expand('%:t:r') . ".in "<CR>:Tmux send-keys
 nnoremap <buffer> me :let @m = "mpiexec ./" . expand('%:t:r') . ".out "<CR>:Tmux send-keys '<C-r>m' C-m<S-Left><S-Left>
 
 " debugging
-" vebugger
-nnoremap <buffer> <Space>hd :VBGstartGDB<Space>
 " call lldb
 nnoremap <buffer> mdd :let @m = "lldb"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " create target
