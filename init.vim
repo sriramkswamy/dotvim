@@ -1092,6 +1092,7 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 " Auto completion {{{1
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --system-libclang --all'}
 let g:ycm_global_ycm_extra_conf = expand('$MYVIMRC') . '.ycm_global_ycm_extra_conf.py'
+let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
 nnoremap <Space>hh :YcmCompleter GoTo<CR>
 nnoremap <Space>hj :YcmCompleter GoToDefinition<CR>
 nnoremap <Space>hk :YcmCompleter GoToDeclaration<CR>
