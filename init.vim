@@ -118,7 +118,8 @@ inoremap <silent> <C-d> <C-x><C-k>
 " inoremap <silent> <C-c> <C-x><C-f>
 " Toggle few options - inspired by unimpaired
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
-nnoremap cob :<C-u>set scrollbind!<C-w><C-w>:<C-u>set scrollbind!<CR><C-w><C-w>:set scrollbind?<CR>
+nnoremap cob :<C-u>set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
+nnoremap coa :<C-u>set scrollbind!<C-w><C-w>:<C-u>set scrollbind!<CR><C-w><C-w>:set scrollbind?<CR>
 nnoremap cof :<C-u>set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap cog :<C-u>set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
 nnoremap coh :<C-u>setlocal hlsearch!<CR>:set hlsearch?<CR>
@@ -700,13 +701,13 @@ nnoremap cq :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:registe
 
 " Adds more textobjects {{{4
 " Textobj - i,/a,/i;/a;/ir/ar and [next(n), prev(N)] for all
-Plug 'wellle/targets.vim'
-let g:targets_aiAI = 'ai  '
-let g:targets_nlNL = 'nN  '
-let g:targets_argTrigger = 'r'
-let g:targets_argOpening = '[({[]'
-let g:targets_argClosing = '[]})]'
-let g:targets_argSeparator = '[,;]'
+" Plug 'wellle/targets.vim'
+" let g:targets_aiAI = 'ai  '
+" let g:targets_nlNL = 'nN  '
+" let g:targets_argTrigger = 'r'
+" let g:targets_argOpening = '[({[]'
+" let g:targets_argClosing = '[]})]'
+" let g:targets_argSeparator = '[,;]'
 
 " Operate on indents - (operator)ii/ai/iI/aI {{{4
 Plug 'michaeljsmith/vim-indent-object'
@@ -1090,27 +1091,13 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --system-libclang --all'}
-let g:ycm_global_ycm_extra_conf = expand('$MYVIMRC') . '.ycm_global_ycm_extra_conf.py'
-let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
-nnoremap <Space>hh :YcmCompleter GoTo<CR>
-nnoremap <Space>hj :YcmCompleter GoToDefinition<CR>
-nnoremap <Space>hk :YcmCompleter GoToDeclaration<CR>
-nnoremap <Space>ha :YcmCompleter GoToImprecise<CR>
-nnoremap <Space>hl :YcmCompleter GetType<CR>
-nnoremap <Space>hy :YcmCompleter GetTypeImprecise<CR>
-nnoremap <Space>hd :YcmCompleter GetDoc<CR>
-nnoremap <Space>hs :YcmCompleter GetDocImprecise<CR>
-nnoremap <Space>hi :YcmCompleter GoToInclude<CR>
-nnoremap <Space>hp :YcmCompleter GetParent<CR>
-nnoremap <Space>hf :YcmCompleter FixIt<CR>
-nnoremap <Space>hx :YcmCompleter ClearCompilationFlagCache<CR>
-nnoremap <Space>hR :YcmRestartServer<CR>
-nnoremap <Space>hI :YcmDebugInfo<CR>
-vnoremap <Space>hD :YcmDiags<CR>
-nnoremap <Space>hF :YcmForceCompileAndDiagnostics<CR>
-nnoremap <Space>hS :YcmShowDetailedDiagnostic<CR>
-nnoremap <Space>hL :YcmToggleLogs<CR>
+Plug 'roxma/nvim-completion-manager'
+
+" C++ completion {{{2
+Plug 'roxma/nvim-completion-manager' | Plug 'roxma/ncm-clang'
+
+" R completion {{{2
+Plug 'roxma/nvim-completion-manager' | Plug 'gaalcaras/ncm-R'
 
 " REPL and Tmux {{{1
 
@@ -1405,5 +1392,5 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set background=dark
-colorscheme onedark
+set background=light
+colorscheme PaperColor
