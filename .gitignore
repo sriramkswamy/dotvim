@@ -6,4 +6,6 @@ plugin/**
 session/**
 undodir/**
 tags
+*.lock
+*.temp
 .netrwhist
