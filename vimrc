@@ -262,6 +262,12 @@ autocmd FileType r,c,cpp LocalIndentGuide +hl +cc
 nnoremap g. :LocalIndentOn<CR>
 nnoremap g_ :LocalIndentOff<CR>
 
+" Distraction free writing {{{3
+Plug 'junegunn/goyo.vim'
+let g:goyo_width = 85
+let g:goyo_height = 90
+nnoremap <Space>h :Goyo<CR>
+
 " File/Buffer navigation {{{1
 
 " Set commands {{{2
@@ -1217,6 +1223,7 @@ let g:C_UseTool_doxygen = 'yes'
 
 " terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
+tnoremap <C-w> <Esc>dbxi
 
 " terminal maps
 nnoremap g\ :terminal<CR>
