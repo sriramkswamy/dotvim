@@ -134,7 +134,8 @@ inoremap <silent> <C-d> <C-x><C-k>
 " inoremap <silent> <C-c> <C-x><C-f>
 " Toggle few options - inspired by unimpaired
 nnoremap coc :<C-u>setlocal cursorline!<CR>:set cursorline?<CR>
-nnoremap cob :<C-u>set scrollbind!<CR>:set scrollbind?<CR>
+nnoremap cob :<C-u>set background=<C-R>=&background == 'dark' ? 'light' : 'dark'<CR><CR>
+nnoremap coa :<C-u>set scrollbind!<CR>:set scrollbind?<CR>
 nnoremap cof :<C-u>set foldmethod=<C-R>=&foldmethod == 'expr' ? 'indent' : 'expr'<CR><CR>
 nnoremap cog :<C-u>set foldmethod=<C-R>=&foldmethod == 'diff' ? 'marker' : 'diff'<CR><CR>
 nnoremap coh :<C-u>setlocal hlsearch!<CR>:set hlsearch?<CR>
