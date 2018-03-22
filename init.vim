@@ -1172,17 +1172,17 @@ nnoremap dc :AsyncRun rdm &<CR>
 
 " Tmux integration {{{3
 Plug 'tpope/vim-tbone'
-nnoremap mv :Tattach<Space>
-nnoremap md :Tattach<CR>
-nnoremap my :Tyank<Space>
-nnoremap mp :Tput<Space>
-nnoremap mu :Twrite<Space>
-nnoremap mU :Twrite<CR>
-nnoremap mr :Tmux<Space>
-nnoremap mc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
-nnoremap mq :Tmux kill-pane<CR>
-nnoremap m- :Tmux split-window -v<CR>
-nnoremap m<bar> :Tmux split-window -h<CR>
+nnoremap <Space>oa :Tattach<Space>
+nnoremap <Space>oA :Tattach<CR>
+nnoremap <Space>oy :Tyank<Space>
+nnoremap <Space>op :Tput<Space>
+nnoremap <Space>ow :Twrite<Space>
+nnoremap <Space>oW :Twrite<CR>
+nnoremap <Space>oo :Tmux<Space>
+nnoremap <Space>oc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
+nnoremap <Space>oq :Tmux kill-pane<CR>
+nnoremap <Space>os :Tmux split-window -v<CR>
+nnoremap <Space>ov :Tmux split-window -h<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
