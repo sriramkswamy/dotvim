@@ -359,7 +359,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>t :Lexplore<CR>
+nnoremap <Space>n :Lexplore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
@@ -444,11 +444,10 @@ nnoremap gE :Grepper '<cWORD>'<CR>
 
 " Maps without leader {{{2
 " Populating the location list
-nnoremap <silent> # :nohl<CR>
 nnoremap <silent> gh :nohl<CR>
 nnoremap <silent> g# :lvimgrep /<C-R>// %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
-nnoremap <silent> <Space>n *N:lvimgrep /<C-R>// %<CR>
+nnoremap <silent> # *N:lvimgrep /<C-R>// %<CR>
 
 " substitution
 nnoremap <Space>y :<C-u>%s///g<Left><Left><Left>
@@ -463,8 +462,8 @@ Plug 'junegunn/vim-slash'
 " Note taking {{{1
 
 " notes {{{2
-nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/notes<CR>:e<Space>
+nnoremap cn :cd ~/Dropbox/PhD/notes<CR>:e<Space>
 
 " Create file links {{{3
 nnoremap m<Space> :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
@@ -1058,6 +1057,9 @@ imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 " PhD related stuff
 nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
 
+" notes related stuff
+nnoremap <silent> <Space>o :FzfFiles ~/Dropbox/notes<CR>
+
 " Search using spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
             \ 'source'  : 'mdfind -onlyin ~ <q-args>',
@@ -1098,6 +1100,7 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
 Plug 'roxma/nvim-completion-manager'
+let g:cm_refresh_length = [[1,1],[7,1]]
 
 " C++ completion {{{2
 Plug 'roxma/nvim-completion-manager' | Plug 'roxma/ncm-clang'
@@ -1172,17 +1175,17 @@ nnoremap dc :AsyncRun rdm &<CR>
 
 " Tmux integration {{{3
 Plug 'tpope/vim-tbone'
-nnoremap <Space>oa :Tattach<Space>
-nnoremap <Space>oA :Tattach<CR>
-nnoremap <Space>oy :Tyank<Space>
-nnoremap <Space>op :Tput<Space>
-nnoremap <Space>ow :Twrite<Space>
-nnoremap <Space>oW :Twrite<CR>
-nnoremap <Space>oo :Tmux<Space>
-nnoremap <Space>oc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
-nnoremap <Space>oq :Tmux kill-pane<CR>
-nnoremap <Space>os :Tmux split-window -v<CR>
-nnoremap <Space>ov :Tmux split-window -h<CR>
+nnoremap <Space>ta :Tattach<Space>
+nnoremap <Space>tA :Tattach<CR>
+nnoremap <Space>ty :Tyank<Space>
+nnoremap <Space>tp :Tput<Space>
+nnoremap <Space>tw :Twrite<Space>
+nnoremap <Space>tW :Twrite<CR>
+nnoremap <Space>to :Tmux<Space>
+nnoremap <Space>tc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
+nnoremap <Space>tq :Tmux kill-pane<CR>
+nnoremap <Space>ts :Tmux split-window -v<CR>
+nnoremap <Space>tv :Tmux split-window -h<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
