@@ -463,6 +463,7 @@ Plug 'junegunn/vim-slash'
 
 " taskpaper support {{{2
 Plug 'davidoc/taskpaper.vim'
+let g:task_paper_date_format = '%Y-%m-%d %H:%M:%S'
 
 " notes {{{2
 nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/notes<CR>:e<Space>
@@ -1117,6 +1118,9 @@ Plug 'roxma/nvim-completion-manager' | Plug 'gaalcaras/ncm-R'
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
+
+" Some commands support
+cnoremap :: <C-r>=strftime('%Y-%m-%d %H:%M:%S')<CR>
 
 " Neovim terminal - Go to normal mode
 tnoremap <C-g> <C-\><C-n>
