@@ -397,7 +397,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>t :Lexplore<CR>
+nnoremap <Space>n :Lexplore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
@@ -482,11 +482,10 @@ nnoremap gE :Grepper '<cWORD>'<CR>
 
 " Maps without leader {{{2
 " Populating the location list
-nnoremap <silent> # :nohl<CR>
 nnoremap <silent> gh :nohl<CR>
 nnoremap <silent> g# :lvimgrep /<C-R>// %<CR>
 nnoremap g/ :lvimgrep // %<Left><Left><Left>
-nnoremap <silent> <Space>n *N:lvimgrep /<C-R>// %<CR>
+nnoremap <silent> # *N:lvimgrep /<C-R>// %<CR>
 
 " substitution
 nnoremap <Space>y :<C-u>%s///g<Left><Left><Left>
@@ -975,7 +974,7 @@ endfunction
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 
 " Indexer (for cmake projects)
-Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c'], 'branch': 'py_2_and_3'}
+Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c']}
 autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
 let g:rtagsUseDefaultMappings = 0
 let g:rtagsUseLocationList = 0
@@ -1032,6 +1031,16 @@ Plug 'prabirshrestha/vim-lsp'
 " log
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
+
+" maps
+nnoremap <silent> <Space>od :LspDefinition<CR>
+nnoremap <silent> <Space>or :LspReferences<CR>
+nnoremap <silent> <Space>oo :LspHover<CR>
+nnoremap <silent> <Space>on :LspRename<CR>
+nnoremap <silent> <Space>os :LspDocumentSymbol<CR>
+nnoremap <silent> <Space>oa :LspWorkspaceSymbol<CR>
+nnoremap <silent> <Space>of :LspDocumentRangeFormat<CR>
+nnoremap <silent> <Space>og :LspDocumentDiagnostics<CR>
 
 " python server {{{3
 if executable('pyls')
@@ -1198,23 +1207,28 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
-let g:asyncomplete_auto_popup = 1
+Plug 'maralla/completor.vim'
+let g:completor_min_chars = 1
 
-" Buffer completion {{{2
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-buffer.vim'
+" binaries
+let g:completor_node_binary = 'node'
+let g:completor_python_binary = 'python3'
+let g:completor_clang_binary = 'clang'
+let g:completor_gocode_binary = '~/gospace/bin/gocode'
 
-" file completion {{{2
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-file.vim'
-
-" omni completion {{{2
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'yami-beta/asyncomplete-omni.vim'
-
-" snippets completion {{{2
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
-
-" log {{{2
-let g:asyncomplete_log_file = expand('~/asyncomplete.log')
+" regexes
+let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
+let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
+let g:completor_python_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
+let g:completor_cpp_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$|[\\w\\)\\]\\}\'\"]+\\::\\w*$|[\\w\\)\\]\\}\'\"]+\\->\\w*$"
+let g:completor_tex_omni_trigger =
+        \   '\\(?:'
+        \  .   '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
+        \  .  '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
+        \  .  '|hyperref\s*\[[^]]*'
+        \  .  '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+        \  .  '|(?:include(?:only)?|input)\s*\{[^}]*'
+        \  .')'
 
 " REPL and Tmux {{{1
 
@@ -1284,17 +1298,17 @@ nnoremap dc :AsyncRun rdm &<CR>
 
 " Tmux integration {{{3
 Plug 'tpope/vim-tbone'
-nnoremap <Space>oa :Tattach<Space>
-nnoremap <Space>oA :Tattach<CR>
-nnoremap <Space>oy :Tyank<Space>
-nnoremap <Space>op :Tput<Space>
-nnoremap <Space>ow :Twrite<Space>
-nnoremap <Space>oW :Twrite<CR>
-nnoremap <Space>oo :Tmux<Space>
-nnoremap <Space>oc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
-nnoremap <Space>oq :Tmux kill-pane<CR>
-nnoremap <Space>os :Tmux split-window -v<CR>
-nnoremap <Space>ov :Tmux split-window -h<CR>
+nnoremap <Space>ta :Tattach<Space>
+nnoremap <Space>tA :Tattach<CR>
+nnoremap <Space>ty :Tyank<Space>
+nnoremap <Space>tp :Tput<Space>
+nnoremap <Space>tw :Twrite<Space>
+nnoremap <Space>tW :Twrite<CR>
+nnoremap <Space>to :Tmux<Space>
+nnoremap <Space>tc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
+nnoremap <Space>tq :Tmux kill-pane<CR>
+nnoremap <Space>ts :Tmux split-window -v<CR>
+nnoremap <Space>tv :Tmux split-window -h<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
@@ -1432,39 +1446,6 @@ function! OperatorGrepper(motion_wise)
     execute 'normal!' '`[' . v . '`]"my'
     call LGrepper(@m)
 endfunction
-
-" Autocompletion {{{1
-
-" buffer completion {{{2
-call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-    \ 'name': 'buffer',
-    \ 'whitelist': ['*'],
-    \ 'blacklist': ['go'],
-    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-    \ }))
-
-" file completion {{{2
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-    \ 'name': 'file',
-    \ 'whitelist': ['*'],
-    \ 'priority': 10,
-    \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
-
-" omni completion {{{2
-call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-\ 'name': 'omni',
-\ 'whitelist': ['*'],
-\ 'blacklist': ['html'],
-\ 'completor': function('asyncomplete#sources#omni#completor')
-\  }))
-
-" snippet completion {{{2
-call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-        \ 'name': 'ultisnips',
-        \ 'whitelist': ['*'],
-        \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-        \ }))
 
 " Setup plugins, indents and syntax {{{1
 filetype plugin indent on
