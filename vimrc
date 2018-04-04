@@ -499,6 +499,9 @@ Plug 'junegunn/vim-slash'
 
 " Note taking {{{1
 
+" taskpaper support {{{2
+Plug 'davidoc/taskpaper.vim'
+
 " notes {{{2
 nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/notes<CR>:e<Space>
 nnoremap cn :cd ~/Dropbox/PhD/notes<CR>:e<Space>
