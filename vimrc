@@ -500,8 +500,8 @@ Plug 'junegunn/vim-slash'
 " Note taking {{{1
 
 " notes {{{2
-nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
-nnoremap cn :tabe <bar> cd ~/Dropbox/PhD/<CR>:e<Space>
+nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/notes<CR>:e<Space>
+nnoremap cn :cd ~/Dropbox/PhD/notes<CR>:e<Space>
 
 " Create file links {{{3
 nnoremap m<Space> :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
@@ -1165,8 +1165,12 @@ xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
 imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
+
 " PhD related stuff
 nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
+
+" notes related stuff
+nnoremap <silent> <Space>o :FzfFiles ~/Dropbox/notes<CR>
 
 " Search using spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
