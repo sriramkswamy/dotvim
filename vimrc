@@ -1024,53 +1024,6 @@ nmap mQ <Plug>RClose
 " CSV {{{3
 Plug 'chrisbra/csv.vim'
 
-" Language Server Protocol (LSP) {{{2
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-
-" log
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('~/vim-lsp.log')
-
-" maps
-nnoremap <silent> <Space>od :LspDefinition<CR>
-nnoremap <silent> <Space>or :LspReferences<CR>
-nnoremap <silent> <Space>oo :LspHover<CR>
-nnoremap <silent> <Space>on :LspRename<CR>
-nnoremap <silent> <Space>os :LspDocumentSymbol<CR>
-nnoremap <silent> <Space>oa :LspWorkspaceSymbol<CR>
-nnoremap <silent> <Space>of :LspDocumentRangeFormat<CR>
-nnoremap <silent> <Space>og :LspDocumentDiagnostics<CR>
-
-" python server {{{3
-if executable('pyls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
-
-" clang server {{{3
-if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd']},
-        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-        \ })
-endif
-
-" " cquery server {{{3
-" if executable('cquery')
-"    au User lsp_setup call lsp#register_server({
-"       \ 'name': 'cquery',
-"       \ 'cmd': {server_info->['cquery']},
-"       \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-"       \ 'initialization_options': { 'cacheDirectory': '~/bin/cquery/cache' },
-"       \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-"       \ })
-" endif
-
 " Syntax checking {{{1
 Plug 'w0rp/ale'
 let g:ale_lint_on_text_changed = 'never'
@@ -1211,28 +1164,17 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
-Plug 'maralla/completor.vim'
-let g:completor_min_chars = 1
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+Plug 'roxma/nvim-completion-manager'
+let g:cm_refresh_length = [[1,1],[7,1]]
+let g:cm_completed_snippet_enable = 1
 
-" binaries
-let g:completor_node_binary = 'node'
-let g:completor_python_binary = 'python3'
-let g:completor_clang_binary = 'clang'
-let g:completor_gocode_binary = '~/gospace/bin/gocode'
+" C++ completion {{{2
+Plug 'roxma/nvim-completion-manager' | Plug 'roxma/ncm-clang'
 
-" regexes
-let g:completor_css_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
-let g:completor_javascript_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
-let g:completor_python_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$"
-let g:completor_cpp_omni_trigger = "\\w+$|[\\w\\)\\]\\}\'\"]+\\.\\w*$|[\\w\\)\\]\\}\'\"]+\\::\\w*$|[\\w\\)\\]\\}\'\"]+\\->\\w*$"
-let g:completor_tex_omni_trigger =
-        \   '\\(?:'
-        \  .   '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
-        \  .  '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
-        \  .  '|hyperref\s*\[[^]]*'
-        \  .  '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-        \  .  '|(?:include(?:only)?|input)\s*\{[^}]*'
-        \  .')'
+" R completion {{{2
+Plug 'roxma/nvim-completion-manager' | Plug 'gaalcaras/ncm-R'
 
 " REPL and Tmux {{{1
 
