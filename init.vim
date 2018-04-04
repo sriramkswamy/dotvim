@@ -1101,6 +1101,7 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 " Auto completion {{{1
 Plug 'roxma/nvim-completion-manager'
 let g:cm_refresh_length = [[1,1],[7,1]]
+let g:cm_completed_snippet_enable = 1
 
 " C++ completion {{{2
 Plug 'roxma/nvim-completion-manager' | Plug 'roxma/ncm-clang'
