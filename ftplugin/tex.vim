@@ -46,7 +46,7 @@ nmap <buffer> [[ <Plug>(vimtex-[[)
 nmap <buffer> [] <Plug>(vimtex-[])
 
 " specifiying the main file
-nnoremap <buffer> mf :normal! o%!TEX root = <CR>A
+nnoremap <buffer> mf :normal! O%!TEX root = <CR>A
 
 " working with Skim
 let g:vimtex_view_general_viewer
