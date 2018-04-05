@@ -202,8 +202,8 @@ let g:markdown_fold_style = 'nested'
 
 " Plugins {{{2
 
-" Colorschemes {{{3
-Plug 'flazz/vim-colorschemes'
+" Colorscheme {{{3
+Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 
 " Undotree {{{3
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
@@ -710,13 +710,13 @@ nnoremap cq :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:registe
 
 " Adds more textobjects {{{4
 " Textobj - i,/a,/i;/a;/ir/ar and [next(n), prev(N)] for all
-" Plug 'wellle/targets.vim'
-" let g:targets_aiAI = 'ai  '
-" let g:targets_nlNL = 'nN  '
-" let g:targets_argTrigger = 'r'
-" let g:targets_argOpening = '[({[]'
-" let g:targets_argClosing = '[]})]'
-" let g:targets_argSeparator = '[,;]'
+Plug 'wellle/targets.vim'
+let g:targets_aiAI = 'ai  '
+let g:targets_nlNL = 'nN  '
+let g:targets_argTrigger = 'r'
+let g:targets_argOpening = '[({[]'
+let g:targets_argClosing = '[]})]'
+let g:targets_argSeparator = '[,;]'
 
 " Operate on indents - (operator)ii/ai/iI/aI {{{4
 Plug 'michaeljsmith/vim-indent-object'
@@ -1409,5 +1409,4 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set background=dark
-colorscheme onedark
+colorscheme challenger_deep
