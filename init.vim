@@ -203,7 +203,7 @@ let g:markdown_fold_style = 'nested'
 " Plugins {{{2
 
 " Colorscheme {{{3
-Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
+Plug 'flazz/vim-colorschemes'
 
 " Undotree {{{3
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
@@ -409,6 +409,10 @@ nnoremap <silent> dv :Rooter<CR>
 " auto generate tags {{{3
 Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_exclude_project_root = ['~/']
+
+" Set a tag bar {{{3
+Plug 'majutsushi/tagbar'
+nnoremap <silent> T :TagbarToggle<CR>
 
 " Searching {{{1
 
@@ -1029,7 +1033,6 @@ command! -bang -nargs=* FzfRg
 
 nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> J :FzfRg <C-R><C-W><CR>
-nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> g] :FzfTags <C-R><C-W><CR>
 nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
 nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
@@ -1409,4 +1412,5 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-colorscheme challenger_deep
+set background=dark
+colorscheme gruvbox
