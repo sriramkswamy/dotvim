@@ -3,7 +3,7 @@
 Some packages that are pretty much basic and required for every further operation
 
 ```
-sudo apt-get install openssh-server git wget curl grep gawk sed build-essential
+sudo apt-get install openssh-server git wget curl grep gawk sed build-essential tig
 ```
 
 Basic editor and editor tool support
