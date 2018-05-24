@@ -1032,11 +1032,11 @@ command! -bang -nargs=* FzfRg
   \   <bang>0)
 
 nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfRg <C-R><C-W><CR>
+nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> g] :FzfTags <C-R><C-W><CR>
-nnoremap <silent> gw :FzfRg <C-R><C-W><CR>
-nnoremap <silent> gW :FzfRg <C-R><C-A><CR>
-vnoremap <silent> gw "gy:FzfRg <C-R>g<CR>
+nnoremap <silent> gw :FzfAg <C-R><C-W><CR>
+nnoremap <silent> gW :FzfAg <C-R><C-A><CR>
+vnoremap <silent> gw "gy:FzfAg <C-R>g<CR>
 nnoremap <silent> sc :FzfSnippets<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
