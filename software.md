@@ -9,7 +9,7 @@ sudo apt-get install openssh-server git wget curl grep gawk sed build-essential
 Basic editor and editor tool support
 
 ```
-sudo apt-get install neovim vim emacs25 silversearcher-ag ctags cargo
+sudo apt-get install neovim vim emacs25 silversearcher-ag ctags cargo tmux editorconfig
 ```
 
 Subjectively a better shell
@@ -88,6 +88,12 @@ sudo apt-get install gcc gdb valgrind llvm lldb clang
 
 ```
 sudo apt-get install python3 python3-pip
+```
+
+Install editor specific stuff
+
+```
+python3 -m pip install --user neovim virtualenv
 ```
 
 # JavaScript
