@@ -51,10 +51,10 @@ nnoremap <buffer> mf :normal! O%!TEX root = <CR>A
 " working with Skim
 if has('macunix')
     let g:vimtex_view_general_viewer
-                \ = 'zathura'
+                \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
 elseif has('unix')
     let g:vimtex_view_general_viewer
-                \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+                \ = 'zathura'
 endif
 let g:vimtex_view_general_options = '-r @line @pdf @tex'
 
