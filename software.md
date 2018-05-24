@@ -9,7 +9,7 @@ sudo apt-get install openssh-server git wget curl grep gawk sed build-essential
 Basic editor and editor tool support
 
 ```
-sudo apt-get install vim emacs25 silversearcher-ag ctags
+sudo apt-get install neovim vim emacs25 silversearcher-ag ctags cargo
 ```
 
 Subjectively a better shell
@@ -28,6 +28,20 @@ Install FZF for everything
 
 ```
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+```
+
+Install vim/neovim configuration
+
+```
+git clone https://github.com/sriramkswamy/dotvim.git ~/.vim
+git clone https://github.com/sriramkswamy/dotvim.git ~/.config/nvim
+```
+
+Install plugin manager for vim/neovim
+
+```
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
 # Dropbox
