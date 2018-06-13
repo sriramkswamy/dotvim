@@ -406,9 +406,11 @@ let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap <silent> dv :Rooter<CR>
 
-" auto generate tags {{{3
-Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_exclude_project_root = ['~/']
+" " auto generate tags {{{3
+" Plug 'ludovicchabant/vim-gutentags'
+" let g:gutentags_trace = 1
+" let g:gutentags_exclude_project_root = ['~/']
+" let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.config/nvim/plugged/*", "*.vim/plugged/*"]
 
 " Set a tag bar {{{3
 Plug 'majutsushi/tagbar'
@@ -983,14 +985,14 @@ nmap mQ <Plug>RClose
 " CSV - nice display of csv {{{3
 Plug 'chrisbra/csv.vim'
 
-" Language Server Protocol (LSP) {{{2
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
-let g:LanguageClient_serverCommands = {
-    \ 'python': ['pyls'],
-    \ 'cpp': ['clangd'],
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'javascript': ['javascript-typescript-stdio'],
-    \ }
+" " Language Server Protocol (LSP) {{{2
+" Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
+" let g:LanguageClient_serverCommands = {
+"     \ 'python': ['pyls'],
+"     \ 'cpp': ['clangd'],
+"     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+"     \ 'javascript': ['javascript-typescript-stdio'],
+"     \ }
 
 " Syntax checking {{{1
 Plug 'w0rp/ale'
@@ -1106,9 +1108,9 @@ inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " Auto completion {{{1
-Plug 'roxma/nvim-completion-manager'
-let g:cm_refresh_length = [[1,1],[7,1]]
-let g:cm_completed_snippet_enable = 1
+Plug 'Shougo/deoplete.nvim', {'do': 'UpdateRemotePlugins'}
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
 
 " C++ completion {{{2
 Plug 'roxma/nvim-completion-manager' | Plug 'roxma/ncm-clang'
@@ -1382,6 +1384,7 @@ set statusline+=%#error#
 set statusline+=%{&list?'[list]':''}
 set statusline+=%*
 set statusline+=\ %{fugitive#statusline()}
+" set statusline+=%{gutentags#statusline()}
 
 set statusline+=%=      "left/right separator
 set statusline+=%c,     "cursor column
