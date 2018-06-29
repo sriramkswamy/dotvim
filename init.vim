@@ -414,7 +414,7 @@ nnoremap <silent> dv :Rooter<CR>
 
 " Set a tag bar {{{3
 Plug 'majutsushi/tagbar'
-nnoremap <silent> T :TagbarToggle<CR>
+nnoremap <silent> <Space>t :TagbarToggle<CR>
 
 " Searching {{{1
 
@@ -1034,8 +1034,9 @@ command! -bang -nargs=* FzfRg
   \   <bang>0)
 
 nnoremap <silent> t :FzfBTags<CR>
-nnoremap <silent> J :FzfAg <C-R><C-W><CR>
+nnoremap <silent> T :FzfTags <C-R><C-W><CR>
 nnoremap <silent> g] :FzfTags <C-R><C-W><CR>
+nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gw :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gW :FzfAg <C-R><C-A><CR>
 vnoremap <silent> gw "gy:FzfAg <C-R>g<CR>
@@ -1187,18 +1188,51 @@ nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
 nnoremap dc :AsyncRun rdm &<CR>
 
 " Tmux integration {{{3
-Plug 'tpope/vim-tbone'
-nnoremap <Space>ta :Tattach<Space>
-nnoremap <Space>tA :Tattach<CR>
-nnoremap <Space>ty :Tyank<Space>
-nnoremap <Space>tp :Tput<Space>
-nnoremap <Space>tw :Twrite<Space>
-nnoremap <Space>tW :Twrite<CR>
-nnoremap <Space>to :Tmux<Space>
-nnoremap <Space>tc :Tmux send-keys '' C-m<S-Left><S-Left><Right>
-nnoremap <Space>tq :Tmux kill-pane<CR>
-nnoremap <Space>ts :Tmux split-window -v<CR>
-nnoremap <Space>tv :Tmux split-window -h<CR>
+Plug 'sriramkswamy/vim-tmuxify'
+let g:tmuxify_map_prefix = ''
+let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
+let g:tmuxify_run = {
+			\ 'sh': 'bash %',
+			\ 'go': 'go build %',
+			\ 'tex': 'latexmk -pdf -pvc %',
+			\ 'python': 'ipython',
+			\ 'R': 'R --no-save --quiet',
+			\ 'matlab': 'matlab',
+			\ 'julia': 'julia',
+			\ 'scheme': 'racket',
+			\ 'racket': 'racket',
+			\ 'sml': 'sml',
+			\
+}
+
+" Mappings for any tmux session {{{4
+" put me in an easy editing modes
+nnoremap m/ :TxSend<CR><C-F>
+nnoremap m. :TxSend<CR><C-P>
+" pane changes
+nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
+nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
+nnoremap m13 :TxSetPane 0:1.3<Left><Left><Left><Left>
+nnoremap m14 :TxSetPane 0:1.4<Left><Left><Left><Left>
+nnoremap m21 :TxSetPane 0:2.1<Left><Left><Left><Left>
+nnoremap m22 :TxSetPane 0:2.2<Left><Left><Left><Left>
+nnoremap m23 :TxSetPane 0:2.3<Left><Left><Left><Left>
+nnoremap m24 :TxSetPane 0:2.4<Left><Left><Left><Left>
+nnoremap m31 :TxSetPane 0:3.1<Left><Left><Left><Left>
+nnoremap m32 :TxSetPane 0:3.2<Left><Left><Left><Left>
+nnoremap m33 :TxSetPane 0:3.3<Left><Left><Left><Left>
+nnoremap m34 :TxSetPane 0:3.4<Left><Left><Left><Left>
+" interaction maps
+nnoremap <silent> mc :TxClear<CR>
+nnoremap <silent> mx :TxSigInt<CR>
+nnoremap <silent> mn :TxCreate<CR>
+nnoremap <silent> mp :TxSetPane<CR>
+nnoremap <silent> mq :TxKill<CR>
+nnoremap <silent> mr :TxRun<CR>
+nnoremap <silent> md :TxSetRunCmd<CR>
+nnoremap <silent> mo :TxSend<CR>
+nnoremap <silent> mss V"my:TxSend(@m)<CR>
+" also check out the operator defined at the end of the file
 
 " Stop plugin installation {{{1
 call plug#end()
@@ -1319,14 +1353,13 @@ function! RmdI()
 endfunction
 
 " create an operator to send things to tmux {{{1
-map ms <Plug>(operator-tmux-send)
-call operator#user#define('tmux-send', 'OperatorTmuxSend')
-function! OperatorTmuxSend(motion_wise)
-    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
-    execute 'normal!' '`[' . v . '`]'
-    Twrite
+map ms <Plug>(operator-tmuxify-send)
+call operator#user#define('tmuxify-send', 'OperatorTmuxifySend')
+function! OperatorTmuxifySend(motion_wise)
+	let v = operator#user#visual_command_from_wise_name(a:motion_wise)
+	execute 'normal!' '`[' . v . '`]"my'
+	TxSend(@m)
 endfunction
-nnoremap mss V:Twrite<CR>
 
 " create an operator to grep things {{{1
 map gs <Plug>(operator-grepper)

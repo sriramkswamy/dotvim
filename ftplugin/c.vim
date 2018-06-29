@@ -82,23 +82,23 @@ nnoremap <buffer> mdm :call SetBreakpoint()<CR>:let @m = "breakpoint set --metho
 " clear all breakpoints
 nnoremap <buffer> mda :call RemoveAllBreakpoints()<CR>:let @m = "breakpoint delete"<CR>:TxSend(@m)<CR>:let @m = "Y"<CR>:Tmux send-keys '<C-r>m' C-m<CR>
 " next line
-nnoremap <buffer> mdn :Tmux send-keys 'n' C-m<CR>
+nnoremap <buffer> mdn :let @m = "n"<CR>:TxSend(@m)<CR>
 " continue
-nnoremap <buffer> mdc :Tmux send-keys 'c' C-m<CR>
+nnoremap <buffer> mdc :let @m = "c"<CR>:TxSend(@m)<CR>
 " run
-nnoremap <buffer> mdr :Tmux send-keys 'r' C-m<CR>
+nnoremap <buffer> mdr :let @m = "r"<CR>:TxSend(@m)<CR>
 " list all breakpoints
-nnoremap <buffer> mdl :Tmux send-keys 'breakpoint list' C-m<CR>
+nnoremap <buffer> mdl :let @m = "breakpoint list"<CR>:TxSend(@m)<CR>
 " step in
-nnoremap <buffer> mdi :Tmux send-keys 's' C-m<CR>
+nnoremap <buffer> mdi :let @m = "s"<CR>:TxSend(@m)<CR>
 " go one level up
-nnoremap <buffer> mdk :Tmux send-keys 'up' C-m<CR>
+nnoremap <buffer> mdk :let @m = "up"<CR>:TxSend(@m)<CR>
 " print value of variable
-nnoremap <buffer> mdp :Tmux send-keys "p " . expand('<cWORD>') C-m<CR>
+nnoremap <buffer> mdp :let @m = "p "  . expand('<cWORD>'<CR>:TxSend(@m)<CR>
 " print value of the pointer variable
-nnoremap <buffer> mdo :Tmux send-keys "p * " . expand('<cWORD>') C-m<CR>
+nnoremap <buffer> mdo :let @m = "p * "  . expand('<cWORD>'<CR>:TxSend(@m)<CR>
 " quit debugger
-nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:Tmux send-keys 'q' C-m<CR>
+nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:let @m = "q"<CR>:TxSend(@m)<CR>
 
 " get all the signs for breakpoints in vim {{{2
 nnoremap <buffer> mdv :sign list mybreakpoint<CR>
