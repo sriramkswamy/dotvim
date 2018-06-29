@@ -1017,7 +1017,7 @@ let g:sparkupNextMapping = '<C-j>'
 " R {{{2
 " Download it from https://github.com/jalvesaq/Nvim-R/releases
 Plug 'jalvesaq/Nvim-R', {'for': 'r'}
-let R_in_buffer = 0
+let R_in_buffer = 1
 let R_args = ['--no-save', '--quiet']
 
 " Maps {{{3
