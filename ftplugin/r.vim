@@ -1,6 +1,6 @@
 " nvim-r plugin
 " maps
-nnoremap <buffer> K :call RAction("help")<CR>
+nnoremap <buffer> K :call call RAction("help")<CR>
 " variable viewing
 " what's the object
 nmap <buffer> mh <Plug>RObjectPr
@@ -57,40 +57,42 @@ nnoremap <buffer> mds :call SetBreakpoint()<CR>:normal! Obrowser()<CR>j
 " unset breakpoint at the current line
 nnoremap <buffer> mdu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
 " step next
-nnoremap <buffer> mdn :let @m = "n"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdn :call g:SendCmdToR("n")<CR>
 " step in
-nnoremap <buffer> mdi :let @m = "s"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdi :call g:SendCmdToR("s")<CR>
 " step out
-nnoremap <buffer> mdo :let @m = "f"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdo :call g:SendCmdToR("f")<CR>
 " continue until next breakpoint or end of program
-nnoremap <buffer> mdc :let @m = "c"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdc :call g:SendCmdToR("c")<CR>
 " unset breakpoint at the current line
-nnoremap <buffer> mda :call UnsetBreakpoint()<CR>:let @m = "undebug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mda :call UnsetBreakpoint()<CR>:call RAction("undebug")<CR>
 " delete all breakpoints
-nnoremap <buffer> mdd :call SetBreakpoint()<CR>:let @m = "debug(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdd :call SetBreakpoint()<CR>:call RAction("debug")<CR>
 " rerun with debug
-nnoremap <buffer> mdr :let @m = "options(error = browser)"<CR>:TxSend(@m)<CR>
-nnoremap <buffer> mdk :let @m = "options(error = NULL)"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdr :call g:SendCmdToR("options(error = browser)")<CR>
+nnoremap <buffer> mdk :call g:SendCmdToR("options(error = NULL)")<CR>
 " get the traceback
-nnoremap <buffer> mdw :let @m = "where"<CR>:TxSend(@m)<CR>
-nnoremap <buffer> mdt :let @m = "traceback()"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdw :call g:SendCmdToR("where")<CR>
+nnoremap <buffer> mdt :call g:SendCmdToR("traceback()")<CR>
 " quit debugging mode
-nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:call g:SendCmdToR("Q")<CR>
 
+" start r
+nmap mr <Plug>RStart
 " quit r
-nnoremap <buffer> mq :let @m = "q()"<CR>:TxSend(@m)<CR>
+nmap <buffer> mq <Plug>RClose<CR>
 " metadata on variables
 " size of the variable at point
-nnoremap <buffer> mz :let @m = "dim(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mz :call RAction("dim")<CR>
 " length of the variable at point
-nnoremap <buffer> ml :let @m = "length(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> ml :call RAction("length")<CR>
 " mean of the variable at point
-nnoremap <buffer> me :let @m = "mean(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> me :call RAction("mean")<CR>
 " get the type of the object
-nnoremap <buffer> mw :let @m = "typeof(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
-" get the type of the object (from space to space)
-nnoremap <buffer> mW :let @m = "typeof(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mw :call RAction("typeof")<CR>
+" get the type of the object
+vnoremap <buffer> mw :call RAction("typeof", "v")<CR>
 " sum of the variable at point
-nnoremap <buffer> m= :let @m = "sum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> m= :call RAction("sum")<CR>
 " cumulative sum of the variable at point
-nnoremap <buffer> m+ :let @m = "cumsum(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> m+ :call RAction("cumsum")<CR>

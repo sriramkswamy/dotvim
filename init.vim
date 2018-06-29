@@ -979,29 +979,24 @@ let g:sparkupNextMapping = '<C-j>'
 " R {{{2
 " Download it from https://github.com/jalvesaq/Nvim-R/releases
 Plug 'jalvesaq/Nvim-R'
-" let R_vsplit = 1
 let R_in_buffer = 0
-let R_tmux_split = 1
 let R_args = ['--no-save', '--quiet']
 
 " Maps {{{3
 " Complete the arguments
 inoremap <C-\> <C-x><C-a>
-" Normal maps apart from '\' based maps
-nmap mR <Plug>RStart
-nmap mQ <Plug>RClose
 
 " CSV - nice display of csv {{{3
 Plug 'chrisbra/csv.vim'
 
-" " Language Server Protocol (LSP) {{{2
-" Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
-" let g:LanguageClient_serverCommands = {
-"     \ 'python': ['pyls'],
-"     \ 'cpp': ['clangd'],
-"     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-"     \ 'javascript': ['javascript-typescript-stdio'],
-"     \ }
+" Language Server Protocol (LSP) {{{2
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
+let g:LanguageClient_serverCommands = {
+    \ 'python': ['pyls'],
+    \ 'cpp': ['clangd'],
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ }
 
 " Syntax checking {{{1
 Plug 'w0rp/ale'

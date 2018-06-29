@@ -28,7 +28,7 @@ source ~/venv/global/bin/activate
 alias e='nvim'
 alias f='code'
 alias v='tmux'
-alias m='~/local/MATLAB_R2018a/bin/matlab -softwareopengl -nodesktop -nosplash'
+alias matlab='~/local/MATLAB_R2018a/bin/matlab -softwareopengl -nodesktop -nosplash'
 alias matlabd='~/local/MATLAB_R2018a/bin/matlab -softwareopengl &'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
