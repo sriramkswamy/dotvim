@@ -23,14 +23,6 @@ nmap <buffer> m] <Plug>RCloseLists
 " repl interaction
 " run the current file
 nmap <buffer> mm <Plug>RSendFile
-" send the current para
-nmap <buffer> msap <Plug>REDSendParagraph
-" send the current function
-nmap <buffer> msaf <Plug>RDSendFunction
-" send the current function
-nmap <buffer> msif <Plug>RDSendFunction
-" send the current line
-nmap <buffer> mss <Plug>RDSendLine
 " send the current line and insert output
 nmap <buffer> m<Space> <Plug>RDSendLineAndInsertOutput
 " send the current selection
@@ -96,3 +88,21 @@ vnoremap <buffer> mw :call RAction("typeof", "v")<CR>
 nnoremap <buffer> m= :call RAction("sum")<CR>
 " cumulative sum of the variable at point
 nnoremap <buffer> m+ :call RAction("cumsum")<CR>
+
+" operator-ish bindings
+" send the current subword
+nmap <buffer> msav vav<Plug>RESendSelection
+nmap <buffer> msiv viv<Plug>RESendSelection
+" send the current word
+nmap <buffer> msaw vaw<Plug>RESendSelection
+nmap <buffer> msiw viw<Plug>RESendSelection
+" send the current para
+nmap <buffer> msap <Plug>REDSendParagraph
+nmap <buffer> msip <Plug>REDSendParagraph
+" send the current function
+nmap <buffer> msaf <Plug>RDSendFunction
+nmap <buffer> msif <Plug>RDSendFunction
+" send the current line
+nmap <buffer> mss <Plug>RDSendLine
+nmap <buffer> msil Plug>RDSendLine
+nmap <buffer> msal Plug>RDSendLine
