@@ -227,7 +227,7 @@ let g:markdown_fold_style = 'nested'
 " Plugins {{{2
 
 " Colorscheme {{{3
-Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
+Plug 'flazz/vim-colorschemes'
 
 " Undotree {{{3
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
@@ -1513,4 +1513,5 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Set colorscheme {{{1
 set termguicolors
-colorscheme challenger_deep
+set background=dark
+colorscheme gruvbox
