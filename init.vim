@@ -780,13 +780,12 @@ Plug 'tpope/vim-surround'
 let g:surround_no_mappings = 1
 nmap ds  <Plug>Dsurround
 nmap cs  <Plug>Csurround
-nmap s  <Plug>Ysurround
-nmap S  <Plug>YSurround
-nmap ss <Plug>Yssurround
-nmap Ss <Plug>YSsurround
-nmap SS <Plug>YSsurround
-xmap s   <Plug>VSurround
-xmap S  <Plug>VgSurround
+nmap ys  <Plug>Ysurround
+nmap yS  <Plug>YSurround
+nmap yss <Plug>Yssurround
+nmap ySS <Plug>YSsurround
+xmap S   <Plug>VSurround
+xmap gS  <Plug>VgSurround
 
 " Easy commenting - gc(motion/textobject) {{{4
 Plug 'tomtom/tcomment_vim'
@@ -936,6 +935,35 @@ function! RemoveAllBreakpoints()
     endif
 endfunction
 
+" Auto completion {{{1
+" assuming your using vim-plug: https://github.com/junegunn/vim-plug
+Plug 'ncm2/ncm2'
+Plug 'roxma/nvim-yarp'
+
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
+
+" IMPORTANT: :help Ncm2PopupOpen for more information
+set completeopt=noinsert,menuone,noselect
+
+" General completion
+Plug 'ncm2/ncm2-bufword'
+Plug 'ncm2/ncm2-tmux'
+Plug 'ncm2/ncm2-path'
+" Plug 'ncm2/ncm2-ultisnips'
+
+" Subscope
+Plug 'ncm2/ncm2-markdown-subscope'
+
+" Python completion
+Plug 'ncm2/ncm2-jedi'
+
+" C++ completion {{{2
+Plug 'ncm2/ncm2-pyclang'
+
+" R completion {{{2
+Plug 'gaalcaras/ncm-R'
+
 " Language Support {{{1
 
 " Vim script {{{2
@@ -970,6 +998,62 @@ let g:vimtex_text_obj_enabled = 0
 let g:vimtex_imaps_enabled = 0
 let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
+
+" With autocomplete {{{3
+au InsertEnter * call ncm2#enable_for_buffer()
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-cmds',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'prefix', 'key': 'word'},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#cmds,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-labels',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'substr', 'key': 'word'},
+            \               {'name': 'substr', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#labels,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-files',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'abbrfuzzy', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#files,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'bibtex',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'prefix', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \               {'name': 'abbrfuzzy', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
@@ -1112,18 +1196,16 @@ autocmd CompleteDone * pclose
 inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
-" Auto completion {{{1
-Plug 'Shougo/deoplete.nvim', {'do': 'UpdateRemotePlugins'}
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_smart_case = 1
-
-" C++ completion {{{2
-Plug 'roxma/nvim-completion-manager' | Plug 'roxma/ncm-clang'
-
-" R completion {{{2
-Plug 'roxma/nvim-completion-manager' | Plug 'gaalcaras/ncm-R'
-
 " REPL and Tmux {{{1
+
+" send to neovim terminal {{{2
+Plug 'kassio/neoterm'
+nmap s <Plug>(neoterm-repl-send)
+xmap s <Plug>(neoterm-repl-send)
+nmap ss <Plug>(neoterm-repl-send-line)
+nmap sr :TREPLSetTerm<Space>
+nmap sn :Tnew<CR>
+nmap sp :Ttoggle<CR>
 
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
