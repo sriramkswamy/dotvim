@@ -305,7 +305,15 @@ nnoremap <silent> <right> :cnext<CR>
 " Auto-center
 nnoremap <silent> <C-o> <C-o>zz
 nnoremap <silent> <C-i> <C-i>zz
+nnoremap <silent> <C-f> <C-f>zz
+nnoremap <silent> <C-d> <C-d>zz
+nnoremap <silent> <C-u> <C-u>zz
+nnoremap <silent> <C-b> <C-b>zz
 nnoremap <silent> G Gzz
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
 nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Free Tab
@@ -832,6 +840,9 @@ Plug 'kana/vim-operator-user'
 
 " Motions {{{2
 
+noremap H ^
+noremap L $
+
 " Snippets {{{1
 " Snippet plugin and snippet collection {{{2
 if has('python3')
@@ -999,62 +1010,6 @@ let g:vimtex_imaps_enabled = 0
 let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
 
-" With autocomplete {{{3
-au InsertEnter * call ncm2#enable_for_buffer()
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-cmds',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'prefix', 'key': 'word'},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#cmds,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-labels',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'substr', 'key': 'word'},
-            \               {'name': 'substr', 'key': 'menu'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#labels,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-files',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'abbrfuzzy', 'key': 'word'},
-            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#files,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'bibtex',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'prefix', 'key': 'word'},
-            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
-            \               {'name': 'abbrfuzzy', 'key': 'menu'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
 let g:sparkupExecuteMapping = '<C-b>'
@@ -1203,9 +1158,9 @@ Plug 'kassio/neoterm'
 nmap s <Plug>(neoterm-repl-send)
 xmap s <Plug>(neoterm-repl-send)
 nmap ss <Plug>(neoterm-repl-send-line)
-nmap sr :TREPLSetTerm<Space>
-nmap sn :Tnew<CR>
-nmap sp :Ttoggle<CR>
+nmap s- :TREPLSetTerm<Space>
+nmap s+ :Tnew<CR>
+nmap S :Ttoggle<CR>
 
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
@@ -1531,6 +1486,62 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
+
+" ncm2 autocomplete latex configuration {{{1
+au InsertEnter * call ncm2#enable_for_buffer()
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-cmds',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'prefix', 'key': 'word'},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#cmds,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-labels',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'substr', 'key': 'word'},
+            \               {'name': 'substr', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#labels,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-files',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'abbrfuzzy', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#files,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+au Filetype tex call ncm2#register_source({
+            \ 'name' : 'bibtex',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'prefix', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \               {'name': 'abbrfuzzy', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1

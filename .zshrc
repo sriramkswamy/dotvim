@@ -25,10 +25,20 @@ export PATH=/home/sriramkswamy/local/bin:$PATH
 source ~/venv/global/bin/activate
 
 # alias
-alias e='nvim'
-alias f='code'
-alias v='tmux'
-alias matlab='~/local/MATLAB_R2018a/bin/matlab -softwareopengl -nodesktop -nosplash'
-alias matlabd='~/local/MATLAB_R2018a/bin/matlab -softwareopengl &'
+alias e='emacs -nw'
+alias v='nvim'
+alias m='tmux'
+alias s='tmux attach-session'
+alias d='dropbox status'
+
+# git aliases
+alias g='git status'
+alias q='git commit -m'
+alias c='git commit'
+alias a='git add'
+alias l="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset) %C(bold cyan)(committed: %cD)%C(reset) %C(auto)%d%C(reset)%n''          %C(white)%s%C(reset)%n''          %C(dim white)- %an <%ae> %C(reset) %C(dim white)(committer: %cn <%ce>)%C(reset)'"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# start dropbox
+dropbox start
