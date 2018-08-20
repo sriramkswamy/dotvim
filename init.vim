@@ -321,7 +321,9 @@ nnoremap <C-p> <C-i>
 " Folding - lock tab
 nnoremap <silent> <C-i> za
 " Vimrc
-nnoremap cv :vsp $MYVIMRC<CR>
+nnoremap cv :e $MYVIMRC<CR>
+" tags
+nnoremap <silent> t <C-]>
 
 " Functions and commands {{{2
 
@@ -431,6 +433,9 @@ nnoremap <silent> dv :Rooter<CR>
 
 " Set a tag bar {{{3
 Plug 'majutsushi/tagbar'
+autocmd VimEnter * nested :call tagbar#autoopen(1)
+autocmd FileType * nested :call tagbar#autoopen(0)
+autocmd BufEnter * nested :call tagbar#autoopen(0)
 nnoremap <silent> <Space>t :TagbarToggle<CR>
 
 " Searching {{{1
@@ -1061,6 +1066,8 @@ Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix='Fzf'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
+" ctags command
+let g:fzf_tags_command = 'ctags **/*'
 " Actions
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
@@ -1076,7 +1083,6 @@ command! -bang -nargs=* FzfRg
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 
-nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags <C-R><C-W><CR>
 nnoremap <silent> g] :FzfTags <C-R><C-W><CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
@@ -1095,7 +1101,7 @@ nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>k :FzfBuffers<CR>
 nnoremap <silent> <Space>x :FzfHelptags<CR>
-nnoremap <silent> <Space>p :FzfRg<CR>
+nnoremap <silent> <Space>p :FzfAg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
 nnoremap <silent> <Space>; :FzfHistory:<CR>
@@ -1223,7 +1229,7 @@ nnoremap vp :AsyncRun git push<CR>:copen<CR>
 nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
-nnoremap vr :AsyncRun ctags -R %:p:h<CR>:copen<CR>
+nnoremap T :AsyncRun ctags **/*<CR>:copen<CR>
 
 " rdm
 nnoremap dc :AsyncRun rdm &<CR>
