@@ -100,6 +100,20 @@ Install `ispell` for Emacs usage
 sudo apt-get install ispell
 ```
 
+# Julia (MATLAB alternative)
+
+Get Julia from their [website](https://julialang.org/downloads/).
+
+```
+sudo apt-get install jupyter
+```
+
+# Octave (MATLAB alternative)
+
+```
+sudo apt-get install octave
+```
+
 # C++
 
 ```

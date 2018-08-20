@@ -29,7 +29,10 @@ alias e='emacs -nw'
 alias v='nvim'
 alias m='tmux'
 alias s='tmux attach-session'
+
+# application aliases
 alias d='dropbox status'
+alias julia='/hom/sriramkswamy/julia-1.0.0/bin/julia'
 
 # git aliases
 alias g='git status'
