@@ -145,20 +145,10 @@ sudo apt-get install gcc gdb valgrind llvm lldb clang
 sudo apt-get install python3 python3-pip
 ```
 
-```
-python3 -m pip install --upgrade pip
-```
-
-Install editor specific stuff
+Install global packages
 
 ```
-python3 -m pip install --user neovim
-```
-
-Install virtualenv for everything
-
-```
-python3 -m pip install --user virtualenv
+python3 -m pip install --upgrade pip neovim virtualenv
 ```
 
 Switch to the virtualenv and install required packages
