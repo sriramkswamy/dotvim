@@ -9,7 +9,13 @@ sudo apt-get install openssh-server git wget curl grep gawk sed build-essential 
 Basic editor and editor tool support
 
 ```
-sudo apt-get install neovim vim silversearcher-ag ctags cargo tmux editorconfig
+sudo apt-get install vim silversearcher-ag ctags tmux editorconfig
+```
+
+Neovim pre-requisites
+
+```
+sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
 ```
 
 Subjectively a better shell

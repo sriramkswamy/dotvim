@@ -1166,19 +1166,6 @@ autocmd CompleteDone * pclose
 inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
-" Auto completion {{{1
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'roxma/nvim-completion-manager'
-let g:cm_refresh_length = [[1,1],[7,1]]
-let g:cm_completed_snippet_enable = 1
-
-" C++ completion {{{2
-Plug 'roxma/nvim-completion-manager' | Plug 'roxma/ncm-clang'
-
-" R completion {{{2
-Plug 'roxma/nvim-completion-manager' | Plug 'gaalcaras/ncm-R'
-
 " REPL and Tmux {{{1
 
 " let commands and maps without leader {{{2
