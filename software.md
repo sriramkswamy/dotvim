@@ -27,7 +27,7 @@ sudo apt-get install zsh
 Install emacs configuration
 
 ```
-git clone --recurse-submodules https://github.com/sriramkswamy/dotemacs.git
+git clone --recurse-submodules https://github.com/sriramkswamy/dotemacs.git ~/.emacs.d
 ```
 
 Install FZF for everything
@@ -190,4 +190,17 @@ Make a better prompt for zsh
 
 ```
 npm install --global pure-prompt
+```
+# Other programs
+
+Photo editing and drawing
+
+```
+sudo apt-get install inkscape krita gimp
+```
+
+Audio and Video editing
+
+```
+sudo apt-get install audacity kdenlive
 ```
