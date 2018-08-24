@@ -12,28 +12,26 @@ Basic editor and editor tool support
 sudo apt-get install vim silversearcher-ag ctags tmux editorconfig
 ```
 
-Neovim pre-requisites
-
-```
-sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
-```
-
 Subjectively a better shell
 
 ```
 sudo apt-get install zsh
 ```
 
-Install emacs configuration
-
-```
-git clone --recurse-submodules https://github.com/sriramkswamy/dotemacs.git ~/.emacs.d
-```
-
 Install FZF for everything
 
 ```
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+```
+
+# Editors
+
+## Vim/Neovim
+
+Neovim pre-requisites
+
+```
+sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
 ```
 
 Install vim/neovim configuration
@@ -50,7 +48,13 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.c
 curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
-# Emacs
+## Emacs
+
+Install emacs configuration
+
+```
+git clone --recurse-submodules https://github.com/sriramkswamy/dotemacs.git ~/.emacs.d
+```
 
 Get this whole list of software first
 
@@ -64,6 +68,15 @@ Then configure with a prefix and install it
 ./configure prefix=
 make
 make install
+```
+
+## Visual studio code
+
+Get the dependencies and install code having downloaded the binary from MS's
+website
+
+```
+sudo apt-get install libnotify4 libnss3 libxkbfile1 libgconf-2-4 libsecret-1-0
 ```
 
 # Dropbox
