@@ -71,7 +71,7 @@ make install
 Install dependencies first
 
 ```
-sudo apt-get install python-gtk2 libpango1.0-0 python-gpgme
+sudo apt-get install python-gtk2 libpango1.0-0 python-gpgme libxslt1-dev
 ```
 
 Download dropbox install from https://dropbox.com/install-linux and install it
