@@ -104,7 +104,7 @@ dropbox start -i
 Basic TeX packages
 
 ```
-sudo apt-get install texlive-full latexmk xzdec
+sudo apt-get install texlive-full latexmk xzdec ispell
 ```
 
 Initiate the path to install other specific LaTeX packages
@@ -113,10 +113,10 @@ Initiate the path to install other specific LaTeX packages
 tlmgr init-usertree
 ```
 
-Install `ispell` for Emacs usage
+Install latex to image converter
 
 ```
-sudo apt-get install ispell
+sudo apt-get install libqt4-sql-sqlite klatexformula
 ```
 
 # Julia (MATLAB alternative)
