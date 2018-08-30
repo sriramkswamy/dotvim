@@ -1047,7 +1047,8 @@ Plug 'w0rp/ale'
 let g:ale_set_quickfix = 1
 let g:ale_set_loclist = 0
 let g:ale_lint_on_text_changed = 'never'
-" Opening witht he default program
+let g:ale_completion_enabled = 1
+" Opening with the default program
 if has('macunix')
     let g:ale_linters = {
     \   'cpp': ['clang', 'clangcheck', 'cppcheck', 'cpplint'],

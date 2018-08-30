@@ -10,7 +10,7 @@
 
 " matlab support - sort of
 nnoremap <buffer> J :find <C-R><C-W><CR>
-nnoremap <buffer> K :AsyncRun /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>:copen<CR>
+nnoremap <buffer> K :AsyncRun /home/sriramkrish92/MATLAB/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>:copen<CR>
 
 " debug helpers
 nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>
