@@ -433,9 +433,9 @@ nnoremap <silent> dv :Rooter<CR>
 
 " Set a tag bar {{{3
 Plug 'majutsushi/tagbar'
-autocmd VimEnter * nested :call tagbar#autoopen(1)
-autocmd FileType * nested :call tagbar#autoopen(0)
-autocmd BufEnter * nested :call tagbar#autoopen(0)
+" autocmd VimEnter * nested :call tagbar#autoopen(1)
+" autocmd FileType * nested :call tagbar#autoopen(0)
+" autocmd BufEnter * nested :call tagbar#autoopen(0)
 nnoremap <silent> <Space>t :TagbarToggle<CR>
 
 " Searching {{{1
