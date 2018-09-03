@@ -7,7 +7,7 @@ UltiSnipsAddFiletypes markdown.tex
 
 " pandoc
 " convert to html
-nnoremap <buffer> mh :AsyncRun pandoc % -o %:r.html<CR>
+nnoremap <buffer> mh :AsyncRun pandoc % -s --mathjax -o %:r.html<CR>
 " convert to pdf with toc
 nnoremap <buffer> mm :AsyncRun pandoc -V geometry:margin=1in % -o %:r.pdf<CR>
 " convert to latex with toc
