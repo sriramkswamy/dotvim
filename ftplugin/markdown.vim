@@ -7,30 +7,14 @@ UltiSnipsAddFiletypes markdown.tex
 
 " pandoc
 " convert to html
-nnoremap <buffer> mh :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".html && open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mh :AsyncRun pandoc % -o %:r.html<CR>
 " convert to pdf with toc
-nnoremap <buffer> mm :let @m = "pandoc " . expand('%') . " -V geometry:margin=2cm -o " . expand('%:r') . ".pdf && open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mm :AsyncRun pandoc -V geometry:margin=1in % -o %:r.pdf<CR>
 " convert to latex with toc
-nnoremap <buffer> mt :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".tex"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mt :AsyncRun pandoc -V geometry:margin=1in % -o %:r.tex<CR>
 " convert to rst with toc
-nnoremap <buffer> me :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".rst"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> me :AsyncRun pandoc % -o %:r.rst<CR>
 " convert to org with toc
-nnoremap <buffer> mg :let @m = "pandoc " . expand('%') . " -o " . expand('%:r') . ".org"<CR>:TxSend(@m)<CR>
-" open with markoff
-nnoremap <buffer> mf :let @m = "open -a /Applications/Markoff.app " . expand('%')<CR>:TxSend(@m)<CR>
-" view the resulting pdf document
-nnoremap <buffer> mj :let @m = "open " . expand('%:r') . ".pdf"<CR>:TxSend(@m)<CR>
-" browse the resulting html document
-nnoremap <buffer> mb :let @m = "open -a /Applications/Safari.app " . expand('%:r') . ".html"<CR>:TxSend(@m)<CR>
-
-" blog - hexo
-" hexo generate and start server - view the blog
-nnoremap <buffer> mv :let @m = "hexo generate && hexo server"<CR>:TxSend(@m)<CR>
-" hexo deploy
-nnoremap <buffer> md :let @m = "hexo deploy"<CR>:TxSend(@m)<CR>
-" hexo publish
-nnoremap <buffer> mi :let @m = "hexo publish"<CR>:TxSend(@m)<CR>
-" hexo write
-nnoremap <buffer> mw :!hexo new ""<Left>
-" hexo clean
-nnoremap <buffer> mu :let @m = "hexo clean"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mg :AsyncRun pandoc % -o %:r.org<CR>
+" open resulting document
+nnoremap <buffer> mf :!open -a %<CR>
