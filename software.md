@@ -99,7 +99,7 @@ Start dropbox
 dropbox start -i
 ```
 
-# TeX support
+# Writing support
 
 Basic TeX packages
 
@@ -117,6 +117,12 @@ Install latex to image converter
 
 ```
 sudo apt-get install libqt4-sql-sqlite klatexformula
+```
+
+Pandoc to convert between formats
+
+```
+sudo apt-get install pandoc
 ```
 
 # Julia (MATLAB alternative)
