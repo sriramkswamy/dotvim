@@ -87,10 +87,7 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-#alias ll='ls -l'
-#alias la='ls -A'
-#alias l='ls -CF'
+export EDITOR='nvim'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -115,7 +112,7 @@ fi
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # python virtualenv
-source ~/venv/global/bin/activate
+source ~/.virtualenvs/global/bin/activate
 
 # start dropbox
 dropbox start

@@ -3,7 +3,7 @@
 Some packages that are pretty much basic and required for every further operation
 
 ```
-sudo apt-get install openssh-server git wget curl grep gawk sed build-essential tig
+sudo apt-get install openssh-server git wget curl locate grep gawk sed build-essential tig
 ```
 
 Basic editor and editor tool support
@@ -154,13 +154,13 @@ sudo apt-get install python3 python3-pip
 Install global packages
 
 ```
-python3 -m pip install --upgrade pip neovim virtualenv
+python3 -m pip install --upgrade pip neovim virtualenv virtualenvwrapper
 ```
 
 Switch to the virtualenv and install required packages
 
 ```
-python3 -m virtualenv ~/venv/global
+python3 -m virtualenv ~/.virtualenvs/global
 source ~/venv/global/bin/activate
 pip install -r ~/.emacs.d/requirements-global.txt
 ```
