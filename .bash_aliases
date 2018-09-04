@@ -46,7 +46,7 @@ alias gn='git init'
 
 # latexmk shortcuts
 alias mk='latexmk -pvc -pdf'
-alias rmtex="rm -rf *.aux *.fdb_latexmk *.fls *.lof *.log *.lot *.pdf *.toc"
+alias rmtex="rm -rf *.aux *.fdb_latexmk *.fls *.lof *.out *.log *.lot *.pdf *.toc *.bbl *.blg *.synctex.gz"
 
 # valigrind shortcuts
 alias valmem='valgrind --leak-check=full --show-leak-kinds=all --dsymutil=yes --leak-check-heuristics=all --log-file=valmem.log --leak-resolution=low'
