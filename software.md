@@ -219,13 +219,13 @@ npm install --global pure-prompt
 Photo editing and drawing
 
 ```
-sudo apt-get install inkscape krita gimp
+sudo apt-get install inkscape krita gimp darktable mypaint
 ```
 
 Audio and Video editing
 
 ```
-sudo apt-get install audacity kdenlive blender darktable
+sudo apt-get install audacity kdenlive blender
 ```
 
 Office suite
