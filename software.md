@@ -225,7 +225,7 @@ sudo apt-get install inkscape krita gimp
 Audio and Video editing
 
 ```
-sudo apt-get install audacity kdenlive blender
+sudo apt-get install audacity kdenlive blender darktable
 ```
 
 Office suite
