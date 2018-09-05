@@ -3,7 +3,7 @@
 Some packages that are pretty much basic and required for every further operation
 
 ```
-sudo apt-get install openssh-server git wget curl grep gawk sed build-essential tig
+sudo apt-get install openssh-server git wget curl locate grep gawk sed build-essential tig
 ```
 
 Basic editor and editor tool support
@@ -22,6 +22,20 @@ Install FZF for everything
 
 ```
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+```
+
+# Terminal
+
+Termite is a better terminal than most default ones. First install dependencies
+
+```
+sudo apt-get install libgtk-3-dev libvte-2.91-dev
+```
+
+Then clone the package, and build it using `make`
+
+```
+git clone --recursive https://github.com/thestinger/termite.git
 ```
 
 # Editors
@@ -154,13 +168,13 @@ sudo apt-get install python3 python3-pip
 Install global packages
 
 ```
-python3 -m pip install --upgrade pip neovim virtualenv
+python3 -m pip install --upgrade pip neovim virtualenv virtualenvwrapper
 ```
 
 Switch to the virtualenv and install required packages
 
 ```
-python3 -m virtualenv ~/venv/global
+python3 -m virtualenv ~/.virtualenvs/global
 source ~/venv/global/bin/activate
 pip install -r ~/.emacs.d/requirements-global.txt
 ```
@@ -205,11 +219,17 @@ npm install --global pure-prompt
 Photo editing and drawing
 
 ```
-sudo apt-get install inkscape krita gimp
+sudo apt-get install inkscape krita gimp darktable mypaint
 ```
 
 Audio and Video editing
 
 ```
 sudo apt-get install audacity kdenlive blender
+```
+
+Office suite
+
+```
+sudo apt-get install libreoffice
 ```

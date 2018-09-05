@@ -61,11 +61,11 @@ snippet hr "horizontal rule" b
 $1
 endsnippet
 
-snippet link "links"
+snippet lk "links"
 [${1:description}](${2:url})$3
 endsnippet
 
-snippet linkr "reference links"
+snippet lkr "reference links"
 [${1:description}][${2:ref_id}]$3
 endsnippet
 
@@ -134,5 +134,12 @@ snippet mm "pandoc newline math"
 $$
 $1
 $$
+$0
+endsnippet
+
+snippet pt "pandoc title"
+% ${1:Title}
+% ${2:Author}
+
 $0
 endsnippet
