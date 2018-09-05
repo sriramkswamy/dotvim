@@ -24,6 +24,20 @@ Install FZF for everything
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
 ```
 
+# Terminal
+
+Termite is a better terminal than most default ones. First install dependencies
+
+```
+sudo apt-get install libgtk-3-dev libvte-2.91-dev
+```
+
+Then clone the package, and build it using `make`
+
+```
+git clone --recursive https://github.com/thestinger/termite.git
+```
+
 # Editors
 
 ## Vim/Neovim
@@ -212,4 +226,10 @@ Audio and Video editing
 
 ```
 sudo apt-get install audacity kdenlive blender
+```
+
+Office suite
+
+```
+sudo apt-get install libreoffice
 ```
