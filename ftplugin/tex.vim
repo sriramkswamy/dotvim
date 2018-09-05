@@ -9,10 +9,10 @@ nmap <buffer> mb <Plug>(vimtex-delim-toggle-modifier)
 nnoremap <buffer> mi :VimtexInfo<CR>
 " toc
 nnoremap <buffer> mt :VimtexTocToggle<CR>
-" labels
-nnoremap <buffer> ml :VimtexLabelsToggle<CR>
+" toggle main
+nnoremap <buffer> ml :VimtexToggleMain<CR>
 " view
-nnoremap <buffer> mv :VimtexView<CR>
+nnoremap <buffer> mj :VimtexView<CR>
 " compile toggle
 nnoremap <buffer> mm :VimtexCompile<CR>
 " compile selected
@@ -29,8 +29,6 @@ nnoremap <buffer> mz :VimtexStatus<CR>
 nnoremap <buffer> mg :VimtexClean!<CR>
 " reload vimtex
 nnoremap <buffer> md :VimtexReload<CR>
-" toggling main file
-nnoremap <buffer> mj :VimtexToggleMain<CR>
 " count the number of words
 nnoremap <buffer> mw :VimtexCountWords<CR>
 
