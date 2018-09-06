@@ -52,7 +52,7 @@ set sessionoptions+=winsize
 " Fold options
 set foldmethod=indent
 set foldnestmax=10
-set nofoldenable
+set foldenable
 set foldlevel=2
 " Set list characters - Can be toggled with 'col'
 set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:+
@@ -318,8 +318,10 @@ nnoremap <silent> k gk
 nnoremap <silent> j gj
 " Free Tab
 nnoremap <C-p> <C-i>
-" Folding - lock tab
+" Folding - locks tab
 nnoremap <silent> <C-i> za
+nnoremap <silent> zm zM
+nnoremap <silent> zr zr
 " Vimrc
 nnoremap cv :e $MYVIMRC<CR>
 " tags
