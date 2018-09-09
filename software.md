@@ -45,7 +45,7 @@ git clone --recursive https://github.com/thestinger/termite.git
 Neovim pre-requisites
 
 ```
-sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
+sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip python3-neovim
 ```
 
 Install vim/neovim configuration
@@ -60,6 +60,12 @@ Install plugin manager for vim/neovim
 ```
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+
+Install vim and neovim themselves
+
+```
+sudo apt-get install vim-gtk3 neovim neovim-qt
 ```
 
 ## Emacs
