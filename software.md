@@ -239,3 +239,15 @@ Office suite
 ```
 sudo apt-get install libreoffice
 ```
+
+Mail reader
+
+```
+sudo apt-get install geary
+```
+
+Torrents for the very rare occassion
+
+```
+sudo apt-get install transmission-qt
+```
