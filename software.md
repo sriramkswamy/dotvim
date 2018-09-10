@@ -225,7 +225,14 @@ npm install --global pure-prompt
 Photo editing and drawing
 
 ```
-sudo apt-get install inkscape krita gimp darktable mypaint
+sudo apt-get install inkscape krita darktable mypaint
+```
+
+Add Gimp from flatpak though
+
+```
+sudo apt-get install flatpak
+flatpak install https://flathub.org/repo/appstream/org.gimp.GIMP.flatpakref
 ```
 
 Audio and Video editing

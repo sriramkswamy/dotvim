@@ -136,14 +136,14 @@ nnoremap coy :<C-u>set ft?<CR>
 nnoremap cow :<C-u>setlocal wrap!<CR>:set wrap?<CR>
 nnoremap coz :<C-u>set foldmethod=<C-R>=&foldmethod == 'manual' ? 'syntax' : 'manual'<CR><CR>
 " Clipboard
-nnoremap cp "*p
-nnoremap cy "*y
-nnoremap cpp "*pp
-nnoremap cyy "*yy
-nnoremap cP "*p$
-nnoremap cY "*y$
-vnoremap <C-p> "*p
-vnoremap <C-y> "*y
+nnoremap cp "+p
+nnoremap cy "+y
+nnoremap cpp "+pp
+nnoremap cyy "+yy
+nnoremap cP "+p$
+nnoremap cY "+y$
+vnoremap <C-p> "+p
+vnoremap <C-y> "+y
 " Readline-ish bindings in Command-line mode
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
