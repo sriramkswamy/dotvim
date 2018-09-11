@@ -213,13 +213,14 @@ Install the tidy verse in R
 install.packages("tidyverse")
 ```
 
-# Visual fluff
+# Arduino
 
-Make a better prompt for zsh
+For those rare collaborative projects on electronics
 
 ```
-npm install --global pure-prompt
+sudo apt-get install arduino
 ```
+
 # Other programs
 
 Photo editing and drawing
