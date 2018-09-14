@@ -95,7 +95,12 @@ export EDITOR='nvim'
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+    source ~/.bash_aliases
+fi
+
+# Custom functions
+if [ -f ~/.functions ]; then
+    source ~/.functions
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -103,16 +108,16 @@ fi
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
+    source /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+    source /etc/bash_completion
   fi
 fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # python virtualenv
-source ~/.virtualenvs/global/bin/activate
+source ~/venv/global/bin/activate
 
 # start dropbox
 dropbox start
