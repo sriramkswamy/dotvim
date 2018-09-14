@@ -99,7 +99,7 @@ website
 sudo apt-get install libnotify4 libnss3 libxkbfile1 libgconf-2-4 libsecret-1-0
 ```
 
-# Dropbox
+# Cloud
 
 Install dependencies first
 
@@ -117,6 +117,12 @@ Start dropbox
 
 ```
 dropbox start -i
+```
+
+For all other cloud services, use `rsync` and `rclone`
+
+```
+sudo apt-get install rsync rclone
 ```
 
 # Writing support
