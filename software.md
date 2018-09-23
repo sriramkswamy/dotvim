@@ -9,7 +9,7 @@ sudo apt-get install openssh-server git wget curl locate grep gawk sed build-ess
 Basic editor and editor tool support
 
 ```
-sudo apt-get install vim silversearcher-ag ctags tmux editorconfig poppler-utils
+sudo apt-get install vim silversearcher-ag ctags tmux editorconfig poppler-utils snapd
 ```
 
 Subjectively a better shell
