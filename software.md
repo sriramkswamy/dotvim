@@ -9,7 +9,7 @@ sudo apt-get install openssh-server git wget curl locate grep gawk sed build-ess
 Basic editor and editor tool support
 
 ```
-sudo apt-get install vim silversearcher-ag ctags tmux editorconfig poppler-utils snapd adb
+sudo apt-get install vim silversearcher-ag ctags tmux editorconfig poppler-utils
 ```
 
 Subjectively a better shell
@@ -264,4 +264,26 @@ Torrents for the very rare occassion
 
 ```
 sudo apt-get install transmission-qt
+```
+
+# Android on Linux (Experimental)
+
+Install snap package support and Android Debug Bridge
+
+```
+sudo apt-get install snapd adb
+```
+
+Add Anbox kernel modules
+
+```
+sudo add-apt-repository ppa:morphis/anbox-support
+sudo apt-get update
+sudo apt-get install anbox-modules-dkms
+```
+
+Install Anbox
+
+```
+sudo snap install --devmode --beta anbox
 ```
