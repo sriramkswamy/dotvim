@@ -122,3 +122,8 @@ gsynctoremote () {
 gsyncfromremote () {
   rclone sync gdrive-remote:$1 /home/sriramkrish92/GoogleDrive/$2 
 }
+
+# pandoc convert from markdown to pdf
+mdtopdf () {
+  pandoc -V geometry:margin=1in $1 -o $2
+}
