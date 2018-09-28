@@ -3,38 +3,47 @@ snippet p "preamble" b
 
 \usepackage[utf8]{inputenc}
 \usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
-\usepackage{booktabs}
-\usepackage{cancel}
+\usepackage{helvet}
+
 \usepackage{caption}
-\usepackage{cleveref}
-\usepackage{colortbl}
-\usepackage{csquotes}
-\usepackage{mathpazo}
-\usepackage{multirow}
-\usepackage{listings}
+\usepackage{subcaption}
+
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.10}
-\usepackage{helvet}
 \usepackage{grffile}
 \usepackage{graphicx}
-\usepackage{fancyhdr}
-\usepackage{hyperref}
-\usepackage{xcolor}
-\usepackage{cite}
-\usepackage{array}
-\usepackage{setspace}
+\usepackage{epstopdf}
 \usepackage{tikz}
+
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage[mathscr]{eucal}
 \usepackage{amssymb}
+\usepackage{mathpazo}
+\usepackage{multirow}
+
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{empheq}
+
+\usepackage{cleveref}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{cite}
+
+\usepackage{csquotes}
+\usepackage{listings}
+
+\usepackage{esint}
 \usepackage{siunitx}
 \usepackage{chemmacros}
-\usepackage{esint}
-\usepackage{subcaption}
-\usepackage{titlesec}
-\usepackage{epstopdf}
-\usepackage{empheq}
+
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{cancel}
 
 \newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
 
@@ -157,27 +166,27 @@ endsnippet
 
 snippet fig "figure" b
 \begin{figure}[$1]
-${5:\centering}
-$4
-\caption{$2}
-\label{fig:$3}
+	${6:\centering}
+	$5
+	\caption${2:*}{$3}
+\label{fig:$4}
 \end{figure}
 $0
 endsnippet
 
 snippet sfig "sub figure" b
 \begin{subfigure}[${1:b}]{${2:0.5}\textwidth}
-${6:\centering}
-$5
-\caption{$3}
-\label{sfig:$4}
+	${7:\centering}
+	$6
+	\caption${3:*}{$4}
+\label{sfig:$5}
 \end{subfigure}
 $0
 endsnippet
 
 snippet tik "tikzpicture" b
 \begin{tikzpicture}[scale=${1:1}]
-$2
+	$2
 \end{tikzpicture}
 $0
 endsnippet
