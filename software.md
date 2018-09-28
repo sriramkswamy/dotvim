@@ -1,4 +1,6 @@
-# Core packages
+# Linux
+
+## Core packages
 
 Some packages that are pretty much basic and required for every further operation
 
@@ -24,7 +26,7 @@ Install FZF for everything
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
 ```
 
-# Terminal
+## Terminal
 
 Termite is a better terminal than most default ones. First install dependencies
 
@@ -38,9 +40,9 @@ Then clone the package, and build it using `make`
 git clone --recursive https://github.com/thestinger/termite.git
 ```
 
-# Editors
+## Editors
 
-## Vim/Neovim
+### Vim/Neovim
 
 Neovim pre-requisites
 
@@ -68,7 +70,7 @@ Install vim and neovim themselves
 sudo apt-get install vim-gtk3 neovim neovim-qt
 ```
 
-## Emacs
+### Emacs
 
 Install emacs configuration
 
@@ -90,7 +92,7 @@ make
 make install
 ```
 
-## Visual studio code
+### Visual studio code
 
 Get the dependencies and install code having downloaded the binary from MS's
 website
@@ -99,7 +101,7 @@ website
 sudo apt-get install libnotify4 libnss3 libxkbfile1 libgconf-2-4 libsecret-1-0
 ```
 
-# Cloud
+## Cloud
 
 Install dependencies first
 
@@ -125,7 +127,7 @@ For all other cloud services, use `rsync` and `rclone`
 sudo apt-get install rsync rclone
 ```
 
-# Writing support
+## Writing support
 
 Basic TeX packages
 
@@ -151,7 +153,7 @@ Pandoc to convert between formats
 sudo apt-get install pandoc
 ```
 
-# Julia (MATLAB alternative)
+## Julia (MATLAB alternative)
 
 Get Julia from their [website](https://julialang.org/downloads/).
 
@@ -159,19 +161,19 @@ Get Julia from their [website](https://julialang.org/downloads/).
 sudo apt-get install jupyter
 ```
 
-# Octave (MATLAB alternative)
+## Octave (MATLAB alternative)
 
 ```
 sudo apt-get install octave
 ```
 
-# C++
+## C++
 
 ```
 sudo apt-get install gcc gdb valgrind llvm lldb clang
 ```
 
-# Python
+## Python
 
 ```
 sudo apt-get install python3 python3-pip
@@ -191,7 +193,7 @@ source ~/venv/global/bin/activate
 pip install -r ~/.emacs.d/requirements-global.txt
 ```
 
-# JavaScript
+## JavaScript
 
 Install nodejs
 
@@ -199,7 +201,7 @@ Install nodejs
 sudo apt-get install nodejs
 ```
 
-# R language
+## R language
 
 Install the r language
 
@@ -219,7 +221,7 @@ Install the tidy verse in R
 install.packages("tidyverse")
 ```
 
-# Arduino
+## Arduino
 
 For those rare collaborative projects on electronics
 
@@ -227,7 +229,7 @@ For those rare collaborative projects on electronics
 sudo apt-get install arduino
 ```
 
-# Other programs
+## Other programs
 
 Photo editing and drawing
 
@@ -266,7 +268,7 @@ Torrents for the very rare occassion
 sudo apt-get install transmission-qt
 ```
 
-# Android on Linux (Experimental)
+## Android on Linux (Experimental)
 
 Install snap package support and Android Debug Bridge
 
@@ -286,4 +288,106 @@ Install Anbox
 
 ```
 sudo snap install --devmode --beta anbox
+```
+# macOS
+
+## Package manager
+
+There is no default package manager on macOS. Homebrew is a good substitute.
+Note that this installs homebrew in `/usr/local` directory by default and it
+might not be ideal for shared computers.
+
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+Basic editor and editor tool support
+
+```
+brew install silversearcher-ag ctags tmux editorconfig poppler zsh fzf git
+```
+
+## Writing support
+
+Basic TeX packages
+
+```
+brew install texlive-full latexmk xzdec ispell
+```
+
+Initiate the path to install other specific LaTeX packages
+
+```
+tlmgr init-usertree
+```
+
+Install latex to image converter
+
+```
+brew install latexit
+```
+
+Pandoc to convert between formats
+
+```
+brew install pandoc
+```
+
+## Octave (MATLAB alternative)
+
+```
+brew install octave
+```
+
+## C++
+
+```
+brew install gcc gdb valgrind llvm lldb clang
+```
+
+## Python
+
+```
+brew install python3
+```
+
+Install some global packages
+
+```
+python3 -m pip install --upgrade pip neovim virtualenv virtualenvwrapper
+```
+
+Switch to the virtualenv and install required packages
+
+```
+python3 -m virtualenv ~/venv/global
+source ~/venv/global/bin/activate
+```
+
+Download `requirements-global.txt` from the git repository
+
+```
+pip install -r ~/Downloads/requirements-global.txt
+```
+
+## JavaScript
+
+Install nodejs
+
+```
+brew install nodejs
+```
+
+## R language
+
+Install the r language
+
+```
+brew install r-base
+```
+
+Install the tidy verse in R
+
+```
+install.packages("tidyverse")
 ```
