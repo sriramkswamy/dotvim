@@ -18,4 +18,8 @@ nnoremap <buffer> me :AsyncRun pandoc % -o %:r.rst<CR>
 " convert to org with toc
 nnoremap <buffer> mg :AsyncRun pandoc % -o %:r.org<CR>
 " open resulting document
-nnoremap <buffer> mf :!open -a %<CR>
+if has('macunix')
+    nnoremap <buffer> mf :!open -a %:r.pdf<CR>
+elseif has('unix')
+    nnoremap <buffer> mf :!evince %:r.pdf<CR>
+endif

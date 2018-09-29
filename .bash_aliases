@@ -7,7 +7,7 @@ alias ll="ls -lh"
 alias lr="ls -Rlh"
 
 # editor alias
-alias v='nvim'
+alias v='emacs -nw'
 alias f='ranger'
 
 # tmux aliases
@@ -65,3 +65,11 @@ alias vd='deactivate'
 alias pingu='ping -c 25 www.google.com'
 alias please='sudo $(fc -ln -1)'
 alias cl="clear"
+
+# youtube downloader
+alias ytvid="youtube-dl --format=mp4 -o '~/Downloads/MyVideos/%(title)s.%(ext)s'"
+alias ytplay="youtube-dl --format=mp4 -o '~/Downloads/MyVideos/%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s'"
+alias ytchannel="youtube-dl --format=mp4 -o '~/Downloads/MyVideos/%(uploader)s/%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s'"
+
+# rclone
+alias rls="rclone listremotes"
