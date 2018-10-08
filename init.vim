@@ -1247,7 +1247,7 @@ let g:tmuxify_run = {
 			\ 'tex': 'latexmk -pdf -pvc %',
 			\ 'python': 'ipython',
 			\ 'R': 'R --no-save --quiet',
-			\ 'matlab': 'matlab',
+			\ 'matlab': 'mat',
 			\ 'julia': 'julia',
 			\ 'scheme': 'racket',
 			\ 'racket': 'racket',

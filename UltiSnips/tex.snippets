@@ -135,14 +135,14 @@ endsnippet
 
 snippet tabl "table" b
 \begin{table}[$1]
-\centering
-\begin{tabular}{${2:L}{${3:4}cm}${4:L}{${5:4}cm}$6}
-\toprule
-$9
-\bottomrule
-\end{tabular}
-\caption{$7}
-\label{tab:$8}
+	\centering
+	\begin{tabular}{${2:l}${3:l}$4}
+		\toprule
+		$8
+		\bottomrule
+	\end{tabular}
+	\caption${5:*}{$6}
+	\label{tab:$7}
 \end{table}
 $0
 endsnippet
