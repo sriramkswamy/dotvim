@@ -17,9 +17,6 @@ alias T='tmux detach'
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
 # application aliases
-alias dd='dropbox status'
-alias ds='dropbox start -i'
-alias dx='dropbox stop'
 alias r='R --no-save --quiet'
 alias julia='/home/sriramkrish92/julia-1.0.0/bin/julia'
 alias mat='/home/sriramkrish92/MATLAB/bin/matlab -nosplash -nodesktop'
@@ -27,7 +24,7 @@ alias matlab='/home/sriramkrish92/MATLAB/bin/matlab'
 
 # git aliases
 alias l='tig'
-alias gs='git status'
+alias g='git status'
 alias ga='git add'
 alias gca='git commit --amend'
 alias gcm='git commit -m'
@@ -72,4 +69,13 @@ alias ytplay="youtube-dl --format=mp4 -o '~/Downloads/MyVideos/%(playlist)s/%(pl
 alias ytchannel="youtube-dl --format=mp4 -o '~/Downloads/MyVideos/%(uploader)s/%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s'"
 
 # rclone
-alias rls="rclone listremotes"
+alias rcr="rclone listremotes"
+alias rcconf="rclone config"
+alias rcls="rclone ls"
+alias rclsd="rclone lsd"
+alias rcmkdir="rclone mkdir"
+alias rcrmdir="rclone rmdir"
+alias rcdel="rclone delete"
+alias rcpurge="rclone purge"
+alias rccp="rclone copy"
+alias rcsync="rclone sync"
