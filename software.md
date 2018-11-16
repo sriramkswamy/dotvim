@@ -147,6 +147,13 @@ Install latex to image converter
 sudo apt-get install libqt4-sql-sqlite klatexformula
 ```
 
+Install pdf viewer with synctex support
+
+```
+sudo apt-get install zathura zathura-cb zathura-ps zathura-djvu zathura-pdf-poppler
+```
+
+
 Pandoc to convert between formats
 
 ```
