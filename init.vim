@@ -1016,6 +1016,7 @@ let g:vimtex_text_obj_enabled = 0
 let g:vimtex_imaps_enabled = 0
 let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
+let g:vimtex_view_general_viewer = 'mupdf'
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
