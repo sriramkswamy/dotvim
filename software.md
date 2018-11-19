@@ -1,5 +1,11 @@
 # Linux
 
+First, update the system
+
+```
+sudo apt-get update && sudo apt-get upgrade
+```
+
 ## Core packages
 
 Some packages that are pretty much basic and required for every further operation
@@ -14,40 +20,18 @@ Basic editor and editor tool support
 sudo apt-get install vim silversearcher-ag ctags tmux editorconfig poppler-utils
 ```
 
-Subjectively a better shell
-
-```
-sudo apt-get install zsh
-```
-
 Install FZF for everything
 
 ```
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
 ```
 
-## Terminal
-
-Termite is a better terminal than most default ones. First install dependencies
-
-```
-sudo apt-get install libgtk-3-dev libvte-2.91-dev
-```
-
-Then clone the package, and build it using `make`
-
-```
-git clone --recursive https://github.com/thestinger/termite.git
-```
-
-## Editors
-
 ### Vim/Neovim
 
 Neovim pre-requisites
 
 ```
-sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip python3-neovim
+sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
 ```
 
 Install vim/neovim configuration
@@ -67,7 +51,7 @@ curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubuserc
 Install vim and neovim themselves
 
 ```
-sudo apt-get install vim-gtk3 neovim neovim-qt
+sudo apt-get install libgtk-3-dev libvte-2.91-dev vim-gtk3 neovim neovim-qt
 ```
 
 ### Emacs
@@ -103,29 +87,7 @@ sudo apt-get install libnotify4 libnss3 libxkbfile1 libgconf-2-4 libsecret-1-0
 
 ## Cloud
 
-Install dependencies first
-
-```
-sudo apt-get install python-gtk2 libpango1.0-0 python-gpgme libxslt1-dev
-```
-
-Download dropbox install from https://dropbox.com/install-linux and install it
-
-```
-sudo dpkg -i dropbox-amd*.deb
-```
-
-Start dropbox
-
-```
-dropbox start -i
-```
-
-For all other cloud services, use `rsync` and `rclone`
-
-```
-sudo apt-get install rsync rclone
-```
+For cloud services, use `rsync` and `rclone`
 
 ## Writing support
 
