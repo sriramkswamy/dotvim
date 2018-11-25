@@ -1208,6 +1208,16 @@ snippet inv "make subsequent stuff transparent"
 $0
 endsnippet
 
+snippet tsp "transparent"
+\transparent{$1}{$0}
+endsnippet
+
+snippet tbl "text block"
+\begin{textblock}{${1:num}}(${2:xpos},${3:ypos})
+$0
+\end{textblock}
+endsnippet
+
 snippet vis "make subsequent stuff visible"
 \setbeamercovered{invisible}
 $0
