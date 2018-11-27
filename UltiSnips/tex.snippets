@@ -1209,12 +1209,12 @@ $0
 endsnippet
 
 snippet tsp "transparent"
-\texttransparent{$1}{$0}
+\texttransparent{${1:opacity}}{${0:text}}
 endsnippet
 
-snippet tbl "text block"
-\begin{textblock}{${1:num}}(${2:xpos},${3:ypos})
-$0
+snippet txb "text block"
+\begin{textblock}{${1:size}}(${2:xpos},${3:ypos})
+	$0
 \end{textblock}
 endsnippet
 
@@ -1224,7 +1224,7 @@ $0
 endsnippet
 
 snippet only "make subsequent stuff visible"
-\only<${1:slide}>{${0:text}
+\only<${1:slide}>{${0:text}}
 endsnippet
 
 snippet ov "overlay for visual effects"
