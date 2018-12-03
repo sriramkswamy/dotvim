@@ -59,17 +59,6 @@ snippet p "preamble" b
 \newcolumntype{C}[1]{>{\centering\let\newline\\\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\\\arraybackslash\hspace{0pt}}m{#1}}
 
-\titleformat{\chapter}[block]
-{\normalfont\huge\bfseries}{\thechapter.}{1em}{\Huge}
-\titlespacing*{\chapter}{0pt}{-19pt}{0pt}
-
-\newcommand{\mychapter}[2]
-{\setcounter{chapter}{#1}
- \setcounter{section}{0}
- \chapter*{#2}
- \addcontentsline{toc}{chapter}{#2}
-}
-
 \pagenumbering{${3:gobble}}
 
 \begin{document}
@@ -1072,6 +1061,14 @@ snippet las "large size"
 \large
 endsnippet
 
+snippet fnm "footnote mark" i
+\footnotemark
+endsnippet
+
+snippet fnt "footnote text"
+\footnotetext[${1:num}]{${0:text}}
+endsnippet
+
 snippet fns "footnote size"
 \footnotesize
 endsnippet
@@ -1253,4 +1250,12 @@ endsnippet
 
 snippet dq "double quotes"
 \`\`$1'' $0
+endsnippet
+
+snippet clr "color red"
+{\color{red} $1}$0
+endsnippet
+
+snippet clb "color blue"
+{\color{blue} $1}$0
 endsnippet

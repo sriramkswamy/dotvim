@@ -20,6 +20,12 @@ Basic editor and editor tool support
 sudo apt-get install vim silversearcher-ag ctags tmux editorconfig poppler-utils
 ```
 
+Plugin support for tmux
+
+```
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
 Install FZF for everything
 
 ```
