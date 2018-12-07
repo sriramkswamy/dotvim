@@ -11,9 +11,6 @@ alias v='nvim'
 alias f='ranger'
 
 # tmux aliases
-alias x='tmux'
-alias t='tmux attach-session -t'
-alias T='tmux detach'
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
 # application aliases
@@ -23,8 +20,8 @@ alias mat='/home/sriramkrish92/MATLAB/bin/matlab -nosplash -nodesktop'
 alias matlab='/home/sriramkrish92/MATLAB/bin/matlab'
 
 # git aliases
-alias l='tig'
-alias g='git status'
+alias g='tig'
+alias gs='git status'
 alias ga='git add'
 alias gca='git commit --amend'
 alias gcm='git commit -m'
