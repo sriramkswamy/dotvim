@@ -12,7 +12,7 @@ alias f='ranger'
 
 # tmux aliases
 alias x='tmux'
-alias t='tmux attach-session'
+alias t='tmux attach-session -t'
 alias T='tmux detach'
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
