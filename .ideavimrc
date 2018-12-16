@@ -1,0 +1,133 @@
+set hlsearch
+set scrolloff=3
+set ignorecase smartcase
+set showmode
+set history=1000
+
+" easy system clipboard copy/paste
+nnoremap cp "*p
+nnoremap cy "*y
+nnoremap cpp "*pp
+nnoremap cyy "*yy
+nnoremap cP "*p$
+nnoremap cY "*y$
+vnoremap <C-p> "*p
+vnoremap <C-y> "*y
+
+" easy window navigation
+nnoremap wl <c-w>l
+nnoremap wj <c-w>j
+nnoremap wh <c-w>h
+nnoremap wk <c-w>k
+nnoremap ww <c-w>w
+
+" Tabs
+nnoremap <Space><Tab> gt
+nnoremap <Space><BS> gT
+nnoremap gt :tabe<CR>
+nnoremap gT :tabc<CR>
+
+" Keep me in visual mode
+vnoremap <silent> > >gv
+vnoremap <silent> < <gv
+
+" change buffers easily
+nnoremap vo :e<Space>
+nnoremap <Space>w :update<CR>
+
+" options
+nnoremap cow :action EditorToggleUseSoftWraps<cr>
+nnoremap col :action EditorToggleShowWhitespaces<cr>
+
+" actions
+nnoremap <space>q :action CloseContent<cr>
+nnoremap <space>Q :action ReopenClosedTab<cr>
+nnoremap <BS> :action VimFilePrevious<cr>
+nnoremap <space>p :action SearchEverywhere<cr>
+nnoremap <space>f :action Switcher<cr>
+nnoremap <space>r :action RecentFiles<cr>
+nnoremap <space>n :action FileStructurePopup<cr>
+nnoremap mgs :action ToggleLineBreakpoint<cr>
+
+" project
+nnoremap <space>oo :action OpenProject<cr>
+nnoremap <space>oi :action ImportProject<cr>
+nnoremap <space>on :action NewProject<cr>
+nnoremap <space>oq :action CloseProject<cr>
+nnoremap <space>oc :action CompileProject<cr>
+
+" Auto-center
+nnoremap <silent> <C-o> <C-o>zz
+nnoremap <silent> <C-i> <C-i>zz
+nnoremap <silent> <C-f> <C-f>zz
+nnoremap <silent> <C-d> <C-d>zz
+nnoremap <silent> <C-u> <C-u>zz
+nnoremap <silent> <C-b> <C-b>zz
+nnoremap <silent> G Gzz
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> k gk
+nnoremap <silent> j gj
+" Free Tab
+nnoremap <C-p> <C-i>
+" Folding - locks tab
+nnoremap <silent> <C-i> za
+nnoremap <silent> zm zM
+nnoremap <silent> zr zr
+
+" code navigation
+nnoremap <space>j :action GotoAction<cr>
+nnoremap <space>k :action GotoFile<cr>
+nnoremap t :action GotoSymbol<cr>
+nnoremap J :action GotoDeclaration<cr>
+nnoremap mji :action GotoImplementation<cr>
+nnoremap mjd :action GotoDeclaration<cr>
+nnoremap mjs :action GotoSuperMethod<cr>
+nnoremap mju :action FindUsages<cr>
+nnoremap <space>t :action GotoTest<cr>
+nnoremap # :action HighlightUsagesInFile<cr>
+nnoremap mgc :action DebugClass<cr>
+nnoremap mgg :action Debug<cr>
+nnoremap <space>s :action CheckStyleCurrentFileAction<cr>
+
+" run
+nnoremap <space>mc :action RunClass<cr>
+nnoremap <space>mm :action Run<cr>
+nnoremap <space>mp :action Run Project<cr>
+nnoremap <space>mt :action Run Tests<cr>
+nnoremap <space>mo :action RunCoverage<cr>
+nnoremap <space>mj :action RunToCursor<cr>
+nnoremap <space>ma :action RunAnything<cr>
+nnoremap <space>mr :action Rerun<cr>
+nnoremap <space>mT :action RerunTests<cr>
+
+" code refactoring
+nnoremap gE :action RenameElement<cr>
+
+" unimpaired mappings
+nnoremap [o O<esc>j
+nnoremap ]o o<esc>k
+nnoremap [[ :action MethodUp<cr>
+nnoremap ]] :action MethodDown<cr>
+nnoremap gk :action VcsShowPrevChangeMarker<cr>
+nnoremap gj :action VcsShowNextChangeMarker<cr>
+
+" preserve ideavim defaults
+nnoremap g<c-o> <c-o>
+nnoremap g<c-i> <c-i>
+" but built-in navigation to navigated items works better
+nnoremap <c-o> :action Back<cr>
+nnoremap <c-p> :action Forward<cr>
+
+" preserve ideavim search
+nnoremap g/ /
+nnoremap gn n
+nnoremap gN N
+" but built in search looks better
+nnoremap / :action Find<cr>
+nnoremap n :action PreviousOccurence<cr>
+nnoremap N :action NextOccurence<cr>
+nnoremap g, :action JumpToNextChange<cr>
+nnoremap g; :action JumpToLastChange<cr>
