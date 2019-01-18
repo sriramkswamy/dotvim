@@ -164,7 +164,7 @@ Switch to the virtualenv and install required packages
 ```
 python3 -m virtualenv ~/.virtualenvs/global
 source ~/.virtualenvs/global/bin/activate
-pip install -r ~/.emacs.d/requirements-global.txt
+pip install -r ~/.config/nvim/requirements-global.txt
 ```
 
 ## JavaScript
