@@ -31,28 +31,20 @@ f() {
   cd "$dir"
 }
 
-# Another fd - cd into the selected directory
-# This one differs from the above, by only showing the sub directories and not
-#  showing the directories within those.
+# j - cd to selected parent directory
 j() {
-  DIR=`find * -maxdepth 0 -type d -print 2> /dev/null | fzf-tmux` \
-    && cd "$DIR"
+  local declare dirs=()
+  get_parent_dirs() {
+    if [[ -d "${1}" ]]; then dirs+=("$1"); else return; fi
+    if [[ "${1}" == '/' ]]; then
+      for _dir in "${dirs[@]}"; do echo $_dir; done
+    else
+      get_parent_dirs $(dirname "$1")
+    fi
+  }
+  local DIR=$(get_parent_dirs $(realpath "${1:-$PWD}") | fzf-tmux --tac)
+  cd "$DIR"
 }
-
-# # l - cd to selected parent directory
-# l() {
-#   local declare dirs=()
-#   get_parent_dirs() {
-#     if [[ -d "${1}" ]]; then dirs+=("$1"); else return; fi
-#     if [[ "${1}" == '/' ]]; then
-#       for _dir in "${dirs[@]}"; do echo $_dir; done
-#     else
-#       get_parent_dirs $(dirname "$1")
-#     fi
-#   }
-#   local DIR=$(get_parent_dirs $(realpath "${1:-$PWD}") | fzf-tmux --tac)
-#   cd "$DIR"
-# }
 
 # d - fuzzy cd from anywhere
 # ex: d word1 word2 ... (even part of a file name)
