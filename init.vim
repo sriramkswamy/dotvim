@@ -1046,23 +1046,7 @@ let g:LanguageClient_serverCommands = {
     \ }
 
 " Syntax checking {{{1
-Plug 'w0rp/ale'
-let g:ale_set_quickfix = 1
-let g:ale_set_loclist = 0
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_completion_enabled = 1
-" Opening with the default program
-if has('macunix')
-    let g:ale_linters = {
-    \   'cpp': ['clang', 'clangcheck', 'cppcheck', 'cpplint'],
-    \   'c': ['clang', 'cppcheck'],
-    \}
-elseif has('unix')
-    let g:ale_linters = {
-    \   'cpp': ['gcc', 'cppcheck', 'cpplint'],
-    \   'c': ['gcc', 'cppcheck'],
-    \}
-endif
+Plug 'neomake/neomake'
 
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -1552,6 +1536,9 @@ au Filetype tex call ncm2#register_source({
             \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
             \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
             \ })
+
+" syntax check when reading a buffer (after 1s), and when writing (no delay).
+call neomake#configure#automake('rw', 1000)
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1

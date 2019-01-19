@@ -77,4 +77,4 @@ nnoremap <buffer> mas :let @m = "dir()"<CR>:TxSend(@m)<CR>
 nnoremap <buffer> mgg :let @m = "plt.plot(" . expand('<cword>') . "); plt.show()"<CR>:TxSend(@m)<CR>
 
 " set format options
-setlocal formatprg=yapf
+" setlocal formatprg=yapf
