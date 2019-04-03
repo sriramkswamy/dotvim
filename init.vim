@@ -252,7 +252,7 @@ nnoremap g_ :LocalIndentOff<CR>
 Plug 'junegunn/goyo.vim'
 let g:goyo_width = 85
 let g:goyo_height = 90
-nnoremap <Space>h :Goyo<CR>
+nnoremap <Space>o :Goyo<CR>
 
 " File/Buffer navigation {{{1
 
@@ -415,7 +415,7 @@ function! s:QListToggle()
     endif
 endfunction
 command!  QToggle call s:QListToggle()
-nnoremap <silent> <Space>m :QToggle<CR>
+nnoremap <silent> <Space>b :QToggle<CR>
 
 " Plugins {{{2
 
@@ -480,8 +480,8 @@ nnoremap g/ :lvimgrep // %<Left><Left><Left>
 nnoremap <silent> # *N:lvimgrep /<C-R>// %<CR>
 
 " substitution
-nnoremap <Space>y :<C-u>%s///g<Left><Left><Left>
-vnoremap <Space>y :s///g<Left><Left><Left>
+nnoremap <Space>v :<C-u>%s///g<Left><Left><Left>
+vnoremap <Space>v :s///g<Left><Left><Left>
 
 " basic renaming
 nnoremap <silent> - *Ncgn
@@ -888,7 +888,7 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal', {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-nnoremap <silent> <Space>g :Gstatus<CR>gg<C-n>
+nnoremap <silent> <Space>e :Gstatus<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>
 nnoremap yu :Gcommit<CR>O
 nnoremap du :Gdiff<CR>
@@ -900,9 +900,9 @@ nnoremap <silent> gm :Merginal<CR>
 " Interactive rebasing and tree {{{3
 Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'
 nnoremap <silent> gG :GV?<CR>
-nnoremap <silent> <Space>c :GV<CR>
+nnoremap <silent> <Space>g :GV<CR>
 vnoremap <silent> gG :GV?<CR>
-vnoremap <silent> <Space>c :GV<CR>
+vnoremap <silent> <Space>g :GV<CR>
 
 " Project/Session management {{{1
 Plug 'tpope/vim-obsession'
@@ -953,34 +953,53 @@ function! RemoveAllBreakpoints()
     endif
 endfunction
 
-" Auto completion {{{1
-" assuming your using vim-plug: https://github.com/junegunn/vim-plug
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
+" LSP support and Auto completion {{{1
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+" omni, tag, word, dictionary, syntax, vimtex, css, json, html, pyls, gocode,
+" rls, solargraph, stylelint, eslint, tslint, tsserver, vetur, wxml ultisnips,
+" snippets
+let g:coc_global_extensions = [
+            \ 'coc-omni',
+            \ 'coc-word',
+            \ 'coc-ultisnips',
+            \ 'coc-snippets'
+            \ ]
+autocmd filetype python,javascript,typescript :call coc#add_extension('coc-pyls',
+            \ 'coc-css',
+            \ 'coc-json',
+            \ 'coc-html',
+            \ 'coc-eslint',
+            \ 'coc-tslint',
+            \ 'coc-tsserver'
+            \ )
+autocmd filetype c,cpp :call coc#add_extension('coc-clangd',
+            \ 'coc-css',
+            \ 'coc-json',
+            \ 'coc-html',
+            \ 'coc-wxml'
+            \ )
+autocmd filetype tex :call coc#add_extension('coc-vimtex',
+            \ 'coc-stylelint',
+            \ 'coc-dictionary'
+            \ )
 
-" enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
-
-" IMPORTANT: :help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect
-
-" General completion
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-tmux'
-Plug 'ncm2/ncm2-path'
-" Plug 'ncm2/ncm2-ultisnips'
-
-" Subscope
-Plug 'ncm2/ncm2-markdown-subscope'
-
-" Python completion
-Plug 'ncm2/ncm2-jedi'
-
-" C++ completion {{{2
-Plug 'ncm2/ncm2-pyclang'
-
-" R completion {{{2
-Plug 'gaalcaras/ncm-R'
+" Mappings {{{2
+nnoremap <Space>al <Plug>(coc-diagnostic-info)
+nnoremap <Space>aj <Plug>(coc-diagnostic-next)
+nnoremap <Space>ak <Plug>(coc-diagnostic-prev)
+nnoremap <Space>aa <Plug>(coc-definition)
+nnoremap <Space>ad <Plug>(coc-declaration)
+nnoremap <Space>ai <Plug>(coc-implementation)
+nnoremap <Space>at <Plug>(coc-type-definition)
+nnoremap <Space>ar <Plug>(coc-references)
+nnoremap <Space>af <Plug>(coc-format)
+vnoremap <Space>af <Plug>(coc-format-selected)
+nnoremap <Space>an <Plug>(coc-rename)
+nnoremap <Space>ac <Plug>(coc-codeaction)
+vnoremap <Space>ac <Plug>(coc-codeaction-selected)
+nnoremap <Space>ao <Plug>(coc-openlink)
+nnoremap <Space>ae <Plug>(coc-codelens-action)
+nnoremap <Space>ax <Plug>(coc-fix-current)
 
 " Language Support {{{1
 
@@ -1083,12 +1102,11 @@ nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
 nnoremap <silent> <Space><Space> :FzfBLines<CR>
 nnoremap <silent> <Space>/ :FzfHistory/<CR>
-nnoremap <silent> <Space>a :FzfWindows<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>k :FzfBuffers<CR>
-nnoremap <silent> <Space>x :FzfHelptags<CR>
+nnoremap <silent> <Space>h :FzfHelptags<CR>
 nnoremap <silent> <Space>p :FzfAg<CR>
 nnoremap <silent> <Space>j :FzfCommands<CR>
 vnoremap <silent> <Space>j :<C-u>FzfCommands<CR>
@@ -1101,25 +1119,18 @@ imap <silent> <C-d> <Plug>(fzf-complete-word)
 imap <silent> <C-c> <Plug>(fzf-complete-path)
 imap <silent> <C-x><C-l> <Plug>(fzf-complete-line)
 
-" PhD related stuff
-nnoremap dx :FzfFiles ~/Dropbox/PhD<CR>
-
-" notes related stuff
-nnoremap <silent> <Space>o :FzfFiles ~/Dropbox/notes<CR>
-
 " Search using spotlight {{{2
 command! -nargs=1 FzfSpotlight call fzf#run(fzf#wrap({
             \ 'source'  : 'mdfind -onlyin ~ <q-args>',
             \ 'options' : '-m --prompt "Spotlight> "'
             \ }))
-nnoremap <Space>s :FzfSpotlight<Space>
 
-" Search bib using spotlight {{{2
-command! -nargs=1 FzfBib call fzf#run(fzf#wrap({
-            \ 'source'  : 'mdfind -onlyin ~/Dropbox/PhD <q-args>',
-            \ 'options' : '-m --prompt "Bib> "'
-            \ }))
-nnoremap <Space>b :FzfBib<Space>
+" Opening with the default program
+if has('macunix')
+    nnoremap <Space>s :FzfSpotlight<Space>
+elseif has('unix')
+    nnoremap <Space>s :FzfLocate<Space>
+endif
 
 " Get back 't' and 'T' maps which keeps getting stolen {{{2
 function GetBackTMaps()
@@ -1173,9 +1184,6 @@ nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
 vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
 vnoremap g} "my:vsp <bar> terminal googler <C-R>m<CR>
 
-" tig client open
-nnoremap <Space>e :vsp <bar> terminal tig<CR>
-
 " Zoom when in Tmux(>v1.8)
 if exists('$TMUX')
     nnoremap <silent> <Space>z :call system("tmux resize-pane -Z")<CR>
@@ -1201,12 +1209,12 @@ nnoremap sU :SudoWrite<CR>
 
 " run asynchronous commands {{{3
 Plug 'skywind3000/asyncrun.vim'
-nnoremap <Space>u :AsyncRun<Space>
-nnoremap <Space>v :AsyncStop!<CR>:copen<CR>
+nnoremap <Space>c :AsyncRun<Space>
+nnoremap <Space>x :AsyncStop!<CR>:copen<CR>
 
 " make
-nnoremap sm :AsyncRun make<CR>:copen<CR>
-nnoremap vm :AsyncRun make -C build<CR>:copen<CR>
+nnoremap <Space>m :AsyncRun make<CR>:copen<CR>
+nnoremap <Space>u :AsyncRun make -C build<CR>:copen<CR>
 
 " post file as gist
 nnoremap gp :AsyncRun gist % -cd ""<Left>:copen<CR>
@@ -1459,6 +1467,7 @@ set statusline+=%c,     "cursor column
 set statusline+=%l      "cursor line/total lines
 set statusline+=\ %P    "percent through file
 set laststatus=2
+set statusline+=\ %{coc#status()} " lsp
 set statusline+=\ %{ObsessionStatus()} " vim session status
 
 "return '[\s]' if trailing white space is detected
@@ -1480,62 +1489,6 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
-
-" ncm2 autocomplete latex configuration {{{1
-au InsertEnter * call ncm2#enable_for_buffer()
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-cmds',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'prefix', 'key': 'word'},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#cmds,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-labels',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'substr', 'key': 'word'},
-            \               {'name': 'substr', 'key': 'menu'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#labels,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-files',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'abbrfuzzy', 'key': 'word'},
-            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#files,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-au Filetype tex call ncm2#register_source({
-            \ 'name' : 'bibtex',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'prefix', 'key': 'word'},
-            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
-            \               {'name': 'abbrfuzzy', 'key': 'menu'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
 
 " syntax check when reading a buffer (after 1s), and when writing (no delay).
 call neomake#configure#automake('rw', 1000)
