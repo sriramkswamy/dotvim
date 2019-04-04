@@ -324,8 +324,6 @@ nnoremap <silent> zm zM
 nnoremap <silent> zr zr
 " Vimrc
 nnoremap cv :e $MYVIMRC<CR>
-" tags
-nnoremap <silent> t <C-]>
 
 " Functions and commands {{{2
 
@@ -427,11 +425,11 @@ let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 nnoremap <silent> dv :Rooter<CR>
 
-" " auto generate tags {{{3
-" Plug 'ludovicchabant/vim-gutentags'
-" let g:gutentags_trace = 1
-" let g:gutentags_exclude_project_root = ['~/']
-" let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.config/nvim/plugged/*", "*.vim/plugged/*"]
+" auto generate tags {{{3
+Plug 'ludovicchabant/vim-gutentags'
+let g:gutentags_trace = 1
+let g:gutentags_exclude_project_root = ['~/']
+let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.config/nvim/plugged/*", "*.vim/plugged/*"]
 
 " Set a tag bar {{{3
 Plug 'majutsushi/tagbar'
@@ -1052,17 +1050,11 @@ let R_args = ['--no-save', '--quiet']
 " Complete the arguments
 inoremap <C-\> <C-x><C-a>
 
-" CSV - nice display of csv {{{3
+" CSV - nice display of csv {{{2
 Plug 'chrisbra/csv.vim'
 
-" Language Server Protocol (LSP) {{{2
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': './install.sh' }
-let g:LanguageClient_serverCommands = {
-    \ 'python': ['pyls'],
-    \ 'cpp': ['clangd'],
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'javascript': ['javascript-typescript-stdio'],
-    \ }
+" Databases {{{2
+Plug 'tpope/vim-dadbod'
 
 " Syntax checking {{{1
 Plug 'neomake/neomake'
@@ -1090,8 +1082,8 @@ command! -bang -nargs=* FzfRg
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 
+nnoremap <silent> t :FzfBTags <C-R><C-W><CR>
 nnoremap <silent> T :FzfTags <C-R><C-W><CR>
-nnoremap <silent> g] :FzfTags <C-R><C-W><CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gw :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gW :FzfAg <C-R><C-A><CR>
@@ -1225,7 +1217,7 @@ nnoremap vp :AsyncRun git push<CR>:copen<CR>
 nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
-nnoremap T :AsyncRun ctags **/*<CR>:copen<CR>
+nnoremap g] :AsyncRun ctags **/*<CR>:copen<CR>
 
 " rdm
 nnoremap dc :AsyncRun rdm &<CR>
