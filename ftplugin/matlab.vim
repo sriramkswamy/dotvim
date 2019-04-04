@@ -13,33 +13,33 @@ nnoremap <buffer> J :find <C-R><C-W><CR>
 nnoremap <buffer> K :AsyncRun /home/sriramkrish92/MATLAB/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>:copen<CR>
 
 " debug helpers
-nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>
 " set breakpoint at the current line
-nnoremap <buffer> mds :call SetBreakpoint()<CR>:let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:let @m = "dbstop at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
 " step next
-nnoremap <buffer> mdn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgn :let @m = "dbstep"<CR>:TxSend(@m)<CR>
 " debugging status
-nnoremap <buffer> mdl :let @m = "dbstatus"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgl :let @m = "dbstatus"<CR>:TxSend(@m)<CR>
 " step in
-nnoremap <buffer> mdi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgi :let @m = "dbstep in"<CR>:TxSend(@m)<CR>
 " step out
-nnoremap <buffer> mdo :let @m = "dbstep out"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgo :let @m = "dbstep out"<CR>:TxSend(@m)<CR>
 " unset breakpoint at the current line
-nnoremap <buffer> mdu :call UnsetBreakpoint()<CR>:let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:let @m = "dbclear at " . line('.') . " in " . expand('%')<CR>:TxSend(@m)<CR>
 " delete all breakpoints
-nnoremap <buffer> mda :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mga :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all"<CR>:TxSend(@m)<CR>
 " continue until next breakpoint or end of program
-nnoremap <buffer> mdc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgc :let @m = "dbcont"<CR>:TxSend(@m)<CR>
 " put me in debug mode if there is an error or warning
-nnoremap <buffer> mde :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
-nnoremap <buffer> mdw :let @m = "dbstop on warning"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mge :let @m = "dbstop on error"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgw :let @m = "dbstop on warning"<CR>:TxSend(@m)<CR>
 " exit debug mode without removing breakpoints
-nnoremap <buffer> mdk :let @m = "dbquit"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgk :let @m = "dbquit"<CR>:TxSend(@m)<CR>
 " quit debugging mode and remove all breakpoints
-nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all; dbquit"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "dbclear all; dbquit"<CR>:TxSend(@m)<CR>
 
 " get all the signs for breakpoints in vim {{{2
-nnoremap <buffer> mdv :sign list mybreakpoint<CR>
+nnoremap <buffer> mgv :sign list mybreakpoint<CR>
 
 " variable viewing
 " open in GUI
@@ -91,13 +91,13 @@ nnoremap <buffer> ma :let @m = "whos"<CR>:TxSend(@m)<CR>
 
 " simple plotting
 " plot the vector
-nnoremap <buffer> mgp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
-nnoremap <buffer> mgP :let @m = "plot(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
-vnoremap <buffer> mgp "my:let @m = "plot(<C-R>m)"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mfp :let @m = "plot(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mfP :let @m = "plot(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mfp "my:let @m = "plot(<C-R>m)"<CR>:TxSend(@m)<CR>
 " plot the matrix as a mesh plot
-nnoremap <buffer> mgm :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
-nnoremap <buffer> mgM :let @m = "mesh(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
-vnoremap <buffer> mgm "my:let @m = "mesh(<C-R>m)"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mfm :let @m = "mesh(" . expand('<cword>') . ")"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mfM :let @m = "mesh(" . expand('<cWORD>') . ")"<CR>:TxSend(@m)<CR>
+vnoremap <buffer> mfm "my:let @m = "mesh(<C-R>m)"<CR>:TxSend(@m)<CR>
 
 " help
 " add to current path

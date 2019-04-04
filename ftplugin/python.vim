@@ -19,25 +19,25 @@ nnoremap <buffer> mq :let @m = "exit()"<CR>:TxSend(@m)<CR>
 
 " debugging
 " set break point
-nnoremap <buffer> mds :call SetBreakpoint()<CR>:normal! Oimport ipdb; ipdb.set_trace()<CR>j
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Oimport ipdb; ipdb.set_trace()<CR>j
 " unset break point
-nnoremap <buffer> mdu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
+nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
 " next line
-nnoremap <buffer> mdn :let @m = "n"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgn :let @m = "n"<CR>:TxSend(@m)<CR>
 " step in
-nnoremap <buffer> mdi :let @m = "s"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgi :let @m = "s"<CR>:TxSend(@m)<CR>
 " continue
-nnoremap <buffer> mdc :let @m = "c"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgc :let @m = "c"<CR>:TxSend(@m)<CR>
 " run till end of subroutine
-nnoremap <buffer> mdr :let @m = "r"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgr :let @m = "r"<CR>:TxSend(@m)<CR>
 " print the value
-nnoremap <buffer> mdv :let @m = "p " . expand('<cword>')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgv :let @m = "p " . expand('<cword>')<CR>:TxSend(@m)<CR>
 " which class am i in
-nnoremap <buffer> mdw :let @m = "p self"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgw :let @m = "p self"<CR>:TxSend(@m)<CR>
 " list where i am
-nnoremap <buffer> mdl :let @m = "l"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgl :let @m = "l"<CR>:TxSend(@m)<CR>
 " quit debugging
-nnoremap <buffer> mdq :call RemoveAllBreakpoints()<CR>:let @m = "q"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "q"<CR>:TxSend(@m)<CR>
 
 " metadata
 " sort the imports
@@ -74,7 +74,7 @@ nnoremap <buffer> mas :let @m = "dir()"<CR>:TxSend(@m)<CR>
 
 " plotting
 " line plot
-nnoremap <buffer> mgg :let @m = "plt.plot(" . expand('<cword>') . "); plt.show()"<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mfg :let @m = "plt.plot(" . expand('<cword>') . "); plt.show()"<CR>:TxSend(@m)<CR>
 
 " set format options
 " setlocal formatprg=yapf
