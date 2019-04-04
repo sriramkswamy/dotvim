@@ -114,8 +114,13 @@ nnoremap <buffer> mI :let @m = "doc " . expand('<cWORD>')<CR>:TxSend(@m)<CR>
 vnoremap <buffer> mi "my:let @m = "doc <C-R>m"<CR>:TxSend(@m)<CR>
 
 " other useful commands
-" run matlab
-nnoremap <buffer> mr :let @m = "matlab"<CR>:TxSend(@m)<CR>
+if has('macunix')
+    " run matlab
+    nnoremap <buffer> mr :let @m = "matlab"<CR>:TxSend(@m)<CR>
+elseif has('unix')
+    " run matlab
+    nnoremap <buffer> mr :let @m = "mat"<CR>:TxSend(@m)<CR>
+endif
 " clear screen
 nnoremap <buffer> mc :let @m = "clc"<CR>:TxSend(@m)<CR>
 " clear variable list
