@@ -1,3 +1,5 @@
 {
-	"coc.source.vimtex.enable": true
+	"coc.source.vimtex.enable": true,
+    "coc.preferences.diagnostic.displayByAle": false,
+    "diagnostic.warningSign": "!!"
 }

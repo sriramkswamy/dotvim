@@ -427,7 +427,6 @@ nnoremap <silent> dv :Rooter<CR>
 
 " auto generate tags {{{3
 Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_trace = 1
 let g:gutentags_exclude_project_root = ['~/']
 let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.config/nvim/plugged/*", "*.vim/plugged/*"]
 
@@ -1057,7 +1056,10 @@ Plug 'chrisbra/csv.vim'
 Plug 'tpope/vim-dadbod'
 
 " Syntax checking {{{1
-Plug 'neomake/neomake'
+Plug 'w0rp/ale'
+let g:ale_completion_enabled = 0
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
 
 " FZF {{{1
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -1082,8 +1084,8 @@ command! -bang -nargs=* FzfRg
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 
-nnoremap <silent> t :FzfBTags <C-R><C-W><CR>
-nnoremap <silent> T :FzfTags <C-R><C-W><CR>
+nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gw :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gW :FzfAg <C-R><C-A><CR>
@@ -1410,6 +1412,22 @@ filetype plugin indent on
 syntax on
 
 " Statusline - from scrooloose {{{1
+
+" Helper functions {{{2
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+
+    return l:counts.total == 0 ? 'OK' : printf(
+    \   '%dW %dE',
+    \   all_non_errors,
+    \   all_errors
+    \)
+endfunction
+
+" Display {{{2
 " Basic setup
 set statusline =%#identifier#
 set statusline+=[%f]    "tail of the filename
@@ -1452,13 +1470,14 @@ set statusline+=%#error#
 set statusline+=%{&list?'[list]':''}
 set statusline+=%*
 set statusline+=\ %{fugitive#statusline()}
-" set statusline+=%{gutentags#statusline()}
+set statusline+=%{gutentags#statusline()}
 
 set statusline+=%=      "left/right separator
 set statusline+=%c,     "cursor column
 set statusline+=%l      "cursor line/total lines
 set statusline+=\ %P    "percent through file
 set laststatus=2
+set statusline+=\ %{LinterStatus()}
 set statusline+=\ %{coc#status()} " lsp
 set statusline+=\ %{ObsessionStatus()} " vim session status
 
@@ -1481,9 +1500,6 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
-
-" syntax check when reading a buffer (after 1s), and when writing (no delay).
-call neomake#configure#automake('rw', 1000)
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
