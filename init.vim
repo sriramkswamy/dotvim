@@ -57,7 +57,7 @@ set foldlevel=2
 " Set list characters - Can be toggled with 'col'
 set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,nbsp:+
 set listchars+=trail:-
-set showbreak=↪
+set showbreak=...
 " Easier Regex
 set magic
 " Redraw lazily
@@ -477,8 +477,8 @@ nnoremap g/ :lvimgrep // %<Left><Left><Left>
 nnoremap <silent> # *N:lvimgrep /<C-R>// %<CR>
 
 " substitution
-nnoremap <Space>v :<C-u>%s///g<Left><Left><Left>
-vnoremap <Space>v :s///g<Left><Left><Left>
+nnoremap <Space><Space> :<C-u>%s///g<Left><Left><Left>
+vnoremap <Space><Space> :s///g<Left><Left><Left>
 
 " basic renaming
 nnoremap <silent> - *Ncgn
@@ -844,8 +844,16 @@ Plug 'kana/vim-operator-user'
 
 " Motions {{{2
 
-noremap H ^
-noremap L $
+" Move by 2 letters across the buffer {{{3
+Plug 'justinmk/vim-sneak'
+nmap s <Plug>Sneak_s
+nmap S <Plug>Sneak_S
+vmap s <Plug>Sneak_s
+vmap S <Plug>Sneak_S
+xmap z <Plug>Sneak_s
+xmap Z <Plug>Sneak_S
+omap z <Plug>Sneak_s
+omap Z <Plug>Sneak_S
 
 " Snippets {{{1
 " Snippet plugin and snippet collection {{{2
@@ -903,11 +911,11 @@ vnoremap <silent> <Space>g :GV<CR>
 
 " Project/Session management {{{1
 Plug 'tpope/vim-obsession'
-nnoremap sr :Obsess ~/.vim/session/
-nnoremap sp :Obsess<CR>
-nnoremap so :source ~/.vim/session/
-nnoremap sd :Obsess!<CR>
-nnoremap sq :qall<CR>
+nnoremap <Space>vr :Obsess ~/.vim/session/
+nnoremap <Space>vp :Obsess<CR>
+nnoremap <Space>vo :source ~/.vim/session/
+nnoremap <Space>vd :Obsess!<CR>
+nnoremap <Space>vq :qall<CR>
 
 " Debugging {{{1
 
@@ -1090,11 +1098,10 @@ nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gw :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gW :FzfAg <C-R><C-A><CR>
 vnoremap <silent> gw "gy:FzfAg <C-R>g<CR>
-nnoremap <silent> sc :FzfSnippets<CR>
+nnoremap <silent> <Space>u :FzfSnippets<CR>
 nnoremap <silent> cot :FzfFiletypes<CR>
 nnoremap <silent> <Space>` :FzfMarks<CR>
 nnoremap <silent> <Space>. :FzfColors<CR>
-nnoremap <silent> <Space><Space> :FzfBLines<CR>
 nnoremap <silent> <Space>/ :FzfHistory/<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
@@ -1152,15 +1159,6 @@ inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-j>"
 
 " REPL and Tmux {{{1
 
-" send to neovim terminal {{{2
-Plug 'kassio/neoterm'
-nmap s <Plug>(neoterm-repl-send)
-xmap s <Plug>(neoterm-repl-send)
-nmap ss <Plug>(neoterm-repl-send-line)
-nmap s- :TREPLSetTerm<Space>
-nmap s+ :Tnew<CR>
-nmap S :Ttoggle<CR>
-
 " let commands and maps without leader {{{2
 let g:C_UseTool_cmake = 'yes'
 let g:C_UseTool_doxygen = 'yes'
@@ -1207,8 +1205,8 @@ nnoremap <Space>c :AsyncRun<Space>
 nnoremap <Space>x :AsyncStop!<CR>:copen<CR>
 
 " make
-nnoremap <Space>m :AsyncRun make<CR>:copen<CR>
-nnoremap <Space>u :AsyncRun make -C build<CR>:copen<CR>
+nnoremap <Space>mm :AsyncRun make<CR>:copen<CR>
+nnoremap <Space>mb :AsyncRun make -C build<CR>:copen<CR>
 
 " post file as gist
 nnoremap gp :AsyncRun gist % -cd ""<Left>:copen<CR>
@@ -1232,20 +1230,21 @@ let g:tmuxify_run = {
 			\ 'sh': 'bash %',
 			\ 'go': 'go build %',
 			\ 'tex': 'latexmk -pdf -pvc %',
-			\ 'python': 'ipython',
+			\ 'python': 'python',
 			\ 'R': 'R --no-save --quiet',
 			\ 'matlab': 'mat',
 			\ 'julia': 'julia',
 			\ 'scheme': 'racket',
 			\ 'racket': 'racket',
-			\ 'sml': 'sml',
-			\
+			\ 'sml': 'sml'
             \}
 
 " Mappings for any tmux session {{{4
+
 " put me in an easy editing modes
 nnoremap m/ :TxSend<CR><C-F>
 nnoremap m. :TxSend<CR><C-P>
+
 " pane changes
 nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
 nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
@@ -1259,6 +1258,7 @@ nnoremap m31 :TxSetPane 0:3.1<Left><Left><Left><Left>
 nnoremap m32 :TxSetPane 0:3.2<Left><Left><Left><Left>
 nnoremap m33 :TxSetPane 0:3.3<Left><Left><Left><Left>
 nnoremap m34 :TxSetPane 0:3.4<Left><Left><Left><Left>
+
 " interaction maps
 nnoremap <silent> mc :TxClear<CR>
 nnoremap <silent> mx :TxSigInt<CR>

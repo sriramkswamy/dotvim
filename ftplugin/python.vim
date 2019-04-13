@@ -19,7 +19,7 @@ nnoremap <buffer> mq :let @m = "exit()"<CR>:TxSend(@m)<CR>
 
 " debugging
 " set break point
-nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Oimport ipdb; ipdb.set_trace()<CR>j
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Oimport pdb; pdb.set_trace()<CR>j
 " unset break point
 nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
 " next line
