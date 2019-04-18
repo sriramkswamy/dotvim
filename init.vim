@@ -378,7 +378,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>n :Lexplore<CR>
+nnoremap <Space>n :30Lexplore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
@@ -958,53 +958,70 @@ function! RemoveAllBreakpoints()
     endif
 endfunction
 
-" LSP support and Auto completion {{{1
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-" omni, tag, word, dictionary, syntax, vimtex, css, json, html, pyls, gocode,
-" rls, solargraph, stylelint, eslint, tslint, tsserver, vetur, wxml ultisnips,
-" snippets
-let g:coc_global_extensions = [
-            \ 'coc-omni',
-            \ 'coc-word',
-            \ 'coc-ultisnips',
-            \ 'coc-snippets'
-            \ ]
-autocmd filetype python,javascript,typescript :call coc#add_extension('coc-pyls',
-            \ 'coc-css',
-            \ 'coc-json',
-            \ 'coc-html',
-            \ 'coc-eslint',
-            \ 'coc-tslint',
-            \ 'coc-tsserver'
-            \ )
-autocmd filetype c,cpp :call coc#add_extension('coc-clangd',
-            \ 'coc-css',
-            \ 'coc-json',
-            \ 'coc-html',
-            \ 'coc-wxml'
-            \ )
-autocmd filetype tex :call coc#add_extension('coc-vimtex',
-            \ 'coc-stylelint',
-            \ 'coc-dictionary'
-            \ )
+" Auto completion {{{1
+Plug 'lifepillar/vim-mucomplete'
+let g:mucomplete#no_mappings = 1
+let g:mucomplete#no_popup_mappings = 1
+let g:mucomplete#reopen_immediately = 0
+let g:mucomplete#buffer_relative_paths = 1
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#completion_delay = 500
+let g:mucomplete#minimum_prefix_length = 1
+let g:mucomplete#chains = {
+    \ 'default':  ['path', 'omni', 'keyn', 'dict', 'uspl'],
+    \ 'vim':      ['path', 'cmd', 'keyn'],
+    \ 'python':   ['omni', 'path', 'cmd', 'keyn'],
+    \ 'markdown': ['dict', 'path', 'uspl'],
+    \ 'tex':      ['omni', 'dict', 'path', 'cmd']
+    \ }
+imap <unique> <C-j> <Plug>(MUcompleteCycFwd)
+imap <unique> <C-h> <Plug>(MUcompleteCycBwd)
 
-" Mappings {{{2
-nnoremap <Space>al <Plug>(coc-diagnostic-info)
-nnoremap <Space>aj <Plug>(coc-diagnostic-next)
-nnoremap <Space>ak <Plug>(coc-diagnostic-prev)
-nnoremap <Space>aa <Plug>(coc-definition)
-nnoremap <Space>ad <Plug>(coc-declaration)
-nnoremap <Space>ai <Plug>(coc-implementation)
-nnoremap <Space>at <Plug>(coc-type-definition)
-nnoremap <Space>ar <Plug>(coc-references)
-nnoremap <Space>af <Plug>(coc-format)
-vnoremap <Space>af <Plug>(coc-format-selected)
-nnoremap <Space>an <Plug>(coc-rename)
-nnoremap <Space>ac <Plug>(coc-codeaction)
-vnoremap <Space>ac <Plug>(coc-codeaction-selected)
-nnoremap <Space>ao <Plug>(coc-openlink)
-nnoremap <Space>ae <Plug>(coc-codelens-action)
-nnoremap <Space>ax <Plug>(coc-fix-current)
+" LSP support {{{1
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+    \ 'python': ['~/.local/bin/pyls'],
+    \ }
+
+let g:LanguageClient_diagnosticsDisplay = {
+            \     1: {
+            \         "name": "Error",
+            \         "texthl": "ALEError",
+            \         "signText": ">>",
+            \         "signTexthl": "ALEErrorSign",
+            \         "virtualTexthl": "Error"
+            \     },
+            \     2: {
+            \         "name": "Warning",
+            \         "texthl": "ALEWarning",
+            \         "signText": "!!",
+            \         "signTexthl": "ALEWarningSign",
+            \         "virtualTexthl": "Todo"
+            \     },
+            \     3: {
+            \         "name": "Information",
+            \         "texthl": "ALEInfo",
+            \         "signText": "ℹi",
+            \         "signTexthl": "ALEInfoSign",
+            \         "virtualTexthl": "Todo"
+            \     },
+            \     4: {
+            \         "name": "Hint",
+            \         "texthl": "ALEInfo",
+            \         "signText": "--",
+            \         "signTexthl": "ALEInfoSign",
+            \         "virtualTexthl": "Todo"
+            \     },
+            \ }
+
+nnoremap <Space>a :call LanguageClient_contextMenu()<CR>
 
 " Language Support {{{1
 
@@ -1230,7 +1247,7 @@ let g:tmuxify_run = {
 			\ 'sh': 'bash %',
 			\ 'go': 'go build %',
 			\ 'tex': 'latexmk -pdf -pvc %',
-			\ 'python': 'python',
+			\ 'python': 'ipython',
 			\ 'R': 'R --no-save --quiet',
 			\ 'matlab': 'mat',
 			\ 'julia': 'julia',
@@ -1478,7 +1495,6 @@ set statusline+=%l      "cursor line/total lines
 set statusline+=\ %P    "percent through file
 set laststatus=2
 set statusline+=\ %{LinterStatus()}
-set statusline+=\ %{coc#status()} " lsp
 set statusline+=\ %{ObsessionStatus()} " vim session status
 
 "return '[\s]' if trailing white space is detected

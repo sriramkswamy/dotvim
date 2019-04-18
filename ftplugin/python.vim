@@ -11,7 +11,7 @@ vnoremap <buffer> mn call jedi#rename_visual()
 nnoremap <buffer> J :call jedi#goto()<CR>
 
 " run the current file
-nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
+nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<Space>
 " clear the variables
 nnoremap <buffer> mu :let @m = "%reset -f"<CR>:TxSend(@m)<CR>
 " exit python
@@ -19,7 +19,7 @@ nnoremap <buffer> mq :let @m = "exit()"<CR>:TxSend(@m)<CR>
 
 " debugging
 " set break point
-nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Oimport pdb; pdb.set_trace()<CR>j
+nnoremap <buffer> mgs :call SetBreakpoint()<CR>:normal! Oimport ipdb; ipdb.set_trace()<CR>j
 " unset break point
 nnoremap <buffer> mgu :call UnsetBreakpoint()<CR>:normal! kdd<CR>
 " next line

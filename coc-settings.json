@@ -1,5 +1,13 @@
 {
 	"coc.source.vimtex.enable": true,
-    "coc.preferences.diagnostic.displayByAle": false,
+    "coc.source.tag.enable": true,
+    "coc.source.word.enable": true,
+    "coc.source.omni.enable": true,
+    "coc.source.file.enable": true,
+    "coc.source.syntax.enable": false,
+    "coc.source.ultisnips.enable": true,
+
+    "diagnostic.displayByAle": true,
+    "diagnostic.errorSign": ">>",
     "diagnostic.warningSign": "!!"
 }
