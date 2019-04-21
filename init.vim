@@ -378,7 +378,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>n :30Lexplore<CR>
+nnoremap <Space>n :20Lexplore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
