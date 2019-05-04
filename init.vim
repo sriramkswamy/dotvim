@@ -186,6 +186,11 @@ nnoremap <silent> dr :redraw!<CR>
 " Tabs
 nnoremap <Space><Tab> gt
 nnoremap <Space><BS> gT
+nnoremap <Space>1 1gt
+nnoremap <Space>2 2gt
+nnoremap <Space>3 3gt
+nnoremap <Space>4 4gt
+nnoremap <Space>5 5gt
 nnoremap gt :tabe<CR>
 nnoremap gT :tabc<CR>
 
@@ -238,6 +243,7 @@ nnoremap <silent> cod :call SetNewDigraphs()<CR>
 
 " Registers - fancy {{{3
 Plug 'junegunn/vim-peekaboo'
+let g:peekaboo_ins_prefix = '<C-x>'
 
 " Inidcates indents {{{3
 Plug 'tweekmonster/local-indent.vim'
@@ -423,12 +429,6 @@ let g:rooter_change_directory_for_non_project_files = 'current'
 let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
-nnoremap <silent> dv :Rooter<CR>
-
-" auto generate tags {{{3
-Plug 'ludovicchabant/vim-gutentags'
-let g:gutentags_exclude_project_root = ['~/']
-let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.config/nvim/plugged/*", "*.vim/plugged/*"]
 
 " Set a tag bar {{{3
 Plug 'majutsushi/tagbar'
@@ -603,8 +603,8 @@ nnoremap crn :StripNewLine<CR>
 function! FixLastSpellingError()
     normal! mm[s1z=`m"
 endfunction
-nnoremap <C-s> :<C-u>call FixLastSpellingError()<CR>
-inoremap <C-s> <Esc>:<C-u>call FixLastSpellingError()<CR>a
+nnoremap <C-l> :<C-u>call FixLastSpellingError()<CR>
+inoremap <C-l> <Esc>:<C-u>call FixLastSpellingError()<CR>a
 
 " Plugins {{{2
 
@@ -864,7 +864,7 @@ if has('python3')
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     let g:UltiSnipsEditSplit="context"
-    let g:UltiSnipsListSnippets="<C-l>"
+    let g:UltiSnipsListSnippets="<C-s>"
     nnoremap <silent> yo :UltiSnipsEdit<CR>
 elseif has('python')
     Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets' " Snippets collection
@@ -897,10 +897,12 @@ nnoremap <silent> <Space>e :Gstatus<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>
 nnoremap yu :Gcommit<CR>O
 nnoremap du :Gdiff<CR>
-" Blame people!
-nnoremap <silent> gb :Gblame<CR>
 " Toggle merginal
 nnoremap <silent> gm :Merginal<CR>
+
+" Git commit message and better blame {{{2
+Plug 'rhysd/git-messenger.vim'
+nnoremap gb :GitMessenger<CR>
 
 " Interactive rebasing and tree {{{3
 Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'
@@ -959,29 +961,36 @@ function! RemoveAllBreakpoints()
 endfunction
 
 " Auto completion {{{1
-Plug 'lifepillar/vim-mucomplete'
-let g:mucomplete#no_mappings = 1
-let g:mucomplete#no_popup_mappings = 1
-let g:mucomplete#reopen_immediately = 0
-let g:mucomplete#buffer_relative_paths = 1
-let g:mucomplete#enable_auto_at_startup = 1
-let g:mucomplete#completion_delay = 500
-let g:mucomplete#minimum_prefix_length = 1
-let g:mucomplete#chains = {
-    \ 'default':  ['path', 'omni', 'keyn', 'dict', 'uspl'],
-    \ 'vim':      ['path', 'cmd', 'keyn'],
-    \ 'python':   ['omni', 'path', 'cmd', 'keyn'],
-    \ 'markdown': ['dict', 'path', 'uspl'],
-    \ 'tex':      ['omni', 'dict', 'path', 'cmd']
-    \ }
-imap <unique> <C-j> <Plug>(MUcompleteCycFwd)
-imap <unique> <C-h> <Plug>(MUcompleteCycBwd)
+Plug 'roxma/nvim-yarp' | Plug 'ncm2/ncm2'
+
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
+
+" IMPORTANT: :help Ncm2PopupOpen for more information
+set completeopt=noinsert,menuone,noselect
+
+" NOTE: you need to install completion sources to get completions. Check
+" our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
+" General sources {{{2
+Plug 'ncm2/ncm2-bufword'
+Plug 'ncm2/ncm2-path'
+Plug 'ncm2/ncm2-tmux'
+Plug 'ncm2/ncm2-ultisnips'
+Plug 'ncm2/ncm2-markdown-subscope'
+Plug 'ncm2/ncm2-html-subscope'
+Plug 'ncm2/ncm2-rst-subscope'
+Plug 'gaalcaras/ncm-R'
+Plug 'yuki-ycino/ncm2-dictionary'
 
 " LSP support {{{1
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
+let g:LanguageClient_completionPreferTextEdit = 1
+let g:LanguageClient_diagnosticsList = "Location" 
+let g:LanguageClient_hasSnippetSupport = 0 
+let g:LanguageClient_hasClientSupport = 0 
 
 let g:LanguageClient_serverCommands = {
     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
@@ -1058,6 +1067,7 @@ let g:vimtex_imaps_enabled = 0
 let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
 let g:vimtex_view_general_viewer = 'mupdf'
+let g:vimtex_view_method = 'mupdf'
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
@@ -1246,7 +1256,7 @@ let g:tmuxify_custom_command = 'tmux split-window -d -l 10'
 let g:tmuxify_run = {
 			\ 'sh': 'bash %',
 			\ 'go': 'go build %',
-			\ 'tex': 'latexmk -pdf -pvc %',
+			\ 'tex': 'latexmk -xelatex -pdf -pvc %',
 			\ 'python': 'ipython',
 			\ 'R': 'R --no-save --quiet',
 			\ 'matlab': 'mat',
@@ -1262,7 +1272,7 @@ let g:tmuxify_run = {
 nnoremap m/ :TxSend<CR><C-F>
 nnoremap m. :TxSend<CR><C-P>
 
-" pane changes
+" pane changes {{{5
 nnoremap m11 :TxSetPane 0:1.1<Left><Left><Left><Left>
 nnoremap m12 :TxSetPane 0:1.2<Left><Left><Left><Left>
 nnoremap m13 :TxSetPane 0:1.3<Left><Left><Left><Left>
@@ -1275,6 +1285,30 @@ nnoremap m31 :TxSetPane 0:3.1<Left><Left><Left><Left>
 nnoremap m32 :TxSetPane 0:3.2<Left><Left><Left><Left>
 nnoremap m33 :TxSetPane 0:3.3<Left><Left><Left><Left>
 nnoremap m34 :TxSetPane 0:3.4<Left><Left><Left><Left>
+nnoremap m41 :TxSetPane 0:4.1<Left><Left><Left><Left>
+nnoremap m42 :TxSetPane 0:4.2<Left><Left><Left><Left>
+nnoremap m43 :TxSetPane 0:4.3<Left><Left><Left><Left>
+nnoremap m44 :TxSetPane 0:4.4<Left><Left><Left><Left>
+nnoremap m51 :TxSetPane 0:5.1<Left><Left><Left><Left>
+nnoremap m52 :TxSetPane 0:5.2<Left><Left><Left><Left>
+nnoremap m53 :TxSetPane 0:5.3<Left><Left><Left><Left>
+nnoremap m54 :TxSetPane 0:5.4<Left><Left><Left><Left>
+nnoremap m61 :TxSetPane 0:6.1<Left><Left><Left><Left>
+nnoremap m62 :TxSetPane 0:6.2<Left><Left><Left><Left>
+nnoremap m63 :TxSetPane 0:6.3<Left><Left><Left><Left>
+nnoremap m64 :TxSetPane 0:6.4<Left><Left><Left><Left>
+nnoremap m71 :TxSetPane 0:7.1<Left><Left><Left><Left>
+nnoremap m72 :TxSetPane 0:7.2<Left><Left><Left><Left>
+nnoremap m73 :TxSetPane 0:7.3<Left><Left><Left><Left>
+nnoremap m74 :TxSetPane 0:7.4<Left><Left><Left><Left>
+nnoremap m81 :TxSetPane 0:8.1<Left><Left><Left><Left>
+nnoremap m82 :TxSetPane 0:8.2<Left><Left><Left><Left>
+nnoremap m83 :TxSetPane 0:8.3<Left><Left><Left><Left>
+nnoremap m84 :TxSetPane 0:8.4<Left><Left><Left><Left>
+nnoremap m91 :TxSetPane 0:9.1<Left><Left><Left><Left>
+nnoremap m92 :TxSetPane 0:9.2<Left><Left><Left><Left>
+nnoremap m93 :TxSetPane 0:9.3<Left><Left><Left><Left>
+nnoremap m94 :TxSetPane 0:9.4<Left><Left><Left><Left>
 
 " interaction maps
 nnoremap <silent> mc :TxClear<CR>
@@ -1487,7 +1521,6 @@ set statusline+=%#error#
 set statusline+=%{&list?'[list]':''}
 set statusline+=%*
 set statusline+=\ %{fugitive#statusline()}
-set statusline+=%{gutentags#statusline()}
 
 set statusline+=%=      "left/right separator
 set statusline+=%c,     "cursor column
@@ -1516,6 +1549,80 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
+
+" Autocompletion sources {{{1
+
+" LaTeX source {{{2
+augroup my_cm_setup
+    autocmd!
+    autocmd BufEnter * call ncm2#enable_for_buffer()
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-cmds',
+            \ 'priority': 8, 
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'prefix', 'key': 'word'},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#cmds,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-labels',
+            \ 'priority': 8, 
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'substr', 'key': 'word'},
+            \               {'name': 'substr', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#labels,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-files',
+            \ 'priority': 8, 
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'abbrfuzzy', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#files,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'bibtex',
+            \ 'priority': 8, 
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'prefix', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \               {'name': 'abbrfuzzy', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+augroup END
+
+" CSS source {{{2
+au User Ncm2Plugin call ncm2#register_source({
+        \ 'name' : 'css',
+        \ 'priority': 9,
+        \ 'subscope_enable': 1,
+        \ 'scope': ['css','scss'],
+        \ 'mark': 'css',
+        \ 'word_pattern': '[\w\-]+',
+        \ 'complete_pattern': ':\s*',
+        \ 'on_complete': ['ncm2#on_complete#delay', 180,
+                \ 'ncm2#on_complete#omni', 'csscomplete#CompleteCSS']
+        \ })
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
