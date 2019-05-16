@@ -86,6 +86,7 @@ nnoremap d- zM
 nnoremap <BS> :b#<CR>
 " open file - I have no idea how I got used to this shortcut
 nnoremap vo :e<Space>
+nnoremap vO :tabe<Space>
 " Keep me in visual mode
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
@@ -384,7 +385,7 @@ nnoremap <silent> Z :ZoomToggle<CR>
 " Leader maps {{{2
 
 " Netrw
-nnoremap <Space>n :20Lexplore<CR>
+nnoremap <Space>n :15Lexplore<CR>
 
 " check maps
 nnoremap <Space>, :verbose map<Space>
@@ -980,7 +981,6 @@ Plug 'ncm2/ncm2-markdown-subscope'
 Plug 'ncm2/ncm2-html-subscope'
 Plug 'ncm2/ncm2-rst-subscope'
 Plug 'gaalcaras/ncm-R'
-Plug 'yuki-ycino/ncm2-dictionary'
 
 " LSP support {{{1
 Plug 'autozimu/LanguageClient-neovim', {
