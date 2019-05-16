@@ -7,6 +7,18 @@
     "coc.source.syntax.enable": false,
     "coc.source.ultisnips.enable": true,
 
+    "coc.source.dictionary.priority": 98,
+    "coc.source.tag.priority": 99,
+    "coc.source.file.priority": 10,
+    "coc.source.word.priority": 2,
+    "coc.source.omni.priority": 3,
+    "coc.source.vimtex.priority": 1,
+    "coc.source.ultisnips.priority": 5,
+
+    "python.venvFolders": "~/.virtualenvs/",
+    "python.analysis.openFilesOnly": true,
+    "python.jediEnabled": true,
+
     "diagnostic.displayByAle": true,
     "diagnostic.errorSign": ">>",
     "diagnostic.warningSign": "!!"
