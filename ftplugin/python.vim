@@ -11,7 +11,7 @@ vnoremap <buffer> mn call jedi#rename_visual()
 nnoremap <buffer> J :call jedi#goto()<CR>
 
 " run the current file
-nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<Space>
+nnoremap <buffer> mm :let @m = "run " . expand('%')<CR>:TxSend(@m)<CR>
 " clear the variables
 nnoremap <buffer> mu :let @m = "%reset -f"<CR>:TxSend(@m)<CR>
 " exit python
