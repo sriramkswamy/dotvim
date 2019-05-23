@@ -21,5 +21,6 @@
 
     "diagnostic.displayByAle": true,
     "diagnostic.errorSign": ">>",
-    "diagnostic.warningSign": "!!"
+    "diagnostic.warningSign": "!!",
+    "git.changeRemovedSign.text": "^"
 }
