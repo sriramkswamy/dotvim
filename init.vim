@@ -971,9 +971,9 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ 'do': 'bash install.sh',
     \ }
 let g:LanguageClient_completionPreferTextEdit = 1
-let g:LanguageClient_diagnosticsList = "Location" 
-let g:LanguageClient_hasSnippetSupport = 0 
-let g:LanguageClient_hasClientSupport = 0 
+let g:LanguageClient_diagnosticsList = "Location"
+let g:LanguageClient_hasSnippetSupport = 0
+let g:LanguageClient_hasClientSupport = 0
 
 let g:LanguageClient_serverCommands = {
     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
@@ -1542,7 +1542,7 @@ augroup my_cm_setup
     autocmd BufEnter * call ncm2#enable_for_buffer()
     autocmd Filetype tex call ncm2#register_source({
             \ 'name' : 'vimtex-cmds',
-            \ 'priority': 8, 
+            \ 'priority': 8,
             \ 'complete_length': -1,
             \ 'scope': ['tex'],
             \ 'matcher': {'name': 'prefix', 'key': 'word'},
@@ -1552,7 +1552,7 @@ augroup my_cm_setup
             \ })
     autocmd Filetype tex call ncm2#register_source({
             \ 'name' : 'vimtex-labels',
-            \ 'priority': 8, 
+            \ 'priority': 8,
             \ 'complete_length': -1,
             \ 'scope': ['tex'],
             \ 'matcher': {'name': 'combine',
@@ -1566,7 +1566,7 @@ augroup my_cm_setup
             \ })
     autocmd Filetype tex call ncm2#register_source({
             \ 'name' : 'vimtex-files',
-            \ 'priority': 8, 
+            \ 'priority': 8,
             \ 'complete_length': -1,
             \ 'scope': ['tex'],
             \ 'matcher': {'name': 'combine',
@@ -1580,7 +1580,7 @@ augroup my_cm_setup
             \ })
     autocmd Filetype tex call ncm2#register_source({
             \ 'name' : 'bibtex',
-            \ 'priority': 8, 
+            \ 'priority': 8,
             \ 'complete_length': -1,
             \ 'scope': ['tex'],
             \ 'matcher': {'name': 'combine',
