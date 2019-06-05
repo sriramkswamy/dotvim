@@ -945,25 +945,14 @@ function! RemoveAllBreakpoints()
 endfunction
 
 " Auto completion {{{1
-Plug 'roxma/nvim-yarp' | Plug 'ncm2/ncm2'
-
-" enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
-
-" IMPORTANT: :help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect
-
-" NOTE: you need to install completion sources to get completions. Check
-" our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
-" General sources {{{2
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-tmux'
-Plug 'ncm2/ncm2-ultisnips'
-Plug 'ncm2/ncm2-markdown-subscope'
-Plug 'ncm2/ncm2-html-subscope'
-Plug 'ncm2/ncm2-rst-subscope'
-Plug 'gaalcaras/ncm-R'
+Plug 'lifepillar/vim-mucomplete'
+set completeopt+=noselect
+" set completeopt+=noinsert
+let g:mucomplete#no_mappings = 1
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#completion_delay = 0
+inoremap <C-j> <Plug>(MUcompleteFwd)
+inoremap <C-k> <Plug>(MUcompleteBwd)
 
 " LSP support {{{1
 Plug 'autozimu/LanguageClient-neovim', {
@@ -1533,80 +1522,6 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
-
-" Autocompletion sources {{{1
-
-" LaTeX source {{{2
-augroup my_cm_setup
-    autocmd!
-    autocmd BufEnter * call ncm2#enable_for_buffer()
-    autocmd Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-cmds',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'prefix', 'key': 'word'},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#cmds,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-    autocmd Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-labels',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'substr', 'key': 'word'},
-            \               {'name': 'substr', 'key': 'menu'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#labels,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-    autocmd Filetype tex call ncm2#register_source({
-            \ 'name' : 'vimtex-files',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'abbrfuzzy', 'key': 'word'},
-            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#files,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-    autocmd Filetype tex call ncm2#register_source({
-            \ 'name' : 'bibtex',
-            \ 'priority': 8,
-            \ 'complete_length': -1,
-            \ 'scope': ['tex'],
-            \ 'matcher': {'name': 'combine',
-            \             'matchers': [
-            \               {'name': 'prefix', 'key': 'word'},
-            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
-            \               {'name': 'abbrfuzzy', 'key': 'menu'},
-            \             ]},
-            \ 'word_pattern': '\w+',
-            \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
-            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
-            \ })
-augroup END
-
-" CSS source {{{2
-au User Ncm2Plugin call ncm2#register_source({
-        \ 'name' : 'css',
-        \ 'priority': 9,
-        \ 'subscope_enable': 1,
-        \ 'scope': ['css','scss'],
-        \ 'mark': 'css',
-        \ 'word_pattern': '[\w\-]+',
-        \ 'complete_pattern': ':\s*',
-        \ 'on_complete': ['ncm2#on_complete#delay', 180,
-                \ 'ncm2#on_complete#omni', 'csscomplete#CompleteCSS']
-        \ })
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
