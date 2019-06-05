@@ -950,9 +950,19 @@ set completeopt+=noselect
 " set completeopt+=noinsert
 let g:mucomplete#no_mappings = 1
 let g:mucomplete#enable_auto_at_startup = 1
-let g:mucomplete#completion_delay = 0
+let g:mucomplete#completion_delay = 2
 inoremap <C-j> <Plug>(MUcompleteFwd)
 inoremap <C-k> <Plug>(MUcompleteBwd)
+
+" Chains
+let g:mucomplete#chains = {
+    \ 'default' : ['omni', 'ulti', 'keyn', 'c-p', 'path'],
+    \ 'vim'     : ['omni', 'ulti', 'keyn', 'path', 'cmd'],
+    \ 'sql'     : ['omni', 'ulti', 'keyn', 'path'],
+    \ 'python'  : ['omni', 'ulti', 'keyn', 'c-p', 'path', 'tags'],
+    \ 'cpp'     : ['omni', 'ulti', 'keyn', 'c-p', 'path', 'incl'],
+    \ 'tex'     : ['omni', 'ulti', 'keyn', 'c-p', 'path', 'dict', 'thes', 'uspl']
+    \ }
 
 " LSP support {{{1
 Plug 'autozimu/LanguageClient-neovim', {
