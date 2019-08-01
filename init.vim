@@ -973,6 +973,10 @@ Plug 'ncm2/ncm2-html-subscope'
 Plug 'ncm2/ncm2-rst-subscope'
 Plug 'gaalcaras/ncm-R'
 
+" Languages sources {{{2
+Plug 'ncm2/ncm2-go'
+Plug 'ncm2/ncm2-pyclang'
+
 " LSP support {{{1
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
@@ -985,9 +989,11 @@ let g:LanguageClient_hasClientSupport = 0
 
 let g:LanguageClient_serverCommands = {
     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+    \ 'javascript': ['/usr/bin/javascript-typescript-stdio'],
     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
     \ 'python': ['~/.local/bin/pyls'],
+    \ 'cpp': ['clangd-9'],
+    \ 'c': ['clangd-9'],
     \ }
 
 let g:LanguageClient_diagnosticsDisplay = {
@@ -1080,6 +1086,9 @@ Plug 'chrisbra/csv.vim'
 
 " Databases {{{2
 Plug 'tpope/vim-dadbod'
+
+" Golang {{{2
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Syntax checking {{{1
 Plug 'w0rp/ale'
