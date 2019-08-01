@@ -22,5 +22,20 @@
     "diagnostic.displayByAle": true,
     "diagnostic.errorSign": ">>",
     "diagnostic.warningSign": "!!",
-    "git.changeRemovedSign.text": "^"
+    "git.changeRemovedSign.text": "^",
+
+	"MPLS": {
+		"command": "dotnet",
+		"args": ["exec", "/Users/esn89/python-language-server/output/bin/Debug/Microsoft.Python.LanguageServer.dll"],
+		"filetypes": ["python"],
+		"initializationOptions": {
+			"interpreter": {
+				"properties": {
+					"InterpreterPath": "/usr/local/bin/python",
+					"UseDefaultDatabase": true,
+					"Version": "2.7.15"
+				}
+			}
+		}
+	}
 }
