@@ -9,13 +9,20 @@
 
     "coc.source.tag.priority": 99,
     "coc.source.file.priority": 10,
-    "coc.source.word.priority": 2,
-    "coc.source.omni.priority": 3,
+    "coc.source.word.priority": 4,
+    "coc.source.omni.priority": 2,
     "coc.source.vimtex.priority": 1,
-    "coc.source.ultisnips.priority": 5,
+    "coc.source.ultisnips.priority": 3,
 
     "python.analysis.openFilesOnly": true,
-    "python.jediEnabled": true,
+    "python.jediEnabled": false,
+    "python.pythonPath": "/usr/bin/python",
+    "python.venvFolders": [
+        "envs",
+        ".pyenv",
+        ".direnv",
+        "~/.virtualenvs"
+    ],
 
     "diagnostic.displayByAle": true,
     "diagnostic.errorSign": ">>",

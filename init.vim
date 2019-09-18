@@ -470,16 +470,6 @@ nnoremap <silent> - *Ncgn
 " Automatically disable search highlighting {{{2
 Plug 'junegunn/vim-slash'
 
-" Note taking {{{1
-
-" taskpaper support {{{2
-Plug 'davidoc/taskpaper.vim'
-let g:task_paper_date_format = '%Y-%m-%d %H:%M:%S'
-
-" notes {{{2
-nnoremap dn :tabe <bar> cd ~/Dropbox/PhD/notes<CR>:e<Space>
-nnoremap cn :cd ~/Dropbox/PhD/notes<CR>:e<Space>
-
 " Create file links {{{3
 nnoremap m<Space> :let @v = expand('%')<CR>:let @z = expand('%:t:r')<CR>
 " Paste file links
@@ -959,17 +949,20 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 inoremap <silent><expr> <c-space> coc#refresh()
 
 " Navigation
-nnoremap <silent> <Space>ad <Plug>(coc-definition)
-nnoremap <silent> <Space>at <Plug>(coc-type-definition)
-nnoremap <silent> <Space>ai <Plug>(coc-implementation)
-nnoremap <silent> <Space>ar <Plug>(coc-references)
+nnoremap <silent> <Space>aa :call <SID>coc_definition()<CR>
+nnoremap <silent> <Space>ad :call <SID>coc_declaration()<CR>
+nnoremap <silent> <Space>at :call <SID>coc_type_definition()<CR>
+nnoremap <silent> <Space>ai :call <SID>coc_implementation()<CR>
+nnoremap <silent> <Space>ar :call <SID>coc_references()<CR>
 nnoremap <silent> <Space>ah :call <SID>show_documentation()<CR>
-nnoremap <silent> <Space>an <Plug>(coc-rename)
-nnoremap <silent> <Space>ac <Plug>(coc-codeaction)
-nnoremap <silent> <Space>aa <Plug>(coc-codeaction-selected)
-xnoremap <silent> <Space>aa <Plug>(coc-codeaction-selected)
-nnoremap <silent> <Space>af :Format<CR>
-xnoremap <silent> <Space>af <Plug>(coc-format-selected)
+nnoremap <silent> <Space>aw :call <SID>coc_workspace_symbols()<CR>
+nnoremap <silent> <Space>ao :call <SID>coc_document_symbols()<CR>
+nnoremap <silent> <Space>an :call <SID>coc_rename()<CR>
+nnoremap <silent> <Space>af :call <SID>coc_function_symbol()<CR>
+nnoremap <silent> <Space>ac :call <SID>coc_code_action()<CR>
+nnoremap <silent> <Space>al :call <SID>coc_code_lens_action()<CR>
+xnoremap <silent> <Space>al :call <SID>coc_code_lens_action()<CR>
+xnoremap <silent> <Space>af :call <SID>coc_format_selected()<CR>
 nnoremap <silent> <Space>ax <Plug>(coc-fix-current)
 
 " Internal
@@ -1016,11 +1009,121 @@ command! ExtrasLSPUpdate :CocUpdate coc-yank coc-svg coc-highlight
 command! LatexLSPUpdate :CocUpdate coc-vimtex
 
 " Support functions {{{2
+
+" definition {{{3
+function! s:coc_definition()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('jumpDefinition')
+  endif
+endfunction
+
+" implementation {{{3
+function! s:coc_implementation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('jumpImplementation')
+  endif
+endfunction
+
+" declaration {{{3
+function! s:coc_declaration()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('jumpDeclaration')
+  endif
+endfunction
+
+" references {{{3
+function! s:coc_references()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('jumpReferences')
+  endif
+endfunction
+
+" type definition {{{3
+function! s:coc_type_definition()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('jumpTypeDefinition')
+  endif
+endfunction
+
+" workspace symbols {{{3
+function! s:coc_workspace_symbols()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('workspaceSymbols')
+  endif
+endfunction
+
+" document symbols {{{3
+function! s:coc_document_symbols()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('documentSymbols')
+  endif
+endfunction
+
+" documentation {{{3
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
   else
     call CocAction('doHover')
+  endif
+endfunction
+
+" function symbol {{{3
+function! s:coc_function_symbol()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('getCurrentFunctionSymbol')
+  endif
+endfunction
+
+" rename {{{3
+function! s:coc_rename()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('rename')
+  endif
+endfunction
+
+" format selected {{{3
+function! s:coc_format_selected()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('formatSelected')
+  endif
+endfunction
+
+" code action {{{3
+function! s:coc_code_action()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('codeAction')
+  endif
+endfunction
+
+" code lens action {{{3
+function! s:coc_code_lens_action()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('codeLensAction')
   endif
 endfunction
 
@@ -1316,6 +1419,11 @@ nnoremap <silent> md :TxSetRunCmd<CR>
 nnoremap <silent> mo :TxSend<CR>
 nnoremap <silent> mss V"my:TxSend(@m)<CR>
 " also check out the operator defined at the end of the file
+
+" Note taking {{{1
+nnoremap yn :AsyncRun pullnotes<CR>
+nnoremap dn :AsyncRun pushnotes<CR>
+nnoremap cn :FzfFiles ~/Dropbox/notes<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
