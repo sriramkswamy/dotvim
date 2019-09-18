@@ -877,7 +877,7 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal', {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-nnoremap <silent> <Space>e :Gstatus<CR>gg<C-n>
+nnoremap <silent> <Space>g :Gstatus<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>
 nnoremap yu :Gcommit<CR>O
 nnoremap du :Gdiff<CR>
@@ -890,10 +890,8 @@ nnoremap gb :GitMessenger<CR>
 
 " Interactive rebasing and tree {{{3
 Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'
-nnoremap <silent> gG :GV?<CR>
-nnoremap <silent> <Space>g :GV<CR>
-vnoremap <silent> gG :GV?<CR>
-vnoremap <silent> <Space>g :GV<CR>
+nnoremap <silent> gG :GV<CR>
+vnoremap <silent> gG :GV<CR>
 
 " Project/Session management {{{1
 Plug 'tpope/vim-obsession'
@@ -945,6 +943,13 @@ function! RemoveAllBreakpoints()
 endfunction
 
 " LSP and Autocompletion {{{1
+
+" Maps for navigating autocompletion {{{2
+" <C-j> and <C-k> for autocompletion navigation in insert mode
+inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-k>"
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
 " Use release branch
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -1235,6 +1240,9 @@ nnoremap g] :AsyncRun ctags **/*<CR>:copen<CR>
 
 " rdm
 nnoremap dc :AsyncRun rdm &<CR>
+
+" git
+nnoremap <Space>e :AsyncRun smerge %:p<CR>
 
 " Tmux integration {{{3
 Plug 'sriramkswamy/vim-tmuxify'

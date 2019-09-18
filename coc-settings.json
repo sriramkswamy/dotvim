@@ -7,7 +7,6 @@
     "coc.source.syntax.enable": false,
     "coc.source.ultisnips.enable": true,
 
-    "coc.source.dictionary.priority": 98,
     "coc.source.tag.priority": 99,
     "coc.source.file.priority": 10,
     "coc.source.word.priority": 2,
@@ -15,27 +14,11 @@
     "coc.source.vimtex.priority": 1,
     "coc.source.ultisnips.priority": 5,
 
-    "python.venvFolders": "~/.virtualenvs/",
     "python.analysis.openFilesOnly": true,
     "python.jediEnabled": true,
 
     "diagnostic.displayByAle": true,
     "diagnostic.errorSign": ">>",
-    "diagnostic.warningSign": "!!",
-    "git.changeRemovedSign.text": "^",
+    "diagnostic.warningSign": "!!"
 
-	"MPLS": {
-		"command": "dotnet",
-		"args": ["exec", "/Users/esn89/python-language-server/output/bin/Debug/Microsoft.Python.LanguageServer.dll"],
-		"filetypes": ["python"],
-		"initializationOptions": {
-			"interpreter": {
-				"properties": {
-					"InterpreterPath": "/usr/local/bin/python",
-					"UseDefaultDatabase": true,
-					"Version": "2.7.15"
-				}
-			}
-		}
-	}
 }
