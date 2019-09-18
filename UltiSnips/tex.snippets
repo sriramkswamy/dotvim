@@ -550,6 +550,10 @@ snippet ci "cite" i
 ~\cite{$1}$0
 endsnippet
 
+snippet eref "equation reference" i
+~\eqref{$1}$0
+endsnippet
+
 snippet ref "reference" i
 ~\ref{$1}$0
 endsnippet
@@ -1243,8 +1247,17 @@ snippet no "notes environment"
 }
 endsnippet
 
+snippet emain "emacs main file"
+$0
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../${1:main}"
+%%% End:
+endsnippet
+
 snippet main "main file"
-%! TEX root = ${1:../${2:main}.tex}
+%!TEX root = ${1:../${2:main}.tex}
 $0
 endsnippet
 
