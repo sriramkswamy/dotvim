@@ -76,5 +76,9 @@ nnoremap <buffer> mas :let @m = "dir()"<CR>:TxSend(@m)<CR>
 " line plot
 nnoremap <buffer> mfg :let @m = "plt.plot(" . expand('<cword>') . "); plt.show()"<CR>:TxSend(@m)<CR>
 
+" virtualenv
+nnoremap <buffer> mvi :CocCommand python.setInterpretter<CR>
+nnoremap <buffer> mvl :CocCommand python.setLinter<CR>
+
 " set format options
 " setlocal formatprg=yapf
