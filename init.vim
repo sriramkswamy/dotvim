@@ -10,6 +10,11 @@ endif
 " Start plugin installation {{{1
 call plug#begin('~/.config/nvim/plugged')
 
+" Environment behavior {{{1
+if has('unix') && empty($TMPDIR) && empty('$TMPDIR')
+    let $TMPDIR = '/tmp'
+endif
+
 " Buffer behaviour {{{1
 
 " Set options {{{2
@@ -414,12 +419,10 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 
-" Set a tag bar {{{3
-Plug 'majutsushi/tagbar'
-" autocmd VimEnter * nested :call tagbar#autoopen(1)
-" autocmd FileType * nested :call tagbar#autoopen(0)
-" autocmd BufEnter * nested :call tagbar#autoopen(0)
-nnoremap <silent> t :TagbarToggle<CR>
+" tags {{{3
+Plug 'ludovicchabant/vim-gutentags'
+let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.vim/plug/*"]
+let g:gutentags_ctags_executable = '/usr/bin/ctags'
 
 " Searching {{{1
 
@@ -488,7 +491,7 @@ set dictionary+=/usr/share/dict/words
 
 " Autocmds and let commands for filetypes {{{2
 autocmd BufNewFile,BufReadPost *.rkt,*.rktl set filetype=scheme
-autocmd BufNewFile,BufReadPost *.md,*.mkd,*.markdown set filetype=markdown
+autocmd BufNewFile,BufReadPost *.md,*.mkd,*.markdown,*.txt,*.text set filetype=markdown
 autocmd BufNewFile,BufReadPost CMakeLists.txt set filetype=cmake
 autocmd BufNewFile,BufReadPost *.clj set filetype=clojure
 autocmd BufNewFile,BufReadPost *.jl set filetype=julia
@@ -1201,7 +1204,7 @@ let g:fzf_command_prefix='Fzf'
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 " ctags command
-let g:fzf_tags_command = 'ctags **/*'
+let g:fzf_tags_command = '/usr/bin/ctags -R'
 " Actions
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
@@ -1217,7 +1220,7 @@ command! -bang -nargs=* FzfRg
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 
-" nnoremap <silent> t :FzfBTags<CR>
+nnoremap <silent> t :FzfBTags<CR>
 nnoremap <silent> T :FzfTags<CR>
 nnoremap <silent> J :FzfAg <C-R><C-W><CR>
 nnoremap <silent> gw :FzfAg <C-R><C-W><CR>
@@ -1339,7 +1342,7 @@ nnoremap vp :AsyncRun git push<CR>:copen<CR>
 nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
-nnoremap g] :AsyncRun ctags **/*<CR>:copen<CR>
+nnoremap g] :AsyncRun /usr/bin/ctags -R %:p<CR>
 
 " rdm
 nnoremap dc :AsyncRun rdm &<CR>
@@ -1632,6 +1635,7 @@ set statusline+=\ %P    "percent through file
 set laststatus=2
 set statusline+=\ %{LinterStatus()}
 set statusline+=\ %{ObsessionStatus()} " vim session status
+set statusline+=%{gutentags#statusline()}
 
 "return '[\s]' if trailing white space is detected
 "return '' otherwise
