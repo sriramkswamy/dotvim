@@ -2,6 +2,10 @@
 setlocal wrap
 setlocal spell
 
+" outline
+" nnoremap <buffer> t :lvimgrep /\\label{.*}/ %<CR>
+nnoremap <buffer> t :lvimgrep /\\\(chapter\\|subsection\\|section\\|subsubsection\).*{.*}/ %<CR>
+
 " vimtex maps
 " delimiters toggle
 nmap <buffer> mb <Plug>(vimtex-delim-toggle-modifier)

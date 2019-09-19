@@ -1,3 +1,6 @@
+" outline
+nnoremap <buffer> t :lvimgrep /^\s*\(class\\|def\\|properties\\|classdef\).*/ %<CR>
+
 " jedi support
 " goto assignment
 nnoremap <buffer> ma call jedi#goto_assignments()

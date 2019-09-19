@@ -6,6 +6,9 @@ setlocal textwidth=0
 " Ultisnips add tex snippets
 UltiSnipsAddFiletypes markdown.tex
 
+" outline
+nnoremap <buffer> t :lvimgrep /^#\+\s\w.*/ %<CR>
+
 " pandoc
 " convert to html
 nnoremap <buffer> mh :AsyncRun pandoc % -s --mathjax -o %:r.html<CR>

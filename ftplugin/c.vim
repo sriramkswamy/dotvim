@@ -1,3 +1,6 @@
+" outline
+nnoremap <buffer> t :lvimgrep /^\s*\(struct\\|class\\|properties\\|classdef\).*/ %<CR>
+
 " rtags
 " jump to parent
 nnoremap <buffer> mu :call rtags#JumpToParent()<CR>
