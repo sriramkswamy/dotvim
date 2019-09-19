@@ -23,6 +23,7 @@ set title
 set shortmess+=c
 " Automatically read and write buffers
 set autowrite
+set autoread
 " Hide unloaded buffers
 set hidden
 " Automatically scroll when I reach within 3 lines towards end of screen
@@ -1659,5 +1660,5 @@ autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set background=dark
-colorscheme gruvbox
+set background=light
+colorscheme PaperColor
