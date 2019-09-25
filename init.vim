@@ -351,8 +351,10 @@ nnoremap gL :LFilter<Space>
 
 " Common directory changes {{{3
 command! CD cd %:p:h
+command! CH cd $HOME
 command! LCD lcd %:p:h
 nnoremap cd :LCD<CR>
+nnoremap dc :CH<CR>
 command! WCD :windo cd %:p:h<CR>
 command! TCD :tabdo cd %:p:h<CR>
 
@@ -424,6 +426,7 @@ let g:rooter_silent_chdir = 1
 Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.vim/plug/*"]
 let g:gutentags_ctags_executable = '/usr/bin/ctags'
+let g:gutentags_cache_dir = expand('~/.cache/vim/ctags/')
 
 " Searching {{{1
 
@@ -1136,15 +1139,6 @@ endfunction
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 
-" C/C++ {{{2
-Plug 'lyuts/vim-rtags' , {'for': ['cpp', 'c'], 'branch': 'py_2_and_3'}
-autocmd filetype c,cpp setl completefunc=RtagsCompleteFunc
-let g:rtagsAutoLaunchRdm = 1
-let g:rtagsExcludeSysHeaders = 1
-let g:rtagsUseDefaultMappings = 0
-let g:rtagsUseLocationList = 1
-let g:rtagsMinCharsForCommandCompletion = 1
-
 " Python {{{2
 Plug 'davidhalter/jedi-vim' , {'for': 'python'}
 autocmd filetype python setl omnifunc=jedi#completions
@@ -1171,7 +1165,7 @@ let g:vimtex_view_method = 'mupdf'
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
 let g:sparkupExecuteMapping = '<C-b>'
-let g:sparkupNextMapping = '<C-j>'
+let g:sparkupNextMapping = '<C-n>'
 
 " R {{{2
 " Download it from https://github.com/jalvesaq/Nvim-R/releases
@@ -1344,9 +1338,6 @@ nnoremap vu :AsyncRun git pull<CR>:copen<CR>
 
 " ctags
 nnoremap g] :AsyncRun /usr/bin/ctags -R %:p<CR>
-
-" rdm
-nnoremap dc :AsyncRun rdm &<CR>
 
 " git
 nnoremap <Space>e :AsyncRun smerge %:p<CR>
