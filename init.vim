@@ -83,11 +83,11 @@ set conceallevel=0
 
 " Maps without leader {{{2
 
-" quit whatever
-nnoremap <Space>q :bd!<CR>
-" Close all folds
+" buffer kill
+nnoremap <Space>b :bd!<CR>
+" Close and open all folds
 nnoremap c- zM
-nnoremap d- zM
+nnoremap d- zR
 " Alternate files
 nnoremap <BS> :b#<CR>
 " open file - I have no idea how I got used to this shortcut
@@ -411,7 +411,7 @@ function! s:QListToggle()
     endif
 endfunction
 command!  QToggle call s:QListToggle()
-nnoremap <silent> <Space>b :QToggle<CR>
+nnoremap <silent> <Space>q :QToggle<CR>
 
 " Plugins {{{2
 
