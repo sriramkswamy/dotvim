@@ -13,7 +13,7 @@ nnoremap <buffer> J :find <C-R><C-W><CR>
 nnoremap <buffer> K :AsyncRun /home/sriramkrish92/MATLAB/bin/matlab -nodesktop -nosplash -r "help <cword>; quit"<CR>:copen<CR>
 
 " outline
-nnoremap <buffer> t :lvimgrep /^\s*\(function\\|methods\\|properties\\|classdef\).*/ %<CR>
+nnoremap <buffer> t :lvimgrep /^\s*\(function\\|methods\\|properties\\|classdef\).*/ %<CR>:lopen<CR>
 
 " debug helpers
 nnoremap <buffer> mgq :call RemoveAllBreakpoints()<CR>:let @m = "Q"<CR>:TxSend(@m)<CR>

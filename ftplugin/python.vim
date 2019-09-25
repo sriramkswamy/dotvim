@@ -1,5 +1,5 @@
 " outline
-nnoremap <buffer> t :lvimgrep /^\s*\(class\\|def\\|properties\\|classdef\).*/ %<CR>
+nnoremap <buffer> t :lvimgrep /^\s*\(class\\|def\\|properties\\|classdef\).*/ %<CR>:lopen<CR>
 
 " jedi support
 " goto assignment

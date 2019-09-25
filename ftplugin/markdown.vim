@@ -7,7 +7,7 @@ setlocal textwidth=0
 UltiSnipsAddFiletypes markdown.tex
 
 " outline
-nnoremap <buffer> t :lvimgrep /^#\+\s\w.*/ %<CR>
+nnoremap <buffer> t :lvimgrep /^#\+\s\w.*/ %<CR>:lopen<CR>
 
 " pandoc
 " convert to html

@@ -4,7 +4,7 @@ setlocal spell
 
 " outline
 " nnoremap <buffer> t :lvimgrep /\\label{.*}/ %<CR>
-nnoremap <buffer> t :lvimgrep /\\\(chapter\\|subsection\\|section\\|subsubsection\).*{.*}/ %<CR>
+nnoremap <buffer> t :lvimgrep /\\\(chapter\\|subsection\\|section\\|subsubsection\).*{.*}/ %<CR>:lopen<CR>
 
 " vimtex maps
 " delimiters toggle
