@@ -1134,6 +1134,9 @@ endfunction
 
 " Language Support {{{1
 
+" AutoHotKey
+Plug 'sriramkswamy/autohotkey.vim'
+
 " Vim script {{{2
 Plug 'tpope/vim-scriptease', {'for': 'vim'}
 
