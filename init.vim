@@ -457,8 +457,6 @@ function! LGrepper(pat)
 endfunction
 command! -nargs=* Grepper call LGrepper(<q-args>)
 nnoremap gss :Grepper<Space>
-nnoremap ge :Grepper '<cword>'<CR>
-nnoremap gE :Grepper '<cWORD>'<CR>
 
 " Maps without leader {{{2
 " Populating the location list
@@ -689,7 +687,7 @@ let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-j>'
 let g:multi_cursor_prev_key='<C-k>'
 let g:multi_cursor_skip_key='<C-l>'
-let g:multi_cursor_quit_key='<C-g>'
+let g:multi_cursor_quit_key='<C-c>'
 nnoremap <C-n> :MultipleCursorsFind<Space>
 vnoremap <C-n> :MultipleCursorsFind<Space>
 
@@ -1161,6 +1159,7 @@ let g:vimtex_motion_enabled = 1
 let g:vimtex_mappings_enabled = 0
 let g:vimtex_view_general_viewer = 'mupdf'
 let g:vimtex_view_method = 'mupdf'
+let g:vimtex_quickfix_mode = 0
 
 " HTML/CSS {{{2
 Plug 'rstacruz/sparkup', {'for': ['html', 'css']}
@@ -1229,6 +1228,8 @@ nnoremap <silent> <Space>/ :FzfHistory/<CR>
 nnoremap <silent> <Space>d :FzfGFiles<CR>
 nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>F :FzfFiles ~<CR>
+nnoremap <silent> <Space>D :FzfFiles /mnt/chromeos/MyFiles/Downloads<CR>
+nnoremap <silent> <Space>G :FzfFiles /mnt/chromeos/GoogleDrive/MyDrive<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>k :FzfBuffers<CR>
 nnoremap <silent> <Space>h :FzfHelptags<CR>
@@ -1239,6 +1240,8 @@ nnoremap <silent> <Space>; :FzfHistory:<CR>
 vnoremap <silent> <Space>; :FzfHistory:<CR>
 nnoremap <silent> gB :FzfBCommits<CR>
 nnoremap <silent> gH :FzfCommits<CR>
+nnoremap <silent> gsd :FzfAg TODO<CR>
+nnoremap <silent> gsc :FzfAg FIXME<CR>
 nmap <Space>, <Plug>(fzf-maps-n)
 xmap <Space>, <Plug>(fzf-maps-x)
 omap <Space>, <Plug>(fzf-maps-o)
@@ -1287,10 +1290,9 @@ let g:C_UseTool_doxygen = 'yes'
 cnoremap :: <C-r>=strftime('%Y-%m-%d %H:%M:%S')<CR>
 
 " Neovim terminal - Go to normal mode
-tnoremap <C-g> <C-\><C-n>
+tnoremap <C-h> <C-\><C-n>
 
 " terminal maps
-nnoremap g\ :vsplit <bar> terminal<CR>
 nnoremap g{ :vsp <bar> terminal googler <cWORD><Space>
 nnoremap g} :vsp <bar> terminal googler <cWORD><CR>
 vnoremap g{ "my:vsp <bar> terminal googler <C-R>m<Space>
@@ -1303,6 +1305,14 @@ if exists('$TMUX')
 endif
 
 " Plugins {{{2
+
+" Floating term
+Plug 'voldikss/vim-floaterm'
+let g:floaterm_width = float2nr(round(winwidth(0)/1.25))
+let g:floaterm_height = float2nr(round(winheight(0)/2))
+let g:floaterm_blend = 50
+let g:floaterm_position = 'center'
+nnoremap g\ :FloatermToggle<CR>
 
 " Common *nix commands {{{3
 Plug 'tpope/vim-eunuch',
@@ -1416,9 +1426,8 @@ nnoremap <silent> mss V"my:TxSend(@m)<CR>
 " also check out the operator defined at the end of the file
 
 " Note taking {{{1
-nnoremap yn :AsyncRun pullnotes<CR>
-nnoremap dn :AsyncRun pushnotes<CR>
-nnoremap cn :FzfFiles ~/Dropbox/notes<CR>
+nnoremap dm :FzfFiles /mnt/chromeos/GoogleDrive/MyDrive/notes<CR>
+nnoremap cm :FzfFiles /mnt/chromeos/GoogleDrive/MyDrive/Academics/OSU/PhD/meetings/markdown<CR>
 
 " Stop plugin installation {{{1
 call plug#end()
