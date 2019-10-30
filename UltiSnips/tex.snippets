@@ -570,7 +570,7 @@ snippet ci "cite" i
 ~\cite{$1}$0
 endsnippet
 
-snippet eref "equation reference" i
+snippet er "equation reference" i
 ~\eqref{$1}$0
 endsnippet
 
@@ -798,8 +798,12 @@ snippet acol "add column" i
 ${1:L}{${2:4}cm}${3:|}$0
 endsnippet
 
-snippet mi "inline math"
-$$1$ $0
+snippet im "inline math"
+\( $1 \)$0
+endsnippet
+
+snippet mi "math inline"
+$$1$$0
 endsnippet
 
 snippet dev "deviatoric" i
