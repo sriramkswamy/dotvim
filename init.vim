@@ -184,6 +184,10 @@ let maplocalleader="\\"
 
 " Window management
 nnoremap <silent> w <C-w>
+nnoremap <silent> w> 15<C-w>>
+nnoremap <silent> w< 15<C-w><
+nnoremap <silent> w+ 15<C-w>+
+nnoremap <silent> w- 15<C-w>-
 nnoremap <silent> ww <C-w><C-w>
 
 " Save and redraw

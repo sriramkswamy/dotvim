@@ -1,4 +1,4 @@
-snippet yml "pandoc yaml title" b
+snippet yml "pandoc yaml title" bA
 ---
 title: $1
 author: ${2:Sriram Krishnaswamy}
@@ -7,55 +7,51 @@ author: ${2:Sriram Krishnaswamy}
 $0
 endsnippet
 
-snippet h1 "heading 1" b
+snippet h1 "heading 1" bA
 # $1
 
 $0
 endsnippet
 
-snippet h2 "heading 1" b
+snippet h2 "heading 1" bA
 ## $1
 
 $0
 endsnippet
 
-snippet h3 "heading 1" b
+snippet h3 "heading 1" bA
 ### $1
 
 $0
 endsnippet
 
-snippet h4 "heading 1" b
+snippet h4 "heading 1" bA
 #### $1
 
 $0
 endsnippet
 
-snippet h5 "heading 1" b
+snippet h5 "heading 1" bA
 ##### $1
 
 $0
 endsnippet
 
-snippet h6 "heading 1" b
+snippet h6 "heading 1" bA
 ###### $1
 
 $0
 endsnippet
 
-snippet qu "block quote" b
+snippet > "block quote" bA
 > $1
 endsnippet
 
-snippet ul "unordered list" b
-* $1
-endsnippet
-
-snippet ol "ordered list" b
+snippet . "ordered list" bA
 ${1:1}. $2
 endsnippet
 
-snippet hr "horizontal rule" b
+snippet ++ "horizontal rule" bA
 ***
 
 $1
@@ -73,11 +69,19 @@ snippet id "id for the reference" b
 [${0:id}]: ${1:url}
 endsnippet
 
-snippet it "italics"
-*$1*$0
+snippet - "bullet point style 1" bA
+- $0
 endsnippet
 
-snippet bold "bold"
+snippet * "bullet point style 2" bA
+* $0
+endsnippet
+
+snippet _ "italics" A
+_$1_$0
+endsnippet
+
+snippet == "bold" A
 **$1**$0
 endsnippet
 
@@ -142,4 +146,18 @@ snippet pt "pandoc title"
 % ${2:Author}
 
 $0
+endsnippet
+
+snippet meet "meeting template"
+# Meeting with ${1:Dr Kumar}: ${2:Topic}
+
+`date +%B` `date +%d`, `date +%Y`
+
+## Agenda
+
+$0
+
+## Discussion
+
+## Actions
 endsnippet

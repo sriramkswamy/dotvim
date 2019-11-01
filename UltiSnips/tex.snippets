@@ -88,25 +88,25 @@ endsnippet
 
 snippet se "section" b
 \section${1:*}{$2}
-\label{sec:$3}
+~\label{sec:$3}
 $0
 endsnippet
 
 snippet su "subsection" b
 \subsection${1:*}{$2}
-\label{sub:$3}
+~\label{sub:$3}
 $0
 endsnippet
 
 snippet ssu "subsection" b
 \subsection${1:*}{$2}
-\label{sub:$3}
+~\label{sub:$3}
 $0
 endsnippet
 
 snippet cha "chapter" b
 \chapter${1:*}{$2}
-\label{cha:$3}
+~\label{cha:$3}
 $0
 endsnippet
 
@@ -973,12 +973,6 @@ snippet lstlang "listings language" b
         emphstyle=[1]\color{red}, %some words to emphasise
         % emph=[2]{word1,word2}, emphstyle=[2]{style},
 }
-endsnippet
-
-snippet subsubs "sub sub section" b
-\subsubsection${1:*}{$2}
-\label{ssub:$3}
-$0
 endsnippet
 
 snippet lstinp "lstinputlisting" b
