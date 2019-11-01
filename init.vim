@@ -872,7 +872,7 @@ nnoremap <silent> dr :SignifyRefresh<CR>:redraw!<CR>:SignifyEnable<CR>
 " Git Wrapper {{{2
 Plug 'tpope/vim-fugitive' | Plug 'idanarye/vim-merginal', {'branch': 'develop'}
 autocmd BufReadPost fugitive://* set bufhidden=delete " Delete all fugitive buffers except this
-nnoremap <silent> <Space>g :Gstatus<CR>gg<C-n>
+nnoremap <silent> <Space>g :Git<CR>gg<C-n>
 nnoremap cu :Gwrite<CR>
 nnoremap yu :Gcommit<CR>O
 nnoremap du :Gdiff<CR>
