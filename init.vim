@@ -459,8 +459,13 @@ endif
 function! LGrepper(pat)
     execute 'silent lgrep! ' . a:pat
 endfunction
-command! -nargs=* Grepper call LGrepper(<q-args>)
-nnoremap gss :Grepper<Space>
+function! QGrepper(pat)
+    execute 'silent grep! ' . a:pat
+endfunction
+command! -nargs=* LGrep call LGrepper(<q-args>)
+command! -nargs=* QGrep call QGrepper(<q-args>)
+nnoremap gss :QGrep<Space>
+nnoremap ges :LGrep<Space>
 
 " Maps without leader {{{2
 " Populating the location list
@@ -1564,9 +1569,20 @@ function! OperatorTmuxifySend(motion_wise)
 endfunction
 
 " create an operator to grep things {{{1
-map gs <Plug>(operator-grepper)
-call operator#user#define('grepper', 'OperatorGrepper')
-function! OperatorGrepper(motion_wise)
+
+" quickfix grep {{{2
+map gs <Plug>(operator-qgrepper)
+call operator#user#define('qgrepper', 'OperatorQgrepper')
+function! OperatorQgrepper(motion_wise)
+    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
+    execute 'normal!' '`[' . v . '`]"my'
+    call QGrepper(@m)
+endfunction
+
+" location grep {{{2
+map ge <Plug>(operator-lgrepper)
+call operator#user#define('lgrepper', 'OperatorLgrepper')
+function! OperatorLgrepper(motion_wise)
     let v = operator#user#visual_command_from_wise_name(a:motion_wise)
     execute 'normal!' '`[' . v . '`]"my'
     call LGrepper(@m)
