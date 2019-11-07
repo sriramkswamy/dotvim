@@ -426,7 +426,7 @@ let g:rooter_patterns = ['.git/', 'CMakeLists.txt', '.svn/']
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 
-" tags {{{3
+" regenerate tags {{{3
 Plug 'ludovicchabant/vim-gutentags'
 let g:gutentags_ctags_exclude = ["*.min.js", "*.min.css", "build", "vendor", ".git", "node_modules", "*.vim/plug/*"]
 let g:gutentags_ctags_executable = '/usr/bin/ctags'
@@ -1011,6 +1011,7 @@ command! -nargs=0 Format :call CocAction('format')
 " Install various 'packs'
 command! CoreLSPInstall :CocInstall coc-word coc-omni coc-ultisnips coc-emmet coc-lists coc-emmet
 command! PythonLSPInstall :CocInstall coc-pyls
+command! RLSPInstall :CocInstall coc-r-lsp
 command! WebLSPInstall :CocInstall coc-json coc-tsserver coc-html coc-css coc-yaml
 command! ExtrasLSPInstall :CocInstall coc-yank coc-svg coc-highlight
 command! LatexLSPInstall :CocInstall coc-vimtex
@@ -1018,6 +1019,7 @@ command! LatexLSPInstall :CocInstall coc-vimtex
 " Update various 'packs'
 command! CoreLSPUpdate :CocUpdate coc-word coc-omni coc-ultisnips coc-emmet coc-lists coc-emmet
 command! PythonLSPUpdate :CocUpdate coc-pyls
+command! RLSPUpdate :CocUpdate coc-r-lsp
 command! WebLSPUpdate :CocUpdate coc-json coc-tsserver coc-html coc-css coc-yaml
 command! ExtrasLSPUpdate :CocUpdate coc-yank coc-svg coc-highlight
 command! LatexLSPUpdate :CocUpdate coc-vimtex
@@ -1242,6 +1244,8 @@ nnoremap <silent> <Space>f :FzfFiles<CR>
 nnoremap <silent> <Space>F :FzfFiles ~<CR>
 nnoremap <silent> <Space>D :FzfFiles /mnt/chromeos/MyFiles/Downloads<CR>
 nnoremap <silent> <Space>G :FzfFiles /mnt/chromeos/GoogleDrive/MyDrive<CR>
+nnoremap <silent> <Space>N :FzfFiles /mnt/chromeos/GoogleDrive/MyDrive/notes<CR>
+nnoremap <silent> <Space>M :FzfFiles /mnt/chromeos/GoogleDrive/MyDrive/Academics/OSU/PhD/meetings/markdown<CR>
 nnoremap <silent> <Space>r :FzfHistory<CR>
 nnoremap <silent> <Space>k :FzfBuffers<CR>
 nnoremap <silent> <Space>h :FzfHelptags<CR>
