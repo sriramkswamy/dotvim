@@ -254,6 +254,9 @@ let g:goyo_width = 85
 let g:goyo_height = 90
 nnoremap <Space>o :Goyo<CR>
 
+" Smooth scrolling {{{3
+Plug 'psliwka/vim-smoothie'
+
 " File/Buffer navigation {{{1
 
 " Netrw {{{2
