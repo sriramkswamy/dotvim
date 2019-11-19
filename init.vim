@@ -951,200 +951,96 @@ endfunction
 
 " LSP and Autocompletion {{{1
 
+" Auto completion {{{1
+"
 " Maps for navigating autocompletion {{{2
 " <C-j> and <C-k> for autocompletion navigation in insert mode
 inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-k>"
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" Use release branch
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plugin support for autcompletion {{{2
+Plug 'roxma/nvim-yarp' | Plug 'ncm2/ncm2'
 
-" Mappings {{{2
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
 
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+" IMPORTANT: :help Ncm2PopupOpen for more information
+set completeopt=noinsert,menuone,noselect
 
-" Navigation
-nnoremap <silent> <Space>aa :call <SID>coc_definition()<CR>
-nnoremap <silent> <Space>ad :call <SID>coc_declaration()<CR>
-nnoremap <silent> <Space>at :call <SID>coc_type_definition()<CR>
-nnoremap <silent> <Space>ai :call <SID>coc_implementation()<CR>
-nnoremap <silent> <Space>ar :call <SID>coc_references()<CR>
-nnoremap <silent> <Space>ah :call <SID>show_documentation()<CR>
-nnoremap <silent> <Space>aw :call <SID>coc_workspace_symbols()<CR>
-nnoremap <silent> <Space>ao :call <SID>coc_document_symbols()<CR>
-nnoremap <silent> <Space>an :call <SID>coc_rename()<CR>
-nnoremap <silent> <Space>af :call <SID>coc_function_symbol()<CR>
-nnoremap <silent> <Space>ac :call <SID>coc_code_action()<CR>
-nnoremap <silent> <Space>al :call <SID>coc_code_lens_action()<CR>
-xnoremap <silent> <Space>al :call <SID>coc_code_lens_action()<CR>
-xnoremap <silent> <Space>af :call <SID>coc_format_selected()<CR>
-nnoremap <silent> <Space>ax <Plug>(coc-fix-current)
+" NOTE: you need to install completion sources to get completions. Check
+" our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
+" General sources {{{2
+Plug 'ncm2/ncm2-bufword'
+Plug 'ncm2/ncm2-path'
+Plug 'ncm2/ncm2-tmux'
+Plug 'ncm2/ncm2-ultisnips'
+Plug 'ncm2/ncm2-markdown-subscope'
+Plug 'ncm2/ncm2-html-subscope'
+Plug 'ncm2/ncm2-rst-subscope'
+Plug 'gaalcaras/ncm-R'
 
-" Internal
-" Show all diagnostics
-nnoremap <silent> <space>al  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>ae :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>ao :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>t :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>as :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>aj :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>ak :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>ap :<C-u>CocListResume<CR>
-" Show maps
-nnoremap <silent> <space>hk :<C-u>CocList maps<CR>
-" Show yank history
-nnoremap <silent> <space>y :<C-u>CocList yank<CR>
-" Show workspace folders
-nnoremap <silent> gF :<C-u>CocList folders<CR>
+" Languages sources {{{2
+Plug 'ncm2/ncm2-go'
+Plug 'ncm2/ncm2-pyclang'
 
-" Useful commands {{{2
+" LSP support {{{1
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+let g:LanguageClient_completionPreferTextEdit = 1
+let g:LanguageClient_diagnosticsList = "Location"
+let g:LanguageClient_hasSnippetSupport = 0
+let g:LanguageClient_hasClientSupport = 0
 
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    \ 'javascript': ['/usr/bin/javascript-typescript-stdio'],
+    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+    \ 'python': ['~/.local/bin/pyls'],
+    \ 'cpp': ['clangd-9'],
+    \ 'c': ['clangd-9'],
+    \ }
 
-" Install various 'packs'
-command! CoreLSPInstall :CocInstall coc-word coc-omni coc-ultisnips coc-emmet coc-lists coc-emmet
-command! PythonLSPInstall :CocInstall coc-pyls
-command! RLSPInstall :CocInstall coc-r-lsp
-command! WebLSPInstall :CocInstall coc-json coc-tsserver coc-html coc-css coc-yaml
-command! ExtrasLSPInstall :CocInstall coc-yank coc-svg coc-highlight
-command! LatexLSPInstall :CocInstall coc-vimtex
+let g:LanguageClient_diagnosticsDisplay = {
+            \     1: {
+            \         "name": "Error",
+            \         "texthl": "ALEError",
+            \         "signText": ">>",
+            \         "signTexthl": "ALEErrorSign",
+            \         "virtualTexthl": "Error"
+            \     },
+            \     2: {
+            \         "name": "Warning",
+            \         "texthl": "ALEWarning",
+            \         "signText": "!!",
+            \         "signTexthl": "ALEWarningSign",
+            \         "virtualTexthl": "Todo"
+            \     },
+            \     3: {
+            \         "name": "Information",
+            \         "texthl": "ALEInfo",
+            \         "signText": "ℹi",
+            \         "signTexthl": "ALEInfoSign",
+            \         "virtualTexthl": "Todo"
+            \     },
+            \     4: {
+            \         "name": "Hint",
+            \         "texthl": "ALEInfo",
+            \         "signText": "--",
+            \         "signTexthl": "ALEInfoSign",
+            \         "virtualTexthl": "Todo"
+            \     },
+            \ }
 
-" Update various 'packs'
-command! CoreLSPUpdate :CocUpdate coc-word coc-omni coc-ultisnips coc-emmet coc-lists coc-emmet
-command! PythonLSPUpdate :CocUpdate coc-pyls
-command! RLSPUpdate :CocUpdate coc-r-lsp
-command! WebLSPUpdate :CocUpdate coc-json coc-tsserver coc-html coc-css coc-yaml
-command! ExtrasLSPUpdate :CocUpdate coc-yank coc-svg coc-highlight
-command! LatexLSPUpdate :CocUpdate coc-vimtex
+nnoremap <Space>a :call LanguageClient_contextMenu()<CR>
 
-" Support functions {{{2
-
-" definition {{{3
-function! s:coc_definition()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('jumpDefinition')
-  endif
-endfunction
-
-" implementation {{{3
-function! s:coc_implementation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('jumpImplementation')
-  endif
-endfunction
-
-" declaration {{{3
-function! s:coc_declaration()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('jumpDeclaration')
-  endif
-endfunction
-
-" references {{{3
-function! s:coc_references()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('jumpReferences')
-  endif
-endfunction
-
-" type definition {{{3
-function! s:coc_type_definition()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('jumpTypeDefinition')
-  endif
-endfunction
-
-" workspace symbols {{{3
-function! s:coc_workspace_symbols()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('workspaceSymbols')
-  endif
-endfunction
-
-" document symbols {{{3
-function! s:coc_document_symbols()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('documentSymbols')
-  endif
-endfunction
-
-" documentation {{{3
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" function symbol {{{3
-function! s:coc_function_symbol()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('getCurrentFunctionSymbol')
-  endif
-endfunction
-
-" rename {{{3
-function! s:coc_rename()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('rename')
-  endif
-endfunction
-
-" format selected {{{3
-function! s:coc_format_selected()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('formatSelected')
-  endif
-endfunction
-
-" code action {{{3
-function! s:coc_code_action()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('codeAction')
-  endif
-endfunction
-
-" code lens action {{{3
-function! s:coc_code_lens_action()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('codeLensAction')
-  endif
-endfunction
+" Maps for navigating autocompletion {{{2
+" <C-j> and <C-k> for autocompletion navigation in insert mode
+inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-k>"
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Language Support {{{1
 
@@ -1688,6 +1584,80 @@ endfunction
 set statusline+=%{StatuslineTrailingSpaceWarning()}
 "recalculate the trailing whitespace warning when idle, and after saving
 autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
+
+" Autocompletion sources {{{1
+
+" LaTeX source {{{2
+augroup my_cm_setup
+    autocmd!
+    autocmd BufEnter * call ncm2#enable_for_buffer()
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-cmds',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'prefix', 'key': 'word'},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#cmds,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-labels',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'substr', 'key': 'word'},
+            \               {'name': 'substr', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#labels,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'vimtex-files',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'abbrfuzzy', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#files,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+    autocmd Filetype tex call ncm2#register_source({
+            \ 'name' : 'bibtex',
+            \ 'priority': 8,
+            \ 'complete_length': -1,
+            \ 'scope': ['tex'],
+            \ 'matcher': {'name': 'combine',
+            \             'matchers': [
+            \               {'name': 'prefix', 'key': 'word'},
+            \               {'name': 'abbrfuzzy', 'key': 'abbr'},
+            \               {'name': 'abbrfuzzy', 'key': 'menu'},
+            \             ]},
+            \ 'word_pattern': '\w+',
+            \ 'complete_pattern': g:vimtex#re#ncm2#bibtex,
+            \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+            \ })
+augroup END
+
+" CSS source {{{2
+au User Ncm2Plugin call ncm2#register_source({
+        \ 'name' : 'css',
+        \ 'priority': 9,
+        \ 'subscope_enable': 1,
+        \ 'scope': ['css','scss'],
+        \ 'mark': 'css',
+        \ 'word_pattern': '[\w\-]+',
+        \ 'complete_pattern': ':\s*',
+        \ 'on_complete': ['ncm2#on_complete#delay', 180,
+                \ 'ncm2#on_complete#omni', 'csscomplete#CompleteCSS']
+        \ })
 
 " Set colorscheme {{{1
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
