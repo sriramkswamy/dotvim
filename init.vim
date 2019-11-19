@@ -1188,6 +1188,7 @@ let g:sparkupNextMapping = '<C-n>'
 Plug 'jalvesaq/Nvim-R'
 let R_in_buffer = 1
 let R_args = ['--no-save', '--quiet']
+let R_assign = 0
 
 " Maps {{{3
 " Complete the arguments
